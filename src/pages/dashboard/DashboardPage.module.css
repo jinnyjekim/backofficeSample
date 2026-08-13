@@ -1,0 +1,351 @@
+.wrap {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.title {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.titleSub {
+  font-size: 12px;
+  color: #8b8b93;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+
+.alertsCard {
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.alertsHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.alertsBadge {
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 10.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.alertsTitle {
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.alertsHint {
+  font-size: 11.5px;
+  color: #8b8b93;
+}
+.alertRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.alertRow:last-child {
+  border-bottom: none;
+}
+.alertDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.alertBody {
+  flex: 1;
+  min-width: 0;
+}
+.alertTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #18181b;
+}
+.alertSub {
+  font-size: 11.5px;
+  color: #71717a;
+  margin-top: 2px;
+}
+.alertWhen {
+  font-size: 11.5px;
+  color: #8b8b93;
+  font-variant-numeric: tabular-nums;
+}
+.alertCta {
+  height: 29px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3f3f46;
+  cursor: pointer;
+}
+.alertCta:hover {
+  background: #fafafa;
+}
+
+.kpiRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.kpiCard {
+  flex: 1 1 220px;
+  min-width: 200px;
+  padding: 14px 16px;
+}
+.kpiLabel {
+  font-size: 11.5px;
+  color: #71717a;
+  font-weight: 600;
+}
+.kpiValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 7px;
+}
+.kpiValue {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.kpiDelta {
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.kpiSub {
+  font-size: 11.5px;
+  color: #8b8b93;
+  margin-top: 4px;
+}
+
+.bottomRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.chartCard {
+  flex: 2 1 460px;
+  min-width: 380px;
+  padding: 16px;
+}
+.cardHeadRow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.cardHeadTitle {
+  font-size: 13px;
+  font-weight: 700;
+}
+.cardHeadHint {
+  font-size: 11.5px;
+  color: #8b8b93;
+}
+.chartArea {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 170px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+.chartCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  justify-content: flex-end;
+}
+.chartBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  width: 100%;
+  justify-content: center;
+  height: 100%;
+}
+.bar {
+  width: 9px;
+  border-radius: 3px 3px 0 0;
+}
+.chartDays {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+.chartDay {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  color: #8b8b93;
+}
+.legendRow {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+}
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.legendSwatch {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+}
+.legendLabel {
+  font-size: 11.5px;
+  color: #3f3f46;
+}
+.legendTotal {
+  font-size: 11.5px;
+  color: #18181b;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.mixCard {
+  flex: 1 1 300px;
+  min-width: 280px;
+  padding: 16px;
+}
+.mixHeadRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.mixLink {
+  border: 0;
+  background: transparent;
+  font-size: 11.5px;
+  color: var(--accent);
+  cursor: pointer;
+}
+.mixItem {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 13px;
+  cursor: pointer;
+  text-align: left;
+}
+.mixItem:hover {
+  opacity: 0.7;
+}
+.mixItem:last-child {
+  margin-bottom: 0;
+}
+.mixTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+}
+.mixLabel {
+  font-size: 12.5px;
+  color: #3f3f46;
+}
+.mixValue {
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.mixTrack {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: #f4f4f5;
+  overflow: hidden;
+}
+.mixFill {
+  display: block;
+  height: 6px;
+}
+
+.feedCard {
+  flex: 1 1 320px;
+  min-width: 300px;
+  padding: 16px;
+}
+.feedHeadRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.feedLive {
+  font-size: 11.5px;
+  color: #8b8b93;
+}
+.feedRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.feedRow:last-child {
+  border-bottom: none;
+}
+.feedDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.feedText {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  color: #3f3f46;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.feedWho {
+  font-weight: 600;
+  color: #18181b;
+}
+.feedWhen {
+  font-size: 11px;
+  color: #8b8b93;
+  flex: none;
+}

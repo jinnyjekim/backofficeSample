@@ -1,0 +1,40 @@
+:root {
+  --accent: oklch(0.52 0.16 258);
+  --accent-hover: oklch(0.46 0.16 258);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f6f6f7;
+  font-family: Pretendard, -apple-system, system-ui, sans-serif;
+  color: #18181b;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--accent-hover);
+}
+
+input, button, select {
+  font-family: inherit;
+}
+
+::placeholder {
+  color: #a1a1aa;
+}
+
+button {
+  font: inherit;
+}

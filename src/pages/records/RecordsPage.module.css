@@ -1,0 +1,385 @@
+.page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+  height: 52px;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  flex: none;
+}
+.headTitleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.headTitle {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.headTotal {
+  font-size: 11.5px;
+  color: #a1a1aa;
+  font-variant-numeric: tabular-nums;
+}
+.viewNav {
+  display: flex;
+  gap: 2px;
+  margin-left: 8px;
+}
+.viewBtn {
+  border: 0;
+  font-size: 12.5px;
+  padding: 5px 11px;
+  border-radius: 7px;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  color: #71717a;
+  font-weight: 500;
+}
+.viewBtn.active {
+  background: #f4f4f5;
+  color: #18181b;
+  font-weight: 600;
+}
+.viewCount {
+  font-size: 10.5px;
+  color: #c4c4c8;
+  font-variant-numeric: tabular-nums;
+}
+.viewBtn.active .viewCount {
+  color: #71717a;
+}
+.spacer {
+  flex: 1;
+}
+.exportBtn {
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 7px;
+  font-size: 12px;
+  color: #3f3f46;
+  cursor: pointer;
+}
+.exportBtn:hover {
+  background: #fafafa;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.filterZone {
+  padding: 16px 20px 0;
+  flex: none;
+}
+
+.stepLabel {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 2px 9px;
+}
+.stepLabel.step2 {
+  margin: 18px 2px 9px;
+}
+.stepNum {
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+  background: #e4e4e7;
+  color: #52525b;
+  font-size: 10.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stepTitle {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #18181b;
+  letter-spacing: -0.01em;
+}
+.stepHint {
+  font-size: 11.5px;
+  color: #8b8b93;
+}
+
+.conditionBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 11px;
+  padding: 10px 12px;
+}
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  flex: 1;
+  min-width: 260px;
+  max-width: 460px;
+  background: #fafafa;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 9px;
+  padding: 0 11px;
+}
+.searchIcon {
+  color: #a1a1aa;
+  font-size: 12.5px;
+}
+.searchInput {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  font-size: 13px;
+  color: #18181b;
+  background: transparent;
+}
+.filterBtn {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 11px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  color: #52525b;
+  font-weight: 500;
+}
+.filterBtn.active {
+  background: #eef2ff;
+  color: #4338ca;
+  border-color: rgba(79, 70, 229, 0.25);
+  font-weight: 600;
+}
+.filterCount {
+  font-size: 11px;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
+.statsBand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0 0 10px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 11px;
+  overflow: hidden;
+}
+.statCell {
+  flex: 1 1 170px;
+  min-width: 160px;
+  padding: 12px 14px;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+}
+.statCellLabel {
+  font-size: 11px;
+  color: #71717a;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.statCellValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: 5px;
+}
+.statCellValue {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.statCellUnit {
+  font-size: 12px;
+  color: #71717a;
+}
+.statCellSub {
+  font-size: 11.5px;
+  color: #8b8b93;
+  margin-top: 4px;
+}
+.ctaCell {
+  flex: 1 1 200px;
+  min-width: 190px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.ctaHint {
+  font-size: 11.5px;
+  color: #52525b;
+  margin-top: 4px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+.ctaButton {
+  height: 30px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ctaButton:hover {
+  background: var(--accent-hover);
+}
+
+.tableCard {
+  flex: 1;
+  min-height: 0;
+  margin: 0 20px 20px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.tableHead {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 14px;
+  height: 44px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  flex: none;
+}
+.tableHeadHint {
+  font-size: 11.5px;
+  color: #8b8b93;
+}
+.tableHeadResult {
+  font-size: 11.5px;
+  color: #8b8b93;
+  font-variant-numeric: tabular-nums;
+}
+
+.tableScroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.colHead {
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  height: 34px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+  background: #fbfbfc;
+  font-size: 11px;
+  color: #52525b;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.row {
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.045);
+  cursor: pointer;
+}
+.row:hover {
+  background: #fafafa;
+}
+.cellWrap {
+  min-width: 0;
+}
+.cellText {
+  display: inline-block;
+  max-width: 100%;
+  border-radius: 999px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+}
+.cellSub {
+  display: block;
+  font-size: 11px;
+  color: #8b8b93;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  height: 42px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  background: #fbfbfc;
+  flex: none;
+}
+.rangeLabel {
+  font-size: 11.5px;
+  color: #a1a1aa;
+  font-variant-numeric: tabular-nums;
+}
+.pageButtons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.pageBtn {
+  min-width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #71717a;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.pageBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.pageBtn.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}

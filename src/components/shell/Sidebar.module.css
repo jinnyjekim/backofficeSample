@@ -1,0 +1,181 @@
+.aside {
+  flex: none;
+  background: #111114;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.16s ease;
+  overflow: hidden;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 14px;
+  flex: none;
+}
+
+.logo {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  border-radius: 7px;
+  background: oklch(0.62 0.15 258);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.brand {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.toggleBtn {
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 13px;
+  cursor: pointer;
+  flex: none;
+}
+.toggleBtn:hover {
+  color: #fff;
+}
+
+.navScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px 8px 14px;
+}
+
+.groupLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.28);
+  letter-spacing: 0.06em;
+  padding: 12px 8px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: 0;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-bottom: 2px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+}
+.item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+.item.active {
+  background: rgba(255, 255, 255, 0.11);
+  color: #fff;
+  font-weight: 600;
+}
+.item.disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.item.disabled:hover {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.itemMain {
+  height: 34px;
+  font-size: 12.5px;
+}
+.itemSub {
+  height: 30px;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.icon {
+  width: 16px;
+  flex: none;
+  text-align: center;
+  opacity: 0.75;
+  font-size: 12px;
+}
+.icon.subIcon {
+  opacity: 0.4;
+}
+
+.text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.32);
+  font-variant-numeric: tabular-nums;
+}
+
+.footer {
+  flex: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.avatar {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.who {
+  min-width: 0;
+  flex: 1;
+}
+.whoName {
+  font-size: 12px;
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.whoRole {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.35);
+  white-space: nowrap;
+}
