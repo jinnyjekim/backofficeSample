@@ -1,0 +1,230 @@
+import { useMemo, useState } from 'react';
+import styles from './shared.module.css';
+import { DataGrid } from '../../components/DataGrid';
+import type { Cell, GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
+import { ACCENT } from '../../lib/theme';
+import { FILTER_KEYS, MATCH_META, PAYMENTS, STATUS_META, fmtWon, type FilterKey, type Payment } from './paymentsData';
+import { buildPaymentDetail } from './paymentDetail';
+import { PaymentDetailDrawer } from './PaymentDetailDrawer';
+
+const GRID_TEMPLATE = '96px 1fr 108px 96px 92px 76px 88px 92px 78px 60px';
+const GRID_MIN_WIDTH = '1240px';
+
+const GRID_COLUMNS: GridColumn[] = [
+  { label: '결제번호' },
+  { label: '거래처' },
+  { label: '연결건' },
+  { label: '결제금액', align: 'right' },
+  { label: '결제수단' },
+  { label: '결제일' },
+  { label: '상태' },
+  { label: '매칭' },
+  { label: '담당자' },
+  { label: '관리' },
+];
+
+export function PaymentsPage() {
+  const [payments, setPayments] = useState<Payment[]>(PAYMENTS);
+  const [filter, setFilter] = useState<FilterKey>('전체');
+  const [q, setQ] = useState('');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('info');
+  const [showAllocatePanel, setShowAllocatePanel] = useState(false);
+  const [showCancelPanel, setShowCancelPanel] = useState(false);
+
+  const counts = useMemo(() => {
+    const c: Record<string, number> = {
+      전체: payments.length,
+      결제완료: payments.filter((p) => p.status === '완료').length,
+      확인대기: payments.filter((p) => p.status === '확인대기').length,
+      부분결제: payments.filter((p) => p.status === '부분결제').length,
+      실패: payments.filter((p) => p.status === '실패').length,
+      취소: payments.filter((p) => p.status === '취소').length,
+      미매칭: payments.filter((p) => p.match === '미매칭').length,
+    };
+    return c;
+  }, [payments]);
+
+  const filtered = useMemo(() => {
+    return payments.filter((p) => {
+      if (filter === '미매칭') {
+        if (p.match !== '미매칭') return false;
+      } else if (filter === '결제완료') {
+        if (p.status !== '완료') return false;
+      } else if (filter !== '전체' && p.status !== filter) {
+        return false;
+      }
+      if (q && !(p.id.includes(q) || p.partner.includes(q))) return false;
+      return true;
+    });
+  }, [payments, filter, q]);
+
+  function openDetail(id: string) {
+    setSelectedId(id);
+    setActiveTab('info');
+    setShowAllocatePanel(false);
+    setShowCancelPanel(false);
+  }
+
+  function updateSelected(fn: (p: Payment) => Payment) {
+    setPayments((prev) => prev.map((p) => (p.id === selectedId ? fn(p) : p)));
+  }
+
+  const rows: GridRow[] = filtered.map((p) => {
+    const sm = STATUS_META[p.status];
+    const mm = MATCH_META[p.match];
+    const linkedOrder = p.links.find((l) => l.label === '주문');
+    const cells: Cell[] = [
+      { kind: 'text', text: p.id, color: '#18181b', size: '12.5px', weight: 600, numeric: true },
+      { kind: 'text', text: p.partner, color: '#18181b', size: '13px', weight: 600 },
+      { kind: 'text', text: linkedOrder && linkedOrder.value !== '-' ? linkedOrder.value : '미지정', color: '#3f3f46', size: '12px', weight: 500 },
+      { kind: 'text', text: fmtWon(p.amount), color: '#18181b', size: '12.5px', weight: 700, align: 'right', numeric: true },
+      { kind: 'text', text: p.method, color: '#71717a', size: '11.5px', weight: 500 },
+      { kind: 'text', text: p.paidAt.slice(5, 10), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
+      { kind: 'badge', text: p.status, bg: sm.bg, fg: sm.fg },
+      { kind: 'badge', text: p.match, bg: mm.bg, fg: mm.fg },
+      { kind: 'text', text: p.owner, color: '#52525b', size: '12px', weight: 500 },
+      { kind: 'link', text: '상세', size: '12px' },
+    ];
+    return { id: p.id, cells, onClick: () => openDetail(p.id) };
+  });
+
+  const pages: PageBtn[] = [1, 2, 3].map((n) => ({ label: String(n), active: n === 1 }));
+
+  const selected = selectedId ? payments.find((p) => p.id === selectedId) ?? null : null;
+  const detail = selected
+    ? buildPaymentDetail(
+        selected,
+        { activeTab, showAllocatePanel, showCancelPanel },
+        {
+          onClose: () => setSelectedId(null),
+          onTabChange: setActiveTab,
+          onConfirmPayment: () => {
+            updateSelected((p) => ({
+              ...p,
+              status: '완료',
+              match: p.allocations.length ? '매칭완료' : '미매칭',
+              history: [...p.history, { when: '방금', action: '결제 확인 · 결제 완료', by: 'admin01' }],
+            }));
+          },
+          onToggleAllocatePanel: () => {
+            setShowAllocatePanel((v) => !v);
+            setShowCancelPanel(false);
+          },
+          onToggleCancelPanel: () => {
+            setShowCancelPanel((v) => !v);
+            setShowAllocatePanel(false);
+          },
+          onConfirmCancel: () => {
+            updateSelected((p) => ({
+              ...p,
+              status: '취소',
+              history: [...p.history, { when: '방금', action: '결제 취소', by: 'admin01' }],
+            }));
+            setShowCancelPanel(false);
+          },
+        },
+      )
+    : null;
+
+  return (
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
+          <div>
+            <div className={styles.title}>결제 관리</div>
+            <div className={styles.subtitle}>거래처의 결제 및 입금 내역을 조회하고 주문·청구 건과 연결합니다.</div>
+          </div>
+          <button type="button" className={styles.primaryBtn}>+ 결제 등록</button>
+        </div>
+
+        <div className={styles.quickFilters}>
+          {FILTER_KEYS.map((k) => {
+            const active = filter === k;
+            return (
+              <button
+                key={k}
+                type="button"
+                className={styles.quickFilterBtn}
+                style={{ borderColor: active ? ACCENT : 'rgba(0,0,0,.1)', background: active ? ACCENT : '#fff' }}
+                onClick={() => setFilter(k)}
+              >
+                <span className={styles.quickFilterLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{k}</span>
+                <span className={styles.quickFilterCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[k] || 0}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            <select className={styles.selectSm}>
+              <option>전체</option>
+              <option>결제번호</option>
+              <option>거래처명</option>
+              <option>주문번호</option>
+              <option>청구번호</option>
+              <option>입금자명</option>
+            </select>
+            <input
+              className={styles.searchInput}
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="결제번호 · 거래처 · 주문번호"
+            />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          </div>
+          <div className={styles.filterRow2}>
+            <select className={styles.selectXs}>
+              <option>거래처 전체</option>
+              <option>회사 01</option>
+              <option>회사 02</option>
+            </select>
+            <select className={styles.selectXs}>
+              <option>결제수단 전체</option>
+              <option>계좌이체</option>
+              <option>무통장입금</option>
+              <option>카드</option>
+            </select>
+            <select className={styles.selectXs}>
+              <option>매칭상태 전체</option>
+              <option>매칭완료</option>
+              <option>일부매칭</option>
+              <option>미매칭</option>
+            </select>
+            <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
+            <div className={styles.spacer} />
+            <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
+          </div>
+        </div>
+
+        <div className={styles.resultBar}>
+          <span className={styles.resultLabel}>총 {filtered.length}건</span>
+          <div className={styles.resultActions}>
+            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <select className={styles.selectXs}>
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+      <div className={styles.tableWrap}>
+        <DataGrid
+          columns={GRID_COLUMNS}
+          rows={rows}
+          gridTemplate={GRID_TEMPLATE}
+          minWidth={GRID_MIN_WIDTH}
+          showPagination
+          pages={pages}
+          empty={rows.length === 0}
+          emptyText="등록된 결제 내역이 없습니다."
+          emptySubtext="결제가 발생하면 이곳에서 거래 내역을 확인할 수 있습니다."
+        />
+      </div>
+
+      {detail && <PaymentDetailDrawer detail={detail} onTabChange={setActiveTab} />}
+    </div>
+  );
+}

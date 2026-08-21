@@ -1,0 +1,369 @@
+.aside {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(660px, 95%);
+  z-index: 20;
+  background: #fff;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: -16px 0 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.top {
+  flex: none;
+  padding: 18px 20px 0;
+}
+
+.headRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.headBody {
+  flex: 1;
+  min-width: 0;
+}
+.headTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.no {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3f3f46;
+  margin-top: 6px;
+}
+.priceLine {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.subLine {
+  font-size: 12px;
+  color: #71717a;
+  margin-top: 3px;
+}
+.closeBtn {
+  border: 0;
+  background: transparent;
+  color: #a1a1aa;
+  font-size: 17px;
+  cursor: pointer;
+  line-height: 1;
+  flex: none;
+}
+.closeBtn:hover {
+  color: #3f3f46;
+}
+
+.issueBanner {
+  margin-top: 12px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #92400e;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 6px;
+  margin: 13px 0 0;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.linkAction {
+  align-self: center;
+  font-size: 12px;
+}
+.actionsSpacer {
+  flex: 1;
+}
+.secondaryBtn {
+  height: 31px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #3f3f46;
+  cursor: pointer;
+}
+.secondaryBtn:hover {
+  background: #fafafa;
+}
+.primaryBtn {
+  height: 31px;
+  padding: 0 12px;
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.primaryBtn:hover {
+  background: var(--accent-hover);
+}
+
+.panel {
+  margin-top: 10px;
+  background: #fafafa;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 12px;
+}
+.panelGrid3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.panelInput {
+  width: 100%;
+  box-sizing: border-box;
+  height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 7px;
+  padding: 0 9px;
+  font-size: 12px;
+}
+.panelSelect {
+  width: 100%;
+  box-sizing: border-box;
+  height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 7px;
+  padding: 0 9px;
+  font-size: 12px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+.panelActions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.panelCancelBtn {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 7px;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.panelConfirmBtn {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.panelConfirmBtn:hover {
+  background: var(--accent-hover);
+}
+
+.tabsRow {
+  display: flex;
+  gap: 14px;
+  margin-top: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+.tabBtn {
+  border: 0;
+  background: transparent;
+  padding: 0 0 9px;
+  font-size: 12.5px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex: none;
+}
+.tabBtn:hover {
+  color: #18181b;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 20px 28px;
+}
+
+.sectionLabel {
+  font-size: 11.5px;
+  color: #71717a;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.fieldsBox {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.fieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.fieldRow:last-child {
+  border-bottom: none;
+}
+.fieldLabel {
+  font-size: 11.5px;
+  color: #8b8b93;
+  flex: none;
+}
+.fieldValue {
+  font-size: 12.5px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.mismatchNote {
+  margin-top: 10px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #92400e;
+}
+.exceedsWarning {
+  margin-top: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #b91c1c;
+}
+
+.tiersBox {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tierRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.tierRow:last-child {
+  border-bottom: none;
+}
+.tierRange {
+  font-size: 12.5px;
+  color: #3f3f46;
+}
+.tierPrice {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #18181b;
+  font-variant-numeric: tabular-nums;
+}
+
+.usageNote {
+  margin-top: 12px;
+  font-size: 11.5px;
+  color: #a1a1aa;
+  line-height: 1.6;
+}
+
+.versionCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.versionLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #18181b;
+}
+.versionNote {
+  font-size: 11px;
+  color: #a1a1aa;
+  margin-top: 2px;
+}
+.versionAmount {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #3f3f46;
+  font-variant-numeric: tabular-nums;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 11px;
+  padding-bottom: 15px;
+}
+.timelineDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 5px;
+  flex: none;
+}
+.timelineBody {
+  flex: 1;
+  min-width: 0;
+}
+.timelineTopRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.timelineAction {
+  font-size: 13px;
+  font-weight: 600;
+  color: #18181b;
+}
+.timelineWhen {
+  font-size: 11.5px;
+  color: #8b8b93;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+.timelineBy {
+  font-size: 12px;
+  color: #71717a;
+  margin-top: 3px;
+}

@@ -1,0 +1,428 @@
+.aside {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(660px, 95%);
+  z-index: 20;
+  background: #fff;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: -16px 0 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+.top {
+  flex: none;
+  padding: 18px 20px 0;
+}
+.headRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.headMain {
+  flex: 1;
+  min-width: 0;
+}
+.titleLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.noText {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.badgePill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.subLine {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3f3f46;
+  margin-top: 6px;
+}
+.amountLine {
+  font-size: 20px;
+  font-weight: 700;
+  color: #18181b;
+  margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.dueLine {
+  font-size: 12px;
+  color: #71717a;
+  margin-top: 3px;
+}
+.closeBtn {
+  border: 0;
+  background: transparent;
+  color: #a1a1aa;
+  font-size: 17px;
+  cursor: pointer;
+  line-height: 1;
+  flex: none;
+}
+.closeBtn:hover {
+  color: #3f3f46;
+}
+
+.issueBanner {
+  margin-top: 12px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #92400e;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 6px;
+  margin: 13px 0 0;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.linkBtn {
+  align-self: center;
+  font-size: 12px;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+.linkBtn:hover {
+  color: var(--accent-hover);
+}
+.rowSpacer {
+  flex: 1;
+}
+.secondaryBtn {
+  height: 31px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #3f3f46;
+  cursor: pointer;
+}
+.secondaryBtn:hover {
+  background: #fafafa;
+}
+.primaryBtn {
+  height: 31px;
+  padding: 0 12px;
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.primaryBtn:hover {
+  background: var(--accent-hover);
+}
+
+.holdPanel {
+  margin-top: 10px;
+  background: #fafafa;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 12px;
+}
+.holdPanelTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #18181b;
+  margin-bottom: 8px;
+}
+.holdSelect {
+  width: 100%;
+  box-sizing: border-box;
+  height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  padding: 0 9px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.holdActions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.cancelBtn {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 7px;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.confirmDarkBtn {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  background: #18181b;
+  color: #fff;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabsRow {
+  display: flex;
+  gap: 14px;
+  margin-top: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+.tabBtn {
+  border: 0;
+  background: transparent;
+  padding: 0 0 9px;
+  font-size: 12.5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tabBtn:hover {
+  color: #18181b;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 20px 28px;
+}
+
+.sectionLabel {
+  font-size: 11.5px;
+  color: #71717a;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.fieldsBox {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.fieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.fieldRow:last-child {
+  border-bottom: none;
+}
+.fieldLabel {
+  font-size: 11.5px;
+  color: #8b8b93;
+}
+.fieldValue {
+  font-size: 12.5px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.txCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.txOrderLink {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+.txMeta {
+  font-size: 11px;
+  color: #a1a1aa;
+  margin-top: 2px;
+}
+.txRight {
+  text-align: right;
+}
+.txReflected {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #18181b;
+  font-variant-numeric: tabular-nums;
+}
+.txStatus {
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.adjustCard {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 11px 12px;
+  margin-bottom: 8px;
+}
+.adjustTopRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.adjustAmount {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.adjustWhen {
+  font-size: 11px;
+  color: #a1a1aa;
+}
+.adjustReason {
+  font-size: 12px;
+  color: #71717a;
+}
+.emptyNote {
+  font-size: 12.5px;
+  color: #71717a;
+}
+
+.formRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+.formInputSm {
+  flex: 1;
+  height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  padding: 0 9px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+.formInputWide {
+  flex: 2;
+  height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  padding: 0 9px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+.formAddBtn {
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  background: #18181b;
+  color: #fff;
+  border-radius: 7px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.memoInputRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.memoInput {
+  flex: 1;
+  height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+.memoSubmitBtn {
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  background: #18181b;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.memoItem {
+  padding-bottom: 12px;
+}
+.memoWhen {
+  font-size: 11px;
+  color: #a1a1aa;
+  font-variant-numeric: tabular-nums;
+}
+.memoText {
+  font-size: 12.5px;
+  color: #3f3f46;
+  margin-top: 3px;
+}
+
+.historyLabel {
+  font-size: 11.5px;
+  color: #71717a;
+  font-weight: 600;
+  margin: 16px 0 14px;
+}
+.historyItem {
+  display: flex;
+  gap: 11px;
+  padding-bottom: 15px;
+}
+.historyDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 5px;
+  flex: none;
+}
+.historyBody {
+  flex: 1;
+  min-width: 0;
+}
+.historyTopRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.historyTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #18181b;
+}
+.historyWhen {
+  font-size: 11.5px;
+  color: #8b8b93;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+.historyDetail {
+  font-size: 12px;
+  color: #71717a;
+  margin-top: 3px;
+}
+.historyBy {
+  font-size: 11px;
+  color: #a1a1aa;
+  margin-top: 3px;
+}

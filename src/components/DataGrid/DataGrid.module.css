@@ -1,0 +1,482 @@
+.root {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.root.fillHeight {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+.totalLabel {
+  font-size: 12.5px;
+  color: #3f3f46;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.topActions {
+  display: flex;
+  gap: 8px;
+}
+.topActionBtn {
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 7px;
+  font-size: 12px;
+  color: #3f3f46;
+  cursor: pointer;
+}
+.topActionBtn:hover {
+  background: #fafafa;
+}
+
+.bodyWrap {
+  overflow-x: auto;
+}
+.bodyWrap.fillHeight {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.headRow {
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  height: 34px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+  background: #fbfbfc;
+  font-size: 11px;
+  color: #52525b;
+  font-weight: 600;
+  top: 0;
+  z-index: 2;
+}
+.headRow.sticky {
+  position: sticky;
+}
+.headBtn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.row {
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.045);
+  cursor: pointer;
+}
+.row:hover {
+  background: #fafafa;
+}
+
+.checkbox {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.cellWrap {
+  min-width: 0;
+}
+
+/* text */
+.textCell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+/* pillText */
+.pillTextValue {
+  display: inline-block;
+  max-width: 100%;
+  border-radius: 999px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+}
+.pillTextSub {
+  display: block;
+  font-size: 11px;
+  color: #8b8b93;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+.badgeSub {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 3px 9px;
+  width: fit-content;
+}
+.badgeSubText {
+  display: block;
+  font-size: 10px;
+  color: #d97706;
+  margin-top: 3px;
+}
+.badgeSquare {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+  width: 22px;
+  height: 20px;
+}
+
+/* statusDot */
+.statusDot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+/* stack */
+.stackTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #18181b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stackSub {
+  font-size: 11px;
+  color: #a1a1aa;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* avatarText */
+.avatarText {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.avatar {
+  flex: none;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+.avatarTitleRow {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.avatarTitle {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.avatarSub {
+  font-size: 11px;
+  color: #8b8b93;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* link */
+.link {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* progress */
+.progressWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.progressTrack {
+  flex: 1;
+  height: 6px;
+  background: #f0f0f2;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progressFill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+.progressLabel {
+  font-size: 11px;
+  color: #71717a;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+/* titleWarn / noWarn / noTag */
+.titleWarn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.titleWarnText {
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.warnIcon {
+  font-size: 11px;
+  color: #d97706;
+  flex: none;
+}
+.noWarn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.noWarnText {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #18181b;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.noTagTag {
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 5px;
+  padding: 1px 5px;
+  flex: none;
+}
+
+/* thumbTitle */
+.thumbTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.thumb {
+  width: 44px;
+  height: 32px;
+  flex: none;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+}
+.thumbTitleBtn {
+  display: block;
+  max-width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.thumbTitleBtn:hover {
+  color: var(--accent);
+}
+.thumbTitleId {
+  display: block;
+  font-size: 11px;
+  color: #8b8b93;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* rowMenu */
+.rowMenu {
+  position: relative;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.rowMenuDetailBtn {
+  height: 26px;
+  padding: 0 9px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 7px;
+  font-size: 11.5px;
+  color: #3f3f46;
+  cursor: pointer;
+}
+.rowMenuDetailBtn:hover {
+  background: #fafafa;
+}
+.rowMenuToggle {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #71717a;
+  font-size: 14px;
+  cursor: pointer;
+}
+.rowMenuToggle:hover {
+  background: #f4f4f5;
+  color: #18181b;
+}
+.rowMenuPopover {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  z-index: 25;
+  width: 158px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+  padding: 5px;
+}
+.rowMenuSep {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.07);
+  margin: 4px 6px;
+}
+.rowMenuItem {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 7px 9px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  cursor: pointer;
+  text-align: left;
+}
+.rowMenuItem:hover {
+  background: #f4f4f5;
+}
+
+/* empty */
+.empty {
+  padding: 60px 20px;
+  text-align: center;
+}
+.emptyText {
+  font-size: 13px;
+  color: #71717a;
+  margin-bottom: 6px;
+}
+.emptySubtext {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin-bottom: 12px;
+}
+.emptyAction {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-size: 12.5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* pagination */
+.pager {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  height: 42px;
+  background: #fbfbfc;
+}
+.pager.spaced {
+  justify-content: space-between;
+}
+.pager.centered {
+  justify-content: center;
+}
+.rangeLabel {
+  font-size: 11.5px;
+  color: #a1a1aa;
+  font-variant-numeric: tabular-nums;
+}
+.pageButtons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.pageBtn {
+  min-width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #71717a;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.pageBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.pageBtn.active {
+  background: #18181b;
+  color: #fff;
+  font-weight: 700;
+}
