@@ -3,6 +3,11 @@ import { Shell } from './components/shell/Shell';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { MembersPage } from './pages/members/MembersPage';
 import { RecordsPage } from './pages/records/RecordsPage';
+import { ContentListPage } from './pages/content/ContentListPage';
+import { CategoriesPage } from './pages/content/CategoriesPage';
+import { TagsPage } from './pages/content/TagsPage';
+import { ExposurePage } from './pages/content/ExposurePage';
+import { ReviewPage } from './pages/content/ReviewPage';
 import { CompaniesPage } from './pages/partners/CompaniesPage';
 import { ContactsPage } from './pages/partners/ContactsPage';
 import { CreditTermsPage } from './pages/partners/CreditTermsPage';
@@ -52,6 +57,12 @@ export default function App() {
         <Route path="members" element={<MembersPage />} />
         <Route path="members/left" element={<RecordsPage kind="left" />} />
         <Route path="members/ban" element={<RecordsPage kind="ban" />} />
+
+        <Route path="content" element={<ContentListPage />} />
+        <Route path="content/categories" element={<CategoriesPage />} />
+        <Route path="content/tags" element={<TagsPage />} />
+        <Route path="content/exposure" element={<ExposurePage />} />
+        <Route path="content/review" element={<ReviewPage />} />
 
         <Route path="partners/companies" element={<CompaniesPage />} />
         <Route path="partners/contacts" element={<ContactsPage />} />

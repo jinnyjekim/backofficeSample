@@ -25,7 +25,12 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'left', sub: true, label: '탈퇴 회원', badge: '3,921', to: '/members/left' },
       { key: 'ban', sub: true, label: '제재 회원', badge: '421', to: '/members/ban' },
 
-      { key: 'content', icon: '▣', label: '콘텐츠 관리' },
+      { key: 'content', icon: '▣', label: '콘텐츠 관리', to: '/content' },
+      { key: 'content_list', sub: true, label: '콘텐츠 목록', to: '/content' },
+      { key: 'content_categories', sub: true, label: '카테고리 관리', to: '/content/categories' },
+      { key: 'content_tags', sub: true, label: '태그 관리', to: '/content/tags' },
+      { key: 'content_exposure', sub: true, label: '노출 관리', to: '/content/exposure' },
+      { key: 'content_review', sub: true, label: '검수 관리', badge: '14', to: '/content/review' },
 
       { key: 'settlement', icon: '▩', label: '정산 관리', to: '/settlement' },
       { key: 'settlement_list', sub: true, label: '정산 목록', to: '/settlement' },
@@ -104,6 +109,12 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   left: ['서비스 관리 · 회원 관리', '탈퇴 회원'],
   ban: ['서비스 관리 · 회원 관리', '제재 회원'],
 
+  content_list: ['서비스 관리 · 콘텐츠 관리', '콘텐츠 목록'],
+  content_categories: ['서비스 관리 · 콘텐츠 관리', '카테고리 관리'],
+  content_tags: ['서비스 관리 · 콘텐츠 관리', '태그 관리'],
+  content_exposure: ['서비스 관리 · 콘텐츠 관리', '노출 관리'],
+  content_review: ['서비스 관리 · 콘텐츠 관리', '검수 관리'],
+
   settlement_list: ['서비스 관리 · 정산 관리', '정산 목록'],
   settlement_pending: ['서비스 관리 · 정산 관리', '정산 대기'],
   settlement_confirmed: ['서비스 관리 · 정산 관리', '정산 확정'],
@@ -157,6 +168,12 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/members/left')) return 'left';
   if (pathname.startsWith('/members/ban')) return 'ban';
   if (pathname.startsWith('/members')) return 'members_sub1';
+
+  if (pathname.startsWith('/content/categories')) return 'content_categories';
+  if (pathname.startsWith('/content/tags')) return 'content_tags';
+  if (pathname.startsWith('/content/exposure')) return 'content_exposure';
+  if (pathname.startsWith('/content/review')) return 'content_review';
+  if (pathname.startsWith('/content')) return 'content_list';
 
   if (pathname.startsWith('/partners/companies')) return 'partners_companies';
   if (pathname.startsWith('/partners/contacts')) return 'partners_contacts';
