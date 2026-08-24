@@ -4,46 +4,42 @@ import { DataGrid } from '../../components/DataGrid/DataGrid';
 import { SettlementDetailDrawer } from './SettlementDetailDrawer';
 import { useSettlementDrawer } from './useSettlementDrawer';
 import { buildSettlementRows, SETTLEMENT_GRID_COLUMNS, SETTLEMENT_GRID_MIN_WIDTH, SETTLEMENT_GRID_TEMPLATE } from './settlementGrid';
-import { buildMainQuickCounts, filterSettlements, MAIN_QUICK_FILTERS, type MainQuickFilter } from './settlementData';
+import { matchesQuery, type Settlement } from './settlementData';
 
 const PAGE_LABELS = ['1', '2'];
 
-export function SettlementPage() {
+interface Props {
+  title: string;
+  subtitle: string;
+  bannerBg: string;
+  bannerFg: string;
+  bannerLabel: string;
+  emptyText: string;
+  filter: (r: Settlement) => boolean;
+}
+
+export function SettlementStatusPage({ title, subtitle, bannerBg, bannerFg, bannerLabel, emptyText, filter }: Props) {
   const {
     settlements, selected, activeTab, setActiveTab, showHoldPanel,
     openDetail, closeDetail, toggleHoldPanel, confirmSettle, requestPay, retryPay, resume, confirmHold,
   } = useSettlementDrawer();
 
-  const [filter, setFilter] = useState<MainQuickFilter>('전체');
   const [q, setQ] = useState('');
   const [page, setPage] = useState('1');
 
-  const counts = useMemo(() => buildMainQuickCounts(settlements), [settlements]);
-  const filtered = useMemo(() => filterSettlements(settlements, filter, q), [settlements, filter, q]);
-  const rows = useMemo(() => buildSettlementRows(filtered, openDetail), [filtered, openDetail]);
+  const scoped = useMemo(() => settlements.filter(filter), [settlements, filter]);
+  const filtered = useMemo(() => scoped.filter((r) => matchesQuery(r, q)), [scoped, q]);
+  const rows = buildSettlementRows(filtered, openDetail);
 
   return (
     <div className={styles.page}>
       <div className={styles.headTop}>
-        <div className={styles.title}>정산 목록</div>
-        <div className={styles.subtitle}>정산 대상별 거래를 모아 최종 정산금액과 지급 상태를 관리합니다.</div>
+        <div className={styles.title}>{title}</div>
+        <div className={styles.subtitle}>{subtitle}</div>
 
-        <div className={styles.quickFilters}>
-          {MAIN_QUICK_FILTERS.map((k) => {
-            const active = filter === k;
-            return (
-              <button
-                key={k}
-                type="button"
-                className={styles.qfBtn}
-                style={{ borderColor: active ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: active ? 'var(--accent)' : '#fff' }}
-                onClick={() => setFilter(k)}
-              >
-                <span className={styles.qfLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{k}</span>
-                <span className={styles.qfCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[k] || 0}</span>
-              </button>
-            );
-          })}
+        <div className={styles.statusBanner} style={{ background: bannerBg, color: bannerFg }}>
+          <span>{bannerLabel}</span>
+          <span className={styles.statusBannerCount}>{scoped.length}건</span>
         </div>
 
         <div className={styles.filterBox}>
@@ -63,21 +59,6 @@ export function SettlementPage() {
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
-            <select className={styles.selectXs} defaultValue="정산상태 전체">
-              <option>정산상태 전체</option>
-              <option>정산대기</option>
-              <option>검토중</option>
-              <option>정산확정</option>
-              <option>보류</option>
-            </select>
-            <select className={styles.selectXs} defaultValue="지급상태 전체">
-              <option>지급상태 전체</option>
-              <option>지급전</option>
-              <option>지급예정</option>
-              <option>지급완료</option>
-              <option>지급실패</option>
-              <option>지급보류</option>
-            </select>
             <select className={styles.selectXs} defaultValue="정산대상 전체">
               <option>정산대상 전체</option>
               <option>회사 01</option>
@@ -92,7 +73,7 @@ export function SettlementPage() {
             </select>
             <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
-            <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
+            <button type="button" className={styles.resetBtn} onClick={() => setQ('')}>초기화</button>
           </div>
         </div>
 
@@ -117,7 +98,7 @@ export function SettlementPage() {
           showPagination
           pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
           empty={rows.length === 0}
-          emptyText="등록된 정산 내역이 없습니다."
+          emptyText={emptyText}
         />
       </div>
 

@@ -47,7 +47,8 @@ export function SettlementDetailDrawer({
           <div className={styles.headMain}>
             <div className={styles.titleLine}>
               <span className={styles.noText}>{d.no}</span>
-              <span className={styles.badgePill} style={{ background: d.statusBg, color: d.statusFg }}>{d.statusLabel}</span>
+              <span className={styles.badgePill} style={{ background: d.settleStatusBg, color: d.settleStatusFg }}>{d.settleStatusLabel}</span>
+              <span className={styles.badgePill} style={{ background: d.payStatusBg, color: d.payStatusFg }}>{d.payStatusLabel}</span>
             </div>
             <div className={styles.subLine}>{d.target} · {d.period}</div>
             <div className={styles.amountLine}>{d.finalAmount}</div>
@@ -84,8 +85,10 @@ export function SettlementDetailDrawer({
             <select className={styles.holdSelect} defaultValue="거래 데이터 확인 필요">
               <option>거래 데이터 확인 필요</option>
               <option>정산금액 불일치</option>
+              <option>수수료 확인 필요</option>
+              <option>세금계산서 확인 필요</option>
               <option>지급계좌 확인 필요</option>
-              <option>대상 상태 확인 필요</option>
+              <option>내부 승인 대기</option>
               <option>기타</option>
             </select>
             <div className={styles.holdActions}>
@@ -141,7 +144,7 @@ export function SettlementDetailDrawer({
               <div className={styles.txCard} key={t.orderId}>
                 <div>
                   <button type="button" className={styles.txOrderLink}>{t.orderId}</button>
-                  <div className={styles.txMeta}>{t.date} · 거래액 {t.amount}</div>
+                  <div className={styles.txMeta}>{t.date} · {t.type} · 거래액 {t.amount}</div>
                 </div>
                 <div className={styles.txRight}>
                   <div className={styles.txReflected}>{t.reflected}</div>
@@ -149,6 +152,27 @@ export function SettlementDetailDrawer({
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {d.activeTab === 'fee' && (
+          <div>
+            <div className={styles.sectionLabel}>공제 내역</div>
+            {d.noFee && <div className={styles.emptyNote}>등록된 공제 내역이 없습니다.</div>}
+            {!d.noFee && (
+              <div className={styles.fieldsBox}>
+                {d.feeItems.map((f, i) => (
+                  <div className={styles.fieldRow} key={i}>
+                    <span className={styles.fieldLabel}>{f.label}</span>
+                    <span className={styles.fieldValue} style={{ color: '#dc2626' }}>{f.amountLabel}</span>
+                  </div>
+                ))}
+                <div className={styles.fieldRow}>
+                  <span className={styles.fieldLabel} style={{ fontWeight: 700, color: '#18181b' }}>총 공제</span>
+                  <span className={styles.fieldValue} style={{ fontWeight: 700, color: '#18181b' }}>{d.feeTotal}</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

@@ -27,6 +27,16 @@ import { ReceivablesPage } from './pages/payments/ReceivablesPage';
 import { DepositConfirmPage } from './pages/payments/DepositConfirmPage';
 import { TaxInvoicesPage } from './pages/payments/TaxInvoicesPage';
 import { SettlementPage } from './pages/settlement/SettlementPage';
+import { SettlementPendingPage } from './pages/settlement/SettlementPendingPage';
+import { SettlementConfirmedPage } from './pages/settlement/SettlementConfirmedPage';
+import { SettlementPayScheduledPage } from './pages/settlement/SettlementPayScheduledPage';
+import { SettlementPayCompletedPage } from './pages/settlement/SettlementPayCompletedPage';
+import { SettlementHoldPage } from './pages/settlement/SettlementHoldPage';
+import { SettlementPayFailedPage } from './pages/settlement/SettlementPayFailedPage';
+import { SettlementDetailReportPage } from './pages/settlement/SettlementDetailReportPage';
+import { SettlementTransactionsPage } from './pages/settlement/SettlementTransactionsPage';
+import { SettlementAdjustmentsPage } from './pages/settlement/SettlementAdjustmentsPage';
+import { SettlementHistoryPage } from './pages/settlement/SettlementHistoryPage';
 import { DeliveryPrepPage } from './pages/delivery/DeliveryPrepPage';
 import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
@@ -73,6 +83,16 @@ export default function App() {
         <Route path="payments/tax-invoices" element={<TaxInvoicesPage />} />
 
         <Route path="settlement" element={<SettlementPage />} />
+        <Route path="settlement/pending" element={<SettlementPendingPage />} />
+        <Route path="settlement/confirmed" element={<SettlementConfirmedPage />} />
+        <Route path="settlement/payment-scheduled" element={<SettlementPayScheduledPage />} />
+        <Route path="settlement/payment-completed" element={<SettlementPayCompletedPage />} />
+        <Route path="settlement/hold" element={<SettlementHoldPage />} />
+        <Route path="settlement/payment-failed" element={<SettlementPayFailedPage />} />
+        <Route path="settlement/detail" element={<SettlementDetailReportPage />} />
+        <Route path="settlement/transactions" element={<SettlementTransactionsPage />} />
+        <Route path="settlement/adjustments" element={<SettlementAdjustmentsPage />} />
+        <Route path="settlement/history" element={<SettlementHistoryPage />} />
 
         <Route path="delivery/prep" element={<DeliveryPrepPage />} />
         <Route path="delivery/outbound-waiting" element={<OutboundWaitingPage />} />

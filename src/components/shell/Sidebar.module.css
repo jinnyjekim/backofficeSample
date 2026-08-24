@@ -139,6 +139,16 @@
   font-variant-numeric: tabular-nums;
 }
 
+.chevron {
+  flex: none;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+  transition: transform 0.15s ease;
+}
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
 .footer {
   flex: none;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
