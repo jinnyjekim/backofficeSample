@@ -10,6 +10,7 @@ import { ExposurePage } from './pages/content/ExposurePage';
 import { ReviewPage } from './pages/content/ReviewPage';
 import { CompaniesPage } from './pages/partners/CompaniesPage';
 import { ContactsPage } from './pages/partners/ContactsPage';
+import { TradeStatusPage } from './pages/partners/TradeStatusPage';
 import { CreditTermsPage } from './pages/partners/CreditTermsPage';
 import { ProductsListPage } from './pages/products/ProductsListPage';
 import { SupplyPricePage } from './pages/products/SupplyPricePage';
@@ -32,16 +33,25 @@ import { ReceivablesPage } from './pages/payments/ReceivablesPage';
 import { DepositConfirmPage } from './pages/payments/DepositConfirmPage';
 import { TaxInvoicesPage } from './pages/payments/TaxInvoicesPage';
 import { SettlementPage } from './pages/settlement/SettlementPage';
-import { SettlementPendingPage } from './pages/settlement/SettlementPendingPage';
-import { SettlementConfirmedPage } from './pages/settlement/SettlementConfirmedPage';
-import { SettlementPayScheduledPage } from './pages/settlement/SettlementPayScheduledPage';
-import { SettlementPayCompletedPage } from './pages/settlement/SettlementPayCompletedPage';
-import { SettlementHoldPage } from './pages/settlement/SettlementHoldPage';
-import { SettlementPayFailedPage } from './pages/settlement/SettlementPayFailedPage';
-import { SettlementDetailReportPage } from './pages/settlement/SettlementDetailReportPage';
 import { SettlementTransactionsPage } from './pages/settlement/SettlementTransactionsPage';
 import { SettlementAdjustmentsPage } from './pages/settlement/SettlementAdjustmentsPage';
-import { SettlementHistoryPage } from './pages/settlement/SettlementHistoryPage';
+import { CsInquiriesPage } from './pages/cs/CsInquiriesPage';
+import { InquiryTypesPage } from './pages/cs/InquiryTypesPage';
+import { ConsultationsPage } from './pages/cs/ConsultationsPage';
+import { ResponseTemplatesPage } from './pages/cs/ResponseTemplatesPage';
+import { AdminMemosPage } from './pages/cs/AdminMemosPage';
+import { CsHistoryPage } from './pages/cs/CsHistoryPage';
+import { NoticesPage } from './pages/ops/NoticesPage';
+import { FaqPage } from './pages/ops/FaqPage';
+import { BannersPage } from './pages/ops/BannersPage';
+import { PopupsPage } from './pages/ops/PopupsPage';
+import { EventsPage } from './pages/ops/EventsPage';
+import { PolicyPlaceholderPage } from './pages/policy/PolicyPlaceholderPage';
+import { OrderStatusPage } from './pages/policy/OrderStatusPage';
+import { PaymentPolicyPage } from './pages/policy/PaymentPolicyPage';
+import { CancelPolicyPage } from './pages/policy/CancelPolicyPage';
+import { RefundPolicyPage } from './pages/policy/RefundPolicyPage';
+import { StatsPlaceholderPage } from './pages/stats/StatsPlaceholderPage';
 import { DeliveryPrepPage } from './pages/delivery/DeliveryPrepPage';
 import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
@@ -66,6 +76,7 @@ export default function App() {
 
         <Route path="partners/companies" element={<CompaniesPage />} />
         <Route path="partners/contacts" element={<ContactsPage />} />
+        <Route path="partners/trade-status" element={<TradeStatusPage />} />
         <Route path="partners/credit-terms" element={<CreditTermsPage />} />
 
         <Route path="products" element={<ProductsListPage />} />
@@ -94,16 +105,35 @@ export default function App() {
         <Route path="payments/tax-invoices" element={<TaxInvoicesPage />} />
 
         <Route path="settlement" element={<SettlementPage />} />
-        <Route path="settlement/pending" element={<SettlementPendingPage />} />
-        <Route path="settlement/confirmed" element={<SettlementConfirmedPage />} />
-        <Route path="settlement/payment-scheduled" element={<SettlementPayScheduledPage />} />
-        <Route path="settlement/payment-completed" element={<SettlementPayCompletedPage />} />
-        <Route path="settlement/hold" element={<SettlementHoldPage />} />
-        <Route path="settlement/payment-failed" element={<SettlementPayFailedPage />} />
-        <Route path="settlement/detail" element={<SettlementDetailReportPage />} />
         <Route path="settlement/transactions" element={<SettlementTransactionsPage />} />
         <Route path="settlement/adjustments" element={<SettlementAdjustmentsPage />} />
-        <Route path="settlement/history" element={<SettlementHistoryPage />} />
+
+        <Route path="cs/inquiries" element={<CsInquiriesPage />} />
+        <Route path="cs/inquiry-types" element={<InquiryTypesPage />} />
+        <Route path="cs/consultations" element={<ConsultationsPage />} />
+        <Route path="cs/templates" element={<ResponseTemplatesPage />} />
+        <Route path="cs/memos" element={<AdminMemosPage />} />
+        <Route path="cs/history" element={<CsHistoryPage />} />
+
+        <Route path="ops/notices" element={<NoticesPage />} />
+        <Route path="ops/faq" element={<FaqPage />} />
+        <Route path="ops/banners" element={<BannersPage />} />
+        <Route path="ops/popups" element={<PopupsPage />} />
+        <Route path="ops/events" element={<EventsPage />} />
+
+        <Route path="policy/order-status" element={<OrderStatusPage />} />
+        <Route path="policy/payment" element={<PaymentPolicyPage />} />
+        <Route path="policy/cancellation" element={<CancelPolicyPage />} />
+        <Route path="policy/refund" element={<RefundPolicyPage />} />
+        <Route path="policy/settlement" element={<PolicyPlaceholderPage title="정산 정책" subtitle="정산 주기, 대상, 계산 기준을 관리합니다." />} />
+        <Route path="policy/fee" element={<PolicyPlaceholderPage title="수수료 정책" subtitle="플랫폼/결제/배송 등 수수료 기준을 관리합니다." />} />
+
+        <Route path="stats/orders" element={<StatsPlaceholderPage title="주문 통계" subtitle="기간별 주문 건수와 추이를 확인합니다." />} />
+        <Route path="stats/payments" element={<StatsPlaceholderPage title="결제 통계" subtitle="결제수단·상태별 결제 현황을 확인합니다." />} />
+        <Route path="stats/refunds" element={<StatsPlaceholderPage title="환불 통계" subtitle="환불 사유·금액별 환불 현황을 확인합니다." />} />
+        <Route path="stats/settlement" element={<StatsPlaceholderPage title="정산 통계" subtitle="정산 주기별 정산 금액과 현황을 확인합니다." />} />
+        <Route path="stats/amount" element={<StatsPlaceholderPage title="거래금액 통계" subtitle="기간·거래처별 거래금액 추이를 확인합니다." />} />
+        <Route path="stats/report" element={<StatsPlaceholderPage title="거래 리포트" subtitle="거래 지표를 종합한 리포트를 확인합니다." />} />
 
         <Route path="delivery/prep" element={<DeliveryPrepPage />} />
         <Route path="delivery/outbound-waiting" element={<OutboundWaitingPage />} />

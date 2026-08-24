@@ -8,7 +8,7 @@ function CellView({ cell }: { cell: Cell }) {
         <span
           title={cell.tip}
           className={styles.textCell}
-          style={{ fontSize: cell.size, color: cell.color, fontWeight: cell.weight, fontVariantNumeric: cell.numeric ? 'tabular-nums' : undefined }}
+          style={{ fontSize: cell.size ?? '12px', color: cell.color, fontWeight: cell.weight, fontVariantNumeric: cell.numeric ? 'tabular-nums' : undefined }}
         >
           {cell.text}
         </span>

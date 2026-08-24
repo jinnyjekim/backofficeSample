@@ -335,12 +335,4 @@ export function flattenAdjustments(list: Settlement[]): FlatAdjustment[] {
   return list.flatMap((r) => r.adjustments.map((a) => ({ ...a, settlementId: r.id, target: r.target })));
 }
 
-export interface FlatHistory extends SettlementHistoryEntry {
-  settlementId: string;
-  target: string;
-}
-export function flattenHistory(list: Settlement[]): FlatHistory[] {
-  return list.flatMap((r) => r.history.map((h) => ({ ...h, settlementId: r.id, target: r.target })));
-}
-
 export const ACCENT_COLOR = ACCENT;
