@@ -8,21 +8,19 @@ export const STATUS_META: Record<AdminStatus, { bg: string; fg: string }> = {
   잠금: { bg: '#fef2f2', fg: '#b91c1c' },
 };
 
+import { ROLES_LIST, roleName as roleNameFromRoles } from './roleData';
+
 export interface Role {
   id: string;
   name: string;
 }
 
-export const ROLES: Role[] = [
-  { id: 'role-super', name: '최고 관리자' },
-  { id: 'role-ops', name: '운영 관리자' },
-  { id: 'role-cs', name: 'CS 관리자' },
-  { id: 'role-content', name: '콘텐츠 관리자' },
-  { id: 'role-settlement', name: '정산 관리자' },
-];
+// Role list is sourced from 역할 및 권한 관리 (roleData.ts), not hardcoded here —
+// 관리자 목록 only ever displays roles that actually exist there.
+export const ROLES: Role[] = ROLES_LIST.map((r) => ({ id: r.id, name: r.name }));
 
 export function roleName(id: string): string {
-  return ROLES.find((r) => r.id === id)?.name ?? id;
+  return roleNameFromRoles(id);
 }
 
 export interface Memo {

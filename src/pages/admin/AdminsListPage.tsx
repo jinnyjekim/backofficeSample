@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
@@ -46,14 +47,20 @@ function history(a: AdminAccount, action: string, detail?: string): AdminAccount
 }
 
 export function AdminsListPage() {
+  const [searchParams] = useSearchParams();
   const [admins, setAdmins] = useState<AdminAccount[]>(ADMINS);
   const [scope, setScope] = useState<SearchScope>('전체');
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [roleFilter, setRoleFilter] = useState('');
+  const [roleFilter, setRoleFilter] = useState(searchParams.get('role') ?? '');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  useEffect(() => {
+    const role = searchParams.get('role');
+    if (role) setRoleFilter(role);
+  }, [searchParams]);
 
   const [menuId, setMenuId] = useState<string | null>(null);
   const [drawerId, setDrawerId] = useState<string | null>(null);
