@@ -82,6 +82,8 @@ import { ReviewsListPage } from './pages/reviews/ReviewsListPage';
 import { AdminsListPage } from './pages/admin/AdminsListPage';
 import { AdminRolesPage } from './pages/admin/AdminRolesPage';
 import { AdminHistoryPage } from './pages/admin/AdminHistoryPage';
+import { ProductInquiriesListPage } from './pages/cs/ProductInquiriesListPage';
+import { ProductInquiryDetailPage } from './pages/cs/ProductInquiryDetailPage';
 import { DeliveryPrepPage } from './pages/delivery/DeliveryPrepPage';
 import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
@@ -149,7 +151,8 @@ export default function App() {
         <Route path="settlement/adjustments" element={<SettlementAdjustmentsPage />} />
 
         <Route path="cs/inquiries" element={<CsInquiriesPage />} />
-        <Route path="cs/product-inquiries" element={<ModulePlaceholderPage title="상품 문의" subtitle="상품에 대한 고객 문의와 답변을 관리합니다." icon="✉" />} />
+        <Route path="cs/product-inquiries" element={<ProductInquiriesListPage />} />
+        <Route path="cs/product-inquiries/:id" element={<ProductInquiryDetailPage />} />
         <Route path="cs/inquiry-types" element={<InquiryTypesPage />} />
         <Route path="cs/consultations" element={<ConsultationsPage />} />
         <Route path="cs/templates" element={<ResponseTemplatesPage />} />
