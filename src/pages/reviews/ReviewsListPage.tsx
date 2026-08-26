@@ -274,7 +274,7 @@ export function ReviewsListPage() {
       )}
 
       {confirm?.kind === 'hide' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>리뷰를 비노출 처리하시겠습니까?</div>
             <div className={styles.dialogSummary}>
@@ -294,7 +294,7 @@ export function ReviewsListPage() {
       )}
 
       {confirm?.kind === 'delete' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>리뷰를 삭제 처리하시겠습니까?</div>
             <div className={styles.dialogBody}>{`'${confirm.item.member}'님의 리뷰가 삭제 처리됩니다. 사용자 화면에서는 삭제된 리뷰로 표시되며, 데이터는 감사 목적으로 보존됩니다.`}</div>
@@ -310,7 +310,7 @@ export function ReviewsListPage() {
       )}
 
       {confirm?.kind === 'bulkExposure' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 {confirm.expose ? '노출' : '비노출'} 처리</div>
             <div className={styles.dialogBody}>선택한 리뷰를 모두 {confirm.expose ? '노출' : '비노출'} 상태로 변경합니다.</div>

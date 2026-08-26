@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { EXPOSURE_META, computeIssues, pendingReportCount, productName, type Memo, type Review } from './reviewsData';
 
 const TABS = [
@@ -36,6 +37,9 @@ export function ReviewDetailDrawer({ review: r, onClose, onHide, onRestore, onDe
   const issues = computeIssues(r);
   const pending = pendingReportCount(r);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   function submitMemo() {
     if (!memoText.trim()) return;
     onAddMemo(memoText.trim());
@@ -43,7 +47,7 @@ export function ReviewDetailDrawer({ review: r, onClose, onHide, onRestore, onDe
   }
 
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>
