@@ -209,6 +209,14 @@ export default function App() {
         <Route path="admin/roles" element={<AdminRolesPage />} />
         <Route path="admin/history" element={<AdminHistoryPage />} />
 
+        <Route path="system/service" element={<ModulePlaceholderPage title="서비스 설정" subtitle="서비스 운영에 필요한 기본 설정을 관리합니다." icon="⚙" />} />
+        <Route path="system/codes" element={<ModulePlaceholderPage title="공통 코드" subtitle="시스템 전반에서 사용하는 공통 코드를 관리합니다." icon="🏷" />} />
+        <Route path="system/integration" element={<ModulePlaceholderPage title="외부 연동" subtitle="외부 시스템 및 API 연동 설정을 관리합니다." icon="🔗" />} />
+        <Route path="system/jobs" element={<ModulePlaceholderPage title="작업 관리" subtitle="배치 작업 및 스케줄러를 관리합니다." icon="🗂" />} />
+
+        <Route path="logs/system" element={<ModulePlaceholderPage title="시스템 로그" subtitle="시스템에서 발생한 이벤트와 오류 로그를 조회합니다." icon="🖥" />} />
+        <Route path="logs/security" element={<ModulePlaceholderPage title="보안 로그" subtitle="인증, 권한, 보안 관련 이벤트 로그를 조회합니다." icon="🛡" />} />
+
         <Route path="*" element={<Navigate to="/members" replace />} />
       </Route>
     </Routes>

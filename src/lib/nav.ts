@@ -191,8 +191,14 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'admin_list', sub: true, label: '관리자 목록', to: '/admin' },
       { key: 'admin_roles', sub: true, label: '역할 및 권한 관리', to: '/admin/roles' },
       { key: 'admin_history', sub: true, label: '관리자 이력', to: '/admin/history' },
-      { key: 'sys', icon: Settings, label: '시스템' },
-      { key: 'log', icon: History, label: '로그' },
+      { key: 'sys', icon: Settings, label: '시스템 관리', to: '/system/service' },
+      { key: 'sys_service', sub: true, label: '서비스 설정', to: '/system/service' },
+      { key: 'sys_codes', sub: true, label: '공통 코드', to: '/system/codes' },
+      { key: 'sys_integration', sub: true, label: '외부 연동', to: '/system/integration' },
+      { key: 'sys_jobs', sub: true, label: '작업 관리', to: '/system/jobs' },
+      { key: 'log', icon: History, label: '로그 / 감사', to: '/logs/system' },
+      { key: 'log_system', sub: true, label: '시스템 로그', to: '/logs/system' },
+      { key: 'log_security', sub: true, label: '보안 로그', to: '/logs/security' },
     ],
   },
 ];
@@ -291,6 +297,14 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   admin_list: ['분석 · 시스템 · 관리자', '관리자 목록'],
   admin_roles: ['분석 · 시스템 · 관리자', '역할 및 권한 관리'],
   admin_history: ['분석 · 시스템 · 관리자', '관리자 이력'],
+
+  sys_service: ['분석 · 시스템 · 시스템 관리', '서비스 설정'],
+  sys_codes: ['분석 · 시스템 · 시스템 관리', '공통 코드'],
+  sys_integration: ['분석 · 시스템 · 시스템 관리', '외부 연동'],
+  sys_jobs: ['분석 · 시스템 · 시스템 관리', '작업 관리'],
+
+  log_system: ['분석 · 시스템 · 로그 / 감사', '시스템 로그'],
+  log_security: ['분석 · 시스템 · 로그 / 감사', '보안 로그'],
 
   delivery_prep: ['서비스 관리 · 배송 관리', '배송 준비'],
   delivery_outbound_wait: ['서비스 관리 · 배송 관리', '출고 대기'],
@@ -429,6 +443,14 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/admin/roles')) return 'admin_roles';
   if (pathname.startsWith('/admin/history')) return 'admin_history';
   if (pathname.startsWith('/admin')) return 'admin_list';
+
+  if (pathname.startsWith('/system/service')) return 'sys_service';
+  if (pathname.startsWith('/system/codes')) return 'sys_codes';
+  if (pathname.startsWith('/system/integration')) return 'sys_integration';
+  if (pathname.startsWith('/system/jobs')) return 'sys_jobs';
+
+  if (pathname.startsWith('/logs/system')) return 'log_system';
+  if (pathname.startsWith('/logs/security')) return 'log_security';
 
   return 'members_sub1';
 }
