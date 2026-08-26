@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   STATUS_META,
   calcPreview,
@@ -44,8 +45,11 @@ export function PromotionDetailDrawer({ promotion: p, issues, onClose, onEdit, o
   const status = computeStatus(p);
   const sm = STATUS_META[status];
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './ContactDetailDrawer.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { CONTACT_STATUS_META, type Contact, type ContactStatus } from './contactsData';
 
 const TABS: { key: string; label: string }[] = [
@@ -69,8 +70,11 @@ export function ContactDetailDrawer({
   const primaryActionLabel = contact.isPrimary ? '주 담당자 해제' : '주 담당자로 지정';
   const useActionLabel = contact.status === '사용' ? '미사용 처리' : '사용 처리';
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.avatar}>{contact.name.slice(0, 1)}</div>

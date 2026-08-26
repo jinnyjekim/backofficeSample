@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { STATUS_META, computeIssues, maskEmail, roleName, type AdminAccount, type Memo } from './adminData';
 
 interface Props {
@@ -18,6 +19,9 @@ export function AdminDetailDrawer({ admin: a, all, onClose, onEdit, onResetPassw
   const sm = STATUS_META[a.status];
   const issues = computeIssues(a, all);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   function submitMemo() {
     if (!memoText.trim()) return;
     onAddMemo(memoText.trim());
@@ -25,7 +29,7 @@ export function AdminDetailDrawer({ admin: a, all, onClose, onEdit, onResetPassw
   }
 
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

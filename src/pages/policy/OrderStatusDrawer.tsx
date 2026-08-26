@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './OrderStatusPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   CHANGE_MODES, LIFECYCLE_STAGES, incoming, outgoing,
   type BadgeTone, type ChangeMode, type EditPolicy, type LifecycleStage, type OrderStatusEntry, type TransitionEntry,
@@ -42,8 +43,11 @@ export function OrderStatusDrawer({ initial, isNew, startEditing = false, transi
   const out = outgoing(draft.id, transitions);
   const inn = incoming(draft.id, transitions);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={`${drawer.aside} ${styles.statusDrawer}`} aria-label="주문 상태 상세">
+    <aside ref={asideRef} className={`${drawer.aside} ${styles.statusDrawer}`} aria-label="주문 상태 상세">
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

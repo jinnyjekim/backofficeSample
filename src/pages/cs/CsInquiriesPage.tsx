@@ -239,7 +239,7 @@ export function CsInquiriesPage() {
 
       {currentInquiry && <InquiryDetailDrawer key={currentInquiry.id} inquiry={currentInquiry} onClose={() => setSelectedInquiryId(null)} onAssign={() => setDialog({ kind: 'assign', ids: [currentInquiry.id] })} onStart={() => start(currentInquiry.id)} onHold={() => hold(currentInquiry.id)} onComplete={() => setDialog({ kind: 'complete', ids: [currentInquiry.id] })} onReopen={() => reopen(currentInquiry.id)} onSaveDraft={(body) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, replyDraft: body, draftSavedAt: '2026-08-24 14:00' }, '답변 임시저장'))} onSendReply={(body, channels) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, status: '답변 완료', replyDraft: '', draftSavedAt: null, messages: [...item.messages, { id: nextMessageId(item), role: 'admin', author: item.assignee ?? 'admin01', sentAt: '2026-08-24 14:00', body, notificationResult: `${channels.join(' / ') || '서비스 내'} 발송 완료` }] }, '고객 답변 발송', channels.join(' / ')))} onAddMemo={(body) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, internalMemos: [...item.internalMemos, { id: `MEMO-${Date.now()}`, author: 'admin01', createdAt: '2026-08-24 14:00', body }] }, '내부 메모 등록'))} />}
 
-      {dialog && <div className={shared.dialogOverlay}>
+      {dialog && <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setDialog(null); }}>
         <div className={shared.dialogBox}>
           <h2 className={shared.dialogTitle}>{dialog.kind === 'assign' ? '담당자 지정' : '처리 완료'}</h2>
           <p className={shared.dialogBody}>{dialog.ids.length}건의 문의에 변경 사항을 적용합니다. 모든 변경은 처리 이력에 기록됩니다.</p>

@@ -306,7 +306,7 @@ export function FreeShippingConditionPage() {
       )}
 
       {confirm && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>{confirm.kind === 'delete' ? '무료배송 조건 삭제' : '무료배송 조건 종료'}</h2>
             <p className={shared.dialogBody}>

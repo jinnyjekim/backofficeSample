@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styles from './ContactsPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
 import { CONTACTS, CONTACT_FILTERS, CONTACT_STATUS_META, type Contact, type ContactStatus } from './contactsData';
 import { ContactDetailDrawer } from './ContactDetailDrawer';
@@ -16,6 +17,9 @@ export function ContactsPage() {
   const [openId, setOpenId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [showRegister, setShowRegister] = useState(false);
+
+  const registerAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(registerAsideRef, () => setShowRegister(false));
 
   const counts = useMemo(
     () => CONTACT_FILTERS.map((f) => (f.match ? data.filter(f.match).length : data.length)),
@@ -213,7 +217,7 @@ export function ContactsPage() {
       )}
 
       {showRegister && (
-        <aside className={styles.registerAside}>
+        <aside ref={registerAsideRef} className={styles.registerAside}>
           <div className={styles.registerHead}>
             <span className={styles.registerTitle}>담당자 등록</span>
             <button type="button" className={styles.closeBtn} onClick={() => setShowRegister(false)}>×</button>

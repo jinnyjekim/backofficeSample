@@ -415,7 +415,7 @@ export function CancelPolicyPage() {
       )}
 
       {confirmSave && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmSave(null); }}>
           <div className={`${shared.dialogBox} ${styles.saveDialog}`}>
             <h2 className={shared.dialogTitle}>취소 정책 변경 확인</h2>
             <p className={shared.dialogBody}>변경 사항은 신규 취소 요청부터 적용됩니다. 이미 접수된 취소 요청은 요청 당시 정책 기준으로 처리됩니다.</p>

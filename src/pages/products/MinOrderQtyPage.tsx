@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styles from './MinOrderQtyPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
 import {
   MOQ_ITEMS,
@@ -38,6 +39,11 @@ export function MinOrderQtyPage() {
   const [newMoq, setNewMoq] = useState('');
   const [newMultiple, setNewMultiple] = useState('');
   const [page, setPage] = useState(1);
+
+  const registerAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(registerAsideRef, () => setShowRegister(false));
+  const bulkAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(bulkAsideRef, () => setShowBulk(false));
 
   const filtered = useMemo(() => {
     return data.filter((it) => {
@@ -301,7 +307,7 @@ export function MinOrderQtyPage() {
       )}
 
       {showRegister && (
-        <aside className={styles.registerAside}>
+        <aside ref={registerAsideRef} className={styles.registerAside}>
           <div className={styles.registerHead}>
             <span className={styles.registerTitle}>최소수량 등록</span>
             <button type="button" className={styles.closeBtn} onClick={() => setShowRegister(false)}>×</button>
@@ -369,7 +375,7 @@ export function MinOrderQtyPage() {
       )}
 
       {showBulk && (
-        <aside className={styles.bulkAside}>
+        <aside ref={bulkAsideRef} className={styles.bulkAside}>
           <div className={styles.registerHead}>
             <span className={styles.registerTitle}>최소수량 대량 등록</span>
             <button type="button" className={styles.closeBtn} onClick={() => setShowBulk(false)}>×</button>

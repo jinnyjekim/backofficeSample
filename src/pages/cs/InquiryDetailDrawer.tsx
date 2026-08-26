@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './CsInquiriesPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   getSlaInfo,
   inquiryIssues,
@@ -40,6 +41,9 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
   const sla = getSlaInfo(inquiry);
   const meta = STATUS_META[inquiry.status];
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   const toggleChannel = (channel: string) => {
     setChannels((current) => current.includes(channel) ? current.filter((item) => item !== channel) : [...current, channel]);
   };
@@ -57,7 +61,7 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
   };
 
   return (
-    <aside className={`${drawer.aside} ${styles.detailDrawer}`} aria-label={`${inquiry.id} 문의 상세`}>
+    <aside ref={asideRef} className={`${drawer.aside} ${styles.detailDrawer}`} aria-label={`${inquiry.id} 문의 상세`}>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>
@@ -225,7 +229,7 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
       </div>
 
       {confirmSend && (
-        <div className={styles.drawerDialogOverlay}>
+        <div className={styles.drawerDialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmSend(false); }}>
           <div className={styles.confirmBox}>
             <strong>답변을 발송할까요?</strong>
             <p>발송 후 고객에게 {channels.length ? channels.join(', ') : '서비스 내'} 채널로 알림이 전송되며 상태가 ‘답변 완료’로 변경됩니다.</p>

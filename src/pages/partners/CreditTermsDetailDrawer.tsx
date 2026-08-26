@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './CreditTermsDetailDrawer.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { CREDIT_STATUS_META, fmtWon, statusOf, type CreditCompany } from './creditTermsData';
 
 const TABS: { key: string; label: string }[] = [
@@ -72,8 +73,11 @@ export function CreditTermsDetailDrawer({ company, onClose, onChangeLimit, onAdd
     setMemoText('');
   }
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

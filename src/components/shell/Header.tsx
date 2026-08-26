@@ -1,10 +1,10 @@
 import { useLocation } from 'react-router-dom';
-import { BREADCRUMB, activeKeyForPath } from '../../lib/nav';
+import { activeKeyForPath, breadcrumbForKey } from '../../lib/nav';
 import styles from './Header.module.css';
 
 export function Header() {
   const { pathname } = useLocation();
-  const [root, leaf] = BREADCRUMB[activeKeyForPath(pathname)] ?? BREADCRUMB.members;
+  const [root, leaf] = breadcrumbForKey(activeKeyForPath(pathname));
 
   return (
     <div className={styles.header}>

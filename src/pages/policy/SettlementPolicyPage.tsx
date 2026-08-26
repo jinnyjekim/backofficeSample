@@ -424,7 +424,7 @@ export function SettlementPolicyPage() {
       </div>
 
       {confirmSave && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmSave(null); }}>
           <div className={`${shared.dialogBox} ${styles.saveDialog}`}>
             <h2 className={shared.dialogTitle}>정산 정책 변경 확인</h2>
             <p className={shared.dialogBody}>변경 사항은 다음 정산 기간부터 적용됩니다. 이미 생성·확정된 정산은 생성 당시 정책 Snapshot 기준으로 유지됩니다.</p>

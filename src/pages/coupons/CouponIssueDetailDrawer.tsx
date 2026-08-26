@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { fmtWon } from './couponsData';
 import { HOLDER_STATUS_META, computeIssues, computeStatus, type CouponIssue, type Memo } from './couponIssuesData';
 
@@ -29,6 +30,9 @@ export function CouponIssueDetailDrawer({ issue: h, onClose, onRequestRevoke, on
   const sm = HOLDER_STATUS_META[status];
   const issues = computeIssues(h);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   function submitMemo() {
     if (!memoText.trim()) return;
     onAddMemo(memoText.trim());
@@ -36,7 +40,7 @@ export function CouponIssueDetailDrawer({ issue: h, onClose, onRequestRevoke, on
   }
 
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

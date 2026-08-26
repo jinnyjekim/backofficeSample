@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { COUPONS, computeStatus as computeCouponStatus } from './couponsData';
 import { validateIssue, type CouponIssue, type IssueMethod, type IssueReason } from './couponIssuesData';
 import { ISSUE_REASONS } from './couponIssuesData';
@@ -44,8 +45,11 @@ export function CouponIssueFormDrawer({ existingHolders, onCancel, onSubmit }: P
     onSubmit({ couponId: coupon.id, member: member.trim(), method, reason, detail: detail.trim() });
   }
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onCancel);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { DEDUCT_REASONS, GRANT_REASONS, TODAY, fmtPoint, type DeductReason, type GrantReason, type MemberPointBalance } from './pointsData';
 
 export type GrantMode = 'grant' | 'deduct';
@@ -52,8 +53,11 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
     }
   }
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onCancel);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

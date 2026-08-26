@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './FeePolicyPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   CALC_BASES,
   CALC_UNITS,
@@ -64,8 +65,11 @@ export function FeePolicyDrawer({ initial, isNew, startEditing = false, issues, 
 
   const preview = computeFeePreview(draft, testAmount);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="수수료 정책 상세">
+    <aside ref={asideRef} className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="수수료 정책 상세">
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

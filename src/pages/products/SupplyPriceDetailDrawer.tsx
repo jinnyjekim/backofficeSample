@@ -1,4 +1,6 @@
+import { useRef } from 'react';
 import styles from './SupplyPriceDetailDrawer.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { SupplyPriceDetail } from './supplyPriceDetail';
 
 const TABS: [string, string][] = [
@@ -42,8 +44,11 @@ export function SupplyPriceDetailDrawer({
   onToggleEnd,
   onConfirmEnd,
 }: Props) {
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.nameCol}>

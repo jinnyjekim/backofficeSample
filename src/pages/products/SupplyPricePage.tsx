@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styles from './SupplyPricePage.module.css';
 import { DataGrid } from '../../components/DataGrid';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
 import {
   SUPPLY_PRICES,
@@ -42,6 +43,11 @@ export function SupplyPricePage() {
   const [showEndPanel, setShowEndPanel] = useState(false);
   const [newPrice, setNewPrice] = useState('');
   const [page, setPage] = useState(1);
+
+  const registerAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(registerAsideRef, () => setShowRegister(false));
+  const bulkAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(bulkAsideRef, () => setShowBulk(false));
 
   const filtered = useMemo(() => {
     return data.filter((p) => {
@@ -274,7 +280,7 @@ export function SupplyPricePage() {
       )}
 
       {showRegister && (
-        <aside className={styles.registerAside}>
+        <aside ref={registerAsideRef} className={styles.registerAside}>
           <div className={styles.registerHead}>
             <span className={styles.registerTitle}>공급가 등록</span>
             <button type="button" className={styles.closeBtn} onClick={() => setShowRegister(false)}>×</button>
@@ -348,7 +354,7 @@ export function SupplyPricePage() {
       )}
 
       {showBulk && (
-        <aside className={styles.bulkAside}>
+        <aside ref={bulkAsideRef} className={styles.bulkAside}>
           <div className={styles.registerHead}>
             <span className={styles.registerTitle}>공급가 대량 등록</span>
             <button type="button" className={styles.closeBtn} onClick={() => setShowBulk(false)}>×</button>

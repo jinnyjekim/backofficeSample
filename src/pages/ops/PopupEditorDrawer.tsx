@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styles from './opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { Device } from './bannersData';
 import {
   POPUP_SCREENS,
@@ -121,8 +122,11 @@ export function PopupEditorDrawer({ popup, allPopups, todayIso, onCancel, onSubm
     });
   }
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onCancel);
+
   return (
-    <aside className={`${styles.aside} ${styles.wideAside}`}>
+    <aside ref={asideRef} className={`${styles.aside} ${styles.wideAside}`}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

@@ -217,7 +217,7 @@ export function ProductInquiryDetailPage() {
       </div>
 
       {confirmSend && (
-        <div className={pageStyles.dialogOverlay}>
+        <div className={pageStyles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmSend(false); }}>
           <div className={pageStyles.dialogBox}>
             <div className={pageStyles.dialogTitle}>답변을 {q.answer ? '수정' : '등록'}하시겠습니까?</div>
             <div className={pageStyles.dialogBody}>{q.answer ? '수정한' : '등록한'} 답변이 사용자에게 노출됩니다.</div>

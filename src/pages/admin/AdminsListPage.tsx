@@ -301,7 +301,7 @@ export function AdminsListPage() {
       )}
 
       {confirm?.kind === 'resetPassword' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>비밀번호 재설정 안내를 발송하시겠습니까?</div>
             <div className={styles.dialogBody}>{confirm.admin.email} 으로 비밀번호 재설정 안내가 발송됩니다.</div>
@@ -314,7 +314,7 @@ export function AdminsListPage() {
       )}
 
       {confirm?.kind === 'deactivate' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>관리자 계정을 비활성화하시겠습니까?</div>
             <div className={styles.dialogBody}>비활성화 후 해당 관리자는 백오피스에 로그인할 수 없습니다. 기존 작업 이력은 유지됩니다.</div>

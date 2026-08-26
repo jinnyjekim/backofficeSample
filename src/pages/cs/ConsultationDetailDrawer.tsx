@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './ConsultationsPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { durationLabel, type ConsultationEntry } from './consultationsData';
 
 type Tab = 'summary' | 'conversation' | 'related' | 'result' | 'memo' | 'history';
@@ -16,7 +17,9 @@ interface Props {
 export function ConsultationDetailDrawer({ item, onClose, onReopen, onCorrect, onNewInquiry }: Props) {
   const [tab, setTab] = useState<Tab>('summary');
   const resultColor = ['해결', '안내 완료', '고객 확인 완료'].includes(item.result) ? '#047857' : item.result === '후속 처리 필요' ? '#c2410c' : '#52525b';
-  return <aside className={`${drawer.aside} ${styles.detailDrawer}`} aria-label={`${item.id} 상담 상세`}>
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+  return <aside ref={asideRef} className={`${drawer.aside} ${styles.detailDrawer}`} aria-label={`${item.id} 상담 상세`}>
     <div className={drawer.head}>
       <div className={drawer.headRow}><div className={drawer.headBody}><div className={drawer.eyebrow}>{item.id} · {item.inquiryId ?? '수동 등록 상담'}</div><div className={drawer.titleRow}><h2 className={drawer.title}>{item.title}</h2><span className={drawer.badge} style={{ background: '#ecfdf5', color: resultColor }}>{item.result}</span>{item.reopened && <span className={styles.reopenBadge}>재문의 발생</span>}</div><div className={drawer.sub}>{item.category} &gt; {item.subcategory} · {item.channel} · {item.assignee}</div></div><button type="button" className={drawer.closeBtn} onClick={onClose}>✕</button></div>
       <div className={styles.detailStats}><div><span>상담 시작</span><strong>{item.startedAt}</strong></div><div><span>상담 종료</span><strong>{item.completedAt ?? '진행중'}</strong></div><div><span>소요시간</span><strong>{durationLabel(item)}</strong></div><div><span>SLA 결과</span><strong className={item.slaResult === '초과' ? styles.dangerText : styles.successText}>{item.slaResult}</strong></div></div>

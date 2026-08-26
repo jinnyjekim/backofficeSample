@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './CompanyDetailDrawer.module.css';
 import { ACCENT } from '../../lib/theme';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { STATUS_META, fmtWon, type Company, type CompanyStatus } from './companiesData';
 
 const TABS: { key: string; label: string }[] = [
@@ -36,6 +37,9 @@ export function CompanyDetailDrawer({ company, onClose, onStatusChange, onAddMem
   const remain = Math.max(0, company.terms.limit - company.terms.used);
   const limitPct = company.terms.limit > 0 ? Math.min(100, Math.round((company.terms.used / company.terms.limit) * 100)) : 0;
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   function applyStatus() {
     onStatusChange(company.code, pendingStatus);
     setShowStatusPanel(false);
@@ -49,7 +53,7 @@ export function CompanyDetailDrawer({ company, onClose, onStatusChange, onAddMem
   }
 
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

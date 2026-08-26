@@ -308,7 +308,7 @@ export function ReturnExchangeFeePage() {
       </div>
 
       {confirmSave && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmSave(null); }}>
           <div className={`${shared.dialogBox} ${styles.saveDialog}`}>
             <h2 className={shared.dialogTitle}>반품 / 교환 배송비 정책 변경 확인</h2>
             <p className={shared.dialogBody}>변경 사항은 적용 시작일부터 신규 반품/교환 신청부터 적용됩니다. 이미 접수된 반품/교환의 배송비는 신청 시점 정책으로 유지됩니다.</p>

@@ -243,7 +243,7 @@ export function ProductShippingPolicyPage() {
       )}
 
       {bulkModal && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) { setBulkModal(null); setBulkSource(''); } }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>{bulkModal === 'apply' ? '정책 일괄 적용' : '기본 정책으로 일괄 변경'}</h2>
             {bulkModal === 'apply' ? (

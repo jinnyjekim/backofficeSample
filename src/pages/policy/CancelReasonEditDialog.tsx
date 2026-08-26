@@ -20,7 +20,7 @@ export function CancelReasonEditDialog({ initial, onClose, onSave }: Props) {
   };
 
   return (
-    <div className={shared.dialogOverlay}>
+    <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className={`${shared.dialogBox} ${styles.reasonDialog}`}>
         <h2 className={shared.dialogTitle}>{draft.audience}용 취소 사유</h2>
         <label className={styles.formField}>

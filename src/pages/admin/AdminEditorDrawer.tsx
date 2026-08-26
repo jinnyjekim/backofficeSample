@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { ROLES, type AdminAccount, type AdminStatus } from './adminData';
 
 interface Props {
@@ -37,8 +38,11 @@ export function AdminEditorDrawer({ admin, nextId, lockSuperAdminRole, onClose, 
     onSave({ id: admin?.id ?? nextId, name: name.trim(), email: email.trim(), phone: phone.trim(), roleIds, status, memo: memo.trim() });
   }
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={`${styles.aside} ${styles.wideAside}`}>
+    <aside ref={asideRef} className={`${styles.aside} ${styles.wideAside}`}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

@@ -288,7 +288,7 @@ export function CouponIssuesPage() {
       )}
 
       {(confirm?.kind === 'revoke' || confirm?.kind === 'bulkRevoke') && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{confirm.kind === 'revoke' ? '쿠폰을 회수하시겠습니까?' : `${selectedIds.length}건 쿠폰 회수`}</div>
             {confirm.kind === 'revoke' ? (

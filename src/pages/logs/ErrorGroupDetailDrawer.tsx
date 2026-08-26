@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { errorFirstAt, errorLastAt, LEVEL_META, type ErrorGroup } from './systemLogData';
 
 interface Props {
@@ -13,8 +14,11 @@ export function ErrorGroupDetailDrawer({ group: g, onClose }: Props) {
   const [showTech, setShowTech] = useState(false);
   const meta = LEVEL_META[g.level];
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

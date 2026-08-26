@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './TradeStatusDetailDrawer.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   ALLOWED_TRANSITIONS,
   REASONS_BY_TARGET,
@@ -87,8 +88,11 @@ export function TradeStatusDetailDrawer({ record, onClose, onChangeStatus, onCan
 
   const remain = record.creditLimit - record.creditUsed;
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

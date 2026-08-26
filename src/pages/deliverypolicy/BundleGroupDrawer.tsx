@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './BundleShippingPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   CALC_METHODS,
   DELIVERY_METHODS,
@@ -61,8 +62,11 @@ export function BundleGroupDrawer({ group, allGroups, isNew, startEditing = fals
   const availableToAdd = PRODUCTS.filter((p) => !draft.productCodes.includes(p.code));
   const pickCrossWarning = pickCode ? findOtherActiveGroupsContaining(pickCode, allGroups, draft.id) : [];
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="묶음 배송 그룹 상세">
+    <aside ref={asideRef} className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="묶음 배송 그룹 상세">
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

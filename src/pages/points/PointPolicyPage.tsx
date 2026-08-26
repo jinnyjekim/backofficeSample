@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import shared from '../ops/opsShared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   INITIAL_POLICY,
   POLICY_HISTORY,
@@ -35,6 +36,9 @@ export function PointPolicyPage() {
   const [confirmChanges, setConfirmChanges] = useState<ReturnType<typeof describeChanges> | null>(null);
   const [reason, setReason] = useState('');
   const [toast, setToast] = useState('');
+
+  const historyRef = useRef<HTMLElement>(null);
+  useOutsideClose(historyRef, () => setShowHistory(false));
 
   const set = <K extends keyof PointPolicy>(key: K, value: PointPolicy[K]) => setDraft((cur) => ({ ...cur, [key]: value }));
 
@@ -268,7 +272,7 @@ export function PointPolicyPage() {
       </div>
 
       {showHistory && (
-        <aside className={drawer.aside} aria-label="포인트 정책 변경 이력">
+        <aside ref={historyRef} className={drawer.aside} aria-label="포인트 정책 변경 이력">
           <div className={drawer.head}>
             <div className={drawer.headRow}>
               <div className={drawer.headBody}>
@@ -309,7 +313,7 @@ export function PointPolicyPage() {
       )}
 
       {confirmChanges && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmChanges(null); }}>
           <div className={shared.dialogBox}>
             <div className={shared.dialogTitle}>포인트 정책을 변경하시겠습니까?</div>
             <div className={shared.dialogSummary}>

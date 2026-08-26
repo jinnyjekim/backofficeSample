@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './PaymentListPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   computeExternalMatch,
   computeIssues,
@@ -42,8 +43,11 @@ export function PaymentDetailDrawer({ payment: p, onClose, onAddMemo, onRequestR
     setMemoText('');
   };
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={`${drawer.aside} ${styles.paymentDrawer}`} aria-label="결제 상세">
+    <aside ref={asideRef} className={`${drawer.aside} ${styles.paymentDrawer}`} aria-label="결제 상세">
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

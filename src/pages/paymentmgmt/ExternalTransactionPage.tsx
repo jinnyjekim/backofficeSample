@@ -250,7 +250,7 @@ export function ExternalTransactionPage() {
       })()}
 
       {recheckTarget && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setRecheckTarget(null); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>외부 거래 상태 재조회</h2>
             <p className={shared.dialogBody}>외부 PG/은행에 거래 상태를 다시 조회합니다.</p>

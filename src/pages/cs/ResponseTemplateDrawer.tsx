@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './ResponseTemplatesPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { SUPPORTED_VARIABLES, TEMPLATE_CATEGORIES, TEMPLATE_CHANNELS, TEMPLATE_INQUIRY_TYPES, TEMPLATE_TEAMS, extractVariables, invalidVariables, sampleReplace, templateIssues, type ResponseTemplate, type TemplateChannel, type TemplateStatus } from './responseTemplatesData';
 
 type Tab = 'content' | 'links' | 'preview' | 'usage' | 'version' | 'history';
@@ -15,7 +16,10 @@ export function ResponseTemplateDrawer({ initial, isNew, startMode = 'view', onC
   const save = () => { if (!draft.name.trim() || !draft.code.trim() || !draft.body.trim()) return setError('템플릿명, 코드, 답변 본문은 필수입니다.'); if (invalid.length) return setError(`지원되지 않는 변수를 수정해 주세요: ${invalid.join(', ')}`); if (!draft.channels.length) return setError('사용 채널을 하나 이상 선택해 주세요.'); onSave({ ...draft, name: draft.name.trim(), code: draft.code.trim().toUpperCase().replace(/\s+/g, '_') }, reason.trim() || (isNew ? '템플릿 생성' : '답변 문구 수정')); };
   const toggle = <T,>(values: T[], value: T) => values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
 
-  return <aside className={`${drawer.aside} ${styles.templateDrawer}`}>
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
+  return <aside ref={asideRef} className={`${drawer.aside} ${styles.templateDrawer}`}>
     <div className={drawer.head}><div className={drawer.headRow}><div className={drawer.headBody}><div className={drawer.eyebrow}>{isNew ? '신규 답변 템플릿' : `${draft.id} · ${draft.code}`}</div><div className={drawer.titleRow}><h2 className={drawer.title}>{isNew ? '답변 템플릿 등록' : draft.name}</h2><span className={drawer.badge} style={{ background: draft.status === '사용' ? '#ecfdf5' : '#f4f4f5', color: draft.status === '사용' ? '#047857' : '#71717a' }}>{draft.status}</span>{draft.recommended && <span className={styles.recommendBadge}>★ 추천</span>}</div>{!isNew && <div className={drawer.sub}>{draft.category} · 최근 사용 {draft.lastUsedAt ?? '없음'} · 누적 {draft.usageCount.toLocaleString()}회</div>}</div><button type="button" className={drawer.closeBtn} onClick={onClose}>✕</button></div>
       {!isNew && <div className={drawer.actionRow}><button type="button" className={drawer.actionLink} onClick={() => { setEditing((current) => !current); setTab('content'); }}>{editing ? '수정 취소' : '수정'}</button><button type="button" className={drawer.actionLink} onClick={() => setTab('preview')}>미리보기</button><button type="button" className={drawer.actionLink} onClick={() => onDuplicate(draft)}>복제</button><span className={drawer.spacer} />{draft.status === '사용' && <button type="button" className={drawer.dangerBtn} onClick={() => onDeactivate(draft)}>비활성</button>}</div>}
       <div className={drawer.tabs}>{([['content', '답변 내용'], ['links', '연결·사용 설정'], ['preview', '미리보기'], ['usage', '사용 현황'], ['version', `Version ${draft.versions.length}`], ['history', '변경 이력']] as [Tab,string][]).map(([key,label]) => <button key={key} type="button" className={`${drawer.tabBtn} ${tab === key ? drawer.tabActive : ''}`} onClick={() => setTab(key)}>{label}</button>)}</div>

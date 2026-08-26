@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './InquiryTypesPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { TYPE_FIELDS, TYPE_TEAMS, typeErrors, type InquiryTypeEntry, type FieldMode, type IntakeMode, type TypePriority, type TypeStatus } from './inquiryTypesData';
 
 type Tab = 'settings' | 'fields' | 'preview' | 'usage' | 'history';
@@ -30,7 +31,10 @@ export function InquiryTypeDrawer({ initial, isNew, startMode = 'view', parentNa
     onSave({ ...draft, name: draft.name.trim(), code: draft.code.trim().toUpperCase().replace(/\s+/g, '_') });
   };
 
-  return <aside className={`${drawer.aside} ${styles.typeDrawer}`} aria-label="문의 유형 상세">
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
+  return <aside ref={asideRef} className={`${drawer.aside} ${styles.typeDrawer}`} aria-label="문의 유형 상세">
     <div className={drawer.head}>
       <div className={drawer.headRow}>
         <div className={drawer.headBody}>

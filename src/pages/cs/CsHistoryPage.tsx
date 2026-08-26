@@ -263,7 +263,7 @@ export function CsHistoryPage() {
         })()}
 
       {downloadOpen && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setDownloadOpen(false); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>CS 처리 이력 다운로드</h2>
             <p className={shared.dialogBody}>

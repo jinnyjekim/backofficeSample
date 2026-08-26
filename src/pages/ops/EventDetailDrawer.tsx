@@ -1,6 +1,7 @@
-import { useState, type CSSProperties } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 import drawer from './opsDrawerShared.module.css';
 import styles from './EventsPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   EVENT_STATUS_META,
   computeEventStatus,
@@ -57,8 +58,11 @@ export function EventDetailDrawer({ event, onClose, onEdit, onPreview, onDuplica
     setMemoText('');
   }
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={`${drawer.aside} ${drawer.wideAside}`}>
+    <aside ref={asideRef} className={`${drawer.aside} ${drawer.wideAside}`}>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

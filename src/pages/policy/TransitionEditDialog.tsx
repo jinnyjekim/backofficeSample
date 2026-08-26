@@ -23,7 +23,7 @@ export function TransitionEditDialog({ fromLabel, toLabel, initial, onClose, onS
   };
 
   return (
-    <div className={shared.dialogOverlay}>
+    <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className={`${shared.dialogBox} ${styles.transitionDialog}`}>
         <h2 className={shared.dialogTitle}>상태 전환 설정</h2>
         <p className={shared.dialogBody}><strong>{fromLabel}</strong> → <strong>{toLabel}</strong></p>

@@ -234,7 +234,7 @@ export function PaymentAuditPage() {
       })()}
 
       {downloadOpen && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setDownloadOpen(false); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>결제 처리 이력 다운로드</h2>
             <p className={shared.dialogBody}>

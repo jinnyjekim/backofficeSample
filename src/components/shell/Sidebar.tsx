@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { NAV_GROUPS, activeKeyForPath, type NavItem } from '../../lib/nav';
 import styles from './Sidebar.module.css';
@@ -67,6 +68,7 @@ export function Sidebar({ open, onToggle }: Props) {
           {isSub ? <span className={styles.dot} /> : Icon ? <Icon size={16} strokeWidth={2} /> : null}
         </span>
         <span className={styles.text}>{open ? item.label : ''}</span>
+        {open && item.business && <span className={`${styles.businessTag} ${item.business === 'B' ? styles.businessB : item.business === 'C' ? styles.businessC : styles.businessBC}`}>{item.business === 'BC' ? 'B·C' : item.business}</span>}
         <span className={styles.badge}>{open && item.badge ? item.badge : ''}</span>
       </>
     );
@@ -102,6 +104,7 @@ export function Sidebar({ open, onToggle }: Props) {
       >
         <span className={styles.icon}>{Icon ? <Icon size={16} strokeWidth={2} /> : null}</span>
         <span className={styles.text}>{open ? header.label : ''}</span>
+        {open && header.business && <span className={`${styles.businessTag} ${header.business === 'B' ? styles.businessB : header.business === 'C' ? styles.businessC : styles.businessBC}`}>{header.business === 'BC' ? 'B·C' : header.business}</span>}
         <span className={styles.badge}>{open && header.badge ? header.badge : ''}</span>
         {open && <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}>›</span>}
       </button>
@@ -110,12 +113,19 @@ export function Sidebar({ open, onToggle }: Props) {
 
   return (
     <aside className={styles.aside} style={{ width: open ? '212px' : '58px' }}>
-      <div className={styles.top}>
-        <div className={styles.logo}>A</div>
+      <div className={`${styles.top} ${open ? '' : styles.topCollapsed}`}>
+        {open && <div className={styles.logo}>A</div>}
         {open && <span className={styles.brand}>백오피스</span>}
         <div className={styles.spacer} />
-        <button className={styles.toggleBtn} onClick={onToggle} title="사이드바 접기/펼치기">
-          {open ? '«' : '»'}
+        <button
+          type="button"
+          className={styles.toggleBtn}
+          onClick={onToggle}
+          title={open ? '사이드바 접기' : '사이드바 펼치기'}
+          aria-label={open ? '사이드바 접기' : '사이드바 펼치기'}
+          aria-expanded={open}
+        >
+          {open ? <PanelLeftClose size={19} strokeWidth={2} /> : <PanelLeftOpen size={19} strokeWidth={2} />}
         </button>
       </div>
 

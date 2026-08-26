@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './JejuRemotePolicyPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   REGION_KINDS,
   effectiveExtraFee,
@@ -55,8 +56,11 @@ export function JejuRegionDrawer({ region, basePolicy, isNew, startEditing = fal
 
   const fee = effectiveExtraFee(draft, basePolicy);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="특수지역 상세">
+    <aside ref={asideRef} className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="특수지역 상세">
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

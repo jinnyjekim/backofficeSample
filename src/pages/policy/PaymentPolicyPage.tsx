@@ -407,7 +407,7 @@ export function PaymentPolicyPage() {
       )}
 
       {confirmSave && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmSave(null); }}>
           <div className={`${shared.dialogBox} ${styles.saveDialog}`}>
             <h2 className={shared.dialogTitle}>결제 정책 변경 확인</h2>
             <p className={shared.dialogBody}>변경 사항은 신규 주문·결제부터 적용됩니다. 이미 발생한 결제 Transaction에는 영향을 주지 않습니다.</p>

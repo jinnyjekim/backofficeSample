@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './RegionalShippingFeePage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   DELIVERY_METHODS,
   SIDO_OPTIONS,
@@ -59,8 +60,11 @@ export function RegionalFeeDrawer({ initial, isNew, startEditing = false, issues
     onSave({ ...draft, name: draft.name.trim(), code: draft.code.trim().toUpperCase().replace(/\s+/g, '_') });
   };
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="지역별 추가 배송비 상세">
+    <aside ref={asideRef} className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="지역별 추가 배송비 상세">
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

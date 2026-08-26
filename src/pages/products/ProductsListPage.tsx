@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styles from './ProductsListPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
 import {
   PRODUCTS,
@@ -36,6 +37,9 @@ export function ProductsListPage() {
   const [showRegister, setShowRegister] = useState(false);
   const [showSaleConfirm, setShowSaleConfirm] = useState(false);
   const [page, setPage] = useState(1);
+
+  const registerAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(registerAsideRef, () => setShowRegister(false));
 
   const filtered = useMemo(() => {
     return data.filter((p) => {
@@ -237,7 +241,7 @@ export function ProductsListPage() {
       )}
 
       {showRegister && (
-        <aside className={styles.registerAside}>
+        <aside ref={registerAsideRef} className={styles.registerAside}>
           <div className={styles.registerHead}>
             <span className={styles.registerTitle}>상품 등록</span>
             <button type="button" className={styles.closeBtn} onClick={() => setShowRegister(false)}>×</button>

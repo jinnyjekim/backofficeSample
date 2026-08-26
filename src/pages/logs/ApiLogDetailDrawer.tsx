@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { maskBody, SLOW_MS, type ApiLogEntry } from './systemLogData';
 
 interface Props {
@@ -17,8 +19,11 @@ export function ApiLogDetailDrawer({ entry: e, onClose }: Props) {
   const isSuccess = e.result === '성공';
   const isSlow = e.durationMs >= SLOW_MS;
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

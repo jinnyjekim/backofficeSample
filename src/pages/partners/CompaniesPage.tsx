@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styles from './CompaniesPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
 import {
   COMPANIES,
@@ -25,6 +26,9 @@ export function CompaniesPage() {
   const [openCode, setOpenCode] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [showRegister, setShowRegister] = useState(false);
+
+  const registerAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(registerAsideRef, () => setShowRegister(false));
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { 전체: data.length };
@@ -212,7 +216,7 @@ export function CompaniesPage() {
       )}
 
       {showRegister && (
-        <aside className={styles.registerAside}>
+        <aside ref={registerAsideRef} className={styles.registerAside}>
           <div className={styles.registerHead}>
             <span className={styles.registerTitle}>회사 등록</span>
             <button type="button" className={styles.closeBtn} onClick={() => setShowRegister(false)}>×</button>

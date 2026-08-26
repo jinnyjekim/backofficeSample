@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   CATEGORIES,
   OWNERS,
@@ -155,8 +156,11 @@ export function CouponEditorDrawer({ coupon: c, onCancel, onSubmit }: Props) {
     });
   }
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onCancel);
+
   return (
-    <aside className={`${styles.aside} ${styles.wideAside}`}>
+    <aside ref={asideRef} className={`${styles.aside} ${styles.wideAside}`}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

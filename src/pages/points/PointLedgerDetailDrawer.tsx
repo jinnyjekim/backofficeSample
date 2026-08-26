@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { computeIssues, fmtPoint, isIncrease, type Memo, type PointLedgerEntry } from './pointLedgerData';
 
 const TABS = [
@@ -25,6 +26,9 @@ export function PointLedgerDetailDrawer({ entry: e, all, onClose, onAddMemo }: P
   const issues = computeIssues(e, all);
   const increase = isIncrease(e.type);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   function submitMemo() {
     if (!memoText.trim()) return;
     onAddMemo(memoText.trim());
@@ -32,7 +36,7 @@ export function PointLedgerDetailDrawer({ entry: e, all, onClose, onAddMemo }: P
   }
 
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

@@ -420,7 +420,7 @@ export function OrderStatusPage() {
       )}
 
       {orderOpen && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setOrderOpen(false); }}>
           <div className={`${shared.dialogBox} ${styles.orderDialog}`}>
             <h2 className={shared.dialogTitle}>주문 상태 노출 순서</h2>
             <p className={shared.dialogBody}>목록에 표시되는 순서를 조정합니다. Workflow 전환 순서와는 별개입니다.</p>
@@ -444,7 +444,7 @@ export function OrderStatusPage() {
       )}
 
       {confirm && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>{confirm.kind === 'delete' ? '주문 상태 삭제' : '주문 상태 비활성화'}</h2>
             <p className={shared.dialogBody}>

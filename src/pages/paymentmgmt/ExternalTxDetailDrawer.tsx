@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './ExternalTransactionPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { STATUS_LABEL, computeIssues, computeMatchStatus, fmtWon, splitAt, type ExternalTransaction } from './externalTransactionData';
 import type { PaymentEntry } from './paymentListData';
 
@@ -43,8 +44,11 @@ export function ExternalTxDetailDrawer({ tx, all, payments, onClose, onAddMemo, 
     navigate('/payment-mgmt/list', { state: { openPaymentId: payment.id } });
   };
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={`${drawer.aside} ${styles.txDrawer}`} aria-label="외부 거래 상세">
+    <aside ref={asideRef} className={`${drawer.aside} ${styles.txDrawer}`} aria-label="외부 거래 상세">
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

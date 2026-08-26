@@ -20,7 +20,7 @@ export function PaymentMethodEditDialog({ initial, onClose, onSave }: Props) {
   };
 
   return (
-    <div className={shared.dialogOverlay}>
+    <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className={`${shared.dialogBox} ${styles.methodDialog}`}>
         <h2 className={shared.dialogTitle}>{draft.name} 설정</h2>
         <p className={shared.dialogBody}>코드 {draft.code}</p>

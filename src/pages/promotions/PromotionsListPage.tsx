@@ -349,7 +349,7 @@ export function PromotionsListPage() {
       )}
 
       {confirm?.kind === 'end' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>프로모션을 종료하시겠습니까?</div>
             <div className={styles.dialogBody}>{confirm.item.name}</div>
@@ -367,7 +367,7 @@ export function PromotionsListPage() {
       )}
 
       {confirm?.kind === 'delete' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>프로모션을 삭제하시겠습니까?</div>
             <div className={styles.dialogBody}>{`'${confirm.item.name}'이(가) 삭제됩니다. 적용 이력이 없는 프로모션만 삭제할 수 있습니다.`}</div>
@@ -380,7 +380,7 @@ export function PromotionsListPage() {
       )}
 
       {confirm?.kind === 'toggleActive' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{confirm.item.active ? '프로모션을 비활성화하시겠습니까?' : '프로모션을 활성화하시겠습니까?'}</div>
             <div className={styles.dialogBody}>
@@ -395,7 +395,7 @@ export function PromotionsListPage() {
       )}
 
       {confirm?.kind === 'bulkDeactivate' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 비활성화</div>
             <div className={styles.dialogBody}>선택한 프로모션을 모두 비활성화합니다.</div>
@@ -408,7 +408,7 @@ export function PromotionsListPage() {
       )}
 
       {confirm?.kind === 'bulkOwner' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 담당자 변경</div>
             <select className={styles.selectSm} style={{ width: '100%', marginBottom: 16 }} value={bulkOwner} onChange={(e) => setBulkOwner(e.target.value)}>

@@ -47,6 +47,9 @@ import { FaqPage } from './pages/ops/FaqPage';
 import { BannersPage } from './pages/ops/BannersPage';
 import { PopupsPage } from './pages/ops/PopupsPage';
 import { EventsPage } from './pages/ops/EventsPage';
+import { TermsManagementPage } from './pages/ops/TermsManagementPage';
+import { PolicyManagementPage } from './pages/ops/PolicyManagementPage';
+import { OperatingMessagesPage } from './pages/ops/OperatingMessagesPage';
 import { PaymentListPage } from './pages/paymentmgmt/PaymentListPage';
 import { ExternalTransactionPage } from './pages/paymentmgmt/ExternalTransactionPage';
 import { PaymentAuditPage } from './pages/paymentmgmt/PaymentAuditPage';
@@ -65,10 +68,13 @@ import { SettlementPolicyPage } from './pages/policy/SettlementPolicyPage';
 import { FeePolicyPage } from './pages/policy/FeePolicyPage';
 import { IntegratedStatsPage } from './pages/stats/IntegratedStatsPage';
 import { ModulePlaceholderPage } from './pages/common/ModulePlaceholderPage';
+import { BusinessModulePage } from './pages/common/BusinessModulePage';
+import { NotificationDispatchPage } from './pages/notifications/NotificationDispatchPage';
 import { InventoryStatusPage } from './pages/inventory/InventoryStatusPage';
 import { InboundManagementPage } from './pages/inventory/InboundManagementPage';
 import { StockOutboundManagementPage } from './pages/inventory/StockOutboundManagementPage';
 import { InventoryAdjustmentPage } from './pages/inventory/InventoryAdjustmentPage';
+import { StockMovementHistoryPage } from './pages/inventory/StockMovementHistoryPage';
 import { PromotionsListPage } from './pages/promotions/PromotionsListPage';
 import { PromotionApplicationsPage } from './pages/promotions/PromotionApplicationsPage';
 import { CouponsListPage } from './pages/coupons/CouponsListPage';
@@ -87,6 +93,7 @@ import { ProductInquiriesListPage } from './pages/cs/ProductInquiriesListPage';
 import { ProductInquiryDetailPage } from './pages/cs/ProductInquiryDetailPage';
 import { CartConversionPage } from './pages/cartconversion/CartConversionPage';
 import { SystemLogPage } from './pages/logs/SystemLogPage';
+import { SecurityLogPage } from './pages/logs/SecurityLogPage';
 import { DeliveryPrepPage } from './pages/delivery/DeliveryPrepPage';
 import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
@@ -99,6 +106,9 @@ export default function App() {
       <Route element={<Shell />}>
         <Route index element={<Navigate to="/members" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="b2c/*" element={<BusinessModulePage />} />
+        <Route path="b2c/product-inquiries/list" element={<ProductInquiriesListPage />} />
+        <Route path="c2c/*" element={<BusinessModulePage />} />
         <Route path="members" element={<MembersPage />} />
         <Route path="members/left" element={<RecordsPage kind="left" />} />
         <Route path="members/ban" element={<RecordsPage kind="ban" />} />
@@ -123,7 +133,7 @@ export default function App() {
         <Route path="inventory/inbound" element={<InboundManagementPage />} />
         <Route path="inventory/outbound" element={<StockOutboundManagementPage />} />
         <Route path="inventory/adjust" element={<InventoryAdjustmentPage />} />
-        <Route path="inventory/history" element={<ModulePlaceholderPage title="재고 변동 이력" subtitle="입고·출고·조정에 따른 재고 변동 이력을 확인합니다." icon="⊟" />} />
+        <Route path="inventory/history" element={<StockMovementHistoryPage />} />
 
         <Route path="quotes/requests" element={<QuoteRequestsPage />} />
         <Route path="quotes" element={<QuotesPage />} />
@@ -176,6 +186,19 @@ export default function App() {
         <Route path="ops/popups" element={<PopupsPage />} />
         <Route path="ops/events" element={<EventsPage />} />
 
+        <Route path="notifications/dispatch" element={<NotificationDispatchPage />} />
+        <Route path="notifications/templates" element={<ModulePlaceholderPage title="템플릿 관리" subtitle="앱 내, Push, 이메일과 SMS 발송에 사용할 메시지 템플릿을 관리합니다." icon="▤" />} />
+        <Route path="notifications/send" element={<Navigate to="/notifications/dispatch" replace />} />
+        <Route path="notifications/scheduled" element={<Navigate to="/notifications/dispatch" replace />} />
+        <Route path="notifications/history" element={<Navigate to="/notifications/dispatch" replace />} />
+        <Route path="notifications/templates/messages" element={<Navigate to="/notifications/templates" replace />} />
+        <Route path="notifications/templates/email" element={<Navigate to="/notifications/templates" replace />} />
+        <Route path="notifications/templates/sms" element={<Navigate to="/notifications/templates" replace />} />
+        <Route path="notifications/templates/push" element={<Navigate to="/notifications/templates" replace />} />
+        <Route path="ops/terms" element={<TermsManagementPage />} />
+        <Route path="ops/policies" element={<PolicyManagementPage />} />
+        <Route path="ops/messages" element={<OperatingMessagesPage />} />
+
         <Route path="payment-mgmt/list" element={<PaymentListPage />} />
         <Route path="payment-mgmt/external" element={<ExternalTransactionPage />} />
         <Route path="payment-mgmt/history" element={<PaymentAuditPage />} />
@@ -188,6 +211,7 @@ export default function App() {
         <Route path="policy/fee" element={<FeePolicyPage />} />
 
         <Route path="stats/overview" element={<IntegratedStatsPage />} />
+        <Route path="stats/*" element={<BusinessModulePage />} />
 
         <Route path="delivery/prep" element={<DeliveryPrepPage />} />
         <Route path="delivery/outbound-waiting" element={<OutboundWaitingPage />} />
@@ -223,7 +247,7 @@ export default function App() {
         <Route path="system/jobs" element={<ModulePlaceholderPage title="작업 관리" subtitle="배치 작업 및 스케줄러를 관리합니다." icon="🗂" />} />
 
         <Route path="logs/system" element={<SystemLogPage />} />
-        <Route path="logs/security" element={<ModulePlaceholderPage title="보안 로그" subtitle="인증, 권한, 보안 관련 이벤트 로그를 조회합니다." icon="🛡" />} />
+        <Route path="logs/security" element={<SecurityLogPage />} />
 
         <Route path="*" element={<Navigate to="/members" replace />} />
       </Route>

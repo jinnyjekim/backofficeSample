@@ -1,4 +1,6 @@
+import { useRef } from 'react';
 import styles from './drawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { ReceivableDetail } from './receivableDetail';
 
 interface Props {
@@ -7,8 +9,11 @@ interface Props {
 }
 
 export function ReceivableDetailDrawer({ detail: d, onTabChange }: Props) {
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, d.close);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

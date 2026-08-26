@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
 import shared from '../ops/opsShared.module.css';
 import drawerShared from '../ops/opsDrawerShared.module.css';
 import styles from './JejuRemotePolicyPage.module.css';
 import { JejuRegionDrawer } from './JejuRegionDrawer';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   INITIAL_BASE_POLICY,
   INITIAL_REGIONS,
@@ -51,6 +52,9 @@ export function JejuRemotePolicyPage() {
   const [toast, setToast] = useState('');
   const [showTest, setShowTest] = useState(false);
   const [scenarioId, setScenarioId] = useState(TEST_SCENARIOS[0].id);
+
+  const testAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(testAsideRef, () => setShowTest(false), showTest);
 
   const warnings = useMemo(() => computeWarnings(regions), [regions]);
 
@@ -283,7 +287,7 @@ export function JejuRemotePolicyPage() {
       )}
 
       {showTest && (
-        <aside className={`${drawerShared.aside} ${styles.testDrawer}`} aria-label="배송비 계산 테스트">
+        <aside ref={testAsideRef} className={`${drawerShared.aside} ${styles.testDrawer}`} aria-label="배송비 계산 테스트">
           <div className={drawerShared.head}>
             <div className={drawerShared.headRow}>
               <div className={drawerShared.headBody}>

@@ -1,4 +1,6 @@
+import { useRef } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { ADMINS } from './adminData';
 import type { ActionLogEntry, LoginLogEntry } from './adminHistoryData';
 
@@ -15,8 +17,11 @@ export function AdminHistoryDetailDrawer(props: Props) {
   const { kind, item, onClose } = props;
   const isSuccess = item.result === '성공';
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

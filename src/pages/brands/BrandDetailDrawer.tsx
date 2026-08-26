@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { STATUS_META, computeIssues, productName, productStatus, type Brand, type Memo } from './brandsData';
 
 const TABS = [
@@ -29,6 +30,9 @@ export function BrandDetailDrawer({ brand: b, all, onClose, onEdit, onToggleStat
   const sm = STATUS_META[b.status];
   const issues = computeIssues(b, all);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   function submitMemo() {
     if (!memoText.trim()) return;
     onAddMemo(memoText.trim());
@@ -36,7 +40,7 @@ export function BrandDetailDrawer({ brand: b, all, onClose, onEdit, onToggleStat
   }
 
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

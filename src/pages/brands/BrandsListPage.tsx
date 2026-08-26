@@ -308,7 +308,7 @@ export function BrandsListPage() {
       )}
 
       {confirm?.kind === 'toggleStatus' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{confirm.item.status === '사용중' ? '브랜드를 미사용 처리하시겠습니까?' : '브랜드 사용을 재개하시겠습니까?'}</div>
             <div className={styles.dialogBody}>{confirm.item.name}</div>
@@ -321,7 +321,7 @@ export function BrandsListPage() {
       )}
 
       {confirm?.kind === 'delete' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>브랜드를 삭제하시겠습니까?</div>
             <div className={styles.dialogBody}>{`'${confirm.item.name}'이(가) 삭제됩니다. 연결된 상품이 없는 브랜드만 삭제할 수 있습니다.`}</div>
@@ -334,7 +334,7 @@ export function BrandsListPage() {
       )}
 
       {confirm?.kind === 'bulkExposure' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 {confirm.expose ? '노출' : '비노출'} 처리</div>
             <div className={styles.dialogBody}>선택한 브랜드를 모두 {confirm.expose ? '노출' : '비노출'} 상태로 변경합니다.</div>

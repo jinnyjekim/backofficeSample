@@ -290,7 +290,7 @@ export function PaymentListPage() {
       })()}
 
       {recheckTarget && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setRecheckTarget(null); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>결제 상태 재조회</h2>
             <p className={shared.dialogBody}>외부 PG에 결제 상태를 다시 조회합니다.</p>
@@ -308,7 +308,7 @@ export function PaymentListPage() {
       )}
 
       {downloadOpen && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setDownloadOpen(false); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>결제 내역 다운로드</h2>
             <p className={shared.dialogBody}>

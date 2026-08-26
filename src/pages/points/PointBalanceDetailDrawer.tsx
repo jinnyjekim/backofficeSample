@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   STATUS_META,
   computeIssues,
@@ -33,6 +34,9 @@ export function PointBalanceDetailDrawer({ balance: b, onClose, onGrant, onDeduc
   const sm = STATUS_META[b.memberStatus];
   const issues = computeIssues(b);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   function submitMemo() {
     if (!memoText.trim()) return;
     onAddMemo(memoText.trim());
@@ -40,7 +44,7 @@ export function PointBalanceDetailDrawer({ balance: b, onClose, onGrant, onDeduc
   }
 
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

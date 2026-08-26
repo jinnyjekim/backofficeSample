@@ -314,7 +314,7 @@ export function AdminRolesPage() {
   return (
     <div className={sh.page} onClick={() => { if (menuId) setMenuId(null); }}>
       {dialog && (
-        <div className={sh.dialogOverlay}>
+        <div className={sh.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setDialog(null); }}>
           <div className={sh.dialogBox}>
             <div className={sh.dialogTitle}>{dialog.title}</div>
             <div className={sh.dialogBody}>{dialog.body}</div>
@@ -336,7 +336,7 @@ export function AdminRolesPage() {
       )}
 
       {createModal && (
-        <div className={sh.modalOverlay}>
+        <div className={sh.modalOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) { setCreateModal(null); setErr(''); } }}>
           <div className={sh.modalBox}>
             <div className={sh.modalTitle}>역할 추가</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 16 }}>

@@ -308,7 +308,7 @@ export function ShippingBaseFeePage() {
       </div>
 
       {confirmSave && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmSave(null); }}>
           <div className={`${shared.dialogBox} ${styles.saveDialog}`}>
             <h2 className={shared.dialogTitle}>기본 배송비 정책 변경 확인</h2>
             <p className={shared.dialogBody}>변경 사항은 적용 시작일부터 신규 주문에 적용됩니다. 이미 확정된 주문의 배송비 Snapshot은 유지됩니다.</p>

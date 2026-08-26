@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { Faq, FaqCategory, FaqTarget, RelatedLink } from './faqData';
 
 export type PublishMode = '즉시' | '예약' | '비공개';
@@ -104,8 +105,11 @@ export function FaqEditorDrawer({ faq, allFaqs, categories, todayIso, onCancel, 
 
   const candidateFaqs = allFaqs.filter((f) => f.id !== faq?.id);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onCancel);
+
   return (
-    <aside className={`${styles.aside} ${styles.wideAside}`}>
+    <aside ref={asideRef} className={`${styles.aside} ${styles.wideAside}`}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

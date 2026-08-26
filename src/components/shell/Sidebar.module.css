@@ -10,10 +10,19 @@
 .top {
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 52px;
-  padding: 0 14px;
+  gap: 8px;
+  height: 58px;
+  padding: 0 10px 0 14px;
   flex: none;
+}
+
+.topCollapsed {
+  justify-content: center;
+  padding: 0;
+}
+
+.topCollapsed .spacer {
+  display: none;
 }
 
 .logo {
@@ -43,15 +52,28 @@
 }
 
 .toggleBtn {
-  border: 0;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.35);
-  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.72);
   cursor: pointer;
   flex: none;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 .toggleBtn:hover {
   color: #fff;
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
+}
+.toggleBtn:focus-visible {
+  outline: 2px solid rgba(147, 197, 253, 0.9);
+  outline-offset: 2px;
 }
 
 .navScroll {
@@ -146,6 +168,33 @@
   font-size: 10.5px;
   color: rgba(255, 255, 255, 0.32);
   font-variant-numeric: tabular-nums;
+}
+
+.businessTag {
+  flex: none;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.businessB {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.18);
+}
+.businessC {
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.2);
+}
+.businessBC {
+  color: #a7f3d0;
+  background: rgba(16, 185, 129, 0.18);
 }
 
 .chevron {

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './FreeShippingConditionPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   COMPARISON_BASES,
   DELIVERY_METHODS,
@@ -49,8 +50,11 @@ export function FreeShippingConditionDrawer({ initial, isNew, startEditing = fal
     onSave({ ...draft, name: draft.name.trim(), code: draft.code.trim().toUpperCase().replace(/\s+/g, '_') });
   };
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="무료 배송 조건 상세">
+    <aside ref={asideRef} className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="무료 배송 조건 상세">
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

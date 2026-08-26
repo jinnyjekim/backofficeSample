@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './CsHistoryPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { actorColor, actorLabel, categoryColor, findAdjacent, resultColor, splitAt, type CsAuditLog } from './csHistoryData';
 
 interface Props {
@@ -16,8 +18,11 @@ export function CsHistoryDetailDrawer({ log, all, onClose, onJump }: Props) {
   const ac = actorColor(log.actorType);
   const { prev, next } = findAdjacent(log, all);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={drawer.aside}>
+    <aside ref={asideRef} className={drawer.aside}>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

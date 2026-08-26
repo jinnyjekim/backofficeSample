@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { BANNER_STATUS_META, computeStatus, fmtRange, needsReview, positionMeta, type Banner } from './bannersData';
 
 const TABS: { key: string; label: string }[] = [
@@ -51,8 +52,11 @@ export function BannerDetailDrawer({
     setMemoText('');
   }
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

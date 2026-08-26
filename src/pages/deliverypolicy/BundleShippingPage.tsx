@@ -358,7 +358,7 @@ export function BundleShippingPage() {
       )}
 
       {confirm && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>
               {confirm.kind === 'delete' ? '묶음 배송 그룹 삭제' : confirm.kind === 'deactivate' ? '묶음 배송 그룹 비활성화' : '묶음 배송 그룹 활성화'}

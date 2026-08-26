@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   CATEGORIES,
   OWNERS,
@@ -70,6 +71,9 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
 
   const [error, setError] = useState('');
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onCancel);
+
   const availableTargets = PRODUCTS.filter((prod) => !targetProductCodes.includes(prod.code));
   const availableExcludes = PRODUCTS.filter((prod) => !excludeProductCodes.includes(prod.code));
 
@@ -126,7 +130,7 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
   }
 
   return (
-    <aside className={`${styles.aside} ${styles.wideAside}`}>
+    <aside ref={asideRef} className={`${styles.aside} ${styles.wideAside}`}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './AdminMemosPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { MEMO_ADMINS, MEMO_TARGET_TYPES, MEMO_TYPES, followUpState, type AdminMemoEntry, type MemoTargetType, type MemoType, type PinScope } from './adminMemosData';
 
 type Tab = 'memo' | 'context' | 'followup' | 'version' | 'history';
@@ -10,7 +11,9 @@ export function AdminMemoDrawer({ initial, isNew, startEditing = false, onClose,
   const [draft, setDraft] = useState(initial); const [editing, setEditing] = useState(isNew || startEditing); const [tab, setTab] = useState<Tab>('memo'); const [reason, setReason] = useState(''); const [followResult, setFollowResult] = useState(''); const [error, setError] = useState('');
   const state = followUpState(draft); const set = <K extends keyof AdminMemoEntry>(key: K, value: AdminMemoEntry[K]) => setDraft((current) => ({ ...current, [key]: value }));
   const save = () => { if (!draft.targetId.trim() || !draft.customerId.trim() || !draft.content.trim()) return setError('관련 대상, 고객, 메모 내용은 필수입니다.'); if (draft.followUpRequired && !draft.followUpAt) return setError('후속 확인 예정일을 입력해 주세요.'); if (!isNew && !reason.trim()) return setError('수정 이력을 위해 수정 사유를 입력해 주세요.'); onSave({ ...draft, targetId: draft.targetId.trim(), customerId: draft.customerId.trim(), customerName: draft.customerName.trim() || draft.customerId.trim() }, reason.trim() || '관리자 메모 등록'); };
-  return <aside className={`${drawer.aside} ${styles.memoDrawer}`}>
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+  return <aside ref={asideRef} className={`${drawer.aside} ${styles.memoDrawer}`}>
     <div className={drawer.head}><div className={drawer.headRow}><div className={drawer.headBody}><div className={drawer.eyebrow}>{isNew ? '신규 내부 기록' : draft.id}</div><div className={drawer.titleRow}><h2 className={drawer.title}>{isNew ? '관리자 메모 등록' : draft.type}</h2>{draft.important && <span className={styles.importantBadge}>★ 중요</span>}{draft.pinScope !== '없음' && <span className={styles.pinBadge}>📌 {draft.pinScope}</span>}{draft.hidden && <span className={drawer.badge} style={{ background:'#f4f4f5',color:'#71717a' }}>숨김</span>}</div>{!isNew && <div className={drawer.sub}>{draft.author} · {draft.authorTeam} · {draft.createdAt}</div>}</div><button type="button" className={drawer.closeBtn} onClick={onClose}>✕</button></div>
       {!isNew && <div className={drawer.actionRow}><button type="button" className={drawer.actionLink} onClick={()=>{setEditing((current)=>!current);setTab('memo');}}>{editing?'수정 취소':'수정'}</button><button type="button" className={drawer.actionLink} onClick={()=>onToggleImportant(draft)}>{draft.important?'중요 해제':'중요 설정'}</button><button type="button" className={drawer.actionLink} onClick={()=>onTogglePin(draft)}>{draft.pinScope==='없음'?'고정':'고정 해제'}</button><span className={drawer.spacer}/>{draft.hidden?<button type="button" className={drawer.primaryBtn} onClick={()=>onRecover(draft)}>복구</button>:<button type="button" className={drawer.dangerBtn} onClick={()=>onHide(draft)}>메모 숨김</button>}</div>}
       <div className={drawer.tabs}>{([['memo','메모 정보'],['context','관련 Context'],['followup','후속 확인'],['version',`수정 Version ${draft.versions.length}`],['history','처리 이력']] as [Tab,string][]).map(([key,label])=><button key={key} type="button" className={`${drawer.tabBtn} ${tab===key?drawer.tabActive:''}`} onClick={()=>setTab(key)}>{label}</button>)}</div>

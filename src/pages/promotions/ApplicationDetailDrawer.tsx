@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../ops/opsDrawerShared.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { fmtWon } from './promotionsData';
 import { APPLY_STATUS_META, computeIssues, type Memo, type PromotionApplication } from './applicationsData';
 
@@ -27,6 +28,9 @@ export function ApplicationDetailDrawer({ app: a, onClose, onAddMemo }: Props) {
   const sm = APPLY_STATUS_META[a.status];
   const issues = computeIssues(a);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   function submitMemo() {
     if (!memoText.trim()) return;
     onAddMemo(memoText.trim());
@@ -34,7 +38,7 @@ export function ApplicationDetailDrawer({ app: a, onClose, onAddMemo }: Props) {
   }
 
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './PaymentAuditPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { actorColor, actorLabel, categoryColor, resultColor, splitAt, type PaymentAuditLog } from './paymentAuditData';
 
 interface Props {
@@ -15,8 +17,11 @@ export function PaymentAuditDetailDrawer({ log, onClose }: Props) {
   const cc = categoryColor(log.category);
   const ac = actorColor(log.actorType);
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={drawer.aside}>
+    <aside ref={asideRef} className={drawer.aside}>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>
