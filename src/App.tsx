@@ -68,6 +68,7 @@ import { ModulePlaceholderPage } from './pages/common/ModulePlaceholderPage';
 import { InventoryStatusPage } from './pages/inventory/InventoryStatusPage';
 import { InboundManagementPage } from './pages/inventory/InboundManagementPage';
 import { StockOutboundManagementPage } from './pages/inventory/StockOutboundManagementPage';
+import { InventoryAdjustmentPage } from './pages/inventory/InventoryAdjustmentPage';
 import { PromotionsListPage } from './pages/promotions/PromotionsListPage';
 import { PromotionApplicationsPage } from './pages/promotions/PromotionApplicationsPage';
 import { CouponsListPage } from './pages/coupons/CouponsListPage';
@@ -120,7 +121,7 @@ export default function App() {
         <Route path="inventory/status" element={<InventoryStatusPage />} />
         <Route path="inventory/inbound" element={<InboundManagementPage />} />
         <Route path="inventory/outbound" element={<StockOutboundManagementPage />} />
-        <Route path="inventory/adjust" element={<ModulePlaceholderPage title="재고 조정" subtitle="실사, 파손 등으로 인한 재고 수량 조정을 관리합니다." icon="⊟" />} />
+        <Route path="inventory/adjust" element={<InventoryAdjustmentPage />} />
         <Route path="inventory/history" element={<ModulePlaceholderPage title="재고 변동 이력" subtitle="입고·출고·조정에 따른 재고 변동 이력을 확인합니다." icon="⊟" />} />
 
         <Route path="quotes/requests" element={<QuoteRequestsPage />} />
