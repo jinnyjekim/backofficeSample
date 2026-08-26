@@ -81,6 +81,7 @@ import { BrandsListPage } from './pages/brands/BrandsListPage';
 import { ReviewsListPage } from './pages/reviews/ReviewsListPage';
 import { AdminsListPage } from './pages/admin/AdminsListPage';
 import { AdminRolesPage } from './pages/admin/AdminRolesPage';
+import { AdminHistoryPage } from './pages/admin/AdminHistoryPage';
 import { DeliveryPrepPage } from './pages/delivery/DeliveryPrepPage';
 import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
@@ -206,7 +207,7 @@ export default function App() {
 
         <Route path="admin" element={<AdminsListPage />} />
         <Route path="admin/roles" element={<AdminRolesPage />} />
-        <Route path="admin/history" element={<ModulePlaceholderPage title="관리자 이력" subtitle="관리자 계정의 활동 및 변경 이력을 확인합니다." icon="🕓" />} />
+        <Route path="admin/history" element={<AdminHistoryPage />} />
 
         <Route path="*" element={<Navigate to="/members" replace />} />
       </Route>
