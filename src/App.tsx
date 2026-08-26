@@ -79,6 +79,7 @@ import { PointLedgerPage } from './pages/points/PointLedgerPage';
 import { PointPolicyPage } from './pages/points/PointPolicyPage';
 import { BrandsListPage } from './pages/brands/BrandsListPage';
 import { ReviewsListPage } from './pages/reviews/ReviewsListPage';
+import { AdminsListPage } from './pages/admin/AdminsListPage';
 import { DeliveryPrepPage } from './pages/delivery/DeliveryPrepPage';
 import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
@@ -202,7 +203,7 @@ export default function App() {
 
         <Route path="reviews" element={<ReviewsListPage />} />
 
-        <Route path="admin" element={<ModulePlaceholderPage title="관리자 목록" subtitle="백오피스 관리자 계정을 조회하고 관리합니다." icon="👤" />} />
+        <Route path="admin" element={<AdminsListPage />} />
         <Route path="admin/roles" element={<ModulePlaceholderPage title="역할 및 권한 관리" subtitle="관리자 역할별 접근 권한을 설정합니다." icon="🔑" />} />
         <Route path="admin/history" element={<ModulePlaceholderPage title="관리자 이력" subtitle="관리자 계정의 활동 및 변경 이력을 확인합니다." icon="🕓" />} />
 
