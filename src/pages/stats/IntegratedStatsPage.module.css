@@ -1,0 +1,18 @@
+.domainTabs { display: flex; gap: 6px; margin: 0 24px 16px; flex-wrap: wrap; }
+.domainTabBtn { height: 38px; padding: 0 18px; border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; border-radius: 10px; font-size: 13px; font-weight: 700; color: #52525b; cursor: pointer; }
+.domainTabBtn:hover { background: #fafafa; }
+.domainTabActive { border-color: #18181b; background: #18181b; color: #fff; }
+
+.headerActions { display: flex; gap: 8px; align-items: center; }
+.reportBtn { height: 36px; padding: 0 16px; border: 0; background: var(--accent); color: #fff; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.reportBtn:hover { background: var(--accent-hover); }
+.dataAsOf { font-size: 11px; color: #a1a1aa; }
+
+.domainSection { background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; padding: 16px 20px; margin: 0 24px 16px; }
+.domainHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.domainTitle { font-size: 13.5px; font-weight: 700; color: #18181b; }
+.detailLink { border: 0; background: transparent; color: var(--accent); font-size: 12px; font-weight: 600; cursor: pointer; padding: 0; }
+.detailLink:hover { text-decoration: underline; }
+
+.embedWrap { margin: 0 24px 16px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; overflow: hidden; }
+.embedWrap :global(section) { min-height: 0 !important; }

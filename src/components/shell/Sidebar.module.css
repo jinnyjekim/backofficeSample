@@ -118,13 +118,22 @@
 
 .icon {
   width: 16px;
+  height: 16px;
   flex: none;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0.75;
-  font-size: 12px;
 }
 .icon.subIcon {
   opacity: 0.4;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .text {

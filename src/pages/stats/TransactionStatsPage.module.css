@@ -1,0 +1,81 @@
+.viewTabs { display: flex; gap: 6px; margin: 0 24px 16px; padding-top: 4px; flex-wrap: wrap; }
+.viewTabBtn { height: 34px; padding: 0 16px; border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; border-radius: 9px; font-size: 12.5px; font-weight: 600; color: #52525b; cursor: pointer; }
+.viewTabBtn:hover { background: #fafafa; }
+.viewTabActive { border-color: #18181b; background: #18181b; color: #fff; }
+
+.body { padding: 0 24px 32px; }
+
+.filterBar { background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; padding: 14px 16px; margin: 0 24px 18px; }
+.filterRow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.filterRow + .filterRow { margin-top: 10px; }
+.dateInput { height: 33px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 7px; padding: 0 9px; font-size: 12.5px; }
+.tilde { color: #a1a1aa; font-size: 12px; }
+.quickBtn { height: 30px; padding: 0 11px; border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; border-radius: 7px; font-size: 11.5px; color: #52525b; cursor: pointer; }
+.quickBtn:hover { background: #fafafa; }
+.quickBtnActive { border-color: var(--accent); background: #eff6ff; color: var(--accent); font-weight: 600; }
+.compareCheck { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #3f3f46; margin-left: 4px; }
+.selectSm { height: 33px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 7px; padding: 0 9px; font-size: 12.5px; color: #3f3f46; background: #fff; }
+.applyBtn { height: 33px; padding: 0 16px; border: 0; background: #18181b; color: #fff; border-radius: 7px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.applyBtn:hover { background: #3f3f46; }
+.resetLink { height: 30px; padding: 0 10px; border: 0; background: transparent; color: #a1a1aa; font-size: 12px; cursor: pointer; }
+.periodInfo { font-size: 11.5px; color: #8b8b93; margin-top: 8px; }
+.periodInfo b { color: #52525b; }
+
+.section { background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
+.sectionHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.sectionTitle { font-size: 13.5px; font-weight: 700; color: #18181b; }
+.sectionNote { font-size: 11px; color: #a1a1aa; }
+.downloadBtn { height: 30px; padding: 0 12px; border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; border-radius: 7px; font-size: 12px; color: #3f3f46; cursor: pointer; }
+.downloadBtn:hover { background: #fafafa; }
+
+.statGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.statCard { background: #fafafa; border-radius: 10px; padding: 13px 14px; }
+.statLabel { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #71717a; font-weight: 600; }
+.defIcon { color: #a1a1aa; cursor: help; font-size: 10.5px; }
+.statValue { font-size: 17px; font-weight: 700; color: #18181b; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.statDelta { font-size: 11px; margin-top: 5px; font-variant-numeric: tabular-nums; }
+.deltaUp { color: #dc2626; }
+.deltaDown { color: #2563eb; }
+.deltaFlat { color: #a1a1aa; }
+.statSub { font-size: 10.5px; color: #a1a1aa; margin-top: 3px; }
+
+.flowRow { display: flex; align-items: stretch; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.flowStep { flex: 1; min-width: 118px; background: #fafafa; border-radius: 10px; padding: 12px 14px; }
+.flowStep .statLabel { color: #71717a; }
+.flowStep .statValue { font-size: 15px; }
+.flowArrow { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #d4d4d8; font-size: 16px; flex: none; width: 22px; }
+.flowMinus { font-size: 9.5px; color: #dc2626; white-space: nowrap; margin-top: 2px; }
+
+.chartToolbar { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.chartTag { height: 28px; padding: 0 10px; border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; border-radius: 999px; font-size: 11px; color: #52525b; cursor: pointer; }
+.chartTagActive { border-color: var(--accent); background: #eff6ff; color: var(--accent); font-weight: 600; }
+.chartArea { display: flex; align-items: flex-end; gap: 3px; height: 160px; padding: 4px 2px 0; overflow-x: auto; }
+.chartBarWrap { flex: 1; min-width: 6px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.chartBar { width: 100%; max-width: 22px; border-radius: 3px 3px 0 0; background: var(--accent); cursor: default; }
+.chartAxis { display: flex; gap: 3px; margin-top: 6px; overflow-x: auto; }
+.chartAxisLabel { flex: 1; min-width: 6px; text-align: center; font-size: 9px; color: #a1a1aa; white-space: nowrap; }
+
+.table { border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; overflow: hidden; }
+.tableHead, .tableRow { display: grid; grid-template-columns: 1.3fr 90px 110px 70px 60px; gap: 8px; padding: 9px 12px; font-size: 12px; align-items: center; }
+.tableHead { background: #fafafa; color: #71717a; font-weight: 600; font-size: 11px; }
+.tableRow { border-top: 1px solid rgba(0, 0, 0, 0.05); color: #3f3f46; }
+.tableRow span:nth-child(2), .tableRow span:nth-child(3), .tableRow span:nth-child(4) { text-align: right; font-variant-numeric: tabular-nums; }
+.miniBarTrack { height: 6px; background: #f0f0f1; border-radius: 999px; overflow: hidden; }
+.miniBarFill { height: 100%; background: var(--accent); border-radius: 999px; }
+
+.twoCol { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+
+.issueBanner { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border: 1px solid #fed7aa; border-radius: 9px; background: #fff7ed; color: #9a3412; font-size: 12px; margin-bottom: 10px; }
+.issueBanner:last-child { margin-bottom: 0; }
+.issueOk { border-color: #a7f3d0; background: #ecfdf5; color: #047857; }
+.bulletList { display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; color: #3f3f46; line-height: 1.6; }
+.bulletList li { list-style: none; padding-left: 14px; position: relative; }
+.bulletList li::before { content: '•'; position: absolute; left: 0; color: #a1a1aa; }
+
+.drillLink { border: 0; background: transparent; color: var(--accent); font-size: 11px; cursor: pointer; text-decoration: underline; padding: 0; }
+
+.emptyNote { font-size: 12px; color: #a1a1aa; padding: 20px 0; text-align: center; }
+
+@media (max-width: 1080px) {
+  .twoCol { grid-template-columns: 1fr; }
+}

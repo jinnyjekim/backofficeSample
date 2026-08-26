@@ -1,0 +1,84 @@
+.quickActive { border-color: #18181b !important; background: #18181b !important; color: #fff; }
+.quickActive .qfLabel, .quickActive .qfCount { color: #fff; }
+
+.refundDrawer { width: min(660px, 94%) !important; }
+
+.statusBanner { display: flex; flex-direction: column; gap: 4px; padding: 11px 12px; margin-bottom: 16px; border-radius: 9px; font-size: 11.5px; }
+.statusBanner strong { margin-bottom: 2px; font-size: 12px; }
+.bannerWarn { border: 1px solid #fed7aa; background: #fff7ed; color: #9a3412; }
+.bannerDanger { border: 1px solid #fecaca; background: #fef2f2; color: #991b1b; }
+.bannerInfo { border: 1px solid #bfdbfe; background: #eff6ff; color: #1e40af; }
+.bannerOk { border: 1px solid #a7f3d0; background: #ecfdf5; color: #047857; }
+
+.summaryGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; margin-bottom: 18px; }
+.summaryRow { display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+.summaryLabel { font-size: 11px; color: #a1a1aa; }
+.summaryValue { font-size: 12.5px; color: #18181b; font-weight: 600; }
+
+.itemTable { border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; overflow: hidden; margin-bottom: 14px; }
+.itemTableHead, .itemTableRow { display: grid; grid-template-columns: 1.6fr 70px 70px 90px; gap: 8px; padding: 9px 12px; font-size: 12px; align-items: center; }
+.itemTableHead { background: #fafafa; color: #71717a; font-weight: 600; font-size: 11px; }
+.itemTableRow { border-top: 1px solid rgba(0, 0, 0, 0.05); color: #3f3f46; }
+.itemTableRow span:nth-child(2), .itemTableRow span:nth-child(3), .itemTableRow span:nth-child(4) { text-align: right; font-variant-numeric: tabular-nums; }
+.itemRefundOff { color: #a1a1aa; }
+
+.breakdownTable { border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; overflow: hidden; margin-bottom: 10px; }
+.breakdownRow { display: flex; justify-content: space-between; align-items: flex-start; padding: 9px 14px; border-top: 1px solid rgba(0, 0, 0, 0.05); font-size: 12.5px; color: #3f3f46; gap: 10px; }
+.breakdownRow:first-child { border-top: 0; }
+.breakdownRowTotal { background: #fafafa; font-weight: 700; color: #18181b; font-size: 13.5px; }
+.breakdownMain { display: flex; flex-direction: column; gap: 2px; }
+.breakdownBasis { font-size: 10.5px; color: #a1a1aa; }
+.breakdownAmount { font-variant-numeric: tabular-nums; flex: none; }
+.amountNeg { color: #dc2626; }
+.amountPos { color: #059669; }
+
+.adjustRemove { border: 0; background: transparent; color: #a1a1aa; cursor: pointer; font-size: 12px; margin-left: 8px; }
+.adjustRemove:hover { color: #dc2626; }
+
+.addAdjustBtn { height: 30px; padding: 0 12px; border: 1px dashed rgba(0, 0, 0, 0.2); background: transparent; border-radius: 8px; font-size: 11.5px; color: #52525b; cursor: pointer; margin-bottom: 16px; }
+.addAdjustBtn:hover { border-color: rgba(0, 0, 0, 0.4); }
+
+.adjustForm { background: #fafafa; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; padding: 12px; margin-bottom: 16px; }
+.adjustFormRow { display: flex; gap: 8px; margin-bottom: 8px; }
+.adjustFormRow select, .adjustFormRow input { height: 32px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 7px; padding: 0 9px; font-size: 12px; box-sizing: border-box; }
+.adjustFormRow input[type="text"] { flex: 1; }
+.adjustFormActions { display: flex; justify-content: flex-end; gap: 6px; }
+
+.balanceGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.balanceCell { background: #fafafa; border-radius: 9px; padding: 10px 12px; }
+.balanceCell.highlight { background: #eff6ff; }
+.balanceLabel { font-size: 10.5px; color: #71717a; }
+.balanceValue { font-size: 13px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; color: #18181b; }
+
+.checklist { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.checklistItem { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; }
+.checklistIcon { flex: none; font-size: 13px; }
+.checklistPass .checklistIcon { color: #10b981; }
+.checklistFail .checklistIcon { color: #dc2626; }
+.checklistBody { display: flex; flex-direction: column; gap: 2px; }
+.checklistLabel { color: #3f3f46; font-weight: 500; }
+.checklistFail .checklistLabel { color: #991b1b; }
+.checklistDetail { font-size: 11px; color: #a1a1aa; }
+.checklistFail .checklistDetail { color: #dc2626; }
+
+.linkedItem { display: flex; align-items: center; justify-content: space-between; background: #fafafa; border-radius: 8px; padding: 9px 11px; margin-bottom: 6px; font-size: 12px; color: #3f3f46; }
+
+.approveBtn, .rejectBtn, .executeBtn, .retryBtn { height: 32px; padding: 0 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.approveBtn, .executeBtn, .retryBtn { border: 0; background: var(--accent); color: #fff; }
+.approveBtn:disabled, .executeBtn:disabled { background: #d4d4d8; cursor: not-allowed; }
+.rejectBtn { border: 1px solid #fecaca; background: #fff; color: #dc2626; }
+.rejectBtn:hover { background: #fef2f2; }
+
+.assignSelect { height: 34px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 0 9px; font-size: 12.5px; }
+
+.formField { display: block; margin-bottom: 11px; }
+.formField > span { display: block; margin-bottom: 5px; color: #52525b; font-size: 11.5px; }
+.formField textarea, .formField select, .formField input { width: 100%; box-sizing: border-box; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 7px; padding: 9px; font-size: 12.5px; font: inherit; }
+.formField select, .formField input { height: 33px; padding: 0 9px; }
+
+.toast { position: fixed; right: 24px; bottom: 24px; z-index: 70; padding: 11px 15px; border-radius: 9px; background: #18181b; color: #fff; font-size: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22); }
+
+@media (max-width: 900px) {
+  .summaryGrid { grid-template-columns: 1fr; }
+  .balanceGrid { grid-template-columns: 1fr 1fr; }
+}

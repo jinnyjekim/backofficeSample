@@ -8,7 +8,7 @@ interface Props {
   onToggle: () => void;
 }
 
-type Row = { kind: 'item'; item: NavItem } | { kind: 'section'; header: NavItem; subs: NavItem[] };
+type Row = { kind: 'item'; item: NavItem } | { kind: 'section'; header: NavItem; subs: NavItem[] } | { kind: 'divider'; label: string };
 
 // Maps every item key (header or sub) to the key of the header that owns it,
 // so we can tell which accordion section a given active route belongs to.
@@ -16,6 +16,7 @@ const PARENT_KEY: Record<string, string> = {};
 NAV_GROUPS.forEach((group) => {
   let currentHeader: string | null = null;
   group.items.forEach((item) => {
+    if (item.divider) return;
     if (!item.sub) {
       currentHeader = item.key;
       PARENT_KEY[item.key] = item.key;
@@ -30,6 +31,10 @@ function buildRows(items: NavItem[]): Row[] {
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     if (item.sub) continue;
+    if (item.divider) {
+      rows.push({ kind: 'divider', label: item.label });
+      continue;
+    }
     const subs: NavItem[] = [];
     let j = i + 1;
     while (j < items.length && items[j].sub) {
@@ -55,9 +60,12 @@ export function Sidebar({ open, onToggle }: Props) {
 
   function renderLeaf(item: NavItem, isSub: boolean) {
     const isActive = activeKey === item.key;
+    const Icon = item.icon;
     const content = (
       <>
-        <span className={`${styles.icon} ${isSub ? styles.subIcon : ''}`}>{isSub ? '·' : item.icon}</span>
+        <span className={`${styles.icon} ${isSub ? styles.subIcon : ''}`}>
+          {isSub ? <span className={styles.dot} /> : Icon ? <Icon size={16} strokeWidth={2} /> : null}
+        </span>
         <span className={styles.text}>{open ? item.label : ''}</span>
         <span className={styles.badge}>{open && item.badge ? item.badge : ''}</span>
       </>
@@ -83,6 +91,7 @@ export function Sidebar({ open, onToggle }: Props) {
       .filter(Boolean)
       .join(' ');
 
+    const Icon = header.icon;
     return (
       <button
         key={header.key}
@@ -91,7 +100,7 @@ export function Sidebar({ open, onToggle }: Props) {
         className={cls}
         onClick={() => setOpenKey((prev) => (prev === header.key ? null : header.key))}
       >
-        <span className={styles.icon}>{header.icon}</span>
+        <span className={styles.icon}>{Icon ? <Icon size={16} strokeWidth={2} /> : null}</span>
         <span className={styles.text}>{open ? header.label : ''}</span>
         <span className={styles.badge}>{open && header.badge ? header.badge : ''}</span>
         {open && <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}>›</span>}
@@ -114,8 +123,9 @@ export function Sidebar({ open, onToggle }: Props) {
         {NAV_GROUPS.map((group) => (
           <div key={group.label}>
             {open && <div className={styles.groupLabel}>{group.label}</div>}
-            {buildRows(group.items).map((row) => {
+            {buildRows(group.items).map((row, index) => {
               if (row.kind === 'item') return renderLeaf(row.item, false);
+              if (row.kind === 'divider') return open ? <div key={`div-${index}`} className={styles.groupLabel}>{row.label}</div> : null;
               const isOpen = openKey === row.header.key;
               return (
                 <div key={row.header.key}>
