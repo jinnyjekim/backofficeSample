@@ -77,6 +77,7 @@ import { CouponPolicyPage } from './pages/coupons/CouponPolicyPage';
 import { PointsBalancePage } from './pages/points/PointsBalancePage';
 import { PointLedgerPage } from './pages/points/PointLedgerPage';
 import { PointPolicyPage } from './pages/points/PointPolicyPage';
+import { BrandsListPage } from './pages/brands/BrandsListPage';
 import { DeliveryPrepPage } from './pages/delivery/DeliveryPrepPage';
 import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
@@ -196,7 +197,7 @@ export default function App() {
         <Route path="points/history" element={<PointLedgerPage />} />
         <Route path="points/policy" element={<PointPolicyPage />} />
 
-        <Route path="brands" element={<ModulePlaceholderPage title="브랜드 관리" subtitle="브랜드 정보와 연결 상품, 노출 설정을 관리합니다." icon="◈" />} />
+        <Route path="brands" element={<BrandsListPage />} />
 
         <Route path="reviews" element={<ModulePlaceholderPage title="리뷰 관리" subtitle="상품 리뷰와 신고·숨김 처리를 관리합니다." icon="☆" />} />
 
