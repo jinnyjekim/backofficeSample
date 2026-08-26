@@ -187,7 +187,10 @@ export const NAV_GROUPS: NavGroup[] = [
     label: '분석 · 시스템',
     items: [
       { key: 'stats', icon: BarChart3, label: '통계', to: '/stats/overview' },
-      { key: 'admin', icon: ShieldCheck, label: '관리자' },
+      { key: 'admin', icon: ShieldCheck, label: '관리자', to: '/admin' },
+      { key: 'admin_list', sub: true, label: '관리자 목록', to: '/admin' },
+      { key: 'admin_roles', sub: true, label: '역할 및 권한 관리', to: '/admin/roles' },
+      { key: 'admin_history', sub: true, label: '관리자 이력', to: '/admin/history' },
       { key: 'sys', icon: Settings, label: '시스템' },
       { key: 'log', icon: History, label: '로그' },
     ],
@@ -284,6 +287,10 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   policy_fee: ['서비스 관리 · 거래 정책', '수수료 정책'],
 
   stats: ['분석 · 시스템', '통합 통계'],
+
+  admin_list: ['분석 · 시스템 · 관리자', '관리자 목록'],
+  admin_roles: ['분석 · 시스템 · 관리자', '역할 및 권한 관리'],
+  admin_history: ['분석 · 시스템 · 관리자', '관리자 이력'],
 
   delivery_prep: ['서비스 관리 · 배송 관리', '배송 준비'],
   delivery_outbound_wait: ['서비스 관리 · 배송 관리', '출고 대기'],
@@ -418,6 +425,10 @@ export function activeKeyForPath(pathname: string): string {
 
   if (pathname.startsWith('/brands')) return 'brands';
   if (pathname.startsWith('/reviews')) return 'reviews';
+
+  if (pathname.startsWith('/admin/roles')) return 'admin_roles';
+  if (pathname.startsWith('/admin/history')) return 'admin_history';
+  if (pathname.startsWith('/admin')) return 'admin_list';
 
   return 'members_sub1';
 }
