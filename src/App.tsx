@@ -84,6 +84,7 @@ import { AdminRolesPage } from './pages/admin/AdminRolesPage';
 import { AdminHistoryPage } from './pages/admin/AdminHistoryPage';
 import { ProductInquiriesListPage } from './pages/cs/ProductInquiriesListPage';
 import { ProductInquiryDetailPage } from './pages/cs/ProductInquiryDetailPage';
+import { CartConversionPage } from './pages/cartconversion/CartConversionPage';
 import { DeliveryPrepPage } from './pages/delivery/DeliveryPrepPage';
 import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
@@ -207,6 +208,8 @@ export default function App() {
         <Route path="brands" element={<BrandsListPage />} />
 
         <Route path="reviews" element={<ReviewsListPage />} />
+
+        <Route path="cart-conversion" element={<CartConversionPage />} />
 
         <Route path="admin" element={<AdminsListPage />} />
         <Route path="admin/roles" element={<AdminRolesPage />} />

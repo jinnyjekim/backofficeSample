@@ -27,6 +27,7 @@ import {
   Settings,
   History,
   PiggyBank,
+  ShoppingBag,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -145,6 +146,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'brands', icon: Award, label: '브랜드 관리', to: '/brands' },
 
       { key: 'reviews', icon: Star, label: '리뷰 관리', to: '/reviews' },
+
+      { key: 'cart_conversion', icon: ShoppingBag, label: '장바구니 / 구매 전환', to: '/cart-conversion' },
 
       { key: 'ops', icon: Megaphone, label: '운영 관리', to: '/ops/notices' },
       { key: 'ops_notices', sub: true, label: '공지사항', to: '/ops/notices' },
@@ -325,6 +328,7 @@ export const BREADCRUMB: Record<string, [string, string]> = {
 
   brands: ['서비스 관리', '브랜드 관리'],
   reviews: ['서비스 관리', '리뷰 관리'],
+  cart_conversion: ['서비스 관리', '장바구니 / 구매 전환'],
   points_policy: ['서비스 관리', '포인트 정책'],
 };
 
@@ -439,6 +443,7 @@ export function activeKeyForPath(pathname: string): string {
 
   if (pathname.startsWith('/brands')) return 'brands';
   if (pathname.startsWith('/reviews')) return 'reviews';
+  if (pathname.startsWith('/cart-conversion')) return 'cart_conversion';
 
   if (pathname.startsWith('/admin/roles')) return 'admin_roles';
   if (pathname.startsWith('/admin/history')) return 'admin_history';
