@@ -222,13 +222,13 @@ export function MembersPage() {
 
             <div className={`${styles.stepLabel} ${styles.step2}`}>
               <span className={styles.stepNum}>2</span>
-              <span className={styles.stepTitle}>세그먼트 · 내보내기</span>
-              <span className={styles.stepHint}>조건에 걸린 회원의 구성을 확인하고 그대로 추출합니다</span>
+              <span className={styles.stepTitle}>조건 결과 확인 · 내보내기</span>
+              <span className={styles.stepHint}>위 조건에 해당하는 회원 수와 구성을 확인하고 그대로 추출합니다</span>
             </div>
 
             <div className={styles.segBand}>
               <div className={`${styles.segCell} ${styles.segCount}`}>
-                <div className={styles.segCellLabel}>현재 세그먼트</div>
+                <div className={styles.segCellLabel}>조건에 맞는 회원</div>
                 <div className={styles.segCountRow}>
                   <span className={styles.segCountValue}>{formatNumber(rows.length)}</span>
                   <span className={styles.segCountUnit}>명</span>
