@@ -55,9 +55,8 @@ export interface SparkBar {
 }
 export interface SparkResult {
   bars: SparkBar[];
-  recent: number;
-  trendLabel: string;
-  trendColor: string;
+  recentLabel: string;
+  shareLabel: string;
 }
 
 export function buildSpark(rows: Member[]): SparkResult {
@@ -72,20 +71,13 @@ export function buildSpark(rows: Member[]): SparkResult {
     color: count ? (i >= 11 ? ACCENT : 'oklch(0.78 0.07 258)') : '#ececef',
     title: `${13 - i}일 전 · ${count}명`,
   }));
-  const recent7 = buckets.slice(7).reduce((a, b) => a + b, 0);
-  const prior7 = buckets.slice(0, 7).reduce((a, b) => a + b, 0);
   const recent = buckets.reduce((a, b) => a + b, 0);
-  let trendLabel = '';
-  let trendColor = '#a1a1aa';
-  if (prior7 === 0 && recent7 > 0) {
-    trendLabel = '▲ 신규';
-    trendColor = GREEN_STRONG;
-  } else if (prior7 > 0) {
-    const pct = Math.round(((recent7 - prior7) / prior7) * 100);
-    trendLabel = pct === 0 ? '' : `${pct > 0 ? '▲' : '▼'} ${Math.abs(pct)}%`;
-    trendColor = pct > 0 ? GREEN_STRONG : pct < 0 ? RED : '#a1a1aa';
-  }
-  return { bars, recent, trendLabel, trendColor };
+  const pct = rows.length ? Math.round((recent / rows.length) * 100) : 0;
+  return {
+    bars,
+    recentLabel: `${recent}명`,
+    shareLabel: rows.length ? `세그먼트의 ${pct}%` : '',
+  };
 }
 
 export const STATS = [

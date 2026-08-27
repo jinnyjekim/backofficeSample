@@ -427,71 +427,100 @@
   gap: 2px;
   margin-bottom: 9px;
 }
-.mixLegend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.mixLegendItem {
+.segCellHead {
   display: flex;
   align-items: center;
   gap: 6px;
+  margin-bottom: 9px;
 }
-.mixDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 2px;
-}
-.mixLabel {
-  font-size: 12px;
-  color: #3f3f46;
-}
-.mixCount {
-  font-size: 12px;
-  color: #18181b;
-  font-weight: 600;
+.segCellHint {
+  font-size: 10.5px;
+  color: #a1a1aa;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+  margin-left: auto;
   font-variant-numeric: tabular-nums;
 }
 
-.channelRow {
+.barRows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.barRow {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  background: transparent;
   border: 0;
-  padding: 0;
+  background: transparent;
+  padding: 2px 3px;
+  border-radius: 6px;
   width: 100%;
   text-align: left;
+  cursor: pointer;
 }
-.channelRow:hover {
-  opacity: 0.7;
+.barRow:hover {
+  background: #fafafa;
 }
-.channelLabel {
-  font-size: 12px;
-  color: #3f3f46;
-  width: 46px;
+.barDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
   flex: none;
 }
-.channelTrack {
+.barLabel {
+  font-size: 12px;
+  color: #3f3f46;
+  flex: none;
+}
+.barTrack {
   flex: 1;
-  height: 5px;
-  border-radius: 3px;
+  height: 4px;
+  border-radius: 2px;
   background: #f4f4f5;
   overflow: hidden;
   display: block;
 }
-.channelFill {
+.barFill {
   display: block;
-  height: 5px;
+  height: 4px;
 }
-.channelCount {
-  font-size: 11px;
+.barCount {
+  font-size: 11.5px;
+  color: #18181b;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  width: 20px;
+  text-align: right;
+  flex: none;
+}
+.barShare {
+  font-size: 10.5px;
   color: #a1a1aa;
   font-variant-numeric: tabular-nums;
-  width: 18px;
+  width: 30px;
   text-align: right;
+  flex: none;
+}
+
+.segCellNote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: 8px;
+  padding-top: 8px;
+  font-size: 10.5px;
+  color: #8b8b93;
+  line-height: 1.35;
+  word-break: keep-all;
+}
+.segCellNoteDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex: none;
 }
 
 .segExport {

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styles from './MembersPage.module.css';
 import { MEMBERS, type Member } from '../../data/members';
-import { ACCENT, STATUS_STYLE, avatarColors, formatNumber } from '../../lib/theme';
+import { ACCENT, AMBER, GREEN, STATUS_STYLE, avatarColors, formatNumber } from '../../lib/theme';
 import { ADDABLE, buildSpark, CHANNEL_ORDER, STATS, TOTAL_MEMBERS, VIEW_LABELS, viewCount, type Chip, type ViewKey } from './membersData';
 import { MemberDetailDrawer } from './MemberDetailDrawer';
 import { buildMemberDetail, defaultTier, type Tier } from './memberDetail';
@@ -65,19 +65,51 @@ export function MembersPage() {
   const hasChips = chips.length > 0 || q.length > 0;
 
   const mix = useMemo(() => {
-    return (['정상', '휴면', '정지', '탈퇴'] as const)
+    const base = (['정상', '휴면', '정지', '탈퇴'] as const)
       .map((k) => ({ label: k, count: rows.filter((r) => r.status === k).length, color: STATUS_STYLE[k].dot }))
-      .filter((x) => x.count > 0)
-      .map((x) => ({ ...x, pct: rows.length ? (x.count / rows.length) * 100 : 0 }));
+      .filter((x) => x.count > 0);
+    const max = Math.max(1, ...base.map((x) => x.count));
+    return base.map((x) => ({
+      ...x,
+      pct: rows.length ? (x.count / rows.length) * 100 : 0,
+      rel: (x.count / max) * 100,
+      share: rows.length ? `${Math.round((x.count / rows.length) * 100)}%` : '0%',
+    }));
+  }, [rows]);
+
+  const mixNote = useMemo(() => {
+    if (!rows.length) return { text: '조건에 맞는 회원이 없습니다', dot: '#d4d4d8' };
+    const risk = rows.filter((r) => r.status === '정지' || r.status === '휴면').length;
+    if (risk > 0) return { text: `주의 상태 ${risk}명 (정지·휴면) — 확인이 필요합니다`, dot: AMBER };
+    return { text: '정지·휴면 회원이 없습니다', dot: GREEN };
   }, [rows]);
 
   const channels = useMemo(() => {
     const chMax = Math.max(1, ...CHANNEL_ORDER.map((p) => rows.filter((r) => r.provider === p).length));
     return CHANNEL_ORDER.map((p) => {
       const count = rows.filter((r) => r.provider === p).length;
-      return { label: p, count, pct: (count / chMax) * 100, color: count ? ACCENT : '#e4e4e7' };
+      return {
+        label: p,
+        count,
+        pct: (count / chMax) * 100,
+        color: count ? ACCENT : '#e4e4e7',
+        share: rows.length ? `${Math.round((count / rows.length) * 100)}%` : '0%',
+      };
     });
   }, [rows]);
+
+  const channelNote = useMemo(() => {
+    if (!rows.length) return { top: '', text: '' };
+    const top = channels.reduce((a, b) => (b.count > a.count ? b : a), channels[0]);
+    const topShare = Math.round((top.count / rows.length) * 100);
+    const email = rows.filter((r) => r.provider === 'Email').length;
+    const social = rows.length - email;
+    const socialPct = Math.round((social / rows.length) * 100);
+    return {
+      top: top.count ? `${top.label} ${topShare}%` : '',
+      text: `소셜 로그인 ${socialPct}% · 이메일 ${email}명`,
+    };
+  }, [rows, channels]);
 
   const segParts = useMemo(() => {
     const parts: string[] = [];
@@ -102,6 +134,10 @@ export function MembersPage() {
   }
   function removeChip(i: number) {
     setChips((prev) => prev.filter((_, j) => j !== i));
+    setSel([]);
+  }
+  function pickStatus(v: string) {
+    setChips((prev) => prev.filter((c) => c.field !== 'status').concat([{ field: 'status', value: v, hint: '상태', label: `상태 = ${v}` }]));
     setSel([]);
   }
   function pickChannel(p: string) {
@@ -248,8 +284,8 @@ export function MembersPage() {
                   <div className={styles.segSparkHead}>
                     <span>최근 14일 접속</span>
                     <span className={styles.segSparkStat}>
-                      <span className={styles.segSparkCount}>{spark.recent}</span>
-                      {spark.trendLabel && <span style={{ color: spark.trendColor }}>{spark.trendLabel}</span>}
+                      <span className={styles.segSparkCount}>{spark.recentLabel}</span>
+                      {spark.shareLabel && <span>{spark.shareLabel}</span>}
                     </span>
                   </div>
                   <div className={styles.segSparkBars}>
@@ -261,34 +297,54 @@ export function MembersPage() {
               </div>
 
               <div className={`${styles.segCell} ${styles.segMix}`}>
-                <div className={styles.segCellLabel} style={{ marginBottom: 9 }}>상태 구성</div>
+                <div className={styles.segCellHead}>
+                  <span className={styles.segCellLabel}>상태 구성</span>
+                  <span className={styles.segCellHint}>클릭해 조건 추가</span>
+                </div>
                 <div className={styles.mixBar}>
                   {mix.map((m) => (
                     <div key={m.label} style={{ width: `${m.pct}%`, background: m.color }} />
                   ))}
                 </div>
-                <div className={styles.mixLegend}>
+                <div className={styles.barRows}>
                   {mix.map((m) => (
-                    <div className={styles.mixLegendItem} key={m.label}>
-                      <span className={styles.mixDot} style={{ background: m.color }} />
-                      <span className={styles.mixLabel}>{m.label}</span>
-                      <span className={styles.mixCount}>{m.count}</span>
-                    </div>
+                    <button type="button" className={styles.barRow} key={m.label} onClick={() => pickStatus(m.label)}>
+                      <span className={styles.barDot} style={{ background: m.color }} />
+                      <span className={styles.barLabel} style={{ width: 32 }}>{m.label}</span>
+                      <span className={styles.barTrack}>
+                        <span className={styles.barFill} style={{ width: `${m.rel}%`, background: m.color, opacity: 0.75 }} />
+                      </span>
+                      <span className={styles.barCount}>{m.count}</span>
+                      <span className={styles.barShare}>{m.share}</span>
+                    </button>
                   ))}
+                </div>
+                <div className={styles.segCellNote}>
+                  <span className={styles.segCellNoteDot} style={{ background: mixNote.dot }} />
+                  <span>{mixNote.text}</span>
                 </div>
               </div>
 
               <div className={`${styles.segCell} ${styles.segChannel}`}>
-                <div className={styles.segCellLabel} style={{ marginBottom: 9 }}>가입 경로</div>
-                {channels.map((c) => (
-                  <button type="button" className={styles.channelRow} key={c.label} onClick={() => pickChannel(c.label)}>
-                    <span className={styles.channelLabel}>{c.label}</span>
-                    <span className={styles.channelTrack}>
-                      <span className={styles.channelFill} style={{ width: `${c.pct}%`, background: c.color }} />
-                    </span>
-                    <span className={styles.channelCount}>{c.count}</span>
-                  </button>
-                ))}
+                <div className={styles.segCellHead}>
+                  <span className={styles.segCellLabel}>가입 경로</span>
+                  {channelNote.top && <span className={styles.segCellHint}>{channelNote.top}</span>}
+                </div>
+                <div className={styles.barRows}>
+                  {channels.map((c) => (
+                    <button type="button" className={styles.barRow} key={c.label} onClick={() => pickChannel(c.label)}>
+                      <span className={styles.barLabel} style={{ width: 44 }}>{c.label}</span>
+                      <span className={styles.barTrack}>
+                        <span className={styles.barFill} style={{ width: `${c.pct}%`, background: c.color }} />
+                      </span>
+                      <span className={styles.barCount}>{c.count}</span>
+                      <span className={styles.barShare}>{c.share}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className={styles.segCellNote}>
+                  <span>{channelNote.text}</span>
+                </div>
               </div>
 
               <div className={`${styles.segCell} ${styles.segExport}`}>
