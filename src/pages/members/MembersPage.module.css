@@ -292,62 +292,65 @@
 }
 
 .segBand {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  gap: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1px;
   margin: 0 0 10px;
-  background: #fff;
+  background: rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 11px;
+  border-radius: 12px;
   overflow: hidden;
 }
 .segCell {
-  padding: 12px 14px;
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fff;
+  padding: 14px 16px;
 }
 .segCellLabel {
-  font-size: 11px;
-  color: #71717a;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-size: 10.5px;
+  color: #8b8b93;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .segCount {
-  flex: 1 1 180px;
-  min-width: 172px;
+  background: linear-gradient(180deg, oklch(0.52 0.16 258 / 6%), oklch(0.52 0.16 258 / 1.5%));
 }
 .segCountRow {
   display: flex;
-  align-items: baseline;
-  gap: 6px;
-  margin-top: 5px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
 }
 .segCountValue {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 27px;
+  font-weight: 800;
   letter-spacing: -0.03em;
+  color: #18181b;
   font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 .segCountUnit {
-  font-size: 12px;
+  font-size: 12.5px;
   color: #71717a;
+  font-weight: 500;
+  margin-left: -3px;
 }
 .segCountShare {
-  font-size: 11px;
-  color: #a1a1aa;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent);
+  background: oklch(0.52 0.16 258 / 11%);
+  padding: 3px 8px;
+  border-radius: 999px;
   font-variant-numeric: tabular-nums;
 }
 .segCountDesc {
   font-size: 11.5px;
   color: #52525b;
-  margin-top: 5px;
+  margin-top: 8px;
   line-height: 1.45;
 }
 
-.segMix {
-  flex: 2 1 230px;
-  min-width: 200px;
-}
 .mixBar {
   display: flex;
   height: 7px;
@@ -383,10 +386,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.segChannel {
-  flex: 1 1 190px;
-  min-width: 180px;
-}
 .channelRow {
   display: flex;
   align-items: center;
@@ -429,12 +428,9 @@
 }
 
 .segExport {
-  flex: 1 1 176px;
-  min-width: 168px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-right: none;
 }
 .segExportHint {
   font-size: 11.5px;
