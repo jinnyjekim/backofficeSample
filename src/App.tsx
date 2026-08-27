@@ -99,6 +99,25 @@ import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
 import { InTransitPage } from './pages/delivery/InTransitPage';
 import { DeliveryCompletePage } from './pages/delivery/DeliveryCompletePage';
+import { SellerListPage } from './pages/c2c/sales/SellerListPage';
+import { SalesStatusPage } from './pages/c2c/sales/SalesStatusPage';
+import { SellerProductsPage as UserProductListPage } from './pages/c2c/sales/SellerProductsPage';
+import { SalesTradesPage } from './pages/c2c/sales/SalesTradesPage';
+import { SalesPerformancePage } from './pages/c2c/sales/SalesPerformancePage';
+import { SalesActivityHistoryPage } from './pages/c2c/sales/SalesActivityHistoryPage';
+import { PurchaseHistoryPage } from './pages/c2c/purchases/PurchaseHistoryPage';
+import { PurchaseCancelPage } from './pages/c2c/purchases/PurchaseCancelPage';
+import { PurchaseDisputesPage } from './pages/c2c/purchases/PurchaseDisputesPage';
+import { DisputeHistoryPage } from './pages/c2c/purchases/DisputeHistoryPage';
+import { PurchaseActivityHistoryPage } from './pages/c2c/purchases/PurchaseActivityHistoryPage';
+import { UserProductHistoryPage, UserProductModerationPage, UserProductReviewPage } from './pages/c2c/products/UserProductWorkflowPages';
+import { TradeHoldManagementPage, TradeRiskMonitoringPage } from './pages/c2c/safety/TradeSafetyPages';
+import { C2CSettlementManagementPage, ProceedsLedgerPage, ProceedsOverviewPage, WithdrawalManagementPage } from './pages/c2c/proceeds/ProceedsPages';
+import { ReportHistoryPage, ReportProcessingPage } from './pages/c2c/reports/ReportManagementPages';
+import { SanctionHistoryPage, SanctionPolicyPage, SanctionProcessingPage } from './pages/c2c/sanctions/SanctionManagementPages';
+import { ChatAccessHistoryPage, ChatListPage, MessagePolicyPage } from './pages/c2c/chat/ChatManagementPages';
+import { VerificationHistoryPage, VerificationPolicyPage, VerificationReviewPage } from './pages/c2c/verification/VerificationManagementPages';
+import { DetectionHistoryPage, DetectionRulePage, ProductPolicyPage } from './pages/c2c/productPolicy/ProductPolicyManagementPages';
 
 export default function App() {
   return (
@@ -106,8 +125,109 @@ export default function App() {
       <Route element={<Shell />}>
         <Route index element={<Navigate to="/members" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="b2c/product-inquiries/list" element={<Navigate to="/cs/product-inquiries" replace />} />
+        <Route path="b2c/product-inquiries/waiting" element={<Navigate to="/cs/product-inquiries?status=waiting" replace />} />
+        <Route path="b2c/product-inquiries/answered" element={<Navigate to="/cs/product-inquiries?status=answered" replace />} />
+        <Route path="b2c/product-inquiries/detail" element={<Navigate to="/cs/product-inquiries" replace />} />
+        <Route path="b2c/product-inquiries/history" element={<Navigate to="/cs/product-inquiries" replace />} />
+        <Route path="b2c/product-inquiries/:id" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="b2c/*" element={<BusinessModulePage />} />
-        <Route path="b2c/product-inquiries/list" element={<ProductInquiriesListPage />} />
+        <Route path="c2c/sales/sellers" element={<SellerListPage />} />
+        <Route path="c2c/sales/status" element={<SalesStatusPage />} />
+        <Route path="c2c/sales/products" element={<Navigate to="/c2c/products/list" replace />} />
+        <Route path="c2c/sales/trades" element={<SalesTradesPage />} />
+        <Route path="c2c/sales/performance" element={<SalesPerformancePage />} />
+        <Route path="c2c/sales/restrictions" element={<Navigate to="/c2c/sanctions/processing?type=sales" replace />} />
+        <Route path="c2c/sales/history" element={<SalesActivityHistoryPage />} />
+        <Route path="c2c/purchases/history" element={<PurchaseHistoryPage />} />
+        <Route path="c2c/purchases/cancel" element={<PurchaseCancelPage />} />
+        <Route path="c2c/purchases/disputes" element={<Navigate to="/c2c/disputes/processing" replace />} />
+        <Route path="c2c/purchases/activity" element={<PurchaseActivityHistoryPage />} />
+        <Route path="c2c/products/list" element={<UserProductListPage />} />
+        <Route path="c2c/products/review" element={<UserProductReviewPage />} />
+        <Route path="c2c/products/moderation" element={<UserProductModerationPage />} />
+        <Route path="c2c/products/history" element={<UserProductHistoryPage />} />
+        <Route path="c2c/products/registered" element={<Navigate to="/c2c/products/list" replace />} />
+        <Route path="c2c/products/pending" element={<Navigate to="/c2c/products/review" replace />} />
+        <Route path="c2c/products/approved" element={<Navigate to="/c2c/products/list" replace />} />
+        <Route path="c2c/products/rejected" element={<Navigate to="/c2c/products/review" replace />} />
+        <Route path="c2c/products/sold" element={<Navigate to="/c2c/products/list" replace />} />
+        <Route path="c2c/products/hidden" element={<Navigate to="/c2c/products/moderation" replace />} />
+        <Route path="c2c/products/deleted" element={<Navigate to="/c2c/products/moderation" replace />} />
+        <Route path="c2c/restricted-products/prohibited" element={<Navigate to="/c2c/product-policy/policies?level=prohibited" replace />} />
+        <Route path="c2c/restricted-products/limited" element={<Navigate to="/c2c/product-policy/policies?level=limited" replace />} />
+        <Route path="c2c/restricted-products/reported" element={<Navigate to="/c2c/reports/products" replace />} />
+        <Route path="c2c/restricted-products/detected" element={<Navigate to="/c2c/products/moderation" replace />} />
+        <Route path="c2c/restricted-products/history" element={<Navigate to="/c2c/product-policy/detection-history" replace />} />
+        <Route path="c2c/product-policy/policies" element={<ProductPolicyPage />} />
+        <Route path="c2c/product-policy/detection-rules" element={<DetectionRulePage />} />
+        <Route path="c2c/product-policy/detection-history" element={<DetectionHistoryPage />} />
+        <Route path="c2c/product-policy/prohibited" element={<Navigate to="/c2c/product-policy/policies?level=prohibited" replace />} />
+        <Route path="c2c/product-policy/limited" element={<Navigate to="/c2c/product-policy/policies?level=limited" replace />} />
+        <Route path="c2c/safety/monitoring" element={<TradeRiskMonitoringPage />} />
+        <Route path="c2c/safety/holds" element={<TradeHoldManagementPage />} />
+        <Route path="c2c/safety/anomalies" element={<Navigate to="/c2c/safety/monitoring" replace />} />
+        <Route path="c2c/safety/cancels" element={<Navigate to="/c2c/safety/monitoring?signal=cancels" replace />} />
+        <Route path="c2c/safety/reports" element={<Navigate to="/c2c/safety/monitoring?signal=reports" replace />} />
+        <Route path="c2c/safety/abnormal" element={<Navigate to="/c2c/safety/monitoring?signal=abnormal" replace />} />
+        <Route path="c2c/safety/accounts" element={<Navigate to="/c2c/safety/monitoring?signal=accounts" replace />} />
+        <Route path="c2c/proceeds/overview" element={<ProceedsOverviewPage />} />
+        <Route path="c2c/proceeds/settlements" element={<C2CSettlementManagementPage />} />
+        <Route path="c2c/proceeds/withdrawals" element={<WithdrawalManagementPage />} />
+        <Route path="c2c/proceeds/ledger" element={<ProceedsLedgerPage />} />
+        <Route path="c2c/proceeds/status" element={<Navigate to="/c2c/proceeds/overview" replace />} />
+        <Route path="c2c/proceeds/scheduled" element={<Navigate to="/c2c/proceeds/overview?balance=scheduled" replace />} />
+        <Route path="c2c/proceeds/available" element={<Navigate to="/c2c/proceeds/overview?balance=available" replace />} />
+        <Route path="c2c/proceeds/requests" element={<Navigate to="/c2c/proceeds/withdrawals?status=requested" replace />} />
+        <Route path="c2c/proceeds/completed" element={<Navigate to="/c2c/proceeds/withdrawals?status=completed" replace />} />
+        <Route path="c2c/proceeds/holds" element={<Navigate to="/c2c/proceeds/overview?balance=held" replace />} />
+        <Route path="c2c/proceeds/history" element={<Navigate to="/c2c/proceeds/ledger" replace />} />
+        <Route path="c2c/settlement/sellers" element={<Navigate to="/c2c/proceeds/settlements" replace />} />
+        <Route path="c2c/settlement/trades" element={<Navigate to="/c2c/proceeds/settlements" replace />} />
+        <Route path="c2c/settlement/fees" element={<Navigate to="/c2c/proceeds/settlements" replace />} />
+        <Route path="c2c/settlement/holds" element={<Navigate to="/c2c/proceeds/settlements?status=held" replace />} />
+        <Route path="c2c/settlement/confirmed" element={<Navigate to="/c2c/proceeds/settlements?status=confirmed" replace />} />
+        <Route path="c2c/settlement/history" element={<Navigate to="/c2c/proceeds/ledger?type=settlement" replace />} />
+        <Route path="c2c/reports/processing" element={<ReportProcessingPage />} />
+        <Route path="c2c/reports/history" element={<ReportHistoryPage />} />
+        <Route path="c2c/disputes/processing" element={<PurchaseDisputesPage />} />
+        <Route path="c2c/disputes/history" element={<DisputeHistoryPage />} />
+        <Route path="c2c/disputes/received" element={<Navigate to="/c2c/disputes/processing?status=received" replace />} />
+        <Route path="c2c/disputes/review" element={<Navigate to="/c2c/disputes/processing?status=review" replace />} />
+        <Route path="c2c/disputes/buyer" element={<Navigate to="/c2c/disputes/processing" replace />} />
+        <Route path="c2c/disputes/seller" element={<Navigate to="/c2c/disputes/processing" replace />} />
+        <Route path="c2c/disputes/evidence" element={<Navigate to="/c2c/disputes/processing?status=evidence" replace />} />
+        <Route path="c2c/disputes/decision" element={<Navigate to="/c2c/disputes/processing?status=decision" replace />} />
+        <Route path="c2c/disputes/completed" element={<Navigate to="/c2c/disputes/processing?status=completed" replace />} />
+        <Route path="c2c/sanctions/processing" element={<SanctionProcessingPage />} />
+        <Route path="c2c/sanctions/policies" element={<SanctionPolicyPage />} />
+        <Route path="c2c/sanctions/history" element={<SanctionHistoryPage />} />
+        <Route path="c2c/sanctions/warnings" element={<Navigate to="/c2c/sanctions/processing?type=warning" replace />} />
+        <Route path="c2c/sanctions/products" element={<Navigate to="/c2c/sanctions/processing?type=products" replace />} />
+        <Route path="c2c/sanctions/sales" element={<Navigate to="/c2c/sanctions/processing?type=sales" replace />} />
+        <Route path="c2c/sanctions/purchases" element={<Navigate to="/c2c/sanctions/processing?type=purchases" replace />} />
+        <Route path="c2c/sanctions/chat" element={<Navigate to="/c2c/sanctions/processing?type=chat" replace />} />
+        <Route path="c2c/sanctions/temporary" element={<Navigate to="/c2c/sanctions/processing?term=temporary" replace />} />
+        <Route path="c2c/sanctions/permanent" element={<Navigate to="/c2c/sanctions/processing?type=account&term=permanent" replace />} />
+        <Route path="c2c/chat/list" element={<ChatListPage />} />
+        <Route path="c2c/chat/policies" element={<MessagePolicyPage />} />
+        <Route path="c2c/chat/audit" element={<ChatAccessHistoryPage />} />
+        <Route path="c2c/chat/restricted" element={<Navigate to="/c2c/chat/policies" replace />} />
+        <Route path="c2c/verification/review" element={<VerificationReviewPage />} />
+        <Route path="c2c/verification/policies" element={<VerificationPolicyPage />} />
+        <Route path="c2c/verification/history" element={<VerificationHistoryPage />} />
+        <Route path="c2c/verification/status" element={<Navigate to="/c2c/verification/review" replace />} />
+        <Route path="c2c/verification/failed" element={<Navigate to="/c2c/verification/review?status=failed" replace />} />
+        <Route path="c2c/verification/retry" element={<Navigate to="/c2c/verification/review?purpose=reverification" replace />} />
+        <Route path="c2c/verification/sellers" element={<Navigate to="/c2c/verification/review?purpose=seller" replace />} />
+        <Route path="c2c/reports/members" element={<Navigate to="/c2c/reports/processing?target=members" replace />} />
+        <Route path="c2c/reports/products" element={<Navigate to="/c2c/reports/processing?target=products" replace />} />
+        <Route path="c2c/reports/trades" element={<Navigate to="/c2c/reports/processing?target=trades" replace />} />
+        <Route path="c2c/reports/messages" element={<Navigate to="/c2c/reports/processing?target=messages" replace />} />
+        <Route path="c2c/reports/reviews" element={<Navigate to="/c2c/reports/processing?target=reviews" replace />} />
+        <Route path="c2c/reports/pending" element={<Navigate to="/c2c/reports/processing?status=pending" replace />} />
+        <Route path="c2c/reports/completed" element={<Navigate to="/c2c/reports/processing?status=completed" replace />} />
+        <Route path="c2c/chat/reported" element={<Navigate to="/c2c/reports/processing?target=messages" replace />} />
         <Route path="c2c/*" element={<BusinessModulePage />} />
         <Route path="members" element={<MembersPage />} />
         <Route path="members/left" element={<RecordsPage kind="left" />} />

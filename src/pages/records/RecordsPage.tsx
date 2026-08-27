@@ -7,6 +7,7 @@ import { RecordDetailDrawer } from './RecordDetailDrawer';
 import { SanctionModal, type SanctionSubmit } from './SanctionModal';
 import { SANCTION_LEVEL, type SanctionMode } from './sanctionOptions';
 import { formatNumber } from '../../lib/theme';
+import { SearchField } from '../../components/SearchField';
 
 const PAGE_LABELS = ['‹', '1', '2', '3', '4', '5', '›'];
 
@@ -144,15 +145,11 @@ export function RecordsPage({ kind }: Props) {
           </div>
 
           <div className={styles.conditionBar}>
-            <div className={styles.searchBox}>
-              <span className={styles.searchIcon}>⌕</span>
-              <input
-                className={styles.searchInput}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={rec.placeholder}
-              />
-            </div>
+            <SearchField
+              value={query}
+              onValueChange={setQuery}
+              placeholder={rec.placeholder}
+            />
             {rec.filters.map((f) => (
               <button
                 key={f.label}

@@ -1,0 +1,59 @@
+.field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  flex: 1;
+  min-width: 280px;
+  max-width: 520px;
+  padding: 0 11px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 9px;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.field:focus-within {
+  border-color: oklch(0.6 0.14 258);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.08);
+}
+
+.icon {
+  flex: none;
+  color: #a1a1aa;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  font-size: 13px;
+  color: #18181b;
+  background: transparent;
+}
+
+.input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.input::placeholder {
+  color: #a1a1aa;
+}
+
+.shortcut {
+  flex: none;
+  padding: 1px 5px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  color: #a1a1aa;
+  font-size: 10px;
+}
+
+@media (max-width: 720px) {
+  .field {
+    min-width: 100%;
+    max-width: none;
+  }
+}

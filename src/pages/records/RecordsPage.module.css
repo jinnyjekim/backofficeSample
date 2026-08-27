@@ -133,31 +133,6 @@
   border-radius: 11px;
   padding: 10px 12px;
 }
-.searchBox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 34px;
-  flex: 1;
-  min-width: 260px;
-  max-width: 460px;
-  background: #fafafa;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 9px;
-  padding: 0 11px;
-}
-.searchIcon {
-  color: #a1a1aa;
-  font-size: 12.5px;
-}
-.searchInput {
-  flex: 1;
-  border: 0;
-  outline: 0;
-  font-size: 13px;
-  color: #18181b;
-  background: transparent;
-}
 .filterBtn {
   height: 34px;
   display: flex;

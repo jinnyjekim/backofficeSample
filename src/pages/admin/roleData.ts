@@ -31,7 +31,7 @@ export const MENU_TREE: MenuGroup[] = [
     { id: 'content_list', label: '콘텐츠 목록' },
     { id: 'content_review', label: '검수 관리' },
   ] },
-  { id: 'settlement', label: '정산 관리', children: [
+  { id: 'settlement', label: '거래처 정산 관리', children: [
     { id: 'settlement_list', label: '정산 목록' },
     { id: 'settlement_tx', label: '정산 거래 내역' },
   ] },
