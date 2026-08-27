@@ -73,11 +73,7 @@ function CellView({ cell }: { cell: Cell }) {
         </div>
       );
     case 'link':
-      return (
-        <span className={styles.link} style={{ fontSize: cell.size ?? '12px' }}>
-          {cell.text}
-        </span>
-      );
+      return <span className={styles.link}>{cell.text}</span>;
     case 'progress':
       return (
         <div className={styles.progressWrap}>
