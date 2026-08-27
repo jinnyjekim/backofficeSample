@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState, type CSSProperties } from 'react';
 import styles from './EventsPage.module.css';
 import { EventPreviewDialog } from './EventPreviewDialog';
@@ -213,10 +214,10 @@ export function EventEditorPage({ event, onCancel, onSubmit }: Props) {
           <section className={styles.sectionCard}>
             <div className={styles.sectionHeading}><div><div className={styles.sectionTitle}>기간 설정</div><div className={styles.sectionDesc}>참여기간과 페이지 노출기간을 독립적으로 관리합니다.</div></div></div>
             <div className={styles.formGrid}>
-              <label className={styles.field}><span className={styles.label}>이벤트 시작 <span className={styles.required}>*</span></span><input type="datetime-local" className={styles.input} value={form.eventStartAt} onChange={(e) => setField('eventStartAt', e.target.value)} /></label>
-              <label className={styles.field}><span className={styles.label}>이벤트 종료 <span className={styles.required}>*</span></span><input type="datetime-local" className={styles.input} value={form.eventEndAt} onChange={(e) => setField('eventEndAt', e.target.value)} /></label>
-              <label className={styles.field}><span className={styles.label}>페이지 노출 시작</span><input type="datetime-local" className={styles.input} value={form.displayStartAt} onChange={(e) => setField('displayStartAt', e.target.value)} /></label>
-              <label className={styles.field}><span className={styles.label}>페이지 노출 종료</span><input type="datetime-local" className={styles.input} value={form.displayEndAt} onChange={(e) => setField('displayEndAt', e.target.value)} /></label>
+              <label className={styles.field}><span className={styles.label}>이벤트 시작 <span className={styles.required}>*</span></span><DatePicker mode="datetime-local" className={styles.input} value={form.eventStartAt} onChange={(e) => setField('eventStartAt', e.target.value)} /></label>
+              <label className={styles.field}><span className={styles.label}>이벤트 종료 <span className={styles.required}>*</span></span><DatePicker mode="datetime-local" className={styles.input} value={form.eventEndAt} onChange={(e) => setField('eventEndAt', e.target.value)} /></label>
+              <label className={styles.field}><span className={styles.label}>페이지 노출 시작</span><DatePicker mode="datetime-local" className={styles.input} value={form.displayStartAt} onChange={(e) => setField('displayStartAt', e.target.value)} /></label>
+              <label className={styles.field}><span className={styles.label}>페이지 노출 종료</span><DatePicker mode="datetime-local" className={styles.input} value={form.displayEndAt} onChange={(e) => setField('displayEndAt', e.target.value)} /></label>
             </div>
             {displayWarning && <div className={styles.warning}>⚠ 이벤트 종료 전에 페이지 노출이 종료됩니다. 참여 중인 사용자가 이벤트 페이지를 확인할 수 없는 기간이 생깁니다.</div>}
           </section>
@@ -252,7 +253,7 @@ export function EventEditorPage({ event, onCancel, onSubmit }: Props) {
             <div className={styles.sectionHeading}><div><div className={styles.sectionTitle}>응모 / 당첨 설정</div><div className={styles.sectionDesc}>이벤트 상태와 당첨 처리 상태는 별도로 관리됩니다.</div></div></div>
             <div className={styles.formGrid}>
               <label className={styles.field}><span className={styles.label}>당첨 인원</span><input type="number" min="1" className={styles.input} value={form.plannedWinners} onChange={(e) => setField('plannedWinners', Number(e.target.value))} /></label>
-              <label className={styles.field}><span className={styles.label}>당첨 발표일</span><input type="datetime-local" className={styles.input} value={form.announcementAt} onChange={(e) => setField('announcementAt', e.target.value)} /></label>
+              <label className={styles.field}><span className={styles.label}>당첨 발표일</span><DatePicker mode="datetime-local" className={styles.input} value={form.announcementAt} onChange={(e) => setField('announcementAt', e.target.value)} /></label>
               <label className={styles.field}><span className={styles.label}>당첨 방식</span><select className={styles.select} value={form.selectionMethod} onChange={(e) => setField('selectionMethod', e.target.value as '수동' | '랜덤 추첨')}><option>수동</option><option>랜덤 추첨</option></select></label>
             </div>
           </section>}

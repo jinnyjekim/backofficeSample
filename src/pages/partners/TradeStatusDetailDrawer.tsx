@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useRef, useState } from 'react';
 import styles from './TradeStatusDetailDrawer.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
@@ -187,8 +188,7 @@ export function TradeStatusDetailDrawer({ record, onClose, onChangeStatus, onCan
               </label>
             </div>
             {mode === '예약' && (
-              <input
-                type="date"
+              <DatePicker
                 className={styles.dateInput}
                 value={applyDate}
                 onChange={(e) => setApplyDate(e.target.value)}

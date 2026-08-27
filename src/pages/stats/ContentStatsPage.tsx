@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
@@ -160,9 +161,9 @@ export function ContentStatsPage() {
 
       <div className={styles.filterBar}>
         <div className={styles.filterRow}>
-          <input type="date" className={styles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
+          <DatePicker className={styles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
           <span className={styles.tilde}>~</span>
-          <input type="date" className={styles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
+          <DatePicker className={styles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
           <button type="button" className={styles.applyBtn} onClick={applyCustom}>조회</button>
           <label className={styles.compareCheck}>
             <input type="checkbox" checked={compare} onChange={(e) => setCompare(e.target.checked)} /> 이전 기간과 비교

@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
@@ -41,6 +42,8 @@ function history(item: Brand, action: string, before?: string, after?: string): 
 }
 
 export function BrandsListPage() {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [brands, setBrands] = useState<Brand[]>(BRANDS);
   const [quickFilter, setQuickFilter] = useState<QuickFilter>('전체');
   const [keyword, setKeyword] = useState('');
@@ -55,6 +58,17 @@ export function BrandsListPage() {
   const [showOrder, setShowOrder] = useState(false);
   const [confirm, setConfirm] = useState<ConfirmState>(null);
   const [toast, setToast] = useState('');
+
+  useEffect(() => {
+    const action = searchParams.get('action');
+    if (action === 'create') setEditTarget('new');
+    if (action === 'exposure') setShowOrder(true);
+    if (action === 'create' || action === 'exposure') {
+      const next = new URLSearchParams(searchParams);
+      next.delete('action');
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const issuesMap = useMemo(() => {
     const map: Record<string, string[]> = {};
@@ -208,8 +222,8 @@ export function BrandsListPage() {
       <div className={styles.headTop}>
         <div className={styles.headRow}>
           <div>
-            <div className={styles.title}>브랜드 목록</div>
-            <div className={styles.subtitle}>상품에 연결되는 브랜드 정보를 관리합니다.</div>
+            <div className={styles.title}>브랜드 관리</div>
+            <div className={styles.subtitle}>브랜드 기본 정보, 사용 상태와 사용자 노출 순서를 통합 관리합니다.</div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button type="button" className={styles.resetBtn} style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: 8, color: '#3f3f46' }} onClick={() => setShowOrder(true)}>노출 순서 관리</button>
@@ -290,6 +304,7 @@ export function BrandsListPage() {
           onToggleStatus={() => setConfirm({ kind: 'toggleStatus', item: selected })}
           onToggleExposure={() => toggleExposure(selected)}
           onRequestDelete={() => setConfirm({ kind: 'delete', item: selected })}
+          onViewProducts={() => navigate(`/products?brand=${encodeURIComponent(selected.code)}`)}
           onAddMemo={(text) => setBrands((prev) => prev.map((b) => (b.id === selected.id ? { ...b, memos: [...b.memos, { id: `M-${Date.now()}`, at: `${TODAY} 15:00`, by: 'admin01', text }] } : b)))}
         />
       )}

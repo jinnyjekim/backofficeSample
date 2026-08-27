@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useEffect, useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
@@ -239,8 +240,8 @@ export function PaymentListPage() {
           </div>
           {showAdvanced && (
             <div className={styles.advancedFilters}>
-              <label>결제일 <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></label>
-              <label>~ <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></label>
+              <label>결제일 <DatePicker value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></label>
+              <label>~ <DatePicker value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></label>
             </div>
           )}
         </div>

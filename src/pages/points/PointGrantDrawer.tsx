@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
@@ -106,7 +107,7 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
             </div>
             {timing === '지정' && (
               <div className={styles.formGroup}>
-                <input type="date" className={styles.dateInput} style={{ width: '100%' }} value={confirmAt} onChange={(e) => setConfirmAt(e.target.value)} />
+                <DatePicker className={styles.dateInput} style={{ width: '100%' }} value={confirmAt} onChange={(e) => setConfirmAt(e.target.value)} />
               </div>
             )}
           </>

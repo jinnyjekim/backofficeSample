@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
 import sh from './contentShared.module.css';
 import styles from './ReviewPage.module.css';
@@ -367,9 +368,9 @@ export function ReviewPage() {
               </div>
               <div className={sh.filterField}>
                 <span className={sh.filterFieldLabel}>요청일</span>
-                <input type="date" className={sh.dateInput} value={from} onChange={(e) => setFrom(e.target.value)} />
+                <DatePicker className={sh.dateInput} value={from} onChange={(e) => setFrom(e.target.value)} />
                 <span className={sh.dateSep}>~</span>
-                <input type="date" className={sh.dateInput} value={to} onChange={(e) => setTo(e.target.value)} />
+                <DatePicker className={sh.dateInput} value={to} onChange={(e) => setTo(e.target.value)} />
               </div>
             </div>
 

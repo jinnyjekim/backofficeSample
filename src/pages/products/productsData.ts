@@ -56,6 +56,8 @@ export interface Memo {
 export interface Product {
   code: string;
   name: string;
+  brandCode: string;
+  brandName: string;
   category: string;
   type: string;
   price: number;
@@ -117,7 +119,7 @@ export function productStatusCount(label: string, list: Product[]): number {
 
 export const PRODUCTS: Product[] = [
   {
-    code: 'P-001238', name: '상품명 01', category: '카테고리 01', type: '일반', price: 32000, tax: '별도', priceDate: '2026.07.01',
+    code: 'P-001238', name: '상품명 01', brandCode: 'BRAND01', brandName: '브랜드01', category: '카테고리 01', type: '일반', price: 32000, tax: '별도', priceDate: '2026.07.01',
     status: '판매중', supply: '공급가능', minQty: 10, unit: 5, minAmount: 500000, maxQty: '제한 없음', leadTime: '주문 후 5영업일', supplyUnit: 'Box', boxQty: 20, minBoxQty: 2,
     partnerCount: 12, updated: '2026.08.13', registered: '2026.07.01', admin: 'admin01', description: '등록된 상품 설명 내용입니다.',
     inventoryManaged: true, stock: 2480, reserved: 320, available: 2160, safety: 500, issues: [],
@@ -149,7 +151,7 @@ export const PRODUCTS: Product[] = [
     memos: [{ when: '2026.08.13', admin: 'admin01', text: '다음 계약 갱신부터 기본 단가 조정 예정.' }],
   },
   {
-    code: 'P-001239', name: '상품명 02', category: '카테고리 02', type: '일반', price: 18500, tax: '포함', priceDate: '2026.06.01',
+    code: 'P-001239', name: '상품명 02', brandCode: 'BRAND02', brandName: '브랜드02', category: '카테고리 02', type: '일반', price: 18500, tax: '포함', priceDate: '2026.06.01',
     status: '판매중지', supply: '일시중지', minQty: 50, unit: 10, minAmount: 1000000, maxQty: '제한 없음', leadTime: '주문 후 7영업일', supplyUnit: 'Box', boxQty: 50, minBoxQty: 1,
     partnerCount: 6, updated: '2026.08.12', registered: '2026.05.10', admin: 'admin02', description: '등록된 상품 설명 내용입니다.',
     inventoryManaged: true, stock: 0, reserved: 0, available: 0, safety: 200, issues: ['공급 중지'],
@@ -169,7 +171,7 @@ export const PRODUCTS: Product[] = [
     memos: [],
   },
   {
-    code: 'P-001240', name: '상품명 03', category: '카테고리 01', type: '서비스', price: 120000, tax: '별도', priceDate: '2026.05.01',
+    code: 'P-001240', name: '상품명 03', brandCode: 'BRAND01', brandName: '브랜드01', category: '카테고리 01', type: '서비스', price: 120000, tax: '별도', priceDate: '2026.05.01',
     status: '판매중', supply: '공급가능', minQty: 1, unit: 1, minAmount: 0, maxQty: '제한 없음', leadTime: '즉시', supplyUnit: '-', boxQty: 0, minBoxQty: 0,
     partnerCount: 24, updated: '2026.08.05', registered: '2026.02.01', admin: 'admin03', description: '등록된 상품 설명 내용입니다.',
     inventoryManaged: false, issues: [],
@@ -186,7 +188,7 @@ export const PRODUCTS: Product[] = [
     memos: [],
   },
   {
-    code: 'P-001241', name: '상품명 04', category: '카테고리 03', type: '일반', price: 0, tax: '별도', priceDate: '-',
+    code: 'P-001241', name: '상품명 04', brandCode: 'BRAND04', brandName: '브랜드04', category: '카테고리 03', type: '일반', price: 0, tax: '별도', priceDate: '-',
     status: '등록대기', supply: '공급불가', minQty: 0, unit: 0, minAmount: 0, maxQty: '-', leadTime: '-', supplyUnit: '-', boxQty: 0, minBoxQty: 0,
     partnerCount: 0, updated: '2026.08.10', registered: '2026.08.10', admin: 'admin02', description: '등록된 상품 설명 내용입니다.',
     inventoryManaged: false, issues: ['가격 미등록'],
@@ -194,7 +196,7 @@ export const PRODUCTS: Product[] = [
     history: [{ when: '2026.08.10 16:00', field: '상품 등록', from: '-', to: '-', admin: 'admin02' }], memos: [],
   },
   {
-    code: 'P-000982', name: '상품명 05', category: '카테고리 02', type: '일반', price: 64000, tax: '별도', priceDate: '2025.11.01',
+    code: 'P-000982', name: '상품명 05', brandCode: 'BRAND06', brandName: '브랜드05', category: '카테고리 02', type: '일반', price: 64000, tax: '별도', priceDate: '2025.11.01',
     status: '판매종료', supply: '공급불가', minQty: 20, unit: 10, minAmount: 800000, maxQty: '제한 없음', leadTime: '-', supplyUnit: 'Box', boxQty: 10, minBoxQty: 1,
     partnerCount: 2, updated: '2026.03.01', registered: '2024.11.01', admin: 'admin01', description: '등록된 상품 설명 내용입니다.',
     inventoryManaged: true, stock: 0, reserved: 0, available: 0, safety: 0, issues: [],

@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
 import shared from './opsShared.module.css';
 import styles from './EventsPage.module.css';
@@ -326,7 +327,7 @@ export function EventsPage() {
           </div>
           {showAdvanced && <div className={styles.advancedFilters}>
             <label className={styles.filterField}><span className={styles.filterLabel}>담당자</span><select className={styles.filterControl} value={managerFilter} onChange={(e) => setManagerFilter(e.target.value)}><option>전체</option>{EVENT_MANAGERS.map((item) => <option key={item}>{item}</option>)}</select></label>
-            <div className={styles.filterPeriod}><label className={styles.filterField}><span className={styles.filterLabel}>진행기간 시작</span><input type="date" className={styles.filterControl} value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></label><span className={styles.periodDash}>~</span><label className={styles.filterField}><span className={styles.filterLabel}>진행기간 종료</span><input type="date" className={styles.filterControl} value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></label></div>
+            <div className={styles.filterPeriod}><label className={styles.filterField}><span className={styles.filterLabel}>진행기간 시작</span><DatePicker className={styles.filterControl} value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></label><span className={styles.periodDash}>~</span><label className={styles.filterField}><span className={styles.filterLabel}>진행기간 종료</span><DatePicker className={styles.filterControl} value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></label></div>
             <div className={styles.issueSummary}>⚠ 확인 필요 {counts['확인 필요']}건</div>
           </div>}
         </div>

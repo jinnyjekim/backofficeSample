@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styles from './ProductsListPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import { useOutsideClose } from '../../lib/useOutsideClose';
@@ -29,8 +30,10 @@ const COLUMNS: GridColumn[] = [
 ];
 
 export function ProductsListPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState<Product[]>(PRODUCTS);
   const [statusFilter, setStatusFilter] = useState('전체');
+  const [brandFilter, setBrandFilter] = useState(searchParams.get('brand') ?? '');
   const [q, setQ] = useState('');
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('basic');
@@ -38,16 +41,26 @@ export function ProductsListPage() {
   const [showSaleConfirm, setShowSaleConfirm] = useState(false);
   const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    setBrandFilter(searchParams.get('brand') ?? '');
+  }, [searchParams]);
+
+  const brandOptions = useMemo(
+    () => Array.from(new Map(data.map((p) => [p.brandCode, p.brandName])).entries()),
+    [data],
+  );
+
   const registerAsideRef = useRef<HTMLElement>(null);
   useOutsideClose(registerAsideRef, () => setShowRegister(false));
 
   const filtered = useMemo(() => {
     return data.filter((p) => {
       if (statusFilter !== '전체' && p.status !== statusFilter) return false;
-      if (q && !(p.name.includes(q) || p.code.includes(q))) return false;
+      if (brandFilter && p.brandCode !== brandFilter) return false;
+      if (q && !`${p.name} ${p.code} ${p.brandName} ${p.brandCode}`.toLowerCase().includes(q.toLowerCase())) return false;
       return true;
     });
-  }, [data, statusFilter, q]);
+  }, [data, statusFilter, brandFilter, q]);
 
   const quickFilters = QUICK_FILTER_LABELS.map((label) => ({
     label,
@@ -71,7 +84,7 @@ export function ProductsListPage() {
         {
           kind: 'stack',
           title: p.name,
-          subtitle: p.issues.length > 0 ? `${p.code} ⚠ ${p.issues.join(', ')}` : p.code,
+          subtitle: p.issues.length > 0 ? `${p.code} · ${p.brandName} ⚠ ${p.issues.join(', ')}` : `${p.code} · ${p.brandName}`,
         },
         { kind: 'text', text: p.category, color: '#52525b', size: '12px', weight: 500 },
         { kind: 'text', text: p.price ? fmtWon(p.price) : '-', color: '#3f3f46', size: '12px', weight: 500, align: 'right', numeric: true },
@@ -89,7 +102,11 @@ export function ProductsListPage() {
 
   function clearAll() {
     setStatusFilter('전체');
+    setBrandFilter('');
     setQ('');
+    const next = new URLSearchParams(searchParams);
+    next.delete('brand');
+    setSearchParams(next, { replace: true });
   }
 
   const selected = selectedCode ? data.find((p) => p.code === selectedCode) ?? null : null;
@@ -162,6 +179,10 @@ export function ProductsListPage() {
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow}>
+            <select className={styles.smallSelect} value={brandFilter} onChange={(e) => setBrandFilter(e.target.value)}>
+              <option value="">브랜드 전체</option>
+              {brandOptions.map(([code, name]) => <option key={code} value={code}>{name} · {code}</option>)}
+            </select>
             <select className={styles.smallSelect} defaultValue="판매상태 전체">
               <option>판매상태 전체</option>
               <option>등록대기</option>
@@ -261,6 +282,13 @@ export function ProductsListPage() {
                   <option>카테고리 01</option>
                   <option>카테고리 02</option>
                   <option>카테고리 03</option>
+                </select>
+              </label>
+              <label className={styles.formLabel}>
+                브랜드
+                <select className={styles.formInput} defaultValue="">
+                  <option value="">브랜드 미지정</option>
+                  {brandOptions.map(([code, name]) => <option key={code} value={code}>{name} · {code}</option>)}
                 </select>
               </label>
               <div className={styles.formRow}>

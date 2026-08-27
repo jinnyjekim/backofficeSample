@@ -1,3 +1,4 @@
+import { DatePicker } from '../../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DataGrid } from '../../../components/DataGrid';
@@ -147,7 +148,7 @@ export function TradeRiskMonitoringPage() {
           <select className={shared.selectSm} value={signalType} onChange={(event) => selectSignal(event.target.value as RiskSignalType | '')}><option value="">전체 탐지 유형</option>{SIGNALS.map((item) => <option key={item}>{item}</option>)}</select>
           <select className={shared.selectSm} value={level} onChange={(event) => setLevel(event.target.value as RiskLevel | '')}><option value="">전체 위험도</option><option>긴급</option><option>높음</option><option>보통</option><option>낮음</option></select>
           <select className={shared.selectSm} value={assignee} onChange={(event) => setAssignee(event.target.value)}><option value="">전체 배정 상태</option><option>미배정</option><option value="배정">담당자 배정</option></select>
-          <span>탐지일</span><input type="date" className={shared.selectSm} defaultValue="2026-08-20" /><span>~</span><input type="date" className={shared.selectSm} defaultValue="2026-08-27" />
+          <span>탐지일</span><DatePicker className={shared.selectSm} defaultValue="2026-08-20" /><span>~</span><DatePicker className={shared.selectSm} defaultValue="2026-08-27" />
           <span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={reset}>초기화</button>
         </div>
       </FilterBox>
@@ -246,7 +247,7 @@ export function TradeHoldManagementPage() {
       <div className={shared.quickFilters}>{quicks.map((item) => <button type="button" key={item} className={`${shared.qfBtn} ${quick === item ? base.quickActive : ''}`} onClick={() => setQuick(item)}><span className={shared.qfLabel}>{item}</span><span className={shared.qfCount}>{holds.filter((hold) => item === '전체' || hold.status === item).length}</span></button>)}</div>
       <FilterBox>
         <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}><select className={shared.selectSm}><option>통합 검색</option><option>보류번호</option><option>거래번호</option><option>계정</option></select><input className={shared.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="보류 / 거래 / 위험 건 ID 또는 대상 계정" /><button className={shared.searchBtn}>조회</button></form>
-        <div className={shared.filterRow2}><select className={shared.selectSm} value={scope} onChange={(event) => setScope(event.target.value)}><option value="">전체 보류 범위</option><option>거래 진행</option><option>판매대금 지급</option></select><span>보류일</span><input type="date" className={shared.selectSm} defaultValue="2026-08-20" /><span>~</span><input type="date" className={shared.selectSm} defaultValue="2026-08-27" /><span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={reset}>초기화</button></div>
+        <div className={shared.filterRow2}><select className={shared.selectSm} value={scope} onChange={(event) => setScope(event.target.value)}><option value="">전체 보류 범위</option><option>거래 진행</option><option>판매대금 지급</option></select><span>보류일</span><DatePicker className={shared.selectSm} defaultValue="2026-08-20" /><span>~</span><DatePicker className={shared.selectSm} defaultValue="2026-08-27" /><span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={reset}>초기화</button></div>
       </FilterBox>
     </ControlArea>
     <GridArea>

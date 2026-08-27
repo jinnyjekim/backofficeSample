@@ -73,6 +73,7 @@ export function buildProductDetail(p: Product): ProductDetail {
     basicFields: [
       { label: '상품코드', value: p.code },
       { label: '상품명', value: p.name },
+      { label: '브랜드', value: `${p.brandName} · ${p.brandCode}` },
       { label: '카테고리', value: p.category },
       { label: '상품 유형', value: p.type },
       { label: '판매 상태', value: p.status },

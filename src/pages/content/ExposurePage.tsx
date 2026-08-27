@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import sh from './contentShared.module.css';
@@ -272,7 +273,7 @@ export function ExposurePage() {
         <div className={sh.headerSpacer} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
           <span className={styles.headerDateLabel}>노출 기준일</span>
-          <input type="date" className={styles.headerDateInput} value={base} onChange={(e) => setBase(e.target.value)} />
+          <DatePicker className={styles.headerDateInput} value={base} onChange={(e) => setBase(e.target.value)} />
         </div>
         <button type="button" className={sh.secondaryBtn} onClick={() => setPreviewOpen(true)}>미리보기</button>
         <button
@@ -400,7 +401,7 @@ export function ExposurePage() {
 
                 <div>
                   <div className={sh.formFieldLabel} style={{ marginBottom: 6 }}>노출 시작</div>
-                  <input type="datetime-local" className={sh.formInput} value={rowDraft.start} onChange={(e) => setRowDraft({ ...rowDraft, start: e.target.value })} />
+                  <DatePicker mode="datetime-local" className={sh.formInput} value={rowDraft.start} onChange={(e) => setRowDraft({ ...rowDraft, start: e.target.value })} />
                 </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -409,7 +410,7 @@ export function ExposurePage() {
                       <input type="checkbox" checked={rowDraft.noEnd} onChange={() => setRowDraft({ ...rowDraft, noEnd: !rowDraft.noEnd })} />종료일 없음
                     </label>
                   </div>
-                  {rowDraft.noEnd ? <div className={styles.noEndBox}>계속 노출</div> : <input type="datetime-local" className={sh.formInput} value={rowDraft.end} onChange={(e) => setRowDraft({ ...rowDraft, end: e.target.value })} />}
+                  {rowDraft.noEnd ? <div className={styles.noEndBox}>계속 노출</div> : <DatePicker mode="datetime-local" className={sh.formInput} value={rowDraft.end} onChange={(e) => setRowDraft({ ...rowDraft, end: e.target.value })} />}
                 </div>
 
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>

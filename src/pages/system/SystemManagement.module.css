@@ -1,0 +1,29 @@
+.quickActive {
+  border-color: #18181b !important;
+  background: #18181b !important;
+  color: #fff;
+}
+
+.quickActive span { color: #fff !important; }
+
+.boundaryNote {
+  padding: 11px 12px;
+  border-radius: 9px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 10.5px;
+  line-height: 1.6;
+}
+
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 80;
+  padding: 11px 15px;
+  border-radius: 9px;
+  background: #18181b;
+  color: #fff;
+  font-size: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}

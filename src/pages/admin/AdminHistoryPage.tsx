@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -168,9 +169,9 @@ export function AdminHistoryPage() {
                 </select>
               </>
             )}
-            <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            <DatePicker className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
-            <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <DatePicker className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>

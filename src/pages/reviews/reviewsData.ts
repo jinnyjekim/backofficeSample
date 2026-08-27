@@ -81,12 +81,13 @@ export function computeIssues(r: Review): string[] {
   return issues;
 }
 
-export type QuickFilter = '전체' | '노출중' | '검토 필요' | '신고 리뷰' | '비노출' | '삭제됨';
-export const QUICK_FILTERS: QuickFilter[] = ['전체', '노출중', '검토 필요', '신고 리뷰', '비노출', '삭제됨'];
+export type QuickFilter = '전체' | '노출중' | '답변 대기' | '검토 필요' | '신고 리뷰' | '비노출' | '삭제됨';
+export const QUICK_FILTERS: QuickFilter[] = ['전체', '노출중', '답변 대기', '검토 필요', '신고 리뷰', '비노출', '삭제됨'];
 
 export function matchesQuickFilter(r: Review, filter: QuickFilter): boolean {
   if (filter === '전체') return true;
   if (filter === '노출중') return r.exposure === '노출';
+  if (filter === '답변 대기') return r.adminReply === null && r.exposure !== '삭제';
   if (filter === '검토 필요') return r.moderationStatus === '검토 필요';
   if (filter === '신고 리뷰') return pendingReportCount(r) > 0;
   if (filter === '비노출') return r.exposure === '비노출';

@@ -58,13 +58,15 @@ function history(item: Promotion, action: string): Promotion {
 
 export function PromotionsListPage() {
   const [searchParams] = useSearchParams();
+  const initialApplyUnit = searchParams.get('applyUnit') === 'order' ? '주문' : searchParams.get('applyUnit') === 'product' ? '상품' : '';
+  const initialTargetType = searchParams.get('target') === 'category' ? '특정 카테고리' : '';
   const [promotions, setPromotions] = useState<Promotion[]>(PROMOTIONS);
   const [quickFilter, setQuickFilter] = useState<QuickFilter>('전체');
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
-  const [applyUnitFilter, setApplyUnitFilter] = useState<ApplyUnit | ''>('');
+  const [applyUnitFilter, setApplyUnitFilter] = useState<ApplyUnit | ''>(initialApplyUnit);
   const [discountMethodFilter, setDiscountMethodFilter] = useState<DiscountMethod | ''>('');
-  const [targetTypeFilter, setTargetTypeFilter] = useState<TargetType | ''>('');
+  const [targetTypeFilter, setTargetTypeFilter] = useState<TargetType | ''>(initialTargetType);
   const [ownerFilter, setOwnerFilter] = useState('');
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);

@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import sh from './contentShared.module.css';
@@ -400,9 +401,9 @@ export function TagsPage() {
               </div>
               <div className={sh.filterField}>
                 <span className={sh.filterFieldLabel}>등록일</span>
-                <input type="date" className={sh.dateInput} value={from} onChange={(e) => setFrom(e.target.value)} />
+                <DatePicker className={sh.dateInput} value={from} onChange={(e) => setFrom(e.target.value)} />
                 <span className={sh.dateSep}>~</span>
-                <input type="date" className={sh.dateInput} value={to} onChange={(e) => setTo(e.target.value)} />
+                <DatePicker className={sh.dateInput} value={to} onChange={(e) => setTo(e.target.value)} />
               </div>
               <div className={sh.rowSpacer} />
               <button type="button" className={sh.resetBtn} onClick={resetAll}>초기화</button>

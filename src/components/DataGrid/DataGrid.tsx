@@ -1,7 +1,31 @@
 import styles from './DataGrid.module.css';
 import type { Cell, DataGridProps } from './types';
 
-function CellView({ cell }: { cell: Cell }) {
+function splitGridTracks(template: string): string[] {
+  const tracks: string[] = [];
+  let current = '';
+  let depth = 0;
+
+  for (const character of template.trim()) {
+    if (character === '(') depth += 1;
+    if (character === ')') depth -= 1;
+
+    if (/\s/.test(character) && depth === 0) {
+      if (current) {
+        tracks.push(current);
+        current = '';
+      }
+      continue;
+    }
+
+    current += character;
+  }
+
+  if (current) tracks.push(current);
+  return tracks;
+}
+
+function CellView({ cell, hideDetailAction = false }: { cell: Cell; hideDetailAction?: boolean }) {
   switch (cell.kind) {
     case 'text':
       return (
@@ -73,7 +97,7 @@ function CellView({ cell }: { cell: Cell }) {
         </div>
       );
     case 'link':
-      return <span className={styles.link}>{cell.text}</span>;
+      return hideDetailAction ? null : <span className={styles.link}>{cell.text}</span>;
     case 'progress':
       return (
         <div className={styles.progressWrap}>
@@ -131,7 +155,7 @@ function CellView({ cell }: { cell: Cell }) {
     case 'rowMenu':
       return (
         <div className={styles.rowMenu} onClick={(e) => e.stopPropagation()}>
-          {cell.detailLabel && (
+          {cell.detailLabel && !hideDetailAction && (
             <button type="button" className={styles.rowMenuDetailBtn} onClick={cell.onDetail}>
               {cell.detailLabel}
             </button>
@@ -181,7 +205,20 @@ export function DataGrid({
   totalLabel,
   actions,
 }: DataGridProps) {
-  const template = (selectable ? '30px ' : '') + gridTemplate;
+  const detailOnlyColumnIndexes = new Set(
+    columns.flatMap((column, columnIndex) => {
+      if (column.label !== '관리') return [];
+      if (rows.length === 0) return [columnIndex];
+      const isDetailOnly = rows.every((row) => row.onClick && row.cells[columnIndex]?.kind === 'link');
+      return isDetailOnly ? [columnIndex] : [];
+    }),
+  );
+  const visibleColumns = columns.filter((_, index) => !detailOnlyColumnIndexes.has(index));
+  const tracks = splitGridTracks(gridTemplate);
+  const visibleGridTemplate = tracks.length === columns.length
+    ? tracks.filter((_, index) => !detailOnlyColumnIndexes.has(index)).join(' ')
+    : gridTemplate;
+  const template = (selectable ? '30px ' : '') + visibleGridTemplate;
 
   return (
     <div className={`${styles.root} ${fillHeight ? styles.fillHeight : ''}`}>
@@ -206,7 +243,7 @@ export function DataGrid({
           {selectable && (
             <input type="checkbox" className={styles.checkbox} checked={!!allSelected} onChange={onToggleAll} />
           )}
-          {columns.map((col, i) =>
+          {visibleColumns.map((col, i) =>
             col.onClick ? (
               <button key={i} type="button" className={styles.headBtn} style={{ textAlign: col.align }} onClick={col.onClick}>
                 {col.label}
@@ -238,11 +275,15 @@ export function DataGrid({
                 onChange={() => {}}
               />
             )}
-            {row.cells.map((cell, i) => (
-              <div key={i} className={styles.cellWrap} style={{ textAlign: cell.align }}>
-                <CellView cell={cell} />
-              </div>
-            ))}
+            {row.cells.map((cell, i) => {
+              if (detailOnlyColumnIndexes.has(i)) return null;
+              const hideDetailAction = columns[i]?.label === '관리' && !!row.onClick && (cell.kind === 'link' || cell.kind === 'rowMenu');
+              return (
+                <div key={i} className={styles.cellWrap} style={{ textAlign: cell.align }}>
+                  <CellView cell={cell} hideDetailAction={hideDetailAction} />
+                </div>
+              );
+            })}
           </div>
         ))}
 

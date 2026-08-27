@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
@@ -208,9 +209,9 @@ export function CsInquiriesPage() {
             <span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={resetFilters}>필터 초기화</button>
           </div>
           {showAdvanced && <div className={styles.advancedFilters}>
-            <label>접수일 시작<input type="date" value={receivedFrom} onChange={(event) => setReceivedFrom(event.target.value)} /></label>
-            <label>접수일 종료<input type="date" value={receivedTo} onChange={(event) => setReceivedTo(event.target.value)} /></label>
-            <label>답변 기한까지<input type="date" value={dueTo} onChange={(event) => setDueTo(event.target.value)} /></label>
+            <label>접수일 시작<DatePicker value={receivedFrom} onChange={(event) => setReceivedFrom(event.target.value)} /></label>
+            <label>접수일 종료<DatePicker value={receivedTo} onChange={(event) => setReceivedTo(event.target.value)} /></label>
+            <label>답변 기한까지<DatePicker value={dueTo} onChange={(event) => setDueTo(event.target.value)} /></label>
           </div>}
         </div>
       </div>

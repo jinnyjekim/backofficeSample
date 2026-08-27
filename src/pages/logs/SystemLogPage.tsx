@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -147,9 +148,9 @@ export function SystemLogPage() {
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <input type="date" className={styles.selectSm} value={start} onChange={(e) => setStart(e.target.value)} />
+            <DatePicker className={styles.selectSm} value={start} onChange={(e) => setStart(e.target.value)} />
             <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
-            <input type="date" className={styles.selectSm} value={end} onChange={(e) => setEnd(e.target.value)} />
+            <DatePicker className={styles.selectSm} value={end} onChange={(e) => setEnd(e.target.value)} />
             {QUICK_RANGES.map((r) => (
               <button key={r} type="button" className={styles.detailFilterBtn} onClick={() => applyQuick(r)}>{r}</button>
             ))}

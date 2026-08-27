@@ -1,3 +1,4 @@
+import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
@@ -180,7 +181,7 @@ export function ShippingBaseFeePage() {
               </label>
               <label className={styles.formField}>
                 <span>적용 시작일 *</span>
-                <input type="date" disabled={!editing} value={draftPolicy.startDate} onChange={(e) => set('startDate', e.target.value)} />
+                <DatePicker disabled={!editing} value={draftPolicy.startDate} onChange={(e) => set('startDate', e.target.value)} />
               </label>
               <div className={styles.infoNote}>
                 지역별 추가 배송비, 상품별·거래처별 배송비 Override는 각각 <button type="button" className={styles.linkBtn} onClick={() => window.location.assign('/delivery-policy/region-fee')}>지역별 추가 배송비</button>, 상품/거래처 상세에서 별도로 관리합니다. 이 페이지의 값은 다른 조건이 없을 때 적용되는 전역 기본값입니다.
