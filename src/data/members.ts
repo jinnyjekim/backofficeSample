@@ -1,5 +1,7 @@
 import type { MemberStatus } from '../lib/theme';
 
+export type MemberBusinessType = 'B2B' | 'B2C' | 'C2C';
+
 export interface Member {
   id: number;
   name: string;
@@ -13,23 +15,24 @@ export interface Member {
   orders: number;
   spend: string;
   marketing: boolean;
+  businessType: MemberBusinessType;
 }
 
 export const MEMBERS: Member[] = [
-  { id: 102384, name: '김지은', handle: '@jieun_k', email: 'ji***@gmail.com', provider: 'Google', status: '정상', joined: '2026.08.01', seen: '5분 전', fresh: true, orders: 24, spend: '1,284,000원', marketing: true },
-  { id: 102383, name: '홍길동', handle: '@hong_gd', email: 'ho***@naver.com', provider: 'Kakao', status: '정지', joined: '2026.07.28', seen: '3일 전', orders: 3, spend: '64,000원', marketing: false },
-  { id: 102382, name: '이민수', handle: '@mins_lee', email: 'mi***@email.com', provider: 'Email', status: '정상', joined: '2026.07.15', seen: '1일 전', orders: 11, spend: '432,900원', marketing: true },
-  { id: 102381, name: '박서연', handle: '@seoyeon', email: 'pa***@apple.com', provider: 'Apple', status: '휴면', joined: '2026.06.20', seen: '32일 전', orders: 7, spend: '298,000원', marketing: false },
-  { id: 102380, name: '최준혁', handle: '@jun_choi', email: 'ch***@naver.com', provider: 'Naver', status: '정상', joined: '2026.06.01', seen: '2시간 전', orders: 41, spend: '3,102,500원', marketing: true },
-  { id: 102379, name: '정유진', handle: '@yujin_j', email: 'je***@gmail.com', provider: 'Google', status: '탈퇴', joined: '2026.05.12', seen: '—', orders: 0, spend: '0원', marketing: false },
-  { id: 102378, name: '강태양', handle: '@taeyang', email: 'ka***@email.com', provider: 'Email', status: '정상', joined: '2026.04.30', seen: '방금 전', orders: 18, spend: '876,400원', marketing: true },
-  { id: 102377, name: '윤소희', handle: '@sohee_y', email: 'yu***@kakao.com', provider: 'Kakao', status: '정상', joined: '2026.04.18', seen: '4시간 전', orders: 9, spend: '221,000원', marketing: true },
-  { id: 102376, name: '임도현', handle: '@dohyun', email: 'im***@gmail.com', provider: 'Google', status: '휴면', joined: '2026.03.29', seen: '61일 전', orders: 2, spend: '39,000원', marketing: false },
-  { id: 102375, name: '서지우', handle: '@jiwoo_s', email: 'se***@naver.com', provider: 'Naver', status: '정상', joined: '2026.03.11', seen: '12시간 전', orders: 33, spend: '2,410,000원', marketing: true },
-  { id: 102374, name: '한예린', handle: '@yerin_h', email: 'ha***@apple.com', provider: 'Apple', status: '정상', joined: '2026.02.24', seen: '2일 전', orders: 6, spend: '150,200원', marketing: false },
-  { id: 102373, name: '오세훈', handle: '@sehun_o', email: 'oh***@email.com', provider: 'Email', status: '정지', joined: '2026.02.02', seen: '18일 전', orders: 1, spend: '12,000원', marketing: false },
-  { id: 102372, name: '배수정', handle: '@sujeong', email: 'ba***@kakao.com', provider: 'Kakao', status: '정상', joined: '2026.01.19', seen: '30분 전', orders: 52, spend: '4,880,000원', marketing: true },
-  { id: 102371, name: '노민재', handle: '@minjae_n', email: 'no***@gmail.com', provider: 'Google', status: '정상', joined: '2026.01.05', seen: '6일 전', orders: 14, spend: '610,000원', marketing: true },
+  { id: 102384, name: '김지은', handle: '@jieun_k', email: 'ji***@gmail.com', provider: 'Google', status: '정상', joined: '2026.08.01', seen: '5분 전', fresh: true, orders: 24, spend: '1,284,000원', marketing: true, businessType: 'B2C' },
+  { id: 102383, name: '홍길동', handle: '@hong_gd', email: 'ho***@naver.com', provider: 'Kakao', status: '정지', joined: '2026.07.28', seen: '3일 전', orders: 3, spend: '64,000원', marketing: false, businessType: 'B2C' },
+  { id: 102382, name: '이민수', handle: '@mins_lee', email: 'mi***@email.com', provider: 'Email', status: '정상', joined: '2026.07.15', seen: '1일 전', orders: 11, spend: '432,900원', marketing: true, businessType: 'C2C' },
+  { id: 102381, name: '박서연', handle: '@seoyeon', email: 'pa***@apple.com', provider: 'Apple', status: '휴면', joined: '2026.06.20', seen: '32일 전', orders: 7, spend: '298,000원', marketing: false, businessType: 'B2C' },
+  { id: 102380, name: '최준혁', handle: '@jun_choi', email: 'ch***@naver.com', provider: 'Naver', status: '정상', joined: '2026.06.01', seen: '2시간 전', orders: 41, spend: '3,102,500원', marketing: true, businessType: 'B2B' },
+  { id: 102379, name: '정유진', handle: '@yujin_j', email: 'je***@gmail.com', provider: 'Google', status: '탈퇴', joined: '2026.05.12', seen: '—', orders: 0, spend: '0원', marketing: false, businessType: 'C2C' },
+  { id: 102378, name: '강태양', handle: '@taeyang', email: 'ka***@email.com', provider: 'Email', status: '정상', joined: '2026.04.30', seen: '방금 전', orders: 18, spend: '876,400원', marketing: true, businessType: 'B2C' },
+  { id: 102377, name: '윤소희', handle: '@sohee_y', email: 'yu***@kakao.com', provider: 'Kakao', status: '정상', joined: '2026.04.18', seen: '4시간 전', orders: 9, spend: '221,000원', marketing: true, businessType: 'C2C' },
+  { id: 102376, name: '임도현', handle: '@dohyun', email: 'im***@gmail.com', provider: 'Google', status: '휴면', joined: '2026.03.29', seen: '61일 전', orders: 2, spend: '39,000원', marketing: false, businessType: 'B2C' },
+  { id: 102375, name: '서지우', handle: '@jiwoo_s', email: 'se***@naver.com', provider: 'Naver', status: '정상', joined: '2026.03.11', seen: '12시간 전', orders: 33, spend: '2,410,000원', marketing: true, businessType: 'B2B' },
+  { id: 102374, name: '한예린', handle: '@yerin_h', email: 'ha***@apple.com', provider: 'Apple', status: '정상', joined: '2026.02.24', seen: '2일 전', orders: 6, spend: '150,200원', marketing: false, businessType: 'B2C' },
+  { id: 102373, name: '오세훈', handle: '@sehun_o', email: 'oh***@email.com', provider: 'Email', status: '정지', joined: '2026.02.02', seen: '18일 전', orders: 1, spend: '12,000원', marketing: false, businessType: 'C2C' },
+  { id: 102372, name: '배수정', handle: '@sujeong', email: 'ba***@kakao.com', provider: 'Kakao', status: '정상', joined: '2026.01.19', seen: '30분 전', orders: 52, spend: '4,880,000원', marketing: true, businessType: 'B2B' },
+  { id: 102371, name: '노민재', handle: '@minjae_n', email: 'no***@gmail.com', provider: 'Google', status: '정상', joined: '2026.01.05', seen: '6일 전', orders: 14, spend: '610,000원', marketing: true, businessType: 'B2C' },
 ];
 
 export interface LeftMember {
