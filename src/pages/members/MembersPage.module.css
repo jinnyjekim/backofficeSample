@@ -31,10 +31,51 @@
   font-variant-numeric: tabular-nums;
 }
 
+.modeToggleWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 4px;
+}
+.modeToggleHint {
+  font-size: 10.5px;
+  color: #a1a1aa;
+  letter-spacing: 0.02em;
+}
+.modeToggle {
+  display: flex;
+  background: #f4f4f5;
+  border-radius: 9px;
+  padding: 2px;
+  gap: 2px;
+}
+.modeBtn {
+  height: 26px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #71717a;
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.modeBtn.active {
+  background: #fff;
+  color: #18181b;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.modeNote {
+  font-size: 11px;
+  color: #a1a1aa;
+}
+
 .viewNav {
   display: flex;
   gap: 2px;
   margin-left: 8px;
+  flex-wrap: wrap;
 }
 .viewBtn {
   border: 0;
@@ -87,6 +128,57 @@
 }
 .densityBtn:hover {
   background: #fafafa;
+}
+.colsWrap {
+  position: relative;
+}
+.colsBtn {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 7px;
+  font-size: 12px;
+  color: #52525b;
+  cursor: pointer;
+}
+.colsBtn:hover {
+  background: #fafafa;
+}
+.colsMenu {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  z-index: 30;
+  width: 200px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  padding: 5px;
+}
+.colsItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 7px 9px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  color: #3f3f46;
+  text-align: left;
+}
+.colsItem:not(:disabled):hover {
+  background: #f4f4f5;
+}
+.colsTag {
+  margin-left: auto;
+  font-size: 10px;
+  color: #a1a1aa;
 }
 .exportBtn {
   height: 30px;
@@ -167,42 +259,6 @@
   padding: 10px 12px;
 }
 
-.searchBox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 34px;
-  flex: 1;
-  min-width: 280px;
-  max-width: 520px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 9px;
-  padding: 0 11px;
-}
-.searchBox:focus-within {
-  border-color: oklch(0.6 0.14 258);
-}
-.searchIcon {
-  color: #a1a1aa;
-  font-size: 12.5px;
-}
-.searchInput {
-  flex: 1;
-  border: 0;
-  outline: 0;
-  font-size: 13px;
-  color: #18181b;
-  background: transparent;
-}
-.slashKey {
-  font-size: 10px;
-  color: #a1a1aa;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 4px;
-  padding: 1px 5px;
-}
-
 .chip {
   height: 34px;
   display: flex;
@@ -249,12 +305,27 @@
   top: 40px;
   left: 0;
   z-index: 30;
-  width: 210px;
+  width: 230px;
+  max-height: 360px;
+  overflow-y: auto;
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
   padding: 5px;
+}
+.addGroup {
+  margin-bottom: 4px;
+}
+.addGroup:last-child {
+  margin-bottom: 0;
+}
+.addGroupLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: #a1a1aa;
+  letter-spacing: 0.03em;
+  padding: 6px 9px 2px;
 }
 .addItem {
   display: flex;
@@ -756,6 +827,115 @@
 .cellSeen {
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
+}
+.cellRight {
+  font-size: 12.5px;
+  color: #3f3f46;
+  font-variant-numeric: tabular-nums;
+  display: block;
+  text-align: right;
+}
+.cellMuted {
+  font-size: 12px;
+  color: #c4c4c8;
+}
+.stackCell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.stackTop {
+  font-size: 12.5px;
+  color: #18181b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stackSub {
+  font-size: 11px;
+  color: #8b8b93;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.miniBadge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.rowMenuWrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.rowMenuBtn {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #71717a;
+  font-size: 14px;
+  cursor: pointer;
+}
+.rowMenuBtn:hover {
+  background: #f4f4f5;
+}
+.rowMenuPopover {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  z-index: 30;
+  width: 150px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  padding: 5px;
+}
+.rowMenuItem {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 7px 9px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.rowMenuItem:hover {
+  background: #f4f4f5;
+}
+
+.bulkNoteFloat {
+  position: fixed;
+  left: 50%;
+  bottom: 78px;
+  transform: translateX(-50%);
+  z-index: 49;
+  font-size: 10.5px;
+  color: #a1a1aa;
+  white-space: nowrap;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 60;
+  padding: 10px 16px;
+  background: #18181b;
+  color: #fff;
+  font-size: 12.5px;
+  border-radius: 9px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
 }
 
 .emptyState {

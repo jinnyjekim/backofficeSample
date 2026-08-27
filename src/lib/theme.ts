@@ -31,3 +31,7 @@ export const STATUS_STYLE: Record<MemberStatus, { fg: string; dot: string }> = {
 export function formatNumber(x: number): string {
   return x.toLocaleString('ko-KR');
 }
+
+export function formatWon(x: number): string {
+  return x.toLocaleString('ko-KR') + '원';
+}

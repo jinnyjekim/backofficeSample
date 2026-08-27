@@ -6,33 +6,121 @@ export interface Member {
   id: number;
   name: string;
   handle: string;
+  shop: string;
   email: string;
+  phone: string;
   provider: string;
   status: MemberStatus;
   joined: string;
+  joinedDays: number;
   seen: string;
-  fresh?: boolean;
+  seenDays: number | null;
   orders: number;
-  spend: string;
+  spend: number;
+  lastBuyDays: number | null;
   marketing: boolean;
   businessType: MemberBusinessType;
+
+  verified: boolean;
+  grade: string;
+  group: string;
+
+  buyer: boolean;
+  seller: boolean;
+  sellerStatus: string;
+  listings: number;
+  tradesBuy: number;
+  tradesSell: number;
+  reports: number;
+  disputes: number;
+  restriction: string;
+
+  company: string;
+  companyCode: string;
+  workplace: string;
+  dept: string;
+  title: string;
+  role: string;
+  approval: string;
+  companyTrade: string;
+  account: string;
+}
+
+function m(o: Partial<Member> & Pick<Member, 'id' | 'name' | 'handle' | 'email' | 'provider' | 'status' | 'joined' | 'joinedDays' | 'seen' | 'seenDays' | 'orders' | 'spend'>): Member {
+  return {
+    shop: o.name + '샵',
+    phone: '010-' + (1000 + (o.id % 9000)) + '-****',
+    lastBuyDays: o.orders && o.orders > 0 ? (o.seenDays ?? 30) : null,
+    marketing: false,
+    businessType: 'B2C',
+    verified: true,
+    grade: o.orders! >= 30 ? 'VIP' : o.orders! >= 10 ? 'Gold' : 'Normal',
+    group: o.orders! >= 30 ? '우수고객' : '일반',
+    buyer: true,
+    seller: false,
+    sellerStatus: '',
+    listings: 0,
+    tradesBuy: 0,
+    tradesSell: 0,
+    reports: 0,
+    disputes: 0,
+    restriction: '',
+    company: '',
+    companyCode: '',
+    workplace: '',
+    dept: '',
+    title: '',
+    role: '일반 사용자',
+    approval: '승인 완료',
+    companyTrade: '',
+    account: '정상',
+    ...o,
+  };
 }
 
 export const MEMBERS: Member[] = [
-  { id: 102384, name: '김지은', handle: '@jieun_k', email: 'ji***@gmail.com', provider: 'Google', status: '정상', joined: '2026.08.01', seen: '5분 전', fresh: true, orders: 24, spend: '1,284,000원', marketing: true, businessType: 'B2C' },
-  { id: 102383, name: '홍길동', handle: '@hong_gd', email: 'ho***@naver.com', provider: 'Kakao', status: '정지', joined: '2026.07.28', seen: '3일 전', orders: 3, spend: '64,000원', marketing: false, businessType: 'B2C' },
-  { id: 102382, name: '이민수', handle: '@mins_lee', email: 'mi***@email.com', provider: 'Email', status: '정상', joined: '2026.07.15', seen: '1일 전', orders: 11, spend: '432,900원', marketing: true, businessType: 'C2C' },
-  { id: 102381, name: '박서연', handle: '@seoyeon', email: 'pa***@apple.com', provider: 'Apple', status: '휴면', joined: '2026.06.20', seen: '32일 전', orders: 7, spend: '298,000원', marketing: false, businessType: 'B2C' },
-  { id: 102380, name: '최준혁', handle: '@jun_choi', email: 'ch***@naver.com', provider: 'Naver', status: '정상', joined: '2026.06.01', seen: '2시간 전', orders: 41, spend: '3,102,500원', marketing: true, businessType: 'B2B' },
-  { id: 102379, name: '정유진', handle: '@yujin_j', email: 'je***@gmail.com', provider: 'Google', status: '탈퇴', joined: '2026.05.12', seen: '—', orders: 0, spend: '0원', marketing: false, businessType: 'C2C' },
-  { id: 102378, name: '강태양', handle: '@taeyang', email: 'ka***@email.com', provider: 'Email', status: '정상', joined: '2026.04.30', seen: '방금 전', orders: 18, spend: '876,400원', marketing: true, businessType: 'B2C' },
-  { id: 102377, name: '윤소희', handle: '@sohee_y', email: 'yu***@kakao.com', provider: 'Kakao', status: '정상', joined: '2026.04.18', seen: '4시간 전', orders: 9, spend: '221,000원', marketing: true, businessType: 'C2C' },
-  { id: 102376, name: '임도현', handle: '@dohyun', email: 'im***@gmail.com', provider: 'Google', status: '휴면', joined: '2026.03.29', seen: '61일 전', orders: 2, spend: '39,000원', marketing: false, businessType: 'B2C' },
-  { id: 102375, name: '서지우', handle: '@jiwoo_s', email: 'se***@naver.com', provider: 'Naver', status: '정상', joined: '2026.03.11', seen: '12시간 전', orders: 33, spend: '2,410,000원', marketing: true, businessType: 'B2B' },
-  { id: 102374, name: '한예린', handle: '@yerin_h', email: 'ha***@apple.com', provider: 'Apple', status: '정상', joined: '2026.02.24', seen: '2일 전', orders: 6, spend: '150,200원', marketing: false, businessType: 'B2C' },
-  { id: 102373, name: '오세훈', handle: '@sehun_o', email: 'oh***@email.com', provider: 'Email', status: '정지', joined: '2026.02.02', seen: '18일 전', orders: 1, spend: '12,000원', marketing: false, businessType: 'C2C' },
-  { id: 102372, name: '배수정', handle: '@sujeong', email: 'ba***@kakao.com', provider: 'Kakao', status: '정상', joined: '2026.01.19', seen: '30분 전', orders: 52, spend: '4,880,000원', marketing: true, businessType: 'B2B' },
-  { id: 102371, name: '노민재', handle: '@minjae_n', email: 'no***@gmail.com', provider: 'Google', status: '정상', joined: '2026.01.05', seen: '6일 전', orders: 14, spend: '610,000원', marketing: true, businessType: 'B2C' },
+  m({ id: 102384, name: '김지은', handle: '@jieun_k', email: 'ji***@gmail.com', provider: 'Google', status: '정상', joined: '2026.08.21', joinedDays: 0, seen: '5분 전', seenDays: 0, orders: 24, spend: 1284000, marketing: true, businessType: 'B2C',
+    buyer: true, seller: true, sellerStatus: '승인', listings: 12, tradesBuy: 26, tradesSell: 12,
+    company: '대성상사', companyCode: 'C-1043', workplace: '서울 본사', dept: '구매팀', title: '대리', role: '구매 담당자', companyTrade: '거래중' }),
+  m({ id: 102383, name: '홍길동', handle: '@hong_gd', email: 'ho***@naver.com', provider: 'Kakao', status: '정지', joined: '2026.08.19', joinedDays: 8, seen: '3일 전', seenDays: 3, orders: 3, spend: 64000, marketing: false, businessType: 'B2C',
+    buyer: true, seller: true, sellerStatus: '정지', listings: 4, tradesBuy: 3, tradesSell: 6, reports: 4, disputes: 1, restriction: '판매 제한',
+    company: '대성상사', companyCode: 'C-1043', workplace: '부산 지점', dept: '영업팀', title: '주임', role: '일반 사용자', companyTrade: '거래중', account: '사용중지' }),
+  m({ id: 102382, name: '이민수', handle: '@mins_lee', email: 'mi***@email.com', provider: 'Email', status: '정상', joined: '2026.08.14', joinedDays: 13, seen: '1일 전', seenDays: 1, orders: 11, spend: 432900, marketing: true, businessType: 'C2C',
+    buyer: true, seller: true, sellerStatus: '승인', listings: 7, tradesBuy: 9, tradesSell: 4,
+    company: '한빛물산', companyCode: 'C-2091', workplace: '서울 본사', dept: '자재팀', title: '과장', role: '승인 담당자', companyTrade: '거래중' }),
+  m({ id: 102381, name: '박서연', handle: '@seoyeon', email: 'pa***@apple.com', provider: 'Apple', status: '휴면', joined: '2026.06.20', joinedDays: 68, seen: '32일 전', seenDays: 32, orders: 7, spend: 298000, marketing: false, businessType: 'B2C',
+    buyer: true, seller: false,
+    company: '', companyCode: '', workplace: '', dept: '', title: '', role: '일반 사용자', approval: '승인대기', companyTrade: '', account: '정상' }),
+  m({ id: 102380, name: '최준혁', handle: '@jun_choi', email: 'ch***@naver.com', provider: 'Naver', status: '정상', joined: '2026.06.01', joinedDays: 87, seen: '2시간 전', seenDays: 0, orders: 41, spend: 3102500, marketing: true, businessType: 'B2B',
+    buyer: true, seller: true, sellerStatus: '승인', listings: 18, tradesBuy: 30, tradesSell: 20,
+    company: '대성상사', companyCode: 'C-1043', workplace: '서울 본사', dept: '경영지원팀', title: '팀장', role: '관리자', companyTrade: '거래중' }),
+  m({ id: 102379, name: '정유진', handle: '@yujin_j', email: 'je***@gmail.com', provider: 'Google', status: '탈퇴', joined: '2026.05.12', joinedDays: 107, seen: '—', seenDays: null, orders: 0, spend: 0, marketing: false, businessType: 'C2C',
+    buyer: false, seller: false,
+    company: '우리테크', companyCode: 'C-3312', workplace: '인천 지점', dept: '품질팀', title: '사원', role: '일반 사용자', approval: '승인대기', companyTrade: '거래대기', account: '승인대기' }),
+  m({ id: 102378, name: '강태양', handle: '@taeyang', email: 'ka***@email.com', provider: 'Email', status: '정상', joined: '2026.04.30', joinedDays: 119, seen: '방금 전', seenDays: 0, orders: 18, spend: 876400, marketing: true, businessType: 'B2C',
+    buyer: true, seller: true, sellerStatus: '승인', listings: 9, tradesBuy: 15, tradesSell: 9,
+    company: '한빛물산', companyCode: 'C-2091', workplace: '대전 지점', dept: '영업팀', title: '대리', role: '구매 담당자', companyTrade: '거래중' }),
+  m({ id: 102377, name: '윤소희', handle: '@sohee_y', email: 'yu***@kakao.com', provider: 'Kakao', status: '정상', joined: '2026.04.18', joinedDays: 131, seen: '4시간 전', seenDays: 0, orders: 9, spend: 221000, marketing: true, businessType: 'C2C',
+    buyer: true, seller: false,
+    company: '', companyCode: '', workplace: '', dept: '', title: '', role: '일반 사용자', account: '정상' }),
+  m({ id: 102376, name: '임도현', handle: '@dohyun', email: 'im***@gmail.com', provider: 'Google', status: '휴면', joined: '2026.03.29', joinedDays: 151, seen: '61일 전', seenDays: 61, orders: 2, spend: 39000, marketing: false, businessType: 'B2C',
+    buyer: true, seller: false,
+    company: '우리테크', companyCode: 'C-3312', workplace: '인천 지점', dept: '자재팀', title: '사원', role: '일반 사용자', companyTrade: '거래중지', account: '정상' }),
+  m({ id: 102375, name: '서지우', handle: '@jiwoo_s', email: 'se***@naver.com', provider: 'Naver', status: '정상', joined: '2026.03.11', joinedDays: 169, seen: '12시간 전', seenDays: 0, orders: 33, spend: 2410000, marketing: true, businessType: 'B2B',
+    buyer: true, seller: true, sellerStatus: '승인', listings: 21, tradesBuy: 28, tradesSell: 17,
+    company: '한빛물산', companyCode: 'C-2091', workplace: '서울 본사', dept: '구매팀', title: '차장', role: '승인 담당자', companyTrade: '거래중' }),
+  m({ id: 102374, name: '한예린', handle: '@yerin_h', email: 'ha***@apple.com', provider: 'Apple', status: '정상', joined: '2026.02.24', joinedDays: 184, seen: '2일 전', seenDays: 2, orders: 6, spend: 150200, marketing: false, businessType: 'B2C',
+    buyer: true, seller: false,
+    company: '', companyCode: '', workplace: '', dept: '', title: '', role: '일반 사용자' }),
+  m({ id: 102373, name: '오세훈', handle: '@sehun_o', email: 'oh***@email.com', provider: 'Email', status: '정지', joined: '2026.02.02', joinedDays: 206, seen: '18일 전', seenDays: 18, orders: 1, spend: 12000, marketing: false, businessType: 'C2C',
+    buyer: true, seller: true, sellerStatus: '정지', listings: 2, tradesBuy: 1, tradesSell: 3, reports: 6, disputes: 2, restriction: '판매 제한',
+    company: '', companyCode: '', workplace: '', dept: '', title: '', role: '일반 사용자', account: '사용중지' }),
+  m({ id: 102372, name: '배수정', handle: '@sujeong', email: 'ba***@kakao.com', provider: 'Kakao', status: '정상', joined: '2026.01.19', joinedDays: 220, seen: '30분 전', seenDays: 0, orders: 52, spend: 4880000, marketing: true, businessType: 'B2B',
+    buyer: true, seller: true, sellerStatus: '승인', listings: 30, tradesBuy: 45, tradesSell: 25,
+    company: '대성상사', companyCode: 'C-1043', workplace: '서울 본사', dept: '구매팀', title: '부장', role: '관리자', companyTrade: '거래중' }),
+  m({ id: 102371, name: '노민재', handle: '@minjae_n', email: 'no***@gmail.com', provider: 'Google', status: '정상', joined: '2026.01.05', joinedDays: 234, seen: '6일 전', seenDays: 6, orders: 14, spend: 610000, marketing: true, businessType: 'B2C',
+    buyer: true, seller: true, sellerStatus: '승인대기', listings: 1, tradesBuy: 5, tradesSell: 1,
+    company: '우리테크', companyCode: 'C-3312', workplace: '인천 지점', dept: '영업팀', title: '주임', role: '일반 사용자', companyTrade: '거래중' }),
 ];
 
 export interface LeftMember {
