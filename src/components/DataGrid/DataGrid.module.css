@@ -234,8 +234,16 @@
 
 /* link */
 .link {
-  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid rgba(79, 70, 229, 0.22);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 /* progress */
