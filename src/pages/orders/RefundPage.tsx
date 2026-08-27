@@ -355,7 +355,7 @@ export function RefundPage() {
       )}
 
       {modal?.kind === 'assign' && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>담당자 지정</h2>
             <p className={shared.dialogBody}>선택한 {modal.ids.length}건에 담당자를 지정합니다.</p>
@@ -374,7 +374,7 @@ export function RefundPage() {
       )}
 
       {modal?.kind === 'approve' && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>환불을 승인하시겠습니까?</h2>
             <div className={shared.dialogSummary}>
@@ -397,7 +397,7 @@ export function RefundPage() {
       )}
 
       {modal?.kind === 'reject' && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>환불 반려</h2>
             <label className={styles.formField}>
@@ -422,7 +422,7 @@ export function RefundPage() {
       )}
 
       {modal?.kind === 'retry' && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>환불을 다시 시도하시겠습니까?</h2>
             <div className={shared.dialogSummary}>
@@ -438,7 +438,7 @@ export function RefundPage() {
       )}
 
       {modal?.kind === 'reconsider' && (
-        <div className={shared.dialogOverlay}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}>
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>재검토로 전환하시겠습니까?</h2>
             <p className={shared.dialogBody}>반려된 환불 건을 다시 검토중 상태로 전환합니다. 변경 사유를 남겨주세요.</p>

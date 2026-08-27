@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import styles from './deliveryShared.module.css';
 import { buildTabs } from './deliverySharedData';
 import { calcPrep, STATUS_META, type PrepItem, type PrepShipment } from './deliveryPrepData';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   shipment: PrepShipment;
@@ -84,8 +86,11 @@ export function DeliveryPrepDetailDrawer({
     return { st, ...stMeta };
   }
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headMain}>

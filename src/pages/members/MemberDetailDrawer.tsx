@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import styles from './MemberDetailDrawer.module.css';
 import type { MemberDetail, Tier } from './memberDetail';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 const TABS: [string, string][] = [
   ['basic', '기본정보'],
@@ -21,8 +23,11 @@ interface Props {
 }
 
 export function MemberDetailDrawer({ detail: d, tab, onTabChange, onClose, onToggleSuspend, onTierChange }: Props) {
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.avatar} style={{ background: d.avBg, color: d.avFg }}>{d.initial}</div>

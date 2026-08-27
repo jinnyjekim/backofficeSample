@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import styles from './deliveryShared.module.css';
 import { buildTabs } from './deliverySharedData';
 import { calcComplete, fmtDur, TYPE_META, type CompleteShipment } from './deliveryCompleteData';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   shipment: CompleteShipment;
@@ -37,8 +39,11 @@ export function DeliveryCompleteDetailDrawer({ shipment: sh, activeTab, onTabCha
     { label: '배송 소요', planned: '-', actual: fmtDur(c.durationH), actualColor: '#18181b' },
   ];
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headMain}>

@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import styles from './ContractDetailDrawer.module.css';
 import { ACCENT_MARK, CONTRACT_TABS } from './contractsData';
 import type { ContractDetail } from './contractDetail';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   detail: ContractDetail;
@@ -21,8 +23,11 @@ export function ContractDetailDrawer({
   onToggleTerminatePanel,
   onConfirmTerminate,
 }: Props) {
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

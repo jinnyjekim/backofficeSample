@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import sh from './contentShared.module.css';
 import styles from './ContentListPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
 import { CONTENT_ITEMS, STATUS_PILL, REVIEW_PILL, EXPOSE_PILL, type ContentItem, type ContentStatus } from '../../data/content';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 const GRID_TEMPLATE = 'minmax(230px,2fr) 104px 96px 74px 62px 62px 74px 72px 34px';
 const FIELD_OPTIONS = ['전체', '콘텐츠 ID', '제목', '작성자'];
@@ -110,6 +111,8 @@ export function ContentListPage() {
   }
 
   const preview = previewId ? data.find((r) => r.id === previewId) ?? null : null;
+  const previewAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(previewAsideRef, () => setPreviewId(null), !!preview);
   const confirmTarget = confirmId ? data.find((r) => r.id === confirmId) ?? null : null;
 
   const columns: GridColumn[] = [
@@ -178,7 +181,7 @@ export function ContentListPage() {
   return (
     <div className={sh.page} onClick={() => menuId && setMenuId(null)}>
       {confirmTarget && (
-        <div className={sh.dialogOverlay}>
+        <div className={sh.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmId(null); }}>
           <div className={sh.dialogBox}>
             <div className={sh.dialogTitle}>콘텐츠를 삭제하시겠습니까?</div>
             <div className={sh.dialogBody}>{`'${confirmTarget.title}'이(가) 서비스에서 삭제됩니다. 즉시 완전 삭제되지 않고 삭제 상태로 전환되며, 30일간 복구할 수 있습니다.`}</div>
@@ -202,7 +205,7 @@ export function ContentListPage() {
       )}
 
       {preview && (
-        <aside className={styles.previewAside}>
+        <aside ref={previewAsideRef} className={styles.previewAside}>
           <div className={styles.previewHead}>
             <span className={styles.previewHeadTitle}>콘텐츠 미리보기</span>
             <button type="button" className={styles.previewClose} onClick={() => setPreviewId(null)}>×</button>

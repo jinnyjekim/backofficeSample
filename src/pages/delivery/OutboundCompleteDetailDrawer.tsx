@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import styles from './deliveryShared.module.css';
 import { buildTabs } from './deliverySharedData';
 import { calcOutbound, SHIP_META, type OutboundShipment } from './outboundCompleteData';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   shipment: OutboundShipment;
@@ -52,8 +54,11 @@ export function OutboundCompleteDetailDrawer({
     { label: '출고지', planned: sh.outbase, actual: sh.outbase, actualColor: '#18181b' },
   ];
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headMain}>

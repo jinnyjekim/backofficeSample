@@ -474,7 +474,7 @@ export function PopupsPage() {
       )}
 
       {confirm?.kind === 'stop' && confirmPopup && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>팝업 노출을 중지하시겠습니까?</div>
             <div className={styles.dialogBody}>{confirmPopup.title}</div>
@@ -493,7 +493,7 @@ export function PopupsPage() {
       )}
 
       {confirm?.kind === 'repost' && confirmPopup && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>다시 노출하시겠습니까?</div>
             <div className={styles.dialogBody}>{confirmPopup.title}</div>
@@ -510,7 +510,7 @@ export function PopupsPage() {
       )}
 
       {confirm?.kind === 'delete' && confirmPopup && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>팝업을 삭제하시겠습니까?</div>
             <div className={styles.dialogBody}>{`'${confirmPopup.name}'이(가) 삭제됩니다. 노출 이력이 없는 팝업만 삭제할 수 있습니다.`}</div>
@@ -523,7 +523,7 @@ export function PopupsPage() {
       )}
 
       {confirm?.kind === 'bulkStop' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 노출 중지</div>
             <div className={styles.dialogSummary}>
@@ -544,7 +544,7 @@ export function PopupsPage() {
       )}
 
       {confirm?.kind === 'priorityManage' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>팝업 우선순위 관리</div>
             <select className={styles.selectSm} style={{ width: '100%', marginBottom: 12 }} value={priorityScreen} onChange={(e) => changePriorityScreen(e.target.value)}>

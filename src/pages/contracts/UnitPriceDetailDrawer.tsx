@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import styles from './UnitPriceDetailDrawer.module.css';
 import { ACCENT_MARK, PRICE_TABS } from './unitPriceData';
 import type { UnitPriceDetail } from './unitPriceDetail';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   detail: UnitPriceDetail;
@@ -21,8 +23,11 @@ export function UnitPriceDetailDrawer({
   onToggleChangePanel,
   onConfirmChange,
 }: Props) {
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>

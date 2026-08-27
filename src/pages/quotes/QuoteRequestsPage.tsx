@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styles from './quoteShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
@@ -6,6 +6,7 @@ import { ACCENT } from '../../lib/theme';
 import { QUOTE_REQUESTS, QUICK_FILTER_KEYS, STATUS_META, type QuoteRequest } from './quoteRequestsData';
 import { buildRequestDetail } from './requestDetail';
 import { QuoteRequestDetailDrawer } from './QuoteRequestDetailDrawer';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 const GRID_TEMPLATE = '104px 1fr 1.1fr 90px 90px 92px 84px 78px 60px';
 const GRID_MIN_WIDTH = '1160px';
@@ -29,6 +30,8 @@ export function QuoteRequestsPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('info');
   const [showRegister, setShowRegister] = useState(false);
+  const registerAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(registerAsideRef, () => setShowRegister(false), showRegister);
   const [showSupplementPanel, setShowSupplementPanel] = useState(false);
   const [showRejectPanel, setShowRejectPanel] = useState(false);
   const [showDraftPanel, setShowDraftPanel] = useState(false);
@@ -236,7 +239,7 @@ export function QuoteRequestsPage() {
         {detail && <QuoteRequestDetailDrawer detail={detail} onTabChange={setActiveTab} />}
 
         {showRegister && (
-          <aside className={styles.registerAside}>
+          <aside ref={registerAsideRef} className={styles.registerAside}>
             <div className={styles.registerHead}>
               <span className={styles.registerTitle}>견적 요청 등록</span>
               <button type="button" className={styles.closeBtn} onClick={() => setShowRegister(false)}>×</button>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styles from './quoteShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
@@ -6,6 +6,7 @@ import { ACCENT } from '../../lib/theme';
 import { QUOTES, QUICK_FILTER_KEYS, STATUS_META, fmt, issuesOf, type Quote } from './quotesData';
 import { buildQuoteDetail } from './quoteDetail';
 import { QuoteDetailDrawer } from './QuoteDetailDrawer';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 const GRID_TEMPLATE = '96px 1fr 1fr 120px 84px 100px 84px 78px 60px';
 const GRID_MIN_WIDTH = '1160px';
@@ -29,6 +30,8 @@ export function QuotesPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('info');
   const [showRegister, setShowRegister] = useState(false);
+  const registerAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(registerAsideRef, () => setShowRegister(false), showRegister);
   const [showApprovePanel, setShowApprovePanel] = useState(false);
 
   const counts = useMemo(() => {
@@ -246,7 +249,7 @@ export function QuotesPage() {
         {detail && <QuoteDetailDrawer detail={detail} onTabChange={setActiveTab} />}
 
         {showRegister && (
-          <aside className={styles.registerAside}>
+          <aside ref={registerAsideRef} className={styles.registerAside}>
             <div className={styles.registerHead}>
               <span className={styles.registerTitle}>견적서 작성</span>
               <button type="button" className={styles.closeBtn} onClick={() => setShowRegister(false)}>×</button>

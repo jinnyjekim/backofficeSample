@@ -40,7 +40,7 @@ export function ProductInquiryDetailPage() {
     return (
       <div className={pageStyles.page}>
         <div className={pageStyles.headTop}>
-          <div className={pageStyles.title}>상품 문의</div>
+          <div className={pageStyles.title}>상품 문의 상세</div>
           <div className={pageStyles.subtitle}>존재하지 않는 문의입니다.</div>
           <button type="button" className={styles.actionLink} style={{ marginTop: 12 }} onClick={() => navigate('/cs/product-inquiries')}>목록으로</button>
         </div>

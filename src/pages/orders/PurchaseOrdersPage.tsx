@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import styles from './ordersShared.module.css';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { PurchaseOrderDetailDrawer } from './PurchaseOrderDetailDrawer';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   fmt,
   issueOf,
@@ -28,6 +29,8 @@ export function PurchaseOrdersPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('info');
   const [showRegister, setShowRegister] = useState(false);
+  const registerAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(registerAsideRef, () => setShowRegister(false), showRegister);
   const [showConfirmPanel, setShowConfirmPanel] = useState(false);
   const [showRejectPanel, setShowRejectPanel] = useState(false);
   const [page, setPage] = useState('1');
@@ -217,7 +220,7 @@ export function PurchaseOrdersPage() {
         )}
 
         {showRegister && (
-          <aside className={styles.registerAside}>
+          <aside ref={registerAsideRef} className={styles.registerAside}>
             <div className={styles.registerHead}>
               <span className={styles.registerTitle}>발주 등록</span>
               <button type="button" className={styles.closeBtn} onClick={() => setShowRegister(false)}>×</button>

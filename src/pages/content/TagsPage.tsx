@@ -235,7 +235,7 @@ export function TagsPage() {
   return (
     <div className={sh.page} onClick={() => { if (menuId) setMenuId(null); }}>
       {dialog && (
-        <div className={sh.dialogOverlay}>
+        <div className={sh.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setDialog(null); }}>
           <div className={sh.dialogBox}>
             <div className={sh.dialogTitle}>{dialog.title}</div>
             <div className={sh.dialogBody}>{dialog.body}</div>
@@ -257,7 +257,7 @@ export function TagsPage() {
       )}
 
       {merge && (
-        <div className={sh.modalOverlay} style={{ zIndex: 72 }}>
+        <div className={sh.modalOverlay} style={{ zIndex: 72 }} onMouseDown={(e) => { if (e.target === e.currentTarget) setMerge(null); }}>
           <div className={sh.modalBox} style={{ width: 'min(440px,100%)' }}>
             <div className={sh.modalTitle}>태그 병합</div>
             <div className={sh.modalSub} style={{ fontVariantNumeric: 'normal' }}>병합 대상 태그에 연결된 콘텐츠는 유지할 태그로 자동 이전됩니다.</div>
@@ -296,7 +296,7 @@ export function TagsPage() {
       )}
 
       {modal && (
-        <div className={sh.modalOverlay}>
+        <div className={sh.modalOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}>
           <div className={sh.modalBox}>
             <div className={sh.modalTitle}>{modal.mode === 'new' ? '태그 등록' : '태그 수정'}</div>
 

@@ -494,7 +494,7 @@ export function FaqPage() {
       )}
 
       {confirm?.kind === 'repost' && confirmFaq && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>다시 게시하시겠습니까?</div>
             <div className={styles.dialogBody}>{confirmFaq.question}</div>
@@ -511,7 +511,7 @@ export function FaqPage() {
       )}
 
       {confirm?.kind === 'delete' && confirmFaq && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>FAQ를 삭제하시겠습니까?</div>
             <div className={styles.dialogBody}>{`'${confirmFaq.question}'이(가) 삭제됩니다. 공개 이력이 없는 FAQ만 삭제할 수 있습니다.`}</div>
@@ -524,7 +524,7 @@ export function FaqPage() {
       )}
 
       {confirm?.kind === 'bulkCategory' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 카테고리 변경</div>
             <select className={styles.selectSm} style={{ width: '100%', marginBottom: 16 }} value={bulkCategory} onChange={(e) => setBulkCategory(e.target.value)}>
@@ -541,7 +541,7 @@ export function FaqPage() {
       )}
 
       {confirm?.kind === 'bulkStatus' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 공개 설정</div>
             <div className={styles.dialogBody} style={{ display: 'flex', gap: 14, marginBottom: 16 }}>
@@ -557,7 +557,7 @@ export function FaqPage() {
       )}
 
       {confirm?.kind === 'bulkImportant' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 중요 FAQ 설정</div>
             <div className={styles.dialogBody} style={{ display: 'flex', gap: 14, marginBottom: 16 }}>
@@ -573,7 +573,7 @@ export function FaqPage() {
       )}
 
       {confirm?.kind === 'categoryManage' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>카테고리 관리</div>
             <div className={styles.dialogSummary}>
@@ -607,7 +607,7 @@ export function FaqPage() {
       )}
 
       {confirm?.kind === 'orderManage' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>FAQ 노출 순서</div>
             <select className={styles.selectSm} style={{ width: '100%', marginBottom: 12 }} value={orderCategory} onChange={(e) => changeOrderCategory(e.target.value)}>

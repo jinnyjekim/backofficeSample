@@ -480,7 +480,7 @@ export function BannersPage() {
       )}
 
       {confirm?.kind === 'stop' && confirmBanner && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>배너 노출을 중지하시겠습니까?</div>
             <div className={styles.dialogBody}>{confirmBanner.name}</div>
@@ -499,7 +499,7 @@ export function BannersPage() {
       )}
 
       {confirm?.kind === 'repost' && confirmBanner && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>다시 노출하시겠습니까?</div>
             <div className={styles.dialogBody}>{confirmBanner.name}</div>
@@ -516,7 +516,7 @@ export function BannersPage() {
       )}
 
       {confirm?.kind === 'delete' && confirmBanner && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>배너를 삭제하시겠습니까?</div>
             <div className={styles.dialogBody}>{`'${confirmBanner.name}'이(가) 삭제됩니다. 노출 이력이 없는 배너만 삭제할 수 있습니다.`}</div>
@@ -529,7 +529,7 @@ export function BannersPage() {
       )}
 
       {confirm?.kind === 'bulkStop' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 노출 중지</div>
             <div className={styles.dialogSummary}>
@@ -550,7 +550,7 @@ export function BannersPage() {
       )}
 
       {confirm?.kind === 'bulkPosition' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 노출 위치 변경</div>
             <select className={styles.selectSm} style={{ width: '100%', marginBottom: 16 }} value={bulkPosition} onChange={(e) => setBulkPosition(e.target.value)}>
@@ -567,7 +567,7 @@ export function BannersPage() {
       )}
 
       {confirm?.kind === 'positionInfo' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox} style={{ width: 'min(520px, 92%)' }}>
             <div className={styles.dialogTitle}>배너 노출 위치</div>
             <div className={styles.dialogSummary}>
@@ -586,7 +586,7 @@ export function BannersPage() {
       )}
 
       {confirm?.kind === 'orderManage' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>배너 노출 순서</div>
             <select className={styles.selectSm} style={{ width: '100%', marginBottom: 12 }} value={orderPosition} onChange={(e) => changeOrderPosition(e.target.value)}>

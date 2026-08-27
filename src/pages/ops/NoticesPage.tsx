@@ -449,7 +449,7 @@ export function NoticesPage() {
       )}
 
       {confirm?.kind === 'end' && confirmNotice && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>게시를 종료하시겠습니까?</div>
             <div className={styles.dialogBody}>{confirmNotice.title}</div>
@@ -468,7 +468,7 @@ export function NoticesPage() {
       )}
 
       {confirm?.kind === 'repost' && confirmNotice && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>다시 게시하시겠습니까?</div>
             <div className={styles.dialogBody}>{confirmNotice.title}</div>
@@ -485,7 +485,7 @@ export function NoticesPage() {
       )}
 
       {confirm?.kind === 'delete' && confirmNotice && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>공지를 삭제하시겠습니까?</div>
             <div className={styles.dialogBody}>{`'${confirmNotice.title}'이(가) 삭제됩니다. 공개 이력이 없는 작성중 공지만 삭제할 수 있습니다.`}</div>
@@ -498,7 +498,7 @@ export function NoticesPage() {
       )}
 
       {confirm?.kind === 'bulkEnd' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 게시 종료</div>
             <div className={styles.dialogSummary}>
@@ -519,7 +519,7 @@ export function NoticesPage() {
       )}
 
       {confirm?.kind === 'bulkCategory' && (
-        <div className={styles.dialogOverlay}>
+        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
           <div className={styles.dialogBox}>
             <div className={styles.dialogTitle}>{selectedIds.length}건 카테고리 변경</div>
             <select className={styles.selectSm} style={{ width: '100%', marginBottom: 16 }} value={bulkCategory} onChange={(e) => setBulkCategory(e.target.value as NoticeCategory)}>

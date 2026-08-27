@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import styles from './ordersShared.module.css';
 import { fmt, STATUS_META, type Approval } from './orderApprovalData';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 const TABS: [string, string][] = [
   ['items', '주문 항목'],
@@ -80,8 +82,11 @@ export function OrderApprovalDetailDrawer({
     { label: '확정 예정 납기', value: a.dueConfirmed, weight: a.dueRequested !== a.dueConfirmed ? 700 : 500, color: a.dueRequested !== a.dueConfirmed ? '#d97706' : '#3f3f46' },
   ];
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.asideTop}>
         <div className={styles.headRowD}>
           <div className={styles.headMain}>

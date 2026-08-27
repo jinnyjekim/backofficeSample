@@ -196,7 +196,7 @@ export function CategoriesPage() {
   return (
     <div className={sh.page} onClick={() => { if (menuId) setMenuId(null); }}>
       {dialog && (
-        <div className={sh.dialogOverlay}>
+        <div className={sh.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setDialog(null); }}>
           <div className={sh.dialogBox}>
             <div className={sh.dialogTitle}>{dialog.title}</div>
             <div className={sh.dialogBody}>{dialog.body}</div>

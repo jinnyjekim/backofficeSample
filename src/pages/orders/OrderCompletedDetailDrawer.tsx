@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import styles from './ordersShared.module.css';
 import { fmt, fmtSigned, TYPE_META, type CompletedOrder } from './orderCompletedData';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 const TABS: [string, string][] = [
   ['summary', '완료요약'],
@@ -91,8 +93,11 @@ export function OrderCompletedDetailDrawer({
     ['계약', o.links.contract], ['납품', o.links.delivery], ['청구', o.links.invoice], ['수금', o.links.payment],
   ];
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.asideTop}>
         <div className={styles.headRowD}>
           <div className={styles.headMain}>

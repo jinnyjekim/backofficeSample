@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import styles from './SettlementDetailDrawer.module.css';
 import { buildSettlementDetail } from './settlementDetail';
 import type { Settlement } from './settlementData';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   settlement: Settlement;
@@ -40,8 +42,11 @@ export function SettlementDetailDrawer({
     confirmHold: onConfirmHold,
   });
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headMain}>

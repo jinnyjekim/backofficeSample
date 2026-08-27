@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import styles from './deliveryShared.module.css';
 import { buildTabs } from './deliverySharedData';
 import { calcWaiting, STATUS_META, TODAY, type WaitingShipment } from './outboundWaitingData';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   shipment: WaitingShipment;
@@ -76,8 +78,11 @@ export function OutboundWaitingDetailDrawer({
   const hasChange = sh.cancelReq || sh.addrChanged;
   const changeNote = sh.changeNote || (sh.addrChanged ? '배송지가 준비 완료 이후 변경되었습니다.' : '');
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headMain}>

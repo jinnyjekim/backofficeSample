@@ -161,7 +161,7 @@ export function ReviewPage() {
       <div className={sh.page}>
         {toast && <div className={sh.toast}>{toast}</div>}
         {modal && (
-          <div className={sh.modalOverlay}>
+          <div className={sh.modalOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}>
             <div className={sh.modalBox}>
               <div className={sh.modalTitle}>{modal.kind === 'approve' ? '콘텐츠를 승인하시겠습니까?' : modal.kind === 'reject' ? '반려 처리' : '보류 처리'}</div>
 

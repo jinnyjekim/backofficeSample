@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import styles from './quoteShared.module.css';
 import type { QuoteDetail } from './quoteDetail';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   detail: QuoteDetail;
@@ -7,8 +9,11 @@ interface Props {
 }
 
 export function QuoteDetailDrawer({ detail: d, onTabChange }: Props) {
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, d.close);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.asideTop}>
         <div className={styles.headRowD}>
           <div className={styles.headMain}>

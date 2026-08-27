@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
@@ -35,8 +35,10 @@ function matchesSearch(q: ProductInquiry, scope: SearchScope, keyword: string): 
 
 export function ProductInquiriesListPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [inquiries, setInquiries] = useState<ProductInquiry[]>(() => [...PRODUCT_INQUIRIES]);
-  const [quickFilter, setQuickFilter] = useState<QuickFilter>('전체');
+  const statusParam = searchParams.get('status');
+  const quickFilter: QuickFilter = statusParam === 'waiting' ? '답변 대기' : statusParam === 'answered' ? '답변 완료' : '전체';
   const [scope, setScope] = useState<SearchScope>('전체');
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
@@ -83,6 +85,14 @@ export function ProductInquiriesListPage() {
     setEndDate('');
   };
 
+  const selectQuickFilter = (filter: QuickFilter) => {
+    const next = new URLSearchParams(searchParams);
+    if (filter === '답변 대기') next.set('status', 'waiting');
+    else if (filter === '답변 완료') next.set('status', 'answered');
+    else next.delete('status');
+    setSearchParams(next, { replace: true });
+  };
+
   function toggleHidden(q: ProductInquiry) {
     setInquiries((prev) => prev.map((x) => (x.id === q.id ? { ...x, hidden: !x.hidden } : x)));
     toastBriefly(q.hidden ? '문의를 복원했습니다.' : '문의를 숨김 처리했습니다.');
@@ -121,14 +131,14 @@ export function ProductInquiriesListPage() {
       <div className={styles.headTop}>
         <div className={styles.headRow}>
           <div>
-            <div className={styles.title}>상품 문의</div>
-            <div className={styles.subtitle}>상품에 등록된 문의를 조회하고 답변 상태를 관리합니다.</div>
+            <div className={styles.title}>상품 문의 관리</div>
+            <div className={styles.subtitle}>상품 문의를 하나의 업무 큐에서 조회하고 답변·노출 상태와 처리 기록을 관리합니다.</div>
           </div>
         </div>
 
         <div className={styles.quickFilters}>
           {QUICK_FILTERS.map((f) => (
-            <button key={f} type="button" className={styles.qfBtn} style={{ borderColor: quickFilter === f ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: quickFilter === f ? 'var(--accent)' : '#fff' }} onClick={() => setQuickFilter(f)}>
+            <button key={f} type="button" className={styles.qfBtn} style={{ borderColor: quickFilter === f ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: quickFilter === f ? 'var(--accent)' : '#fff' }} onClick={() => selectQuickFilter(f)}>
               <span className={styles.qfLabel} style={{ color: quickFilter === f ? '#fff' : '#3f3f46' }}>{f}</span>
               <span className={styles.qfCount} style={{ color: quickFilter === f ? '#fff' : '#3f3f46' }}>{counts[f] ?? 0}</span>
             </button>

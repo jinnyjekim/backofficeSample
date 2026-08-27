@@ -179,7 +179,7 @@ export function ExposurePage() {
   return (
     <div className={sh.page} onClick={() => { if (menuId) setMenuId(null); }}>
       {navDialog && (
-        <div className={sh.dialogOverlay}>
+        <div className={sh.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setNavDialog(null); }}>
           <div className={sh.dialogBox}>
             <div className={sh.dialogTitle}>저장하지 않은 변경사항이 있습니다.</div>
             <div className={sh.dialogBody}>변경사항을 저장하지 않고 이동하시겠습니까?</div>
@@ -195,7 +195,7 @@ export function ExposurePage() {
       )}
 
       {addModal && (
-        <div className={sh.modalOverlay}>
+        <div className={sh.modalOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setAddModal(null); }}>
           <div className={styles.addModalBox}>
             <div className={styles.addModalHead}>
               <div className={sh.modalTitle}>콘텐츠 추가</div>
@@ -239,7 +239,7 @@ export function ExposurePage() {
       )}
 
       {previewOpen && (
-        <div className={sh.modalOverlay} style={{ zIndex: 72 }}>
+        <div className={sh.modalOverlay} style={{ zIndex: 72 }} onMouseDown={(e) => { if (e.target === e.currentTarget) setPreviewOpen(false); }}>
           <div className={styles.previewModalBox}>
             <div className={styles.previewModalHead}>
               <div style={{ flex: 1, minWidth: 0 }}>

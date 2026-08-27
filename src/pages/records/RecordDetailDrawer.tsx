@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import styles from './RecordDetailDrawer.module.css';
 import type { RecDetail } from './recordDetail';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   detail: RecDetail;
@@ -7,8 +9,11 @@ interface Props {
 }
 
 export function RecordDetailDrawer({ detail: d, onClose }: Props) {
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.head}>
         <div className={styles.headBody}>
           <div className={styles.title}>{d.title}</div>

@@ -1,6 +1,8 @@
+import { useRef } from 'react';
 import styles from './deliveryShared.module.css';
 import { buildTabs } from './deliverySharedData';
 import { calcTransit, statusMeta, type TransitShipment } from './inTransitData';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   shipment: TransitShipment;
@@ -30,8 +32,11 @@ export function InTransitDetailDrawer({ shipment: sh, activeTab, onTabChange, on
     onUpdate((s) => ({ ...s, history: [{ when: '방금', title: '상태 재조회 · 변경 없음', by: 'system' }, ...s.history] }));
   }
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside className={styles.aside}>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headMain}>
