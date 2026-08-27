@@ -4,6 +4,8 @@ import { BAN_MEMBERS, LEFT_MEMBERS, type BanMember, type LeftMember } from '../.
 import { buildBanView, buildLeftView } from './recordsData';
 import { buildBanDetail, buildLeftDetail } from './recordDetail';
 import { RecordDetailDrawer } from './RecordDetailDrawer';
+import { SanctionModal, type SanctionSubmit } from './SanctionModal';
+import { SANCTION_LEVEL, type SanctionMode } from './sanctionOptions';
 import { formatNumber } from '../../lib/theme';
 
 const PAGE_LABELS = ['‹', '1', '2', '3', '4', '5', '›'];
@@ -12,28 +14,109 @@ interface Props {
   kind: 'left' | 'ban';
 }
 
+interface ModalState {
+  mode: SanctionMode;
+  target: BanMember | null;
+}
+
 export function RecordsPage({ kind }: Props) {
   const [filter, setFilter] = useState('전체');
   const [query, setQuery] = useState('');
   const [openId, setOpenId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
+  const [banData, setBanData] = useState<BanMember[]>(BAN_MEMBERS);
+  const [modal, setModal] = useState<ModalState | null>(null);
 
   const isLeft = kind === 'left';
   const rec = useMemo(
-    () => (isLeft ? buildLeftView(LEFT_MEMBERS, filter, query) : buildBanView(BAN_MEMBERS, filter, query)),
-    [isLeft, filter, query],
+    () => (isLeft ? buildLeftView(LEFT_MEMBERS, filter, query) : buildBanView(banData, filter, query)),
+    [isLeft, filter, query, banData],
   );
 
   const openRow = openId != null
-    ? (isLeft ? LEFT_MEMBERS.find((r) => r.id === openId) : BAN_MEMBERS.find((r) => r.id === openId))
+    ? (isLeft ? LEFT_MEMBERS.find((r) => r.id === openId) : banData.find((r) => r.id === openId))
     : null;
   const detail = openRow
     ? (isLeft ? buildLeftDetail(openRow as LeftMember) : buildBanDetail(openRow as BanMember))
     : null;
+  const banTarget = !isLeft && openRow ? (openRow as BanMember) : null;
+
+  function applySanction(result: SanctionSubmit) {
+    if (result.mode === 'add') {
+      const newRow: BanMember = {
+        id: result.id!,
+        name: result.name!,
+        email: result.email || '—',
+        joined: '2026.08.27',
+        type: result.type!,
+        level: SANCTION_LEVEL[result.type!] ?? 3,
+        reason: result.reason!,
+        detail: result.detail!,
+        start: result.start!,
+        end: result.end ?? '—',
+        state: '제재중',
+        count: 1,
+        by: '운영 관리자',
+        how: '관리자 직접',
+        evidence: [],
+      };
+      setBanData((prev) => [newRow, ...prev]);
+      setModal(null);
+      return;
+    }
+
+    const targetId = modal?.target?.id;
+    if (targetId == null) {
+      setModal(null);
+      return;
+    }
+    setBanData((prev) => prev.map((r) => {
+      if (r.id !== targetId) return r;
+      if (result.mode === 'release') return { ...r, state: '해제' as const, end: r.end === '—' ? r.end : r.end };
+      if (result.mode === 'extend') return { ...r, end: result.end ?? r.end };
+      if (result.mode === 'change') {
+        return {
+          ...r,
+          type: result.type ?? r.type,
+          level: SANCTION_LEVEL[result.type ?? r.type] ?? r.level,
+          reason: result.reason ?? r.reason,
+          detail: result.detail ?? r.detail,
+          end: result.end ?? r.end,
+          count: r.count + 1,
+        };
+      }
+      return r;
+    }));
+    setModal(null);
+  }
 
   return (
     <div className={styles.page}>
-      {detail && <RecordDetailDrawer detail={detail} onClose={() => setOpenId(null)} />}
+      {detail && (
+        <RecordDetailDrawer
+          detail={detail}
+          onClose={() => setOpenId(null)}
+          onAction={banTarget ? () => setModal({ mode: 'release', target: banTarget }) : undefined}
+          actionDisabled={banTarget ? banTarget.state !== '제재중' : false}
+          extraActions={
+            banTarget && banTarget.state === '제재중'
+              ? [
+                  { label: '변경', onClick: () => setModal({ mode: 'change', target: banTarget }) },
+                  { label: '연장', onClick: () => setModal({ mode: 'extend', target: banTarget }) },
+                ]
+              : undefined
+          }
+        />
+      )}
+
+      {modal && (
+        <SanctionModal
+          mode={modal.mode}
+          target={modal.target}
+          onCancel={() => setModal(null)}
+          onSubmit={applySanction}
+        />
+      )}
 
       <header className={styles.header}>
         <div className={styles.headTitleRow}>
@@ -105,7 +188,13 @@ export function RecordsPage({ kind }: Props) {
                 <div className={styles.statCellLabel}>{rec.ctaLabel}</div>
                 <div className={styles.ctaHint}>{rec.ctaHint}</div>
               </div>
-              <button type="button" className={styles.ctaButton}>{rec.ctaButton}</button>
+              <button
+                type="button"
+                className={styles.ctaButton}
+                onClick={!isLeft ? () => setModal({ mode: 'add', target: null }) : undefined}
+              >
+                {rec.ctaButton}
+              </button>
             </div>
           </div>
         </div>

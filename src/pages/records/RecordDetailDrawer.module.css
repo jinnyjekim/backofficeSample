@@ -192,3 +192,23 @@
 .footerAction:hover {
   background: #fff;
 }
+.footerAction:disabled {
+  color: #c4c4c8;
+  border-color: rgba(0, 0, 0, 0.06);
+  cursor: default;
+}
+.footerGhost {
+  height: 31px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #52525b;
+  cursor: pointer;
+  flex: none;
+}
+.footerGhost:hover {
+  background: #fafafa;
+}

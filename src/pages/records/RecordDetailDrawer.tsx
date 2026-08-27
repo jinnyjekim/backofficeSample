@@ -3,12 +3,20 @@ import styles from './RecordDetailDrawer.module.css';
 import type { RecDetail } from './recordDetail';
 import { useOutsideClose } from '../../lib/useOutsideClose';
 
+interface ExtraAction {
+  label: string;
+  onClick: () => void;
+}
+
 interface Props {
   detail: RecDetail;
   onClose: () => void;
+  onAction?: () => void;
+  actionDisabled?: boolean;
+  extraActions?: ExtraAction[];
 }
 
-export function RecordDetailDrawer({ detail: d, onClose }: Props) {
+export function RecordDetailDrawer({ detail: d, onClose, onAction, actionDisabled, extraActions }: Props) {
   const asideRef = useRef<HTMLElement>(null);
   useOutsideClose(asideRef, onClose);
 
@@ -69,7 +77,17 @@ export function RecordDetailDrawer({ detail: d, onClose }: Props) {
 
       <div className={styles.footer}>
         <span className={styles.footerText}>{d.footer}</span>
-        <button type="button" className={styles.footerAction}>{d.action}</button>
+        {extraActions?.map((a) => (
+          <button type="button" key={a.label} className={styles.footerGhost} onClick={a.onClick}>{a.label}</button>
+        ))}
+        <button
+          type="button"
+          className={styles.footerAction}
+          onClick={onAction}
+          disabled={actionDisabled}
+        >
+          {d.action}
+        </button>
       </div>
     </aside>
   );
