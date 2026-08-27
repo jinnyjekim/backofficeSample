@@ -313,7 +313,6 @@
   text-transform: uppercase;
 }
 .segCount {
-  background: linear-gradient(180deg, oklch(0.52 0.16 258 / 6%), oklch(0.52 0.16 258 / 1.5%));
   display: flex;
   flex-direction: column;
 }
