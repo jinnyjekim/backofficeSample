@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import styles from './MembersPage.module.css';
 import { MEMBERS, type Member } from '../../data/members';
 import { ACCENT, STATUS_STYLE, avatarColors, formatNumber } from '../../lib/theme';
-import { ADDABLE, CHANNEL_ORDER, STATS, TOTAL_MEMBERS, VIEW_LABELS, viewCount, type Chip, type ViewKey } from './membersData';
+import { ADDABLE, buildSpark, CHANNEL_ORDER, STATS, TOTAL_MEMBERS, VIEW_LABELS, viewCount, type Chip, type ViewKey } from './membersData';
 import { MemberDetailDrawer } from './MemberDetailDrawer';
 import { buildMemberDetail, defaultTier, type Tier } from './memberDetail';
 
@@ -79,15 +79,17 @@ export function MembersPage() {
     });
   }, [rows]);
 
-  const segDesc = useMemo(() => {
+  const segParts = useMemo(() => {
     const parts: string[] = [];
     if (view !== 'all') parts.push(VIEW_LABELS[view]);
     chips.forEach((c) => parts.push(c.hint + ' ' + (c.value === 'true' ? '동의' : c.value)));
     if (q.trim()) parts.push('검색 "' + q.trim() + '"');
-    return parts.length ? parts.join(' · ') : '조건 없음 — 전체 회원';
+    return parts.length ? parts : ['조건 없음 — 전체 회원'];
   }, [view, chips, q]);
 
   const segShare = rows.length === data.length ? '전체' : Math.round((rows.length / data.length) * 100) + '%';
+  const segBarPct = data.length ? `${Math.min(100, Math.round((rows.length / data.length) * 100))}%` : '0%';
+  const spark = useMemo(() => buildSpark(rows), [rows]);
 
   const openMember = openId ? data.find((r) => r.id === openId) ?? null : null;
   const tier: Tier = openMember ? tiers[openMember.id] ?? defaultTier(openMember) : '일반';
@@ -234,7 +236,28 @@ export function MembersPage() {
                   <span className={styles.segCountUnit}>명</span>
                   <span className={styles.segCountShare}>{segShare}</span>
                 </div>
-                <div className={styles.segCountDesc}>{segDesc}</div>
+                <div className={styles.segProgressTrack}>
+                  <div className={styles.segProgressFill} style={{ width: segBarPct }} />
+                </div>
+                <div className={styles.segTagsRow}>
+                  {segParts.map((p) => (
+                    <span className={styles.segTag} key={p}>{p}</span>
+                  ))}
+                </div>
+                <div className={styles.segSparkWrap}>
+                  <div className={styles.segSparkHead}>
+                    <span>최근 14일 접속</span>
+                    <span className={styles.segSparkStat}>
+                      <span className={styles.segSparkCount}>{spark.recent}</span>
+                      {spark.trendLabel && <span style={{ color: spark.trendColor }}>{spark.trendLabel}</span>}
+                    </span>
+                  </div>
+                  <div className={styles.segSparkBars}>
+                    {spark.bars.map((b, i) => (
+                      <span key={i} title={b.title} className={styles.segSparkBar} style={{ height: b.h, background: b.color }} />
+                    ))}
+                  </div>
+                </div>
               </div>
 
               <div className={`${styles.segCell} ${styles.segMix}`}>

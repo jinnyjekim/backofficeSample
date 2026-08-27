@@ -1,4 +1,4 @@
-import { GREEN_STRONG, RED } from '../../lib/theme';
+import { ACCENT, GREEN_STRONG, RED } from '../../lib/theme';
 import type { Member } from '../../data/members';
 
 export type ViewKey = 'all' | 'new' | 'risk' | 'mkt';
@@ -39,6 +39,54 @@ export const ADDABLE: Chip[] = [
 export const CHANNEL_ORDER = ['Google', 'Kakao', 'Naver', 'Apple', 'Email'];
 
 export const TOTAL_MEMBERS = 128430;
+
+export function daysAgo(seen: string): number | null {
+  if (seen === '—') return null;
+  if (seen.includes('방금') || seen.includes('분 전') || seen.includes('시간 전')) return 0;
+  const m = seen.match(/(\d+)일 전/);
+  if (m) return parseInt(m[1], 10);
+  return null;
+}
+
+export interface SparkBar {
+  h: string;
+  color: string;
+  title: string;
+}
+export interface SparkResult {
+  bars: SparkBar[];
+  recent: number;
+  trendLabel: string;
+  trendColor: string;
+}
+
+export function buildSpark(rows: Member[]): SparkResult {
+  const buckets = Array.from({ length: 14 }, () => 0);
+  rows.forEach((r) => {
+    const d = daysAgo(r.seen);
+    if (d != null && d <= 13) buckets[13 - d] += 1;
+  });
+  const max = Math.max(1, ...buckets);
+  const bars: SparkBar[] = buckets.map((count, i) => ({
+    h: count ? `${Math.max(2, Math.round((count / max) * 24))}px` : '2px',
+    color: count ? (i >= 11 ? ACCENT : 'oklch(0.78 0.07 258)') : '#ececef',
+    title: `${13 - i}일 전 · ${count}명`,
+  }));
+  const recent7 = buckets.slice(7).reduce((a, b) => a + b, 0);
+  const prior7 = buckets.slice(0, 7).reduce((a, b) => a + b, 0);
+  const recent = buckets.reduce((a, b) => a + b, 0);
+  let trendLabel = '';
+  let trendColor = '#a1a1aa';
+  if (prior7 === 0 && recent7 > 0) {
+    trendLabel = '▲ 신규';
+    trendColor = GREEN_STRONG;
+  } else if (prior7 > 0) {
+    const pct = Math.round(((recent7 - prior7) / prior7) * 100);
+    trendLabel = pct === 0 ? '' : `${pct > 0 ? '▲' : '▼'} ${Math.abs(pct)}%`;
+    trendColor = pct > 0 ? GREEN_STRONG : pct < 0 ? RED : '#a1a1aa';
+  }
+  return { bars, recent, trendLabel, trendColor };
+}
 
 export const STATS = [
   { label: '전체 회원', value: TOTAL_MEMBERS.toLocaleString('ko-KR'), color: '#18181b', delta: '', deltaColor: '#a1a1aa' },
