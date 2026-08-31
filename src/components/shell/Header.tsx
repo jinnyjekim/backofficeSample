@@ -1,9 +1,11 @@
-import { useLocation } from 'react-router-dom';
+import { Blocks } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { activeKeyForPath, breadcrumbForKey } from '../../lib/nav';
 import styles from './Header.module.css';
 
 export function Header() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [root, leaf] = breadcrumbForKey(activeKeyForPath(pathname));
 
   return (
@@ -20,6 +22,15 @@ export function Header() {
         <span>⌕</span>
         <span>회원 · 주문 · 메뉴 검색</span>
         <span className={styles.kbd}>⌘K</span>
+      </button>
+
+      <button
+        type="button"
+        className={`${styles.iconBtn} ${pathname === '/components' ? styles.iconBtnActive : ''}`}
+        title="컴포넌트"
+        onClick={() => navigate('/components')}
+      >
+        <Blocks size={15} strokeWidth={1.8} />
       </button>
 
       <button type="button" className={styles.bell}>

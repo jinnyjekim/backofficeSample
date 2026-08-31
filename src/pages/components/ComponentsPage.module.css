@@ -1,0 +1,148 @@
+.page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0 20px;
+  height: 52px;
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  flex: none;
+}
+.title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.subtitle {
+  font-size: 11.5px;
+  color: #a1a1aa;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.toc {
+  width: 196px;
+  flex: none;
+  overflow-y: auto;
+  padding: 18px 10px;
+  border-right: 1px solid rgba(0, 0, 0, 0.07);
+  background: #fff;
+}
+.tocItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  color: #52525b;
+  cursor: pointer;
+  margin-bottom: 1px;
+}
+.tocItem:hover {
+  background: #f4f4f5;
+}
+.tocItem.active {
+  background: #eef2ff;
+  color: #4338ca;
+  font-weight: 600;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 24px 80px;
+}
+
+.section {
+  scroll-margin-top: 12px;
+  margin-bottom: 28px;
+}
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sectionHint {
+  font-size: 11.5px;
+  color: #8b8b93;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo {
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.demo:last-child {
+  border-bottom: none;
+}
+.demoHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.demoName {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #18181b;
+}
+.demoDesc {
+  font-size: 11.5px;
+  color: #8b8b93;
+}
+.demoBody {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.demoBody.col {
+  flex-direction: column;
+  align-items: stretch;
+}
+.demoNote {
+  margin-top: 10px;
+  font-size: 11px;
+  color: #a1a1aa;
+}
+
+.pair {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 220px;
+}
+.pairLabel {
+  font-size: 10.5px;
+  color: #8b8b93;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}

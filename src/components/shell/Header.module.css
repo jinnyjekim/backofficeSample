@@ -57,6 +57,27 @@
   padding: 1px 5px;
 }
 
+.iconBtn {
+  height: 32px;
+  width: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 9px;
+  color: #52525b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.iconBtn:hover {
+  background: #fafafa;
+}
+.iconBtnActive {
+  background: #eef2ff;
+  border-color: rgba(79, 70, 229, 0.22);
+  color: #4338ca;
+}
+
 .bell {
   position: relative;
   height: 32px;

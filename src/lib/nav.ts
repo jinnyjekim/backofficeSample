@@ -347,6 +347,7 @@ export const NAV_GROUPS: NavGroup[] = [
 
 export const BREADCRUMB: Record<string, [string, string]> = {
   dash: ['일반', '대시보드'],
+  components: ['일반', '컴포넌트'],
   members: ['서비스 관리 · 회원 관리', '회원 목록'],
   left: ['서비스 관리 · 회원 관리', '탈퇴 회원'],
   ban: ['서비스 관리 · 회원 관리', '제재 회원'],
@@ -498,6 +499,7 @@ export function activeKeyForPath(pathname: string): string {
   const exactSub = NAV_GROUPS.flatMap((group) => group.items).find((item) => item.sub && item.to === pathname);
   if (exactSub) return exactSub.key;
   if (pathname.startsWith('/dashboard')) return 'dash';
+  if (pathname.startsWith('/components')) return 'components';
   if (pathname.startsWith('/members/left')) return 'left';
   if (pathname.startsWith('/members/ban')) return 'ban';
   if (pathname.startsWith('/members')) return 'members_sub1';

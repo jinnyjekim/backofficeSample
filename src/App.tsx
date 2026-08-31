@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Shell } from './components/shell/Shell';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
+import { ComponentsPage } from './pages/components/ComponentsPage';
 import { MembersPage } from './pages/members/MembersPage';
 import { RecordsPage } from './pages/records/RecordsPage';
 import { ContentListPage } from './pages/content/ContentListPage';
@@ -126,6 +127,7 @@ export default function App() {
       <Route element={<Shell />}>
         <Route index element={<Navigate to="/members" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="components" element={<ComponentsPage />} />
         <Route path="b2c/product-inquiries/list" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="b2c/product-inquiries/waiting" element={<Navigate to="/cs/product-inquiries?status=waiting" replace />} />
         <Route path="b2c/product-inquiries/answered" element={<Navigate to="/cs/product-inquiries?status=answered" replace />} />
