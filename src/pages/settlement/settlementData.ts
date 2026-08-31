@@ -315,8 +315,35 @@ export function matchesQuery(r: Settlement, q: string): boolean {
   return r.id.includes(q) || r.target.includes(q) || r.bizNo.includes(q) || r.assignee.includes(q);
 }
 
-export function filterSettlements(list: Settlement[], filter: MainQuickFilter, q: string): Settlement[] {
-  return list.filter((r) => matchesMainQuickFilter(r, filter) && matchesQuery(r, q));
+export interface SettlementFilters {
+  quick: MainQuickFilter;
+  q: string;
+  settleStatus: SettleStatus | '전체';
+  payStatus: PayStatus | '전체';
+  target: string;
+  assignee: string;
+}
+
+export const EMPTY_FILTERS: SettlementFilters = {
+  quick: '전체', q: '', settleStatus: '전체', payStatus: '전체', target: '전체', assignee: '전체',
+};
+
+export function filterSettlements(list: Settlement[], f: SettlementFilters): Settlement[] {
+  return list.filter((r) =>
+    matchesMainQuickFilter(r, f.quick)
+    && matchesQuery(r, f.q)
+    && (f.settleStatus === '전체' || r.settleStatus === f.settleStatus)
+    && (f.payStatus === '전체' || r.payStatus === f.payStatus)
+    && (f.target === '전체' || r.target === f.target)
+    && (f.assignee === '전체' || r.assignee === f.assignee));
+}
+
+export function uniqueTargets(list: Settlement[]): string[] {
+  return Array.from(new Set(list.map((r) => r.target))).sort();
+}
+
+export function uniqueAssignees(list: Settlement[]): string[] {
+  return Array.from(new Set(list.map((r) => r.assignee))).sort();
 }
 
 export interface FlatTx extends SettlementTx {

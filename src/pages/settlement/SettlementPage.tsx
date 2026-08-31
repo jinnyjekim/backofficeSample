@@ -4,9 +4,14 @@ import { DataGrid } from '../../components/DataGrid/DataGrid';
 import { SettlementDetailDrawer } from './SettlementDetailDrawer';
 import { useSettlementDrawer } from './useSettlementDrawer';
 import { buildSettlementRows, SETTLEMENT_GRID_COLUMNS, SETTLEMENT_GRID_MIN_WIDTH, SETTLEMENT_GRID_TEMPLATE } from './settlementGrid';
-import { buildMainQuickCounts, filterSettlements, MAIN_QUICK_FILTERS, type MainQuickFilter } from './settlementData';
+import {
+  buildMainQuickCounts, EMPTY_FILTERS, filterSettlements, MAIN_QUICK_FILTERS, uniqueAssignees, uniqueTargets,
+  type PayStatus, type SettleStatus, type SettlementFilters,
+} from './settlementData';
 
 const PAGE_LABELS = ['1', '2'];
+const SETTLE_STATUS_OPTIONS: (SettleStatus | '전체')[] = ['전체', '정산대기', '검토중', '정산확정', '보류'];
+const PAY_STATUS_OPTIONS: (PayStatus | '전체')[] = ['전체', '지급전', '지급예정', '지급완료', '지급실패', '지급보류'];
 
 export function SettlementPage() {
   const {
@@ -14,13 +19,21 @@ export function SettlementPage() {
     openDetail, closeDetail, toggleHoldPanel, confirmSettle, requestPay, retryPay, resume, confirmHold,
   } = useSettlementDrawer();
 
-  const [filter, setFilter] = useState<MainQuickFilter>('전체');
-  const [q, setQ] = useState('');
+  const [filters, setFilters] = useState<SettlementFilters>(EMPTY_FILTERS);
   const [page, setPage] = useState('1');
 
+  const targetOptions = useMemo(() => ['전체', ...uniqueTargets(settlements)], [settlements]);
+  const assigneeOptions = useMemo(() => ['전체', ...uniqueAssignees(settlements)], [settlements]);
+
   const counts = useMemo(() => buildMainQuickCounts(settlements), [settlements]);
-  const filtered = useMemo(() => filterSettlements(settlements, filter, q), [settlements, filter, q]);
+  const filtered = useMemo(() => filterSettlements(settlements, filters), [settlements, filters]);
   const rows = useMemo(() => buildSettlementRows(filtered, openDetail), [filtered, openDetail]);
+
+  function setField<K extends keyof SettlementFilters>(key: K, value: SettlementFilters[K]) {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  }
+  const hasActiveFilters = filters.quick !== '전체' || filters.q !== '' || filters.settleStatus !== '전체'
+    || filters.payStatus !== '전체' || filters.target !== '전체' || filters.assignee !== '전체';
 
   return (
     <div className={styles.page}>
@@ -30,14 +43,14 @@ export function SettlementPage() {
 
         <div className={styles.quickFilters}>
           {MAIN_QUICK_FILTERS.map((k) => {
-            const active = filter === k;
+            const active = filters.quick === k;
             return (
               <button
                 key={k}
                 type="button"
                 className={styles.qfBtn}
                 style={{ borderColor: active ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: active ? 'var(--accent)' : '#fff' }}
-                onClick={() => setFilter(k)}
+                onClick={() => setField('quick', k)}
               >
                 <span className={styles.qfLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{k}</span>
                 <span className={styles.qfCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[k] || 0}</span>
@@ -48,51 +61,43 @@ export function SettlementPage() {
 
         <div className={styles.filterBox}>
           <div className={styles.filterRow1}>
-            <select className={styles.selectSm} defaultValue="전체">
-              <option>전체</option>
-              <option>정산번호</option>
-              <option>정산대상</option>
-              <option>사업자번호</option>
-            </select>
             <input
               className={styles.searchInput}
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="정산번호, 회사명 또는 사업자번호"
+              value={filters.q}
+              onChange={(e) => setField('q', e.target.value)}
+              placeholder="정산번호, 회사명 또는 사업자번호로 검색"
             />
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
-            <select className={styles.selectXs} defaultValue="정산상태 전체">
-              <option>정산상태 전체</option>
-              <option>정산대기</option>
-              <option>검토중</option>
-              <option>정산확정</option>
-              <option>보류</option>
-            </select>
-            <select className={styles.selectXs} defaultValue="지급상태 전체">
-              <option>지급상태 전체</option>
-              <option>지급전</option>
-              <option>지급예정</option>
-              <option>지급완료</option>
-              <option>지급실패</option>
-              <option>지급보류</option>
-            </select>
-            <select className={styles.selectXs} defaultValue="정산대상 전체">
-              <option>정산대상 전체</option>
-              <option>회사 01</option>
-              <option>회사 02</option>
-              <option>회사 03</option>
-            </select>
-            <select className={styles.selectXs} defaultValue="담당자 전체">
-              <option>담당자 전체</option>
-              <option>admin01</option>
-              <option>admin02</option>
-              <option>admin03</option>
-            </select>
-            <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
+            <label className={styles.filterField}>
+              <span className={styles.filterFieldLabel}>정산상태</span>
+              <select className={styles.selectXs} value={filters.settleStatus} onChange={(e) => setField('settleStatus', e.target.value as SettleStatus | '전체')}>
+                {SETTLE_STATUS_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+              </select>
+            </label>
+            <label className={styles.filterField}>
+              <span className={styles.filterFieldLabel}>지급상태</span>
+              <select className={styles.selectXs} value={filters.payStatus} onChange={(e) => setField('payStatus', e.target.value as PayStatus | '전체')}>
+                {PAY_STATUS_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+              </select>
+            </label>
+            <label className={styles.filterField}>
+              <span className={styles.filterFieldLabel}>정산대상</span>
+              <select className={styles.selectXs} value={filters.target} onChange={(e) => setField('target', e.target.value)}>
+                {targetOptions.map((o) => <option key={o} value={o}>{o}</option>)}
+              </select>
+            </label>
+            <label className={styles.filterField}>
+              <span className={styles.filterFieldLabel}>담당자</span>
+              <select className={styles.selectXs} value={filters.assignee} onChange={(e) => setField('assignee', e.target.value)}>
+                {assigneeOptions.map((o) => <option key={o} value={o}>{o}</option>)}
+              </select>
+            </label>
             <div className={styles.rowSpacer} />
-            <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
+            {hasActiveFilters && (
+              <button type="button" className={styles.resetBtn} onClick={() => setFilters(EMPTY_FILTERS)}>초기화</button>
+            )}
           </div>
         </div>
 
