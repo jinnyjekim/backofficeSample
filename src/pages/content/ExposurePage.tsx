@@ -6,6 +6,8 @@ import styles from './ExposurePage.module.css';
 import { AREAS, EXPOSURE_DATA, type ExposureArea, type ExposureEntry } from './exposureData';
 import { CONTENT_ITEMS } from '../../data/content';
 import { ACCENT } from '../../lib/theme';
+import { ContentBusinessSwitch } from './ContentBusinessSwitch';
+import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType } from './contentBusiness';
 
 interface RowDraft {
   on: boolean;
@@ -39,9 +41,10 @@ function statusOf(entry: ExposureEntry, base: string) {
 export function ExposurePage() {
   const navigate = useNavigate();
   const [areas] = useState<ExposureArea[]>(AREAS);
+  const [businessMode, setBusinessMode] = useState<ContentBusinessType>('B2C');
   const [data, setData] = useState<Record<string, ExposureEntry[]>>(EXPOSURE_DATA);
-  const [area, setArea] = useState('ar011');
-  const [openAreas, setOpenAreas] = useState<string[]>(['ar01', 'ar02']);
+  const [area, setArea] = useState('b2chero');
+  const [openAreas, setOpenAreas] = useState<string[]>(['b2chome', 'c2cexplore', 'b2bportal']);
   const [aq, setAq] = useState('');
   const [selRowId, setSelRowId] = useState<string | null>(null);
   const [rowDraft, setRowDraft] = useState<RowDraft | null>(null);
@@ -61,7 +64,8 @@ export function ExposurePage() {
   }, [toast]);
 
   const byIdArea = (id: string) => areas.find((a) => a.id === id);
-  const kidsA = (id: string) => areas.filter((a) => a.parent === id);
+  const modeAreas = areas.filter((item) => item.businessType === businessMode);
+  const kidsA = (id: string) => modeAreas.filter((a) => a.parent === id);
   const findContent = (ctid: string) => CONTENT_ITEMS.find((c) => c.id === ctid);
 
   const cur = byIdArea(area);
@@ -75,7 +79,7 @@ export function ExposurePage() {
   const query = aq.trim().toLowerCase();
   const areaFlat: { a: ExposureArea; depth: number }[] = [];
   const walkA = (parent: string | null, depth: number) => {
-    areas.filter((a) => a.parent === parent).forEach((a) => {
+    modeAreas.filter((a) => a.parent === parent).forEach((a) => {
       if (query && !a.name.toLowerCase().includes(query)) { walkA(a.id, depth + 1); return; }
       areaFlat.push({ a, depth });
       if (openAreas.indexOf(a.id) >= 0 || query) walkA(a.id, depth + 1);
@@ -96,6 +100,21 @@ export function ExposurePage() {
     } else {
       setArea(id); setSelRowId(null); setRowDraft(null); setMenuId(null);
     }
+  }
+
+  function switchBusiness(next: ContentBusinessType) {
+    if (next === businessMode) return;
+    const firstArea = areas.find((item) => item.businessType === next && item.parent) ?? areas.find((item) => item.businessType === next);
+    setBusinessMode(next);
+    setArea(firstArea?.id ?? '');
+    setAq('');
+    setSelRowId(null);
+    setRowDraft(null);
+    setAddModal(null);
+    setNavDialog(null);
+    setPreviewOpen(false);
+    setMenuId(null);
+    setChanges(0);
   }
 
   function runNavDialog(b: NavDialogButton) {
@@ -144,11 +163,12 @@ export function ExposurePage() {
   const addCandidates = useMemo(() => {
     if (!addModal) return [];
     const aq2 = addModal.q.trim().toLowerCase();
-    return CONTENT_ITEMS.filter((c) => c.status !== '삭제'
+    return CONTENT_ITEMS.filter((c) => c.businessType === businessMode
+      && c.status !== '삭제'
       && (c.title + c.id).toLowerCase().includes(aq2)
       && (addModal.status === '전체' || c.status === addModal.status)
       && (addModal.cat === '전체' || c.cat === addModal.cat));
-  }, [addModal]);
+  }, [addModal, businessMode]);
 
   function confirmAdd() {
     if (!addModal) return;
@@ -161,10 +181,10 @@ export function ExposurePage() {
   }
 
   function goContentDetail(ctid: string) {
-    navigate(`/content?id=${encodeURIComponent(ctid)}`);
+    navigate(`/content?id=${encodeURIComponent(ctid)}&business=${businessMode}`);
   }
 
-  const categories = Array.from(new Set(CONTENT_ITEMS.map((c) => c.cat)));
+  const categories = Array.from(new Set(CONTENT_ITEMS.filter((item) => item.businessType === businessMode).map((c) => c.cat)));
 
   const selEntry = selRowId ? curList.find((x) => x.id === selRowId) : null;
   const previewRows = curList
@@ -268,8 +288,14 @@ export function ExposurePage() {
       <header className={sh.header} style={{ gap: 14 }}>
         <div>
           <div className={sh.headerTitle}>노출 관리</div>
-          <div className={sh.headerSub}>서비스 내 콘텐츠 노출 위치와 순서를 관리합니다.</div>
+          <div className={sh.headerSub}>{CONTENT_BUSINESS_META[businessMode].exposureNote} 위치와 순서를 관리합니다.</div>
         </div>
+        <ContentBusinessSwitch
+          value={businessMode}
+          options={CONTENT_BUSINESS_MODES}
+          onChange={switchBusiness}
+          note={CONTENT_BUSINESS_META[businessMode].exposureNote}
+        />
         <div className={sh.headerSpacer} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
           <span className={styles.headerDateLabel}>노출 기준일</span>
@@ -290,7 +316,7 @@ export function ExposurePage() {
       <div className={styles.body}>
         <div className={styles.areaCol}>
           <div className={styles.areaColHead}>
-            <div className={styles.areaColTitle}>노출 영역</div>
+            <div className={styles.areaColTitle}>{businessMode === 'B2C' ? '쇼핑 노출 영역' : businessMode === 'C2C' ? '탐색 / 커뮤니티 영역' : '거래처 포털 영역'}</div>
             <input className={styles.areaSearch} value={aq} onChange={(e) => setAq(e.target.value)} placeholder="영역 검색" />
           </div>
           <div className={styles.areaList}>

@@ -1,3 +1,5 @@
+import type { ConfigScope } from '../../lib/business';
+
 export type TemplateStatus = '사용' | '비활성';
 export type TemplateChannel = '1:1 문의' | '채팅' | '이메일' | 'SMS';
 
@@ -5,7 +7,7 @@ export interface TemplateVersion { version: number; at: string; by: string; reas
 export interface TemplateHistory { id: string; at: string; by: string; action: string; detail?: string; }
 export interface TemplateMemo { id: string; at: string; by: string; body: string; }
 export interface ResponseTemplate {
-  id: string; name: string; code: string; category: string; status: TemplateStatus; inquiryTypes: string[]; recommended: boolean; recommendationOrder: number;
+  id: string; scopes?: ConfigScope[]; name: string; code: string; category: string; status: TemplateStatus; inquiryTypes: string[]; recommended: boolean; recommendationOrder: number;
   subject: string; body: string; keywords: string[]; channels: TemplateChannel[]; target: '전체 상담원' | '특정 팀'; teams: string[]; displayOrder: number;
   usageCount: number; recent30Usage: number; lastUsedAt: string | null; updatedAt: string; updatedBy: string; reviewDueAt: string; relatedFaqs: { id: string; title: string; status: '공개' | '비공개' }[];
   adminMemo: string; versions: TemplateVersion[]; history: TemplateHistory[]; memos: TemplateMemo[];
@@ -17,6 +19,13 @@ export const TEMPLATE_TEAMS = ['일반 CS팀', '주문 CS팀', '결제 CS팀', '
 export const TEMPLATE_INQUIRY_TYPES = ['회원 / 계정 > 비밀번호', '주문 > 주문 취소', '결제 > 결제 오류', '결제 > 중복 결제', '배송 > 배송 조회', '배송 > 배송 지연', '배송 > 배송 실패', '교환 / 반품 > 상품 파손', '취소 / 환불 > 환불 지연', '서비스 > 견적서'];
 export const SUPPORTED_VARIABLES = ['{고객명}', '{회원ID}', '{문의번호}', '{문의접수일}', '{주문번호}', '{주문일}', '{상품명}', '{결제번호}', '{결제금액}', '{결제상태}', '{배송번호}', '{송장번호}', '{배송상태}', '{예상배송일}', '{환불번호}', '{환불금액}', '{환불상태}', '{상담원명}', '{회사명}', '{현재일자}'];
 export const SAMPLE_VALUES: Record<string, string> = { '{고객명}': '김민수', '{회원ID}': 'user01', '{문의번호}': 'QNA-00182', '{문의접수일}': '2026.08.24', '{주문번호}': 'ORD-00582', '{주문일}': '2026.08.21', '{상품명}': '사무용 의자 외 2건', '{결제번호}': 'PAY-00182', '{결제금액}': '428,000원', '{결제상태}': '결제 완료', '{배송번호}': 'SHP-00182', '{송장번호}': '1234567890', '{배송상태}': '배송중', '{예상배송일}': '2026.08.25', '{환불번호}': 'RFD-00042', '{환불금액}': '760,000원', '{환불상태}': '카드사 처리중', '{상담원명}': 'admin01', '{회사명}': '마켓원', '{현재일자}': '2026.08.24' };
+
+export function responseTemplateScopes(item: ResponseTemplate): ConfigScope[] {
+  if (item.scopes?.length) return item.scopes;
+  if (['회원 / 계정', '정책', '서비스', '기타'].includes(item.category)) return ['공통'];
+  if (['결제', '취소 / 환불'].includes(item.category)) return ['B2C', 'C2C', 'B2B'];
+  return ['B2C', 'B2B'];
+}
 
 const version = (body: string, reason = '템플릿 생성'): TemplateVersion[] => [{ version: 1, at: '2026-07-01 09:00', by: 'admin01', reason, body }];
 const history = (code: string): TemplateHistory[] => [{ id: `${code}-H1`, at: '2026-07-01 09:00', by: 'admin01', action: '템플릿 생성' }];
@@ -45,4 +54,4 @@ export function templateIssues(item: ResponseTemplate): string[] {
   return issues;
 }
 export function sampleReplace(text: string): string { return extractVariables(text).reduce((result, variable) => result.replaceAll(variable, SAMPLE_VALUES[variable] ?? `⚠ ${variable} 값 없음`), text); }
-export function newResponseTemplate(): ResponseTemplate { return { id: `TPL-${Date.now()}`, name: '', code: '', category: '배송', status: '비활성', inquiryTypes: [], recommended: false, recommendationOrder: 1, subject: '', body: '', keywords: [], channels: ['1:1 문의'], target: '전체 상담원', teams: [], displayOrder: 1, usageCount: 0, recent30Usage: 0, lastUsedAt: null, updatedAt: '2026-08-24', updatedBy: 'admin01', reviewDueAt: '2027-02-24', relatedFaqs: [], adminMemo: '', versions: [], history: [], memos: [] }; }
+export function newResponseTemplate(): ResponseTemplate { return { id: `TPL-${Date.now()}`, scopes: ['공통'], name: '', code: '', category: '배송', status: '비활성', inquiryTypes: [], recommended: false, recommendationOrder: 1, subject: '', body: '', keywords: [], channels: ['1:1 문의'], target: '전체 상담원', teams: [], displayOrder: 1, usageCount: 0, recent30Usage: 0, lastUsedAt: null, updatedAt: '2026-08-24', updatedBy: 'admin01', reviewDueAt: '2027-02-24', relatedFaqs: [], adminMemo: '', versions: [], history: [], memos: [] }; }

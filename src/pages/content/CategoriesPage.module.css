@@ -133,6 +133,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  container-type: inline-size;
 }
 .panelHead {
   padding: 14px 18px;
@@ -154,10 +155,286 @@
   min-height: 0;
   overflow-y: auto;
   padding: 18px;
+  display: grid;
+  grid-template-columns: minmax(400px, 620px) 260px;
+  align-items: start;
+  justify-content: start;
+  gap: 20px;
+}
+.formColumn {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 620px;
+}
+.contextRail {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.railCard {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 11px;
+  background: #fbfbfc;
+  padding: 13px;
+}
+.railCardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #52525b;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.railCardHead em {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 10.5px;
+  font-style: normal;
+}
+.railCardHead .useOn {
+  background: #ecfdf5;
+  color: #047857;
+}
+.railCardHead .useOff {
+  background: #f4f4f5;
+  color: #71717a;
+}
+.railTitle {
+  color: #3f3f46;
+  font-size: 11.5px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.pathPreview {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #fff;
+  color: #18181b;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+.railDescription {
+  margin: 8px 0 0;
+  color: #8b8b93;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.checkList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #8b8b93;
+  font-size: 11.5px;
+}
+.checkItem > span {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #e4e4e7;
+  color: #71717a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+}
+.checkItem.checkOk {
+  color: #3f3f46;
+}
+.checkItem.checkOk > span {
+  background: #ecfdf5;
+  color: #047857;
+}
+.guideCard ul {
+  margin: 0;
+  padding-left: 17px;
+  color: #71717a;
+  font-size: 11px;
+  line-height: 1.65;
+}
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 11px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.07);
+}
+.metricGrid > div {
+  min-width: 0;
+  padding: 9px 10px;
+  background: #fff;
+}
+.metricGrid span {
+  display: block;
+  color: #8b8b93;
+  font-size: 10.5px;
+}
+.metricGrid strong {
+  color: #18181b;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+.metricGrid small {
+  margin-left: 3px;
+  color: #71717a;
+  font-size: 10.5px;
+}
+.railActions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+.railActions button,
+.distributionList button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.railActions button {
+  width: 100%;
+  height: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  background: #fff;
+  color: #3f3f46;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.railActions button:first-child {
+  border-color: rgba(79, 70, 229, 0.2);
+  color: #4338ca;
+}
+.railActions button:hover {
+  background: #f7f8ff;
+}
+.distributionList {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.distributionList button {
+  width: 100%;
+  padding: 0;
+  text-align: left;
+}
+.distributionList button > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.distributionList strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #52525b;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.distributionList em {
+  flex: none;
+  color: #8b8b93;
+  font-size: 10.5px;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+.distributionList i {
+  display: block;
+  height: 4px;
+  margin-top: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e4e4e7;
+}
+.distributionList b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #818cf8;
+}
+.railEmpty {
+  padding: 13px 0 3px;
+  color: #a1a1aa;
+  font-size: 11.5px;
+  text-align: center;
+}
+.warningCard {
+  border-color: rgba(180, 83, 9, 0.18);
+  background: #fffbeb;
+}
+.warningCard p {
+  margin: 0 0 7px;
+  color: #92400e;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.warningCard p:last-child {
+  margin-bottom: 0;
+}
+.railMeta {
+  padding: 4px 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.railMeta > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.railMeta span {
+  color: #a1a1aa;
+  font-size: 10.5px;
+}
+.railMeta strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #71717a;
+  font-size: 10.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+@container (max-width: 720px) {
+  .panelBody {
+    grid-template-columns: minmax(0, 620px);
+  }
+  .contextRail {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 620px;
+  }
+  .railMeta,
+  .warningCard {
+    grid-column: 1 / -1;
+  }
+}
+
+@container (max-width: 480px) {
+  .contextRail {
+    display: flex;
+  }
 }
 .panelDepthHint {
   font-size: 11px;

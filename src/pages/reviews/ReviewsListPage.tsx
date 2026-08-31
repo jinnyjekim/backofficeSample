@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
@@ -46,7 +45,6 @@ function history(item: Review, action: string, detail?: string): Review {
 }
 
 export function ReviewsListPage() {
-  const [searchParams] = useSearchParams();
   const [reviews, setReviews] = useState<Review[]>(REVIEWS);
   const [quickFilter, setQuickFilter] = useState<QuickFilter>('전체');
   const [keyword, setKeyword] = useState('');
@@ -61,18 +59,6 @@ export function ReviewsListPage() {
   const [hideDetail, setHideDetail] = useState('');
   const [deleteReason, setDeleteReason] = useState(DELETE_REASONS[0]);
   const [toast, setToast] = useState('');
-
-  useEffect(() => {
-    const view = searchParams.get('view');
-    const filterByView: Record<string, QuickFilter> = {
-      reported: '신고 리뷰',
-      hidden: '비노출',
-      replies: '답변 대기',
-      moderation: '검토 필요',
-      deleted: '삭제됨',
-    };
-    if (view && filterByView[view]) setQuickFilter(filterByView[view]);
-  }, [searchParams]);
 
   const issuesMap = useMemo(() => {
     const map: Record<string, string[]> = {};
@@ -210,8 +196,8 @@ export function ReviewsListPage() {
       <div className={styles.headTop}>
         <div className={styles.headRow}>
           <div>
-            <div className={styles.title}>리뷰 운영</div>
-            <div className={styles.subtitle}>리뷰 조회, 신고 검토, 노출 조치와 관리자 답변을 한곳에서 관리합니다.</div>
+            <div className={styles.title}>리뷰 목록</div>
+            <div className={styles.subtitle}>상품 리뷰 등록 및 노출 상태를 관리합니다.</div>
           </div>
         </div>
 

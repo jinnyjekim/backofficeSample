@@ -1,4 +1,3 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './FeePolicyPage.module.css';
@@ -144,8 +143,8 @@ export function FeePolicyDrawer({ initial, isNew, startEditing = false, issues, 
 
             <Section title="적용 기간 · 우선순위">
               <div className={styles.formGrid}>
-                <FormField label="적용 시작일 *"><DatePicker disabled={!editing} value={draft.startDate} onChange={(e) => set('startDate', e.target.value)} /></FormField>
-                <FormField label="적용 종료일" hint="비워두면 상시 적용"><DatePicker disabled={!editing} value={draft.endDate ?? ''} onChange={(e) => set('endDate', e.target.value || null)} /></FormField>
+                <FormField label="적용 시작일 *"><input type="date" disabled={!editing} value={draft.startDate} onChange={(e) => set('startDate', e.target.value)} /></FormField>
+                <FormField label="적용 종료일" hint="비워두면 상시 적용"><input type="date" disabled={!editing} value={draft.endDate ?? ''} onChange={(e) => set('endDate', e.target.value || null)} /></FormField>
               </div>
               <FormField label="적용 우선순위" hint="숫자가 작을수록 우선 적용됩니다 (기본 정책 권장값: 6)">
                 <input type="number" min={1} disabled={!editing} value={draft.priority} onChange={(e) => set('priority', Math.max(1, Number(e.target.value) || 1))} />

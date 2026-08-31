@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './PaymentListPage.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
+import { BUSINESS_BADGE_META } from '../../lib/business';
 import {
   computeExternalMatch,
   computeIssues,
@@ -54,6 +55,7 @@ export function PaymentDetailDrawer({ payment: p, onClose, onAddMemo, onRequestR
             <div className={drawer.eyebrow}>{p.id}</div>
             <div className={drawer.titleRow}>
               <h2 className={drawer.title}>{fmtWon(p.amount)}</h2>
+              <span className={drawer.badge} style={{ background: BUSINESS_BADGE_META[p.businessType].bg, color: BUSINESS_BADGE_META[p.businessType].fg }}>{p.businessType}</span>
               <span className={drawer.badge} style={{ background: statusColor.bg, color: statusColor.fg }}>{p.status}</span>
               {issues.length > 0 && <span className={drawer.badge} style={{ background: '#fffbeb', color: '#b45309' }}>⚠ 확인 필요</span>}
             </div>
@@ -80,6 +82,7 @@ export function PaymentDetailDrawer({ payment: p, onClose, onAddMemo, onRequestR
         <div className={drawer.sectionTitle}>결제 정보</div>
         <div className={drawer.fieldBox}>
           <div className={drawer.fieldRow}><span className={drawer.fieldLabel}>결제번호</span><span className={drawer.fieldValue}>{p.id}</span></div>
+          <div className={drawer.fieldRow}><span className={drawer.fieldLabel}>서비스</span><span className={drawer.fieldValue}>{p.businessType}</span></div>
           <div className={drawer.fieldRow}><span className={drawer.fieldLabel}>주문번호</span><span className={drawer.fieldValue}>{p.orderId}</span></div>
           <div className={drawer.fieldRow}><span className={drawer.fieldLabel}>고객 / 거래처</span><span className={drawer.fieldValue}>{p.customerName}</span></div>
           <div className={drawer.fieldRow}><span className={drawer.fieldLabel}>결제수단</span><span className={drawer.fieldValue}>{p.method}</span></div>

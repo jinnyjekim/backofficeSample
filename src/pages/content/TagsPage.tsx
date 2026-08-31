@@ -6,6 +6,8 @@ import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
 import { TAGS, type Tag } from './tagsData';
 import { ACCENT } from '../../lib/theme';
+import { ContentBusinessSwitch } from './ContentBusinessSwitch';
+import { CONTENT_TAXONOMY_SCOPES, type ContentTaxonomyScope } from './contentBusiness';
 
 type SortKey = 'name' | 'count' | 'created' | 'updated';
 
@@ -42,6 +44,7 @@ const d2 = (v: string) => v.replace(/\./g, '-');
 export function TagsPage() {
   const navigate = useNavigate();
   const [items, setItems] = useState<Tag[]>(TAGS);
+  const [scope, setScope] = useState<ContentTaxonomyScope>('공통');
   const [q, setQ] = useState('');
   const [field, setField] = useState('전체');
   const [useF, setUseF] = useState('전체');
@@ -68,6 +71,7 @@ export function TagsPage() {
   const list = useMemo(() => {
     const query = q.trim().toLowerCase();
     let out = items.filter((it) => {
+      if (it.scope !== scope) return false;
       if (query) {
         const hay = field === '태그명' ? it.name : field === '태그 코드' ? it.code : it.name + it.code;
         if (!hay.toLowerCase().includes(query)) return false;
@@ -85,7 +89,7 @@ export function TagsPage() {
     };
     out = out.slice().sort((a, b) => (sortDesc ? -cmp[sortKey](a, b) : cmp[sortKey](a, b)));
     return out;
-  }, [items, q, field, useF, linkF, from, to, sortKey, sortDesc]);
+  }, [items, scope, q, field, useF, linkF, from, to, sortKey, sortDesc]);
 
   const sel_ = sel.filter((id) => list.some((it) => it.id === id));
 
@@ -99,12 +103,23 @@ export function TagsPage() {
     setQ(''); setField('전체'); setUseF('전체'); setLinkF('전체'); setFrom('2026-01-01'); setTo('2026-08-13'); setSel([]);
   }
 
+  function switchScope(next: ContentTaxonomyScope) {
+    if (next === scope) return;
+    setScope(next);
+    resetAll();
+    setModal(null);
+    setMerge(null);
+    setDialog(null);
+    setMenuId(null);
+  }
+
   function sortHead(key: SortKey) {
     return { arrow: sortKey === key ? (sortDesc ? '↓' : '↑') : '', click: () => setSortKey((k) => { setSortDesc(k === key ? !sortDesc : true); return key; }) };
   }
 
   function goContents(name: string) {
-    navigate(`/content?q=${encodeURIComponent(name)}`);
+    const businessQuery = scope === '공통' ? '' : `&business=${scope}`;
+    navigate(`/content?q=${encodeURIComponent(name)}${businessQuery}`);
   }
 
   function openEdit(it: Tag) {
@@ -112,14 +127,14 @@ export function TagsPage() {
     setMenuId(null);
   }
 
-  const dupTag = modal && modal.name.trim() ? items.find((it) => it.id !== modal.id && it.name.trim().toLowerCase() === modal.name.trim().toLowerCase()) : null;
+  const dupTag = modal && modal.name.trim() ? items.find((it) => it.scope === scope && it.id !== modal.id && it.name.trim().toLowerCase() === modal.name.trim().toLowerCase()) : null;
   const modalCur = modal && modal.mode === 'edit' ? byId(modal.id ?? '') : null;
 
   function saveModal() {
     if (!modal || !modal.name.trim() || !modal.code.trim() || dupTag) return;
     if (modal.mode === 'new') {
       const id = 'tn' + Date.now();
-      setItems((prev) => prev.concat([{ id, name: modal.name.trim(), code: modal.code.trim().toUpperCase(), count: 0, use: modal.use, desc: modal.desc, created: '2026.08.13', updated: '2026.08.13' }]));
+      setItems((prev) => prev.concat([{ id, scope, name: modal.name.trim(), code: modal.code.trim().toUpperCase(), count: 0, use: modal.use, desc: modal.desc, created: '2026.08.13', updated: '2026.08.13' }]));
       setToast('태그가 등록되었습니다.');
     } else {
       setItems((prev) => prev.map((it) => (it.id === modal.id ? { ...it, name: modal.name.trim(), code: modal.code.trim(), use: modal.use, desc: modal.desc, updated: '2026.08.13' } : it)));
@@ -163,7 +178,7 @@ export function TagsPage() {
     }
   }
 
-  const mgKeepOptions = merge ? (merge.source.length > 1 ? items.filter((it) => merge.source.indexOf(it.id) >= 0) : items.filter((it) => merge.source.indexOf(it.id) < 0)) : [];
+  const mgKeepOptions = merge ? (merge.source.length > 1 ? items.filter((it) => it.scope === scope && merge.source.indexOf(it.id) >= 0) : items.filter((it) => it.scope === scope && merge.source.indexOf(it.id) < 0)) : [];
   const mgMergeList = merge ? (merge.source.length > 1 ? merge.source.filter((id) => id !== merge.keep).map(byId) : merge.source.map(byId)) : [];
   const mgKeepTag = merge && merge.keep ? byId(merge.keep) : null;
   const mgTotal = merge ? mgMergeList.filter((x): x is Tag => !!x).reduce((a, it) => a + it.count, 0) + (mgKeepTag ? mgKeepTag.count : 0) : 0;
@@ -231,7 +246,7 @@ export function TagsPage() {
     return { id: it.id, cells, selected: isSel, onToggleSelect: () => setSel((prev) => (isSel ? prev.filter((x) => x !== it.id) : prev.concat([it.id]))), onClick: () => openEdit(it), bg: isSel ? '#f7f8ff' : 'transparent' };
   });
 
-  const emptyAll = items.length === 0;
+  const emptyAll = !items.some((item) => item.scope === scope);
 
   return (
     <div className={sh.page} onClick={() => { if (menuId) setMenuId(null); }}>
@@ -371,6 +386,13 @@ export function TagsPage() {
           <div className={sh.headerTitle}>태그 관리</div>
           <div className={sh.headerSub}>콘텐츠 분류 및 검색에 사용되는 태그를 등록하고 관리합니다.</div>
         </div>
+        <ContentBusinessSwitch
+          value={scope}
+          options={CONTENT_TAXONOMY_SCOPES}
+          onChange={switchScope}
+          note={scope === '공통' ? '여러 비즈니스에서 공유' : `${scope} 전용 검색 태그`}
+          label="태그 범위"
+        />
         <div className={sh.headerSpacer} />
         <button type="button" className={sh.primaryBtn} onClick={() => setModal({ mode: 'new', id: null, name: '', code: '', use: true, desc: '' })}>＋ 태그 등록</button>
       </header>

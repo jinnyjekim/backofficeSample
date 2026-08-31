@@ -32,6 +32,7 @@ export interface HistoryEntry {
 
 export interface PaymentEntry {
   id: string;
+  businessType: BusinessType;
   orderId: string;
   customerName: string;
   requestedAt: string;
@@ -67,7 +68,7 @@ export const ORDER_TOTALS: Record<string, number> = {
 
 export const INITIAL_PAYMENTS: PaymentEntry[] = [
   {
-    id: 'PAY-00182', orderId: 'O-00582', customerName: '회사 01', requestedAt: '2026-08-25 09:19:58', approvedAt: '2026-08-25 09:20:03',
+    id: 'PAY-00182', businessType: 'B2B', orderId: 'O-00582', customerName: '회사 01', requestedAt: '2026-08-25 09:19:58', approvedAt: '2026-08-25 09:20:03',
     method: '카드', amount: 1000000, refundedAmount: 0, status: '결제 완료',
     pg: 'PG 01', externalTxId: 'TX-9281882', externalStatus: 'PAID', externalAmount: 1000000, lastSyncedAt: '2026-08-25 09:20:05',
     processingStartedAt: null, failureInternalCode: null, failureExternalCode: null, customerMessage: null, adminMessage: null, cancelInfo: null,
@@ -80,7 +81,7 @@ export const INITIAL_PAYMENTS: PaymentEntry[] = [
     ],
   },
   {
-    id: 'PAY-00183', orderId: 'O-00583', customerName: '회사 02', requestedAt: '2026-08-25 09:24:50', approvedAt: null,
+    id: 'PAY-00183', businessType: 'B2C', orderId: 'O-00583', customerName: '김민수', requestedAt: '2026-08-25 09:24:50', approvedAt: null,
     method: '카드', amount: 500000, refundedAmount: 0, status: '결제 실패',
     pg: 'PG 01', externalTxId: 'TX-9281883', externalStatus: 'FAILED', externalAmount: null, lastSyncedAt: '2026-08-25 09:25:02',
     processingStartedAt: null, failureInternalCode: 'PAYMENT_DECLINED', failureExternalCode: 'CARD_DECLINED',
@@ -91,7 +92,7 @@ export const INITIAL_PAYMENTS: PaymentEntry[] = [
     ],
   },
   {
-    id: 'PAY-00184', orderId: 'O-00584', customerName: '회사 03', requestedAt: '2026-08-25 09:12:00', approvedAt: null,
+    id: 'PAY-00184', businessType: 'C2C', orderId: 'O-00584', customerName: 'seller_03', requestedAt: '2026-08-25 09:12:00', approvedAt: null,
     method: '계좌이체', amount: 300000, refundedAmount: 0, status: '처리중',
     pg: 'PG 02', externalTxId: 'TX-9281884', externalStatus: 'PAID', externalAmount: 300000, lastSyncedAt: '2026-08-25 09:12:30',
     processingStartedAt: '2026-08-25 09:12:00', failureInternalCode: null, failureExternalCode: null, customerMessage: null, adminMessage: null, cancelInfo: null,
@@ -101,7 +102,7 @@ export const INITIAL_PAYMENTS: PaymentEntry[] = [
     ],
   },
   {
-    id: 'PAY-00185', orderId: 'O-00585', customerName: '회사 04', requestedAt: '2026-08-25 09:34:50', approvedAt: '2026-08-25 09:35:00',
+    id: 'PAY-00185', businessType: 'B2C', orderId: 'O-00585', customerName: '박서연', requestedAt: '2026-08-25 09:34:50', approvedAt: '2026-08-25 09:35:00',
     method: '가상계좌', amount: 700000, refundedAmount: 700000, status: '결제 완료',
     pg: 'PG 01', externalTxId: 'TX-9281885', externalStatus: 'PAID', externalAmount: 700000, lastSyncedAt: '2026-08-25 09:35:02',
     processingStartedAt: null, failureInternalCode: null, failureExternalCode: null, customerMessage: null, adminMessage: null, cancelInfo: null,
@@ -112,7 +113,7 @@ export const INITIAL_PAYMENTS: PaymentEntry[] = [
     ],
   },
   {
-    id: 'PAY-00186', orderId: 'O-00586', customerName: '회사 05', requestedAt: '2026-08-25 09:40:00', approvedAt: null,
+    id: 'PAY-00186', businessType: 'B2B', orderId: 'O-00586', customerName: '회사 05', requestedAt: '2026-08-25 09:40:00', approvedAt: null,
     method: '무통장입금', amount: 1200000, refundedAmount: 0, status: '결제 대기',
     pg: null, externalTxId: null, externalStatus: null, externalAmount: null, lastSyncedAt: null,
     processingStartedAt: null, failureInternalCode: null, failureExternalCode: null, customerMessage: null, adminMessage: null, cancelInfo: null,
@@ -121,7 +122,7 @@ export const INITIAL_PAYMENTS: PaymentEntry[] = [
     ],
   },
   {
-    id: 'PAY-00187', orderId: 'O-00587', customerName: '회사 06', requestedAt: '2026-08-25 09:40:50', approvedAt: '2026-08-25 09:41:03',
+    id: 'PAY-00187', businessType: 'C2C', orderId: 'O-00587', customerName: 'buyer_06', requestedAt: '2026-08-25 09:40:50', approvedAt: '2026-08-25 09:41:03',
     method: '카드', amount: 250000, refundedAmount: 0, status: '결제 완료',
     pg: 'PG 01', externalTxId: 'TX-9281887', externalStatus: 'PAID', externalAmount: 200000, lastSyncedAt: '2026-08-25 09:41:05',
     processingStartedAt: null, failureInternalCode: null, failureExternalCode: null, customerMessage: null, adminMessage: null, cancelInfo: null,
@@ -131,7 +132,7 @@ export const INITIAL_PAYMENTS: PaymentEntry[] = [
     ],
   },
   {
-    id: 'PAY-00188', orderId: 'O-00588', customerName: '회사 07', requestedAt: '2026-08-25 09:41:50', approvedAt: '2026-08-25 09:42:03',
+    id: 'PAY-00188', businessType: 'B2C', orderId: 'O-00588', customerName: '이도윤', requestedAt: '2026-08-25 09:41:50', approvedAt: '2026-08-25 09:42:03',
     method: '카드', amount: 400000, refundedAmount: 0, status: '결제 취소',
     pg: 'PG 01', externalTxId: 'TX-9281888', externalStatus: 'CANCELED', externalAmount: 400000, lastSyncedAt: '2026-08-25 09:42:20',
     processingStartedAt: null, failureInternalCode: null, failureExternalCode: null, customerMessage: null, adminMessage: null,
@@ -143,7 +144,7 @@ export const INITIAL_PAYMENTS: PaymentEntry[] = [
     ],
   },
   {
-    id: 'PAY-00189', orderId: 'O-00589', customerName: '회사 08', requestedAt: '2026-08-25 09:43:30', approvedAt: null,
+    id: 'PAY-00189', businessType: 'C2C', orderId: 'O-00589', customerName: 'seller_08', requestedAt: '2026-08-25 09:43:30', approvedAt: null,
     method: '계좌이체', amount: 600000, refundedAmount: 0, status: '처리중',
     pg: 'PG 02', externalTxId: null, externalStatus: null, externalAmount: null, lastSyncedAt: null,
     processingStartedAt: '2026-08-25 09:43:30', failureInternalCode: null, failureExternalCode: null, customerMessage: null, adminMessage: null, cancelInfo: null,
@@ -152,7 +153,7 @@ export const INITIAL_PAYMENTS: PaymentEntry[] = [
     ],
   },
   {
-    id: 'PAY-00190', orderId: 'O-00590', customerName: '회사 09', requestedAt: '2026-08-25 09:44:00', approvedAt: '2026-08-25 09:44:05',
+    id: 'PAY-00190', businessType: 'B2B', orderId: 'O-00590', customerName: '회사 09', requestedAt: '2026-08-25 09:44:00', approvedAt: '2026-08-25 09:44:05',
     method: '카드', amount: 900000, refundedAmount: 300000, status: '결제 완료',
     pg: 'PG 01', externalTxId: 'TX-9281890', externalStatus: 'PAID', externalAmount: 900000, lastSyncedAt: '2026-08-25 09:44:07',
     processingStartedAt: null, failureInternalCode: null, failureExternalCode: null, customerMessage: null, adminMessage: null, cancelInfo: null,
@@ -163,7 +164,7 @@ export const INITIAL_PAYMENTS: PaymentEntry[] = [
     ],
   },
   {
-    id: 'PAY-00191', orderId: 'O-00590', customerName: '회사 09', requestedAt: '2026-08-25 09:44:30', approvedAt: '2026-08-25 09:44:35',
+    id: 'PAY-00191', businessType: 'B2C', orderId: 'O-00591', customerName: '최유진', requestedAt: '2026-08-25 09:44:30', approvedAt: '2026-08-25 09:44:35',
     method: '카드', amount: 400000, refundedAmount: 0, status: '결제 완료',
     pg: 'PG 01', externalTxId: 'TX-9281891', externalStatus: 'PAID', externalAmount: 400000, lastSyncedAt: '2026-08-25 09:44:37',
     processingStartedAt: null, failureInternalCode: null, failureExternalCode: null, customerMessage: null, adminMessage: null, cancelInfo: null,
@@ -173,7 +174,7 @@ export const INITIAL_PAYMENTS: PaymentEntry[] = [
     ],
   },
   {
-    id: 'PAY-00192', orderId: 'O-00592', customerName: '회사 10', requestedAt: '2026-08-25 08:55:00', approvedAt: '2026-08-25 08:55:00',
+    id: 'PAY-00192', businessType: 'B2B', orderId: 'O-00592', customerName: '회사 10', requestedAt: '2026-08-25 08:55:00', approvedAt: '2026-08-25 08:55:00',
     method: '후불', amount: 2000000, refundedAmount: 0, status: '결제 완료',
     pg: null, externalTxId: null, externalStatus: null, externalAmount: null, lastSyncedAt: null,
     processingStartedAt: null, failureInternalCode: null, failureExternalCode: null, customerMessage: null, adminMessage: null, cancelInfo: null,
@@ -289,3 +290,4 @@ export function splitAt(value: string): [string, string] {
   const [date, time] = value.split(' ');
   return [date.replace(/-/g, '.'), time ?? ''];
 }
+import type { BusinessType } from '../../lib/business';

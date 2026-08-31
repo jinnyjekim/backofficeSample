@@ -1,8 +1,10 @@
+import type { ConfigScope } from '../../lib/business';
+
 export type TermsStatus='임시저장'|'적용 예정'|'적용중'|'종료';
 export type ConsentType='필수'|'선택'|'동의 불필요';
 export interface TermsVersion{id:string;version:string;status:TermsStatus;effectiveFrom:string;effectiveTo:string|null;content:string;changeReason:string;createdBy:string;createdAt:string;reConsent:boolean}
 export interface TermsHistory{at:string;actor:string;action:string;detail:string}
-export interface TermsDefinition{id:string;name:string;code:string;type:string;consent:ConsentType;description:string;versions:TermsVersion[];agreement:{target:number;agreed:number};history:TermsHistory[]}
+export interface TermsDefinition{id:string;name:string;code:string;type:string;consent:ConsentType;description:string;scopes?:ConfigScope[];versions:TermsVersion[];agreement:{target:number;agreed:number};history:TermsHistory[]}
 const content=(name:string)=>`제1조 목적\n본 약관은 ${name}에 관한 서비스 이용 조건과 절차를 정함을 목적으로 합니다.\n\n제2조 정의\n이 약관에서 사용하는 용어의 의미는 서비스 화면과 관련 법령에서 정한 바에 따릅니다.\n\n제3조 약관의 효력 및 변경\n회사는 관련 법령을 위반하지 않는 범위에서 약관을 개정할 수 있으며, 시행일 전에 변경 내용을 고지합니다.`;
 export const TERMS:TermsDefinition[]=[
  {id:'TERM-001',name:'서비스 이용약관',code:'TERMS_SERVICE',type:'이용약관',consent:'필수',description:'회원 가입 및 서비스 이용에 적용되는 기본 약관',versions:[{id:'TV-001-3',version:'v2.1',status:'적용중',effectiveFrom:'2026-08-01',effectiveTo:null,content:content('서비스 이용약관'),changeReason:'서비스 운영 정책 및 책임 조항 개정',createdBy:'admin01',createdAt:'2026-07-18 14:20',reConsent:false},{id:'TV-001-2',version:'v2.0',status:'종료',effectiveFrom:'2025-09-01',effectiveTo:'2026-07-31',content:content('서비스 이용약관'),changeReason:'유료 서비스 조항 추가',createdBy:'admin02',createdAt:'2025-08-14 11:10',reConsent:true},{id:'TV-001-1',version:'v1.0',status:'종료',effectiveFrom:'2025-01-01',effectiveTo:'2025-08-31',content:content('서비스 이용약관'),changeReason:'최초 등록',createdBy:'admin01',createdAt:'2024-12-10 09:30',reConsent:false}],agreement:{target:10284,agreed:9821},history:[{at:'2026-08-01 00:00',actor:'SYSTEM',action:'v2.1 적용 시작',detail:'v2.0 자동 종료'},{at:'2026-07-18 14:20',actor:'admin01',action:'v2.1 신규 등록',detail:'2026-08-01 시행 예약'}]},
@@ -15,3 +17,11 @@ export const TERMS:TermsDefinition[]=[
  {id:'TERM-008',name:'이벤트 개인정보 제공 동의',code:'TERMS_EVENT_PRIVACY',type:'개인정보',consent:'선택',description:'종료된 이벤트 개인정보 제3자 제공 동의',versions:[{id:'TV-008-1',version:'v1.0',status:'종료',effectiveFrom:'2025-11-01',effectiveTo:'2025-12-31',content:content('이벤트 개인정보 제공 동의'),changeReason:'이벤트 종료',createdBy:'admin02',createdAt:'2025-10-20 14:00',reConsent:false}],agreement:{target:2140,agreed:1860},history:[{at:'2025-12-31 23:59',actor:'SYSTEM',action:'적용 종료',detail:'설정된 종료일 도달'}]},
 ];
 export function currentVersion(term:TermsDefinition){return term.versions.find((version)=>version.status==='적용 예정')??term.versions.find((version)=>version.status==='적용중')??term.versions[0]}
+export function termsScopes(term:TermsDefinition):ConfigScope[]{
+ if(term.scopes?.length)return term.scopes;
+ if(term.code==='TERMS_SELLER_OLD')return ['C2C'];
+ if(term.code==='TERMS_EFINANCE')return ['B2C','C2C','B2B'];
+ if(term.code==='TERMS_MARKETING')return ['B2C','C2C'];
+ if(term.code==='TERMS_EVENT_PRIVACY')return ['B2C'];
+ return ['공통'];
+}

@@ -1,3 +1,5 @@
+import type { BusinessType } from '../../lib/business';
+
 export type InquiryStatus = '접수' | '처리중' | '답변 완료' | '처리 완료' | '보류' | '고객 답변 대기' | '내부 확인중';
 export type InquiryPriority = '높음' | '보통' | '낮음';
 export type InquiryCategory = '회원 / 계정' | '주문' | '결제' | '배송' | '취소 / 환불' | '교환 / 반품' | '상품' | '정산' | '서비스 이용' | '오류 / 장애' | '신고' | '기타';
@@ -56,6 +58,7 @@ export interface InquiryHistory {
 
 export interface InquiryEntry {
   id: string;
+  businessType: BusinessType;
   category: InquiryCategory;
   subcategory: string;
   title: string;
@@ -81,8 +84,8 @@ export interface InquiryEntry {
   satisfaction?: { score: number; comment: string };
 }
 
-const customer = (id: string, name: string, recentInquiryCount: number): InquiryCustomer => ({
-  id, name, type: '거래처 관리자', status: '정상', email: `${id.slice(0, 1)}***@example.com`, phone: '010-****-1234', joinedAt: '2026-01-10', recentInquiryCount,
+const customer = (id: string, name: string, recentInquiryCount: number, type: InquiryCustomer['type'] = '회원'): InquiryCustomer => ({
+  id, name, type, status: '정상', email: `${id.slice(0, 1)}***@example.com`, phone: '010-****-1234', joinedAt: '2026-01-10', recentInquiryCount,
 });
 
 const receivedMessage = (id: string, author: string, at: string, body: string): InquiryMessage => ({ id, role: 'customer', author, sentAt: at, body });
@@ -90,7 +93,7 @@ const autoMessage = (id: string, at: string): InquiryMessage => ({ id, role: 'sy
 
 export const INQUIRIES: InquiryEntry[] = [
   {
-    id: 'QNA-00182', category: '배송', subcategory: '배송 지연', title: '배송이 아직 도착하지 않았어요',
+    id: 'QNA-00182', businessType: 'B2C', category: '배송', subcategory: '배송 지연', title: '배송이 아직 도착하지 않았어요',
     body: '주문한 상품이 아직 배송되지 않았습니다. 배송 조회에는 배달 출발로 나오는데 현재 위치를 확인해 주세요.',
     customer: customer('user01', '김민수', 3),
     attachments: [{ name: 'delivery-status.png', size: '284 KB', kind: 'image', scanStatus: '정상' }],
@@ -111,8 +114,8 @@ export const INQUIRIES: InquiryEntry[] = [
     ],
   },
   {
-    id: 'QNA-00181', category: '결제', subcategory: '중복 결제', title: '같은 주문이 두 번 결제됐습니다',
-    body: '법인카드 승인 문자가 두 번 왔습니다. 중복 결제 여부와 취소 가능 시간을 확인해 주세요.', customer: customer('buyer02', '박서연', 1),
+    id: 'QNA-00181', businessType: 'B2B', category: '결제', subcategory: '중복 결제', title: '같은 주문이 두 번 결제됐습니다',
+    body: '법인카드 승인 문자가 두 번 왔습니다. 중복 결제 여부와 취소 가능 시간을 확인해 주세요.', customer: customer('buyer02', '박서연', 1, '거래처 관리자'),
     attachments: [{ name: 'card-message.jpg', size: '412 KB', kind: 'image', scanStatus: '정상' }],
     relatedItems: [{ type: '주문', id: 'ORD-00581', status: '결제 확인중', detail: '2026-08-24 · 1,284,000원' }, { type: '결제', id: 'PAY-00181', status: '중복 승인 확인중', detail: '법인카드 · 승인 2건' }],
     receivedAt: '2026-08-24 09:45', dueAt: '2026-08-24 14:30', assignee: null, team: null, status: '접수', priority: '높음', reopened: false,
@@ -121,15 +124,15 @@ export const INQUIRIES: InquiryEntry[] = [
     history: [{ id: 'H-181-1', at: '2026-08-24 09:45', action: '문의 접수', actor: 'buyer02', kind: 'customer' }, { id: 'H-181-2', at: '2026-08-24 09:46', action: '접수 알림 자동 발송', actor: '시스템', kind: 'system' }],
   },
   {
-    id: 'QNA-00180', category: '회원 / 계정', subcategory: '비밀번호', title: '관리자 계정 비밀번호를 재설정하고 싶어요',
-    body: '회사 담당자가 변경되어 기존 관리자 계정의 비밀번호를 재설정하려고 합니다.', customer: customer('company03', '이준호', 2), attachments: [], relatedItems: [],
+    id: 'QNA-00180', businessType: 'B2B', category: '회원 / 계정', subcategory: '비밀번호', title: '관리자 계정 비밀번호를 재설정하고 싶어요',
+    body: '회사 담당자가 변경되어 기존 관리자 계정의 비밀번호를 재설정하려고 합니다.', customer: customer('company03', '이준호', 2, '거래처 관리자'), attachments: [], relatedItems: [],
     receivedAt: '2026-08-24 08:40', dueAt: '2026-08-24 17:00', assignee: 'admin03', team: '일반 CS팀', status: '답변 완료', priority: '보통', reopened: false,
     tags: ['계정'], issues: [], replyDraft: '', draftSavedAt: null,
     messages: [receivedMessage('MSG-180-1', 'company03', '2026-08-24 08:40', '기존 관리자 계정 비밀번호 재설정 방법을 알려주세요.'), autoMessage('MSG-180-2', '2026-08-24 08:41'), { id: 'MSG-180-3', role: 'admin', author: 'admin03', sentAt: '2026-08-24 09:10', body: '관리자 인증 후 비밀번호 재설정 링크를 발송해 드렸습니다.', notificationResult: '서비스 알림 / 이메일 발송 완료' }],
     internalMemos: [], history: [{ id: 'H-180-1', at: '2026-08-24 08:40', action: '문의 접수', actor: 'company03', kind: 'customer' }, { id: 'H-180-2', at: '2026-08-24 08:50', action: '담당자 지정', actor: 'admin03', kind: 'admin' }, { id: 'H-180-3', at: '2026-08-24 09:10', action: '고객 답변 발송', actor: 'admin03', kind: 'admin' }],
   },
   {
-    id: 'QNA-00179', category: '취소 / 환불', subcategory: '환불 지연', title: '환불 처리가 언제 완료되나요?',
+    id: 'QNA-00179', businessType: 'C2C', category: '취소 / 환불', subcategory: '환불 지연', title: '환불 처리가 언제 완료되나요?',
     body: '지난주 취소한 주문의 카드 환불이 아직 반영되지 않았습니다.', customer: customer('shop04', '최지우', 4), attachments: [{ name: 'cancel-receipt.pdf', size: '188 KB', kind: 'pdf', scanStatus: '정상' }],
     relatedItems: [{ type: '주문', id: 'ORD-00566', status: '주문 취소', detail: '2026-08-18 · 760,000원' }, { type: '환불', id: 'RFD-00042', status: '환불 요청', detail: '카드사 처리 확인 필요' }],
     receivedAt: '2026-08-23 16:10', dueAt: '2026-08-24 13:00', assignee: 'admin02', team: '결제 CS팀', status: '내부 확인중', priority: '높음', reopened: false,
@@ -139,7 +142,7 @@ export const INQUIRIES: InquiryEntry[] = [
     history: [{ id: 'H-179-1', at: '2026-08-23 16:10', action: '문의 접수', actor: 'shop04', kind: 'customer' }, { id: 'H-179-2', at: '2026-08-23 16:30', action: '담당자 지정', actor: 'admin02', kind: 'admin' }, { id: 'H-179-3', at: '2026-08-24 09:15', action: '내부 확인 요청', actor: 'admin02', detail: '결제 운영팀', kind: 'admin' }, { id: 'H-179-4', at: '2026-08-24 11:20', action: '답변 임시저장', actor: 'admin02', kind: 'admin' }],
   },
   {
-    id: 'QNA-00178', category: '교환 / 반품', subcategory: '파손 상품', title: '교환 접수 후 회수 일정이 궁금합니다',
+    id: 'QNA-00178', businessType: 'C2C', category: '교환 / 반품', subcategory: '파손 상품', title: '교환 접수 후 회수 일정이 궁금합니다',
     body: '파손 상품 교환 신청 후 기사님 연락을 받지 못했습니다.', customer: customer('market05', '정하늘', 5),
     attachments: [{ name: 'damaged-product-1.jpg', size: '1.2 MB', kind: 'image', scanStatus: '정상' }, { name: 'damaged-product-2.jpg', size: '980 KB', kind: 'image', scanStatus: '정상' }],
     relatedItems: [{ type: '주문', id: 'ORD-00542', status: '교환 접수', detail: '회수 요청 완료' }, { type: '배송', id: 'SHP-00161', status: '회수 대기', detail: '기사 배정 전' }],
@@ -149,15 +152,15 @@ export const INQUIRIES: InquiryEntry[] = [
     internalMemos: [], history: [{ id: 'H-178-1', at: '2026-08-22 13:05', action: '문의 접수', actor: 'market05', kind: 'customer' }, { id: 'H-178-2', at: '2026-08-22 14:10', action: '고객 답변 발송', actor: 'admin01', kind: 'admin' }, { id: 'H-178-3', at: '2026-08-24 11:15', action: '고객 재문의 · 자동 재오픈', actor: 'market05', kind: 'customer' }],
   },
   {
-    id: 'QNA-00177', category: '서비스 이용', subcategory: '견적서', title: '견적서를 PDF로 받을 수 있나요?', body: '승인된 견적서를 PDF로 내려받는 방법을 문의드립니다.',
-    customer: customer('office06', '한소희', 1), attachments: [], relatedItems: [{ type: '주문', id: 'QOT-00321', status: '견적 승인', detail: '유효기간 2026-08-31' }],
+    id: 'QNA-00177', businessType: 'B2B', category: '서비스 이용', subcategory: '견적서', title: '견적서를 PDF로 받을 수 있나요?', body: '승인된 견적서를 PDF로 내려받는 방법을 문의드립니다.',
+    customer: customer('office06', '한소희', 1, '거래처 관리자'), attachments: [], relatedItems: [{ type: '주문', id: 'QOT-00321', status: '견적 승인', detail: '유효기간 2026-08-31' }],
     receivedAt: '2026-08-21 10:00', dueAt: '2026-08-22 10:00', assignee: 'admin03', team: '일반 CS팀', status: '처리 완료', priority: '낮음', reopened: false,
     tags: ['이용 안내'], issues: [], replyDraft: '', draftSavedAt: null, completionReason: '안내 완료', satisfaction: { score: 5, comment: '빠른 답변 감사합니다.' },
     messages: [receivedMessage('MSG-177-1', 'office06', '2026-08-21 10:00', '견적서를 PDF로 받을 수 있나요?'), autoMessage('MSG-177-2', '2026-08-21 10:01'), { id: 'MSG-177-3', role: 'admin', author: 'admin03', sentAt: '2026-08-21 10:35', body: '견적 상세 화면 오른쪽 상단의 PDF 다운로드 버튼을 이용해 주세요.', notificationResult: '서비스 알림 / 이메일 발송 완료' }],
     internalMemos: [], history: [{ id: 'H-177-1', at: '2026-08-21 10:00', action: '문의 접수', actor: 'office06', kind: 'customer' }, { id: 'H-177-2', at: '2026-08-21 10:35', action: '고객 답변 발송', actor: 'admin03', kind: 'admin' }, { id: 'H-177-3', at: '2026-08-21 10:42', action: '처리 완료', actor: 'admin03', detail: '안내 완료', kind: 'admin' }],
   },
   {
-    id: 'QNA-00176', category: '배송', subcategory: '배송지 변경', title: '출고 전 배송지를 변경할 수 있을까요?', body: '주문서의 배송지가 이전 사무실로 되어 있습니다. 변경에 필요한 정보를 알려주세요.',
+    id: 'QNA-00176', businessType: 'B2C', category: '배송', subcategory: '배송지 변경', title: '출고 전 배송지를 변경할 수 있을까요?', body: '주문서의 배송지가 이전 사무실로 되어 있습니다. 변경에 필요한 정보를 알려주세요.',
     customer: customer('store07', '오세훈', 2), attachments: [], relatedItems: [{ type: '주문', id: 'ORD-00580', status: '상품 준비중', detail: '배송지 변경 가능 여부 확인 필요' }],
     receivedAt: '2026-08-24 11:35', dueAt: '2026-08-24 18:00', assignee: 'admin02', team: '배송 CS팀', status: '고객 답변 대기', priority: '보통', reopened: false,
     tags: ['배송지'], issues: [], replyDraft: '', draftSavedAt: null,
@@ -165,8 +168,8 @@ export const INQUIRIES: InquiryEntry[] = [
     internalMemos: [], history: [{ id: 'H-176-1', at: '2026-08-24 11:35', action: '문의 접수', actor: 'store07', kind: 'customer' }, { id: 'H-176-2', at: '2026-08-24 12:00', action: '고객 정보 요청', actor: 'admin02', detail: '고객 답변 대기', kind: 'admin' }],
   },
   {
-    id: 'QNA-00175', category: '정산', subcategory: '세금계산서', title: '지난달 세금계산서 발행일을 확인해 주세요', body: '7월 거래분 세금계산서가 아직 이메일로 오지 않았습니다.',
-    customer: customer('corp08', '문가영', 2), attachments: [], relatedItems: [{ type: '결제', id: 'TAX-00118', status: '발행 완료', detail: '2026-08-10 발행 · 이메일 재전송 가능' }],
+    id: 'QNA-00175', businessType: 'B2B', category: '정산', subcategory: '세금계산서', title: '지난달 세금계산서 발행일을 확인해 주세요', body: '7월 거래분 세금계산서가 아직 이메일로 오지 않았습니다.',
+    customer: customer('corp08', '문가영', 2, '거래처 관리자'), attachments: [], relatedItems: [{ type: '결제', id: 'TAX-00118', status: '발행 완료', detail: '2026-08-10 발행 · 이메일 재전송 가능' }],
     receivedAt: '2026-08-23 14:20', dueAt: '2026-08-25 14:20', assignee: 'admin04', team: '정산 CS팀', status: '보류', priority: '낮음', reopened: false,
     tags: ['세금계산서'], issues: ['이메일 주소 확인 필요'], replyDraft: '', draftSavedAt: null,
     messages: [receivedMessage('MSG-175-1', 'corp08', '2026-08-23 14:20', '7월 세금계산서 발행일을 확인해 주세요.'), autoMessage('MSG-175-2', '2026-08-23 14:21')],

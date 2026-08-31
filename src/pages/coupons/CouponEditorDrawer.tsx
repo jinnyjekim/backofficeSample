@@ -1,4 +1,3 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
@@ -305,7 +304,7 @@ export function CouponEditorDrawer({ coupon: c, onCancel, onSubmit }: Props) {
         </div>
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>발급 시작일 *</label>
-          <DatePicker className={styles.dateInput} style={{ width: '100%' }} value={issueStart} onChange={(e) => setIssueStart(e.target.value)} />
+          <input type="date" className={styles.dateInput} style={{ width: '100%' }} value={issueStart} onChange={(e) => setIssueStart(e.target.value)} />
         </div>
         <div className={styles.radioRow}>
           <label className={styles.radioOption}><input type="radio" checked={issueEndMode === '없음'} onChange={() => setIssueEndMode('없음')} />발급 종료일 없음</label>
@@ -313,7 +312,7 @@ export function CouponEditorDrawer({ coupon: c, onCancel, onSubmit }: Props) {
         </div>
         {issueEndMode === '지정' && (
           <div className={styles.formGroup}>
-            <DatePicker className={styles.dateInput} style={{ width: '100%' }} value={issueEnd} onChange={(e) => setIssueEnd(e.target.value)} />
+            <input type="date" className={styles.dateInput} style={{ width: '100%' }} value={issueEnd} onChange={(e) => setIssueEnd(e.target.value)} />
           </div>
         )}
 
@@ -347,11 +346,11 @@ export function CouponEditorDrawer({ coupon: c, onCancel, onSubmit }: Props) {
           <div className={styles.formRow}>
             <div style={{ flex: 1 }}>
               <label className={styles.formLabel}>사용 시작일</label>
-              <DatePicker className={styles.dateInput} style={{ width: '100%' }} value={validStart} onChange={(e) => setValidStart(e.target.value)} />
+              <input type="date" className={styles.dateInput} style={{ width: '100%' }} value={validStart} onChange={(e) => setValidStart(e.target.value)} />
             </div>
             <div style={{ flex: 1 }}>
               <label className={styles.formLabel}>사용 종료일 *</label>
-              <DatePicker className={styles.dateInput} style={{ width: '100%' }} value={validEnd} onChange={(e) => setValidEnd(e.target.value)} />
+              <input type="date" className={styles.dateInput} style={{ width: '100%' }} value={validEnd} onChange={(e) => setValidEnd(e.target.value)} />
             </div>
           </div>
         )}

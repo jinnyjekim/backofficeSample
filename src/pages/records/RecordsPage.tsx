@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import styles from './RecordsPage.module.css';
-import { BAN_MEMBERS, LEFT_MEMBERS, type BanMember, type LeftMember } from '../../data/members';
+import { BAN_MEMBERS, LEFT_MEMBERS, type BanMember, type LeftMember, type MemberBusinessType } from '../../data/members';
 import { buildBanView, buildLeftView } from './recordsData';
 import { buildBanDetail, buildLeftDetail } from './recordDetail';
 import { RecordDetailDrawer } from './RecordDetailDrawer';
@@ -10,6 +10,17 @@ import { formatNumber } from '../../lib/theme';
 import { SearchField } from '../../components/SearchField';
 
 const PAGE_LABELS = ['‹', '1', '2', '3', '4', '5', '›'];
+const BUSINESS_MODES: MemberBusinessType[] = ['B2C', 'C2C', 'B2B'];
+const LEFT_MODE_NOTES: Record<MemberBusinessType, string> = {
+  B2C: '구매·포인트 기준',
+  C2C: '거래·판매대금 기준',
+  B2B: '회사·권한 기준',
+};
+const BAN_MODE_NOTES: Record<MemberBusinessType, string> = {
+  B2C: '고객·구매 영향 기준',
+  C2C: '거래·판매 위험 기준',
+  B2B: '회사·계정 권한 기준',
+};
 
 interface Props {
   kind: 'left' | 'ban';
@@ -21,6 +32,7 @@ interface ModalState {
 }
 
 export function RecordsPage({ kind }: Props) {
+  const [mode, setMode] = useState<MemberBusinessType>('B2C');
   const [filter, setFilter] = useState('전체');
   const [query, setQuery] = useState('');
   const [openId, setOpenId] = useState<number | null>(null);
@@ -30,8 +42,8 @@ export function RecordsPage({ kind }: Props) {
 
   const isLeft = kind === 'left';
   const rec = useMemo(
-    () => (isLeft ? buildLeftView(LEFT_MEMBERS, filter, query) : buildBanView(banData, filter, query)),
-    [isLeft, filter, query, banData],
+    () => (isLeft ? buildLeftView(LEFT_MEMBERS, filter, query, mode) : buildBanView(banData, filter, query, mode)),
+    [isLeft, filter, query, mode, banData],
   );
 
   const openRow = openId != null
@@ -42,12 +54,24 @@ export function RecordsPage({ kind }: Props) {
     : null;
   const banTarget = !isLeft && openRow ? (openRow as BanMember) : null;
 
+  function switchMode(next: MemberBusinessType) {
+    setMode(next);
+    setFilter('전체');
+    setQuery('');
+    setOpenId(null);
+    setPage(1);
+  }
+
   function applySanction(result: SanctionSubmit) {
     if (result.mode === 'add') {
       const newRow: BanMember = {
         id: result.id!,
         name: result.name!,
         email: result.email || '—',
+        handle: '@new_member',
+        phone: '010-0000-****',
+        provider: 'Email',
+        businessType: mode,
         joined: '2026.08.27',
         type: result.type!,
         level: SANCTION_LEVEL[result.type!] ?? 3,
@@ -60,6 +84,21 @@ export function RecordsPage({ kind }: Props) {
         by: '운영 관리자',
         how: '관리자 직접',
         evidence: [],
+        grade: mode === 'B2C' ? 'Normal' : '',
+        orders: 0,
+        spend: 0,
+        buyer: mode !== 'B2B',
+        seller: false,
+        listings: 0,
+        tradesBuy: 0,
+        tradesSell: 0,
+        reports: 0,
+        disputes: 0,
+        company: '',
+        companyCode: '',
+        dept: '',
+        title: '',
+        role: '일반 사용자',
       };
       setBanData((prev) => [newRow, ...prev]);
       setModal(null);
@@ -123,6 +162,22 @@ export function RecordsPage({ kind }: Props) {
         <div className={styles.headTitleRow}>
           <span className={styles.headTitle}>{rec.title}</span>
           <span className={styles.headTotal}>{rec.total}</span>
+        </div>
+        <div className={styles.modeToggleWrap}>
+          <span className={styles.modeToggleHint}>비즈니스 유형</span>
+          <div className={styles.modeToggle}>
+            {BUSINESS_MODES.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={`${styles.modeBtn} ${mode === item ? styles.active : ''}`}
+                onClick={() => switchMode(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+          <span className={styles.modeNote}>{(isLeft ? LEFT_MODE_NOTES : BAN_MODE_NOTES)[mode]}</span>
         </div>
         <nav className={styles.viewNav}>
           {rec.views.map((v) => (

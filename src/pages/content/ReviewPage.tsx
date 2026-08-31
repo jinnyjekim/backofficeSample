@@ -4,9 +4,11 @@ import sh from './contentShared.module.css';
 import styles from './ReviewPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
-import { CHECK_LABELS, REJECT_REASONS, REVIEW_ITEMS, type ReviewItem, type ReviewItemStatus } from './reviewData';
+import { CHECK_LABELS_BY_BUSINESS, REJECT_REASONS, REVIEW_ITEMS, type ReviewItem, type ReviewItemStatus } from './reviewData';
 import { CONTENT_ITEMS } from '../../data/content';
 import { ACCENT } from '../../lib/theme';
+import { ContentBusinessSwitch } from './ContentBusinessSwitch';
+import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType } from './contentBusiness';
 
 const TABS: Array<ReviewItemStatus | '전체'> = ['대기', '검수중', '승인', '반려', '전체'];
 const STATUS_PILL: Record<ReviewItemStatus, { bg: string; fg: string }> = {
@@ -28,6 +30,7 @@ interface ModalState {
 
 export function ReviewPage() {
   const [items, setItems] = useState<ReviewItem[]>(REVIEW_ITEMS);
+  const [businessMode, setBusinessMode] = useState<ContentBusinessType>('B2C');
   const [tab, setTab] = useState<string>('대기');
   const [q, setQ] = useState('');
   const [field, setField] = useState('전체');
@@ -51,12 +54,13 @@ export function ReviewPage() {
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, ...patch } : it)));
   }
 
-  const categories = useMemo(() => Array.from(new Set(items.map((it) => it.cat))), [items]);
+  const modeItems = useMemo(() => items.filter((item) => item.businessType === businessMode), [businessMode, items]);
+  const categories = useMemo(() => Array.from(new Set(modeItems.map((it) => it.cat))), [modeItems]);
   const assignees = ['전체', '미지정', 'admin01', 'admin02'];
 
   const list = useMemo(() => {
     const query = q.trim().toLowerCase();
-    let out = items.filter((it) => {
+    let out = modeItems.filter((it) => {
       if (tab !== '전체' && it.status !== tab) return false;
       if (query) {
         const hay = field === '콘텐츠 ID' ? it.ctid : field === '제목' ? it.title : field === '요청자' ? it.requester : it.ctid + it.title + it.requester;
@@ -71,13 +75,22 @@ export function ReviewPage() {
     });
     out = out.slice().sort((a, b) => (a.reqAt < b.reqAt ? 1 : -1));
     return out;
-  }, [items, tab, q, field, reqTypeF, catF, assigneeF, from, to]);
+  }, [modeItems, tab, q, field, reqTypeF, catF, assigneeF, from, to]);
 
   const sel_ = sel.filter((id) => list.some((it) => it.id === id));
 
   function resetAll() {
     setQ(''); setField('전체'); setReqTypeF('전체'); setCatF('전체'); setAssigneeF('전체');
     setFrom('2026-07-01'); setTo('2026-08-13'); setSel([]);
+  }
+
+  function switchBusiness(next: ContentBusinessType) {
+    if (next === businessMode) return;
+    setBusinessMode(next);
+    setTab('대기');
+    resetAll();
+    setDetailId(null);
+    setModal(null);
   }
 
   function openDetail(id: string) {
@@ -120,10 +133,16 @@ export function ReviewPage() {
     fireToast('선택한 건이 일괄 승인되었습니다.');
   }
 
+  const modeColumnLabels = {
+    B2C: ['쇼핑 콘텐츠', '게시 요청', '요청 관리자'],
+    C2C: ['회원 콘텐츠', '검수 요청', '작성 회원'],
+    B2B: ['문서 / 공지', '승인 요청', '요청 관리자'],
+  }[businessMode];
+
   const columns: GridColumn[] = [
-    { label: '콘텐츠' },
-    { label: '요청유형' },
-    { label: '요청자' },
+    { label: modeColumnLabels[0] },
+    { label: modeColumnLabels[1] },
+    { label: modeColumnLabels[2] },
     { label: '요청일' },
     { label: '담당자' },
     { label: '상태' },
@@ -148,7 +167,7 @@ export function ReviewPage() {
   });
 
   const emptySearch = list.length === 0 && (q.trim() !== '' || tab !== '전체');
-  const emptyAll = items.length === 0;
+  const emptyAll = modeItems.length === 0;
 
   const det = detailId ? byId(detailId) : null;
   const detCd = det ? CONTENT_ITEMS.find((c) => c.id === det.ctid) : null;
@@ -224,6 +243,7 @@ export function ReviewPage() {
         <div className={styles.detailHeader}>
           <button type="button" className={styles.backBtn} onClick={() => setDetailId(null)}>← 목록으로</button>
           <div className={styles.detailTitle}>{`검수 상세 · ${det.ctid}`}</div>
+          <span className={styles.statusPill} style={{ background: '#eef2ff', color: '#4338ca' }}>{det.businessType}</span>
           <div className={sh.headerSpacer} />
           <span className={styles.assigneeLabel}>{`담당자 ${det.assignee}`}</span>
           <span className={styles.statusPill} style={{ background: stp.bg, color: stp.fg }}>{det.status}</span>
@@ -265,7 +285,7 @@ export function ReviewPage() {
                   {det.checklist.map((checked, i) => (
                     <label key={i} className={styles.checklistRow}>
                       <input type="checkbox" checked={checked} onChange={() => setItem(det.id, { checklist: det.checklist.map((c, ci) => (ci === i ? !c : c)) })} style={{ marginTop: 2 }} />
-                      <span className={styles.checklistLabel}>{CHECK_LABELS[i]}</span>
+                      <span className={styles.checklistLabel}>{CHECK_LABELS_BY_BUSINESS[det.businessType][i]}</span>
                     </label>
                   ))}
                 </div>
@@ -319,15 +339,21 @@ export function ReviewPage() {
       <header className={sh.header}>
         <div>
           <div className={sh.headerTitle}>검수 관리</div>
-          <div className={sh.headerSub}>등록 또는 수정된 콘텐츠를 검토하고 승인 상태를 관리합니다.</div>
+          <div className={sh.headerSub}>{CONTENT_BUSINESS_META[businessMode].reviewNote} 요청과 승인 상태를 관리합니다.</div>
         </div>
+        <ContentBusinessSwitch
+          value={businessMode}
+          options={CONTENT_BUSINESS_MODES}
+          onChange={switchBusiness}
+          note={CONTENT_BUSINESS_META[businessMode].reviewNote}
+        />
       </header>
 
       <div className={sh.body}>
         <div className={sh.topPad}>
           <div className={sh.quickFilters}>
             {TABS.map((k) => {
-              const count = k === '전체' ? items.length : items.filter((it) => it.status === k).length;
+              const count = k === '전체' ? modeItems.length : modeItems.filter((it) => it.status === k).length;
               const on = tab === k;
               return (
                 <button key={k} type="button" className={`${sh.qfBtn} ${on ? sh.active : ''}`} onClick={() => { setTab(k); setSel([]); }}>

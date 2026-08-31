@@ -38,7 +38,7 @@ export interface NavItem {
   sub?: boolean;
   to?: string;
   divider?: boolean;
-  business?: 'B' | 'C' | 'BC';
+  business?: 'B' | 'C' | 'BC' | 'B2B';
 }
 
 export interface NavGroup {
@@ -66,22 +66,22 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'content_exposure', sub: true, label: '노출 관리', to: '/content/exposure' },
       { key: 'content_review', sub: true, label: '검수 관리', badge: '14', to: '/content/review' },
 
-      { key: 'settlement', icon: Scale, label: '거래처 정산 관리', to: '/settlement' },
-      { key: 'settlement_list', sub: true, label: '정산 목록', to: '/settlement' },
-      { key: 'settlement_tx', sub: true, label: '정산 거래 내역', to: '/settlement/transactions' },
-      { key: 'settlement_adjust', sub: true, label: '조정 내역', to: '/settlement/adjustments' },
+      { key: 'settlement', icon: Scale, label: '거래처 정산 관리', to: '/settlement', business: 'B2B' },
+      { key: 'settlement_list', sub: true, label: '정산 목록', to: '/settlement', business: 'B2B' },
+      { key: 'settlement_tx', sub: true, label: '정산 거래 내역', to: '/settlement/transactions', business: 'B2B' },
+      { key: 'settlement_adjust', sub: true, label: '조정 내역', to: '/settlement/adjustments', business: 'B2B' },
 
-      { key: 'partners', icon: Building2, label: '거래처 관리', to: '/partners/companies' },
-      { key: 'partners_companies', sub: true, label: '회사', to: '/partners/companies' },
-      { key: 'partners_contacts', sub: true, label: '담당자', to: '/partners/contacts' },
-      { key: 'partners_status', sub: true, label: '거래 상태', to: '/partners/trade-status' },
-      { key: 'partners_credit', sub: true, label: '신용/거래 조건', to: '/partners/credit-terms' },
+      { key: 'partners', icon: Building2, label: '거래처 관리', to: '/partners/companies', business: 'B2B' },
+      { key: 'partners_companies', sub: true, label: '회사', to: '/partners/companies', business: 'B2B' },
+      { key: 'partners_contacts', sub: true, label: '담당자', to: '/partners/contacts', business: 'B2B' },
+      { key: 'partners_status', sub: true, label: '거래 상태', to: '/partners/trade-status', business: 'B2B' },
+      { key: 'partners_credit', sub: true, label: '신용/거래 조건', to: '/partners/credit-terms', business: 'B2B' },
 
-      { key: 'products', icon: Package, label: '공급 상품 관리', to: '/products' },
-      { key: 'products_list', sub: true, label: '상품 목록', to: '/products' },
-      { key: 'products_supply', sub: true, label: '공급가', to: '/products/supply-price' },
-      { key: 'products_partner', sub: true, label: '거래처별 가격', to: '/products/partner-pricing' },
-      { key: 'products_moq', sub: true, label: '최소 주문수량', to: '/products/min-order-qty' },
+      { key: 'products', icon: Package, label: '공급 상품 관리', to: '/products', business: 'B2B' },
+      { key: 'products_list', sub: true, label: '상품 목록', to: '/products', business: 'B2B' },
+      { key: 'products_supply', sub: true, label: '공급가', to: '/products/supply-price', business: 'B2B' },
+      { key: 'products_partner', sub: true, label: '거래처별 가격', to: '/products/partner-pricing', business: 'B2B' },
+      { key: 'products_moq', sub: true, label: '최소 주문수량', to: '/products/min-order-qty', business: 'B2B' },
 
       { key: 'inventory', icon: Boxes, label: '재고 관리', to: '/inventory/status', business: 'B' },
       { key: 'inventory_status', sub: true, label: '재고 현황', to: '/inventory/status', business: 'B' },
@@ -94,34 +94,34 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'inventory_safety', sub: true, label: '안전 재고', to: '/b2c/inventory/safety-stock', business: 'B' },
       { key: 'inventory_alerts', sub: true, label: '재고 알림', to: '/b2c/inventory/alerts', business: 'B' },
 
-      { key: 'quotes', icon: FileEdit, label: '견적 관리', to: '/quotes/requests' },
-      { key: 'quotes_requests', sub: true, label: '견적 요청', to: '/quotes/requests' },
-      { key: 'quotes_list', sub: true, label: '견적서', to: '/quotes' },
-      { key: 'quotes_approval', sub: true, label: '승인', to: '/quotes/approval' },
-      { key: 'quotes_history', sub: true, label: '견적 이력', to: '/quotes/history' },
+      { key: 'quotes', icon: FileEdit, label: '견적 관리', to: '/quotes/requests', business: 'B2B' },
+      { key: 'quotes_requests', sub: true, label: '견적 요청', to: '/quotes/requests', business: 'B2B' },
+      { key: 'quotes_list', sub: true, label: '견적서', to: '/quotes', business: 'B2B' },
+      { key: 'quotes_approval', sub: true, label: '승인', to: '/quotes/approval', business: 'B2B' },
+      { key: 'quotes_history', sub: true, label: '견적 이력', to: '/quotes/history', business: 'B2B' },
 
-      { key: 'orders', icon: ShoppingCart, label: '주문 관리', to: '/orders/purchase' },
-      { key: 'orders_purchase', sub: true, label: '발주', to: '/orders/purchase' },
-      { key: 'orders_approval', sub: true, label: '주문 승인', to: '/orders/approval' },
-      { key: 'orders_processing', sub: true, label: '처리', to: '/orders/processing' },
-      { key: 'orders_completed', sub: true, label: '완료', to: '/orders/completed' },
-      { key: 'orders_refunds', sub: true, label: '환불 관리', to: '/orders/refunds' },
+      { key: 'orders', icon: ShoppingCart, label: '주문 관리', to: '/orders/purchase', business: 'B2B' },
+      { key: 'orders_purchase', sub: true, label: '발주', to: '/orders/purchase', business: 'B2B' },
+      { key: 'orders_approval', sub: true, label: '주문 승인', to: '/orders/approval', business: 'B2B' },
+      { key: 'orders_processing', sub: true, label: '처리', to: '/orders/processing', business: 'B2B' },
+      { key: 'orders_completed', sub: true, label: '완료', to: '/orders/completed', business: 'B2B' },
+      { key: 'orders_refunds', sub: true, label: '환불 관리', to: '/orders/refunds', business: 'B2B' },
 
-      { key: 'contracts', icon: FileSignature, label: '계약 관리', to: '/contracts' },
-      { key: 'contracts_list', sub: true, label: '계약', to: '/contracts' },
-      { key: 'contracts_period', sub: true, label: '계약 기간', to: '/contracts/period' },
-      { key: 'contracts_price', sub: true, label: '단가', to: '/contracts/unit-price' },
-      { key: 'contracts_terms', sub: true, label: '거래 조건', to: '/contracts/trade-terms' },
+      { key: 'contracts', icon: FileSignature, label: '계약 관리', to: '/contracts', business: 'B2B' },
+      { key: 'contracts_list', sub: true, label: '계약', to: '/contracts', business: 'B2B' },
+      { key: 'contracts_period', sub: true, label: '계약 기간', to: '/contracts/period', business: 'B2B' },
+      { key: 'contracts_price', sub: true, label: '단가', to: '/contracts/unit-price', business: 'B2B' },
+      { key: 'contracts_terms', sub: true, label: '거래 조건', to: '/contracts/trade-terms', business: 'B2B' },
 
-      { key: 'payments', icon: Wallet, label: '결제 / 수금', to: '/payments' },
-      { key: 'payments_list', sub: true, label: '결제', to: '/payments' },
-      { key: 'payments_receivables', sub: true, label: '미수금', to: '/payments/receivables' },
-      { key: 'payments_deposit', sub: true, label: '입금 확인', to: '/payments/deposit-confirm' },
-      { key: 'payments_tax', sub: true, label: '세금계산서', to: '/payments/tax-invoices' },
+      { key: 'payments', icon: Wallet, label: '결제 / 수금', to: '/payments', business: 'B2B' },
+      { key: 'payments_list', sub: true, label: '결제', to: '/payments', business: 'B2B' },
+      { key: 'payments_receivables', sub: true, label: '미수금', to: '/payments/receivables', business: 'B2B' },
+      { key: 'payments_deposit', sub: true, label: '입금 확인', to: '/payments/deposit-confirm', business: 'B2B' },
+      { key: 'payments_tax', sub: true, label: '세금계산서', to: '/payments/tax-invoices', business: 'B2B' },
 
-      { key: 'payment_mgmt', icon: CreditCard, label: '결제 관리', to: '/payment-mgmt/list' },
-      { key: 'payment_mgmt_list', sub: true, label: '결제 목록', to: '/payment-mgmt/list' },
-      { key: 'payment_mgmt_external', sub: true, label: '외부 거래 조회', to: '/payment-mgmt/external' },
+      { key: 'payment_mgmt', icon: CreditCard, label: '결제 운영', to: '/payment-mgmt/list' },
+      { key: 'payment_mgmt_list', sub: true, label: '결제 건 조회', to: '/payment-mgmt/list' },
+      { key: 'payment_mgmt_external', sub: true, label: 'PG / 외부 거래', to: '/payment-mgmt/external' },
       { key: 'payment_mgmt_history', sub: true, label: '결제 처리 이력', to: '/payment-mgmt/history' },
 
       { key: 'delivery', icon: Truck, label: '배송 관리', to: '/delivery/prep', business: 'B' },
@@ -130,26 +130,51 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'delivery_outbound_done', sub: true, label: '출고 완료', to: '/delivery/outbound-complete', business: 'B' },
       { key: 'delivery_transit', sub: true, label: '배송중', to: '/delivery/in-transit', business: 'B' },
       { key: 'delivery_done', sub: true, label: '배송 완료', to: '/delivery/complete', business: 'B' },
-      { key: 'delivery_exceptions', sub: true, label: '배송 예외 관리', to: '/delivery/exceptions', business: 'B' },
-      { key: 'delivery_shipments', sub: true, label: '송장 / 배송 추적', to: '/delivery/shipments', business: 'B' },
-      { key: 'delivery_carriers', sub: true, label: '배송사 관리', to: '/delivery/carriers', business: 'B' },
-      { key: 'delivery_history', sub: true, label: '배송 이력', to: '/delivery/history', business: 'B' },
+      { key: 'delivery_failed', sub: true, label: '배송 실패', to: '/b2c/delivery/failed', business: 'B' },
+      { key: 'delivery_hold', sub: true, label: '배송 보류', to: '/b2c/delivery/hold', business: 'B' },
+      { key: 'delivery_invoices', sub: true, label: '송장 관리', to: '/b2c/delivery/invoices', business: 'B' },
+      { key: 'delivery_carriers', sub: true, label: '배송사 관리', to: '/b2c/delivery/carriers', business: 'B' },
+      { key: 'delivery_tracking', sub: true, label: '배송 추적', to: '/b2c/delivery/tracking', business: 'B' },
+      { key: 'delivery_history', sub: true, label: '배송 이력', to: '/b2c/delivery/history', business: 'B' },
 
-      { key: 'cancel_mgmt', icon: ShoppingCart, label: '취소 관리', to: '/b2c/cancel/processing', business: 'B' },
-      { key: 'cancel_processing', sub: true, label: '취소 처리', to: '/b2c/cancel/processing', business: 'B' },
-      { key: 'cancel_history', sub: true, label: '취소 처리 이력', to: '/b2c/cancel/history', business: 'B' },
+      { key: 'cancel_mgmt', icon: ShoppingCart, label: '취소 관리', to: '/b2c/cancel/requests', business: 'B' },
+      { key: 'cancel_requests', sub: true, label: '취소 요청', to: '/b2c/cancel/requests', business: 'B' },
+      { key: 'cancel_approval', sub: true, label: '취소 승인', to: '/b2c/cancel/approval', business: 'B' },
+      { key: 'cancel_rejected', sub: true, label: '취소 반려', to: '/b2c/cancel/rejected', business: 'B' },
+      { key: 'cancel_partial', sub: true, label: '부분 취소', to: '/b2c/cancel/partial', business: 'B' },
+      { key: 'cancel_completed', sub: true, label: '취소 완료', to: '/b2c/cancel/completed', business: 'B' },
+      { key: 'cancel_history', sub: true, label: '취소 이력', to: '/b2c/cancel/history', business: 'B' },
 
-      { key: 'return_mgmt', icon: ShoppingBag, label: '반품 관리', to: '/b2c/returns/processing', business: 'B' },
-      { key: 'return_processing', sub: true, label: '반품 처리', to: '/b2c/returns/processing', business: 'B' },
-      { key: 'return_history', sub: true, label: '반품 처리 이력', to: '/b2c/returns/history', business: 'B' },
+      { key: 'return_mgmt', icon: ShoppingBag, label: '반품 관리', to: '/b2c/returns/requests', business: 'B' },
+      { key: 'return_requests', sub: true, label: '반품 요청', to: '/b2c/returns/requests', business: 'B' },
+      { key: 'return_approval', sub: true, label: '반품 승인', to: '/b2c/returns/approval', business: 'B' },
+      { key: 'return_collecting', sub: true, label: '반품 회수', to: '/b2c/returns/collecting', business: 'B' },
+      { key: 'return_collected', sub: true, label: '회수 완료', to: '/b2c/returns/collected', business: 'B' },
+      { key: 'return_inspection', sub: true, label: '상품 확인', to: '/b2c/returns/inspection', business: 'B' },
+      { key: 'return_completed', sub: true, label: '반품 완료', to: '/b2c/returns/completed', business: 'B' },
+      { key: 'return_rejected', sub: true, label: '반품 반려', to: '/b2c/returns/rejected', business: 'B' },
+      { key: 'return_history', sub: true, label: '반품 이력', to: '/b2c/returns/history', business: 'B' },
 
-      { key: 'exchange_mgmt', icon: Package, label: '교환 관리', to: '/b2c/exchanges/processing', business: 'B' },
-      { key: 'exchange_processing', sub: true, label: '교환 처리', to: '/b2c/exchanges/processing', business: 'B' },
-      { key: 'exchange_history', sub: true, label: '교환 처리 이력', to: '/b2c/exchanges/history', business: 'B' },
+      { key: 'exchange_mgmt', icon: Package, label: '교환 관리', to: '/b2c/exchanges/requests', business: 'B' },
+      { key: 'exchange_requests', sub: true, label: '교환 요청', to: '/b2c/exchanges/requests', business: 'B' },
+      { key: 'exchange_approval', sub: true, label: '교환 승인', to: '/b2c/exchanges/approval', business: 'B' },
+      { key: 'exchange_collecting', sub: true, label: '상품 회수', to: '/b2c/exchanges/collecting', business: 'B' },
+      { key: 'exchange_collected', sub: true, label: '회수 완료', to: '/b2c/exchanges/collected', business: 'B' },
+      { key: 'exchange_preparing', sub: true, label: '교환 상품 준비', to: '/b2c/exchanges/preparing', business: 'B' },
+      { key: 'exchange_reship', sub: true, label: '재출고', to: '/b2c/exchanges/reship', business: 'B' },
+      { key: 'exchange_completed', sub: true, label: '교환 완료', to: '/b2c/exchanges/completed', business: 'B' },
+      { key: 'exchange_rejected', sub: true, label: '교환 반려', to: '/b2c/exchanges/rejected', business: 'B' },
+      { key: 'exchange_history', sub: true, label: '교환 이력', to: '/b2c/exchanges/history', business: 'B' },
 
       { key: 'promotions', icon: Percent, label: '프로모션 관리', to: '/promotions', business: 'B' },
-      { key: 'promotions_list', sub: true, label: '프로모션 관리', to: '/promotions', business: 'B' },
-      { key: 'promotions_history', sub: true, label: '적용 이력', to: '/promotions/history', business: 'B' },
+      { key: 'promotions_list', sub: true, label: '프로모션 목록', to: '/promotions', business: 'B' },
+      { key: 'promotions_period', sub: true, label: '기간 할인', to: '/b2c/promotions/period', business: 'B' },
+      { key: 'promotions_product', sub: true, label: '상품 할인', to: '/b2c/promotions/product', business: 'B' },
+      { key: 'promotions_category', sub: true, label: '카테고리 할인', to: '/b2c/promotions/category', business: 'B' },
+      { key: 'promotions_cart', sub: true, label: '장바구니 할인', to: '/b2c/promotions/cart', business: 'B' },
+      { key: 'promotions_member', sub: true, label: '회원 할인', to: '/b2c/promotions/member', business: 'B' },
+      { key: 'promotions_targets', sub: true, label: '프로모션 대상 관리', to: '/b2c/promotions/targets', business: 'B' },
+      { key: 'promotions_history', sub: true, label: '프로모션 적용 이력', to: '/promotions/history', business: 'B' },
 
       { key: 'coupons', icon: Ticket, label: '쿠폰 관리', to: '/coupons', business: 'B' },
       { key: 'coupons_list', sub: true, label: '쿠폰 목록', to: '/coupons', business: 'B' },
@@ -162,14 +187,30 @@ export const NAV_GROUPS: NavGroup[] = [
 
       { key: 'points', icon: Coins, label: '포인트 / 적립금 관리', to: '/points', business: 'B' },
       { key: 'points_status', sub: true, label: '보유 현황', to: '/points', business: 'B' },
-      { key: 'points_history', sub: true, label: '포인트 원장', to: '/points/history', business: 'B' },
-      { key: 'points_policy', sub: true, label: '포인트 정책', to: '/points/policy', business: 'B' },
+      { key: 'points_granted', sub: true, label: '지급 내역', to: '/b2c/points/granted', business: 'B' },
+      { key: 'points_used', sub: true, label: '사용 내역', to: '/b2c/points/used', business: 'B' },
+      { key: 'points_deducted', sub: true, label: '차감 내역', to: '/b2c/points/deducted', business: 'B' },
+      { key: 'points_expired', sub: true, label: '소멸 내역', to: '/b2c/points/expired', business: 'B' },
+      { key: 'points_expiring', sub: true, label: '소멸 예정', to: '/b2c/points/expiring', business: 'B' },
+      { key: 'points_manual', sub: true, label: '수동 지급', to: '/b2c/points/manual', business: 'B' },
+      { key: 'points_history', sub: true, label: '전체 포인트 내역', to: '/points/history', business: 'B' },
+      { key: 'points_policy', sub: true, label: '적립 정책', to: '/points/policy', business: 'B' },
 
       { key: 'brands', icon: Award, label: '브랜드 관리', to: '/brands', business: 'B' },
+      { key: 'brands_list', sub: true, label: '브랜드 목록', to: '/brands', business: 'B' },
+      { key: 'brands_create', sub: true, label: '브랜드 등록', to: '/b2c/brands/create', business: 'B' },
+      { key: 'brands_detail', sub: true, label: '브랜드 상세', to: '/b2c/brands/detail', business: 'B' },
+      { key: 'brands_products', sub: true, label: '브랜드별 상품', to: '/b2c/brands/products', business: 'B' },
+      { key: 'brands_exposure', sub: true, label: '브랜드 노출 관리', to: '/b2c/brands/exposure', business: 'B' },
 
       { key: 'reviews', icon: Star, label: '리뷰 관리', to: '/reviews', business: 'B' },
-      { key: 'reviews_operations', sub: true, label: '리뷰 운영', to: '/reviews', business: 'B' },
-      { key: 'reviews_analytics', sub: true, label: '리뷰 분석', to: '/reviews/analytics', business: 'B' },
+      { key: 'reviews_list', sub: true, label: '리뷰 목록', to: '/reviews', business: 'B' },
+      { key: 'reviews_detail', sub: true, label: '리뷰 상세', to: '/b2c/reviews/detail', business: 'B' },
+      { key: 'reviews_reported', sub: true, label: '신고 리뷰', to: '/b2c/reviews/reported', business: 'B' },
+      { key: 'reviews_hidden', sub: true, label: '숨김 리뷰', to: '/b2c/reviews/hidden', business: 'B' },
+      { key: 'reviews_replies', sub: true, label: '리뷰 답변', to: '/b2c/reviews/replies', business: 'B' },
+      { key: 'reviews_sanctions', sub: true, label: '리뷰 제재', to: '/b2c/reviews/sanctions', business: 'B' },
+      { key: 'reviews_stats', sub: true, label: '리뷰 통계', to: '/b2c/reviews/stats', business: 'B' },
 
       { key: 'cart_conversion', icon: ShoppingBag, label: '장바구니 / 구매 전환', to: '/cart-conversion', business: 'B' },
 
@@ -237,7 +278,6 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'ops_events', sub: true, label: '이벤트', to: '/ops/events' },
       { key: 'ops_terms', sub: true, label: '약관 관리', to: '/ops/terms' },
       { key: 'ops_policies', sub: true, label: '정책 관리', to: '/ops/policies' },
-      { key: 'ops_messages', sub: true, label: '운영 메시지', to: '/ops/messages' },
 
       { key: 'notifications', icon: BellRing, label: '알림 / 메시지 관리', to: '/notifications/dispatch' },
       { key: 'notifications_dispatch', sub: true, label: '발송 관리', to: '/notifications/dispatch' },
@@ -258,7 +298,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'policy_payment', sub: true, label: '결제 정책', to: '/policy/payment' },
       { key: 'policy_cancel', sub: true, label: '취소 정책', to: '/policy/cancellation' },
       { key: 'policy_refund', sub: true, label: '환불 정책', to: '/policy/refund' },
-      { key: 'policy_settlement', sub: true, label: '정산 정책', to: '/policy/settlement' },
+      { key: 'policy_settlement', sub: true, label: '정산 정책', to: '/policy/settlement', business: 'B2B' },
       { key: 'policy_fee', sub: true, label: '수수료 정책', to: '/policy/fee' },
 
       { key: 'delivery_policy', icon: Receipt, label: '배송 정책', to: '/delivery-policy/base-fee', business: 'B' },
@@ -295,9 +335,9 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'admin_history', sub: true, label: '관리자 이력', to: '/admin/history' },
       { key: 'sys', icon: Settings, label: '시스템 관리', to: '/system/service' },
       { key: 'sys_service', sub: true, label: '서비스 설정', to: '/system/service' },
-      { key: 'sys_codes', sub: true, label: '공통 코드 관리', to: '/system/codes' },
-      { key: 'sys_integration', sub: true, label: '외부 연동 관리', to: '/system/integration' },
-      { key: 'sys_jobs', sub: true, label: '배치 / 작업 관리', to: '/system/jobs' },
+      { key: 'sys_codes', sub: true, label: '공통 코드', to: '/system/codes' },
+      { key: 'sys_integration', sub: true, label: '외부 연동', to: '/system/integration' },
+      { key: 'sys_jobs', sub: true, label: '작업 관리', to: '/system/jobs' },
       { key: 'log', icon: History, label: '로그 / 감사', to: '/logs/system' },
       { key: 'log_system', sub: true, label: '시스템 로그', to: '/logs/system' },
       { key: 'log_security', sub: true, label: '보안 로그', to: '/logs/security' },
@@ -384,14 +424,13 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   ops_events: ['서비스 관리 · 운영 관리', '이벤트'],
   ops_terms: ['서비스 관리 · 운영 관리', '약관 관리'],
   ops_policies: ['서비스 관리 · 운영 관리', '정책 관리'],
-  ops_messages: ['서비스 관리 · 운영 관리', '운영 메시지'],
 
   notifications_dispatch: ['서비스 관리 · 알림 / 메시지 관리', '발송 관리'],
   notifications_templates: ['서비스 관리 · 알림 / 메시지 관리', '템플릿 관리'],
 
-  payment_mgmt_list: ['서비스 관리 · 결제 관리', '결제 목록'],
-  payment_mgmt_external: ['서비스 관리 · 결제 관리', '외부 거래 조회'],
-  payment_mgmt_history: ['서비스 관리 · 결제 관리', '결제 처리 이력'],
+  payment_mgmt_list: ['서비스 관리 · 결제 운영', '결제 건 조회'],
+  payment_mgmt_external: ['서비스 관리 · 결제 운영', 'PG / 외부 거래'],
+  payment_mgmt_history: ['서비스 관리 · 결제 운영', '결제 처리 이력'],
 
   policy_order_status: ['서비스 관리 · 거래 정책', '주문 상태 설정'],
   policy_payment: ['서비스 관리 · 거래 정책', '결제 정책'],
@@ -412,9 +451,9 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   admin_history: ['분석 · 시스템 · 관리자', '관리자 이력'],
 
   sys_service: ['분석 · 시스템 · 시스템 관리', '서비스 설정'],
-  sys_codes: ['분석 · 시스템 · 시스템 관리', '공통 코드 관리'],
-  sys_integration: ['분석 · 시스템 · 시스템 관리', '외부 연동 관리'],
-  sys_jobs: ['분석 · 시스템 · 시스템 관리', '배치 / 작업 관리'],
+  sys_codes: ['분석 · 시스템 · 시스템 관리', '공통 코드'],
+  sys_integration: ['분석 · 시스템 · 시스템 관리', '외부 연동'],
+  sys_jobs: ['분석 · 시스템 · 시스템 관리', '작업 관리'],
 
   log_system: ['분석 · 시스템 · 로그 / 감사', '시스템 로그'],
   log_security: ['분석 · 시스템 · 로그 / 감사', '보안 로그'],
@@ -424,19 +463,8 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   delivery_outbound_done: ['서비스 관리 · 배송 관리', '출고 완료'],
   delivery_transit: ['서비스 관리 · 배송 관리', '배송중'],
   delivery_done: ['서비스 관리 · 배송 관리', '배송 완료'],
-  delivery_exceptions: ['서비스 관리 · 배송 관리', '배송 예외 관리'],
-  delivery_shipments: ['서비스 관리 · 배송 관리', '송장 / 배송 추적'],
-  delivery_carriers: ['서비스 관리 · 배송 관리', '배송사 관리'],
-  delivery_history: ['서비스 관리 · 배송 관리', '배송 이력'],
 
-  cancel_processing: ['서비스 관리 · 취소 관리', '취소 처리'],
-  cancel_history: ['서비스 관리 · 취소 관리', '취소 처리 이력'],
-  return_processing: ['서비스 관리 · 반품 관리', '반품 처리'],
-  return_history: ['서비스 관리 · 반품 관리', '반품 처리 이력'],
-  exchange_processing: ['서비스 관리 · 교환 관리', '교환 처리'],
-  exchange_history: ['서비스 관리 · 교환 관리', '교환 처리 이력'],
-
-  promotions_list: ['서비스 관리 · 프로모션 관리', '프로모션 관리'],
+  promotions_list: ['서비스 관리 · 프로모션 관리', '프로모션 목록'],
   promotions_history: ['서비스 관리 · 프로모션 관리', '적용 이력'],
 
   coupons_list: ['서비스 관리 · 쿠폰 관리', '쿠폰 목록'],
@@ -445,13 +473,12 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   coupons_policy: ['서비스 관리 · 쿠폰 관리', '쿠폰 정책'],
 
   points_status: ['서비스 관리 · 포인트 / 적립금 관리', '보유 현황'],
-  points_history: ['서비스 관리 · 포인트 / 적립금 관리', '포인트 원장'],
+  points_history: ['서비스 관리 · 포인트 / 적립금 관리', '포인트 내역'],
 
   brands: ['서비스 관리', '브랜드 관리'],
-  reviews_operations: ['서비스 관리 · 리뷰 관리', '리뷰 운영'],
-  reviews_analytics: ['서비스 관리 · 리뷰 관리', '리뷰 분석'],
+  reviews: ['서비스 관리', '리뷰 관리'],
   cart_conversion: ['서비스 관리', '장바구니 / 구매 전환'],
-  points_policy: ['서비스 관리 · 포인트 / 적립금 관리', '포인트 정책'],
+  points_policy: ['서비스 관리', '포인트 정책'],
 };
 
 export function breadcrumbForKey(key: string): [string, string] {
@@ -548,7 +575,7 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/ops/events')) return 'ops_events';
   if (pathname.startsWith('/ops/terms')) return 'ops_terms';
   if (pathname.startsWith('/ops/policies')) return 'ops_policies';
-  if (pathname.startsWith('/ops/messages')) return 'ops_messages';
+  if (pathname.startsWith('/ops/messages')) return 'notifications_dispatch';
 
   if (pathname.startsWith('/notifications/templates')) return 'notifications_templates';
   if (pathname.startsWith('/notifications/dispatch') || pathname.startsWith('/notifications/send') || pathname.startsWith('/notifications/scheduled') || pathname.startsWith('/notifications/history')) return 'notifications_dispatch';
@@ -590,8 +617,7 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/points')) return 'points_status';
 
   if (pathname.startsWith('/brands')) return 'brands';
-  if (pathname.startsWith('/reviews/analytics')) return 'reviews_analytics';
-  if (pathname.startsWith('/reviews')) return 'reviews_operations';
+  if (pathname.startsWith('/reviews')) return 'reviews';
   if (pathname.startsWith('/cart-conversion')) return 'cart_conversion';
 
   if (pathname.startsWith('/admin/roles')) return 'admin_roles';

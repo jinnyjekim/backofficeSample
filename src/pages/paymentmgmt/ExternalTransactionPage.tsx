@@ -1,4 +1,3 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
@@ -158,7 +157,7 @@ export function ExternalTransactionPage() {
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>외부 거래 조회</h1>
+            <h1 className={shared.title}>PG / 외부 거래</h1>
             <p className={shared.subtitle}>PG·은행 등 외부 결제 거래와 내부 결제 데이터의 일치 여부를 확인합니다.</p>
           </div>
         </div>
@@ -204,8 +203,8 @@ export function ExternalTransactionPage() {
           </div>
           {showAdvanced && (
             <div className={styles.advancedFilters}>
-              <label>거래일 <DatePicker value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></label>
-              <label>~ <DatePicker value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></label>
+              <label>거래일 <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></label>
+              <label>~ <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></label>
             </div>
           )}
         </div>

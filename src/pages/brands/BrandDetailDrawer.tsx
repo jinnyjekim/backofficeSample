@@ -20,11 +20,10 @@ interface Props {
   onToggleStatus: () => void;
   onToggleExposure: () => void;
   onRequestDelete: () => void;
-  onViewProducts: () => void;
   onAddMemo: (text: string) => void;
 }
 
-export function BrandDetailDrawer({ brand: b, all, onClose, onEdit, onToggleStatus, onToggleExposure, onRequestDelete, onViewProducts, onAddMemo }: Props) {
+export function BrandDetailDrawer({ brand: b, all, onClose, onEdit, onToggleStatus, onToggleExposure, onRequestDelete, onAddMemo }: Props) {
   const [tab, setTab] = useState<Tab>('summary');
   const [memoText, setMemoText] = useState('');
 
@@ -121,10 +120,7 @@ export function BrandDetailDrawer({ brand: b, all, onClose, onEdit, onToggleStat
 
         {tab === 'products' && (
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-              <div className={styles.sectionTitle}>연결 상품 ({b.productCodes.length}개)</div>
-              <button type="button" className={styles.actionLink} onClick={onViewProducts}>상품 관리에서 보기</button>
-            </div>
+            <div className={styles.sectionTitle}>연결 상품 ({b.productCodes.length}개)</div>
             {b.productCodes.length === 0 ? (
               <div className={styles.emptyInline}>연결된 상품이 없습니다.</div>
             ) : (

@@ -2,7 +2,8 @@ import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './InquiryTypesPage.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
-import { TYPE_FIELDS, TYPE_TEAMS, typeErrors, type InquiryTypeEntry, type FieldMode, type IntakeMode, type TypePriority, type TypeStatus } from './inquiryTypesData';
+import { CONFIG_SCOPES, type ConfigScope } from '../../lib/business';
+import { TYPE_FIELDS, TYPE_TEAMS, inquiryTypeScopes, typeErrors, type InquiryTypeEntry, type FieldMode, type IntakeMode, type TypePriority, type TypeStatus } from './inquiryTypesData';
 
 type Tab = 'settings' | 'fields' | 'preview' | 'usage' | 'history';
 
@@ -24,8 +25,16 @@ export function InquiryTypeDrawer({ initial, isNew, startMode = 'view', parentNa
   const [error, setError] = useState('');
   const errors = typeErrors(draft);
   const set = <K extends keyof InquiryTypeEntry>(key: K, value: InquiryTypeEntry[K]) => setDraft((current) => ({ ...current, [key]: value }));
+  const toggleScope = (scope: ConfigScope) => setDraft((current) => {
+    const scopes = inquiryTypeScopes(current);
+    if (scope === '공통') return { ...current, scopes: ['공통'] };
+    const businessScopes = scopes.filter((item) => item !== '공통');
+    const nextScopes = businessScopes.includes(scope) ? businessScopes.filter((item) => item !== scope) : [...businessScopes, scope];
+    return nextScopes.length ? { ...current, scopes: nextScopes } : current;
+  });
   const save = () => {
     if (!draft.name.trim() || !draft.code.trim()) return setError('유형명과 유형 코드는 필수입니다.');
+    if (!inquiryTypeScopes(draft).length) return setError('적용 범위를 하나 이상 선택해 주세요.');
     if (draft.depth === 2 && !draft.parent) return setError('소분류의 상위 유형을 선택해 주세요.');
     if (draft.attachmentRequired && !draft.attachmentAllowed) return setError('첨부 필수 설정은 첨부파일을 허용해야 사용할 수 있습니다.');
     onSave({ ...draft, name: draft.name.trim(), code: draft.code.trim().toUpperCase().replace(/\s+/g, '_') });
@@ -66,6 +75,7 @@ export function InquiryTypeDrawer({ initial, isNew, startMode = 'view', parentNa
             <FormField label="상위 유형"><select disabled={!editing || draft.depth === 1} value={draft.parent ?? ''} onChange={(e) => set('parent', e.target.value || null)}><option value="">없음</option>{parentNames.map((name) => <option key={name}>{name}</option>)}</select></FormField>
           </div>
           <FormField label="사용자 설명"><textarea disabled={!editing} value={draft.description} onChange={(e) => set('description', e.target.value)} /></FormField>
+          <FormField label="적용 범위 *"><div className={styles.scopeChecks}>{CONFIG_SCOPES.map((scope) => <label key={scope}><input type="checkbox" disabled={!editing} checked={inquiryTypeScopes(draft).includes(scope)} onChange={() => toggleScope(scope)} />{scope}</label>)}</div></FormField>
         </Section>
         <Section title="노출 / 접수 설정">
           <div className={styles.toggleGrid}>

@@ -117,8 +117,9 @@ function renderCell(key: string, r: Member, mode: BusinessMode, cfg: ModeConfig)
 export function MembersPage() {
   const [searchParams] = useSearchParams();
   const initialView = searchParams.get('view') || 'all';
+  const initialBusiness = searchParams.get('business');
 
-  const [mode, setMode] = useState<BusinessMode>('B2C');
+  const [mode, setMode] = useState<BusinessMode>(() => MODES.includes(initialBusiness as BusinessMode) ? initialBusiness as BusinessMode : 'B2C');
   const [data, setData] = useState<Member[]>(MEMBERS);
   const [view, setView] = useState(initialView);
   const [q, setQ] = useState('');

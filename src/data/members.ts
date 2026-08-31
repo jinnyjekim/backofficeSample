@@ -126,7 +126,11 @@ export const MEMBERS: Member[] = [
 export interface LeftMember {
   id: number;
   name: string;
+  handle: string;
   email: string;
+  phone: string;
+  provider: string;
+  businessType: MemberBusinessType;
   joined: string;
   left: string;
   dur: string;
@@ -134,23 +138,48 @@ export interface LeftMember {
   reason: string;
   data: '보관중' | '파기완료';
   rejoin: boolean;
+  followUp: '완료' | '확인필요';
+  followUpDetail: string;
+
+  grade: string;
+  orders: number;
+  spend: number;
+  points: number;
+
+  buyer: boolean;
+  seller: boolean;
+  listings: number;
+  tradesBuy: number;
+  tradesSell: number;
+  settlement: number;
+
+  company: string;
+  companyCode: string;
+  dept: string;
+  title: string;
+  role: string;
+  companyTrade: string;
 }
 
 export const LEFT_MEMBERS: LeftMember[] = [
-  { id: 102384, name: '김지은', email: 'ji***@gmail.com', joined: '2024.03.12', left: '2026.08.11 14:22', dur: '2년 4개월', type: '직접탈퇴', reason: '서비스를 자주 사용하지 않음', data: '보관중', rejoin: false },
-  { id: 102212, name: '이민준', email: 'mi***@naver.com', joined: '2025.10.05', left: '2026.08.10 09:15', dur: '10개월', type: '직접탈퇴', reason: '기타', data: '파기완료', rejoin: false },
-  { id: 101987, name: '박서연', email: 'pa***@apple.com', joined: '2023.01.20', left: '2026.08.09 18:43', dur: '3년 6개월', type: '직접탈퇴', reason: '가격 부담', data: '보관중', rejoin: false },
-  { id: 101765, name: '최준혁', email: 'ch***@naver.com', joined: '2024.06.30', left: '2026.08.08 11:05', dur: '1년 1개월', type: '관리자처리', reason: '이용 불편', data: '보관중', rejoin: true },
-  { id: 101540, name: '정유진', email: 'je***@gmail.com', joined: '2022.11.03', left: '2026.08.07 16:30', dur: '3년 9개월', type: '직접탈퇴', reason: '다른 서비스 이용', data: '파기완료', rejoin: false },
-  { id: 101233, name: '강태양', email: 'ka***@email.com', joined: '2025.02.14', left: '2026.08.05 08:20', dur: '1년 5개월', type: '직접탈퇴', reason: '원하는 콘텐츠 부족', data: '보관중', rejoin: false },
-  { id: 100988, name: '윤소희', email: 'yu***@kakao.com', joined: '2023.08.19', left: '2026.08.03 13:55', dur: '2년 11개월', type: '직접탈퇴', reason: '개인정보 우려', data: '파기완료', rejoin: false },
-  { id: 100741, name: '임현우', email: 'im***@email.com', joined: '2024.09.22', left: '2026.08.01 20:10', dur: '1년 10개월', type: '관리자처리', reason: '이용 불편', data: '보관중', rejoin: true },
+  { id: 102384, name: '김지은', handle: '@jieun_k', email: 'ji***@gmail.com', phone: '010-2384-****', provider: 'Google', businessType: 'B2C', joined: '2024.03.12', left: '2026.08.11 14:22', dur: '2년 4개월', type: '직접탈퇴', reason: '서비스를 자주 사용하지 않음', data: '보관중', rejoin: false, followUp: '완료', followUpDetail: '잔여 포인트 소멸 완료', grade: 'Gold', orders: 24, spend: 1284000, points: 0, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, settlement: 0, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자', companyTrade: '' },
+  { id: 102212, name: '이민준', handle: '@minjun_l', email: 'mi***@naver.com', phone: '010-2212-****', provider: 'Naver', businessType: 'B2C', joined: '2025.10.05', left: '2026.08.10 09:15', dur: '10개월', type: '직접탈퇴', reason: '기타', data: '파기완료', rejoin: false, followUp: '완료', followUpDetail: '주문·환불 잔여 건 없음', grade: 'Normal', orders: 3, spend: 64000, points: 0, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, settlement: 0, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자', companyTrade: '' },
+  { id: 101987, name: '박서연', handle: '@seoyeon', email: 'pa***@apple.com', phone: '010-1987-****', provider: 'Apple', businessType: 'B2C', joined: '2023.01.20', left: '2026.08.09 18:43', dur: '3년 6개월', type: '직접탈퇴', reason: '가격 부담', data: '보관중', rejoin: false, followUp: '확인필요', followUpDetail: '환불 처리중 주문 1건', grade: 'Normal', orders: 7, spend: 298000, points: 3200, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, settlement: 0, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자', companyTrade: '' },
+  { id: 101765, name: '최준혁', handle: '@jun_choi', email: 'ch***@naver.com', phone: '010-1765-****', provider: 'Naver', businessType: 'B2B', joined: '2024.06.30', left: '2026.08.08 11:05', dur: '1년 1개월', type: '관리자처리', reason: '회사 퇴사로 계정 회수', data: '보관중', rejoin: true, followUp: '완료', followUpDetail: '발주·승인 권한 회수 완료', grade: '', orders: 41, spend: 3102500, points: 0, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, settlement: 0, company: '대성상사', companyCode: 'C-1043', dept: '경영지원팀', title: '팀장', role: '관리자', companyTrade: '거래중' },
+  { id: 101540, name: '정유진', handle: '@yujin_j', email: 'je***@gmail.com', phone: '010-1540-****', provider: 'Google', businessType: 'C2C', joined: '2022.11.03', left: '2026.08.07 16:30', dur: '3년 9개월', type: '직접탈퇴', reason: '다른 서비스 이용', data: '파기완료', rejoin: false, followUp: '완료', followUpDetail: '상품 숨김·정산 완료', grade: '', orders: 0, spend: 0, points: 0, buyer: true, seller: true, listings: 8, tradesBuy: 12, tradesSell: 9, settlement: 0, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자', companyTrade: '' },
+  { id: 101233, name: '강태양', handle: '@taeyang', email: 'ka***@email.com', phone: '010-1233-****', provider: 'Email', businessType: 'B2C', joined: '2025.02.14', left: '2026.08.05 08:20', dur: '1년 5개월', type: '직접탈퇴', reason: '원하는 콘텐츠 부족', data: '보관중', rejoin: false, followUp: '확인필요', followUpDetail: '잔여 포인트 소멸 대기', grade: 'Gold', orders: 18, spend: 876400, points: 12400, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, settlement: 0, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자', companyTrade: '' },
+  { id: 100988, name: '윤소희', handle: '@sohee_y', email: 'yu***@kakao.com', phone: '010-0988-****', provider: 'Kakao', businessType: 'C2C', joined: '2023.08.19', left: '2026.08.03 13:55', dur: '2년 11개월', type: '직접탈퇴', reason: '개인정보 우려', data: '파기완료', rejoin: false, followUp: '확인필요', followUpDetail: '판매대금 42,000원 지급 대기', grade: '', orders: 0, spend: 0, points: 0, buyer: true, seller: true, listings: 3, tradesBuy: 5, tradesSell: 4, settlement: 42000, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자', companyTrade: '' },
+  { id: 100741, name: '임현우', handle: '@hyunwoo_i', email: 'im***@email.com', phone: '010-0741-****', provider: 'Email', businessType: 'B2B', joined: '2024.09.22', left: '2026.08.01 20:10', dur: '1년 10개월', type: '관리자처리', reason: '소속 회사 계정 정리', data: '보관중', rejoin: true, followUp: '확인필요', followUpDetail: '승인선 대체 담당자 지정 필요', grade: '', orders: 14, spend: 610000, points: 0, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, settlement: 0, company: '한빛물산', companyCode: 'C-2091', dept: '구매팀', title: '차장', role: '승인 담당자', companyTrade: '거래중' },
 ];
 
 export interface BanMember {
   id: number;
   name: string;
+  handle: string;
   email: string;
+  phone: string;
+  provider: string;
+  businessType: MemberBusinessType;
   joined: string;
   type: string;
   level: number;
@@ -163,14 +192,32 @@ export interface BanMember {
   by: string;
   how: string;
   evidence: [string, string][];
+
+  grade: string;
+  orders: number;
+  spend: number;
+
+  buyer: boolean;
+  seller: boolean;
+  listings: number;
+  tradesBuy: number;
+  tradesSell: number;
+  reports: number;
+  disputes: number;
+
+  company: string;
+  companyCode: string;
+  dept: string;
+  title: string;
+  role: string;
 }
 
 export const BAN_MEMBERS: BanMember[] = [
-  { id: 102384, name: 'user01', email: 'ji***@gmail.com', joined: '2024.03.12', type: '7일 정지', level: 3, reason: '욕설', detail: '채팅 중 반복적인 욕설 및 비방', start: '2026.08.10 14:22', end: '2026.08.17', state: '제재중', count: 2, by: '김운영', how: '신고 처리', evidence: [['신고 #18293', '신고 상세'], ['채팅 로그 #7712', '로그 보기']] },
-  { id: 102212, name: 'user02', email: 'mi***@naver.com', joined: '2025.10.05', type: '영구정지', level: 4, reason: '부정 이용', detail: '타인 결제수단 도용 시도 3회 확인', start: '2026.08.08 09:15', end: '—', state: '제재중', count: 4, by: '김운영', how: '관리자 직접', evidence: [['주문 #ORD-9820', '주문 보기'], ['결제 로그 #4410', '로그 보기']] },
-  { id: 101992, name: 'user03', email: 'pa***@apple.com', joined: '2023.01.20', type: '3일 정지', level: 3, reason: '스팸', detail: '광고성 게시물 반복 등록', start: '2026.08.01 18:43', end: '2026.08.04', state: '만료', count: 1, by: '이관리', how: '자동 제재', evidence: [['게시물 #29381', '게시물 보기']] },
-  { id: 101765, name: 'user04', email: 'ch***@naver.com', joined: '2024.06.30', type: '기능 제한', level: 2, reason: '신고 누적', detail: '댓글 작성 기능 30일 제한', start: '2026.07.28 11:05', end: '2026.08.27', state: '제재중', count: 3, by: '박관리', how: '신고 처리', evidence: [['신고 #17740', '신고 상세']] },
-  { id: 101540, name: 'user05', email: 'je***@gmail.com', joined: '2022.11.03', type: '경고', level: 1, reason: '욕설', detail: '커뮤니티 규정 1차 위반', start: '2026.07.26 16:30', end: '—', state: '해제', count: 1, by: '자동', how: '자동 제재', evidence: [['신고 #17512', '신고 상세']] },
-  { id: 101233, name: 'user06', email: 'ka***@email.com', joined: '2025.02.14', type: '30일 정지', level: 3, reason: '부정 이용', detail: '환불 악용 패턴 반복', start: '2026.07.21 08:20', end: '2026.08.20', state: '제재중', count: 2, by: '박관리', how: '관리자 직접', evidence: [['주문 #ORD-9014', '주문 보기'], ['CS 티켓 #2281', '티켓 보기']] },
-  { id: 100988, name: 'user07', email: 'yu***@kakao.com', joined: '2023.08.19', type: '기능 제한', level: 2, reason: '스팸', detail: '리뷰 작성 기능 14일 제한', start: '2026.07.14 13:55', end: '2026.07.28', state: '만료', count: 1, by: '이관리', how: '신고 처리', evidence: [['게시물 #28110', '게시물 보기']] },
+  { id: 102384, name: '김지은', handle: '@jieun_k', email: 'ji***@gmail.com', phone: '010-2384-****', provider: 'Google', businessType: 'B2C', joined: '2024.03.12', type: '7일 정지', level: 3, reason: '욕설', detail: '상품 리뷰에서 반복적인 욕설 및 비방', start: '2026.08.10 14:22', end: '2026.08.17', state: '제재중', count: 2, by: '김운영', how: '신고 처리', evidence: [['신고 #18293', '신고 상세'], ['리뷰 #7712', '리뷰 보기']], grade: 'Gold', orders: 24, spend: 1284000, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, reports: 2, disputes: 0, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자' },
+  { id: 102212, name: '이민준', handle: '@minjun_l', email: 'mi***@naver.com', phone: '010-2212-****', provider: 'Naver', businessType: 'B2C', joined: '2025.10.05', type: '영구정지', level: 4, reason: '부정 이용', detail: '타인 결제수단 도용 시도 3회 확인', start: '2026.08.08 09:15', end: '—', state: '제재중', count: 4, by: '김운영', how: '관리자 직접', evidence: [['주문 #ORD-9820', '주문 보기'], ['결제 로그 #4410', '로그 보기']], grade: 'Normal', orders: 3, spend: 64000, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, reports: 3, disputes: 0, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자' },
+  { id: 101992, name: '박서연', handle: '@seoyeon', email: 'pa***@apple.com', phone: '010-1992-****', provider: 'Apple', businessType: 'C2C', joined: '2023.01.20', type: '3일 정지', level: 3, reason: '스팸', detail: '동일 상품의 반복 등록과 채팅 홍보', start: '2026.08.01 18:43', end: '2026.08.04', state: '만료', count: 1, by: '이관리', how: '자동 제재', evidence: [['상품 #29381', '상품 보기']], grade: '', orders: 0, spend: 0, buyer: true, seller: true, listings: 14, tradesBuy: 7, tradesSell: 18, reports: 3, disputes: 1, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자' },
+  { id: 101765, name: '최준혁', handle: '@jun_choi', email: 'ch***@naver.com', phone: '010-1765-****', provider: 'Naver', businessType: 'B2B', joined: '2024.06.30', type: '기능 제한', level: 2, reason: '승인 정책 위반', detail: '승인 한도를 우회한 발주 요청 반복', start: '2026.07.28 11:05', end: '2026.08.27', state: '제재중', count: 3, by: '박관리', how: '관리자 직접', evidence: [['발주 #PO-17740', '발주 보기']], grade: '', orders: 41, spend: 3102500, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, reports: 1, disputes: 0, company: '대성상사', companyCode: 'C-1043', dept: '경영지원팀', title: '팀장', role: '관리자' },
+  { id: 101540, name: '정유진', handle: '@yujin_j', email: 'je***@gmail.com', phone: '010-1540-****', provider: 'Google', businessType: 'C2C', joined: '2022.11.03', type: '경고', level: 1, reason: '욕설', detail: '거래 채팅 운영 정책 1차 위반', start: '2026.07.26 16:30', end: '—', state: '해제', count: 1, by: '자동', how: '자동 제재', evidence: [['신고 #17512', '신고 상세']], grade: '', orders: 0, spend: 0, buyer: true, seller: true, listings: 8, tradesBuy: 12, tradesSell: 9, reports: 1, disputes: 0, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자' },
+  { id: 101233, name: '강태양', handle: '@taeyang', email: 'ka***@email.com', phone: '010-1233-****', provider: 'Email', businessType: 'B2C', joined: '2025.02.14', type: '30일 정지', level: 3, reason: '부정 이용', detail: '환불 악용 패턴 반복', start: '2026.07.21 08:20', end: '2026.08.20', state: '제재중', count: 2, by: '박관리', how: '관리자 직접', evidence: [['주문 #ORD-9014', '주문 보기'], ['CS 티켓 #2281', '티켓 보기']], grade: 'Gold', orders: 18, spend: 876400, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, reports: 2, disputes: 0, company: '', companyCode: '', dept: '', title: '', role: '일반 사용자' },
+  { id: 100988, name: '윤소희', handle: '@sohee_y', email: 'yu***@kakao.com', phone: '010-0988-****', provider: 'Kakao', businessType: 'B2B', joined: '2023.08.19', type: '기능 제한', level: 2, reason: '계정 공유', detail: '승인 담당자 계정의 다인 공유 접속 확인', start: '2026.07.14 13:55', end: '2026.07.28', state: '만료', count: 1, by: '이관리', how: '보안 로그', evidence: [['보안 로그 #28110', '로그 보기']], grade: '', orders: 9, spend: 221000, buyer: true, seller: false, listings: 0, tradesBuy: 0, tradesSell: 0, reports: 0, disputes: 0, company: '한빛물산', companyCode: 'C-2091', dept: '구매팀', title: '차장', role: '승인 담당자' },
 ];

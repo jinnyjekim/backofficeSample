@@ -1,6 +1,4 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
@@ -33,11 +31,8 @@ const GRID_COLUMNS: GridColumn[] = [
 const LEDGER_TYPES: LedgerType[] = ['구매 적립', '관리자 지급', '이벤트 지급', '적립 보정', '포인트 복원', '주문 사용', '관리자 차감', '포인트 소멸', '적립 취소'];
 
 export function PointLedgerPage() {
-  const [searchParams] = useSearchParams();
-  const flow = searchParams.get('flow');
-  const initialQuick: QuickFilter = flow === 'grant' ? '지급' : flow === 'use' ? '사용' : ['deduct', 'expired', 'expiring'].includes(flow ?? '') ? '차감 / 소멸' : '전체';
   const [entries, setEntries] = useState<PointLedgerEntry[]>(POINT_LEDGER);
-  const [quickFilter, setQuickFilter] = useState<QuickFilter>(initialQuick);
+  const [quickFilter, setQuickFilter] = useState<QuickFilter>('전체');
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<LedgerType | ''>('');
@@ -129,9 +124,9 @@ export function PointLedgerPage() {
               <option value="">변동 유형 전체</option>
               {LEDGER_TYPES.map((t) => <option key={t}>{t}</option>)}
             </select>
-            <DatePicker className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
-            <DatePicker className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>

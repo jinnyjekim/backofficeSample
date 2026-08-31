@@ -1,3 +1,5 @@
+import type { ConfigScope } from '../../lib/business';
+
 export type TypeStatus = '사용' | '비활성';
 export type IntakeMode = '가능' | '관리자만' | '중지';
 export type TypePriority = '높음' | '보통' | '낮음';
@@ -13,6 +15,7 @@ export interface TypeHistory {
 
 export interface InquiryTypeEntry {
   id: string;
+  scopes?: ConfigScope[];
   name: string;
   code: string;
   depth: 1 | 2;
@@ -50,6 +53,14 @@ export interface InquiryTypeEntry {
 export const TYPE_TEAMS = ['일반 CS팀', '주문 CS팀', '결제 CS팀', '배송 CS팀', '정산 CS팀', '전담 CS팀'];
 export const TYPE_FIELDS = ['주문번호', '상품', '결제번호', '배송번호', '환불번호', '계약번호', '거래처', '연락처', '첨부파일', '문의 상세내용'];
 
+export function inquiryTypeScopes(item: InquiryTypeEntry): ConfigScope[] {
+  if (item.scopes?.length) return item.scopes;
+  if (item.code.startsWith('ACCOUNT') || item.code === 'ETC') return ['공통'];
+  if (item.code.startsWith('ORDER')) return ['B2C', 'B2B'];
+  if (item.code.startsWith('PAYMENT') || item.code.startsWith('DELIVERY')) return ['B2C', 'C2C', 'B2B'];
+  return ['공통'];
+}
+
 const fields = (required: string[] = [], optional: string[] = [], automatic: string[] = []): Record<string, FieldMode> =>
   Object.fromEntries(TYPE_FIELDS.map((field) => [field, required.includes(field) ? '필수' : automatic.includes(field) ? '자동 연결' : optional.includes(field) ? '선택' : '사용 안 함']));
 
@@ -82,5 +93,5 @@ export function typeErrors(item: InquiryTypeEntry, all = INQUIRY_TYPES): string[
 }
 
 export function newInquiryType(): InquiryTypeEntry {
-  return { id: `TYPE-${Date.now()}`, name: '', code: '', depth: 2, parent: '배송', description: '', status: '비활성', visible: false, intake: '중지', displayOrder: 99, team: null, assignment: '담당팀 Queue', assignee: null, priority: '보통', firstResponseHours: 24, resolutionHours: 72, businessHours: true, fields: fields(['문의 상세내용'], ['첨부파일']), attachmentAllowed: true, attachmentRequired: false, attachmentMaxCount: 5, attachmentMaxMb: 20, guide: '', faqs: [], templates: [], adminMemo: '', totalCount: 0, openCount: 0, recentCount: 0, updatedAt: '2026-08-24', updatedBy: 'admin01', exposedBefore: false, history: [] };
+  return { id: `TYPE-${Date.now()}`, scopes: ['공통'], name: '', code: '', depth: 2, parent: '배송', description: '', status: '비활성', visible: false, intake: '중지', displayOrder: 99, team: null, assignment: '담당팀 Queue', assignee: null, priority: '보통', firstResponseHours: 24, resolutionHours: 72, businessHours: true, fields: fields(['문의 상세내용'], ['첨부파일']), attachmentAllowed: true, attachmentRequired: false, attachmentMaxCount: 5, attachmentMaxMb: 20, guide: '', faqs: [], templates: [], adminMemo: '', totalCount: 0, openCount: 0, recentCount: 0, updatedAt: '2026-08-24', updatedBy: 'admin01', exposedBefore: false, history: [] };
 }

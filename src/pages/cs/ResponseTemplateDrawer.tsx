@@ -2,7 +2,8 @@ import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './ResponseTemplatesPage.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
-import { SUPPORTED_VARIABLES, TEMPLATE_CATEGORIES, TEMPLATE_CHANNELS, TEMPLATE_INQUIRY_TYPES, TEMPLATE_TEAMS, extractVariables, invalidVariables, sampleReplace, templateIssues, type ResponseTemplate, type TemplateChannel, type TemplateStatus } from './responseTemplatesData';
+import { CONFIG_SCOPES, type ConfigScope } from '../../lib/business';
+import { SUPPORTED_VARIABLES, TEMPLATE_CATEGORIES, TEMPLATE_CHANNELS, TEMPLATE_INQUIRY_TYPES, TEMPLATE_TEAMS, extractVariables, invalidVariables, responseTemplateScopes, sampleReplace, templateIssues, type ResponseTemplate, type TemplateChannel, type TemplateStatus } from './responseTemplatesData';
 
 type Tab = 'content' | 'links' | 'preview' | 'usage' | 'version' | 'history';
 interface Props { initial: ResponseTemplate; isNew: boolean; startMode?: 'view' | 'edit' | 'preview'; onClose: () => void; onSave: (item: ResponseTemplate, reason: string) => void; onDuplicate: (item: ResponseTemplate) => void; onDeactivate: (item: ResponseTemplate) => void; }
@@ -11,9 +12,16 @@ export function ResponseTemplateDrawer({ initial, isNew, startMode = 'view', onC
   const [draft, setDraft] = useState(initial); const [editing, setEditing] = useState(isNew || startMode === 'edit'); const [tab, setTab] = useState<Tab>(startMode === 'preview' ? 'preview' : 'content');
   const [keyword, setKeyword] = useState(''); const [reason, setReason] = useState(''); const [error, setError] = useState(''); const bodyRef = useRef<HTMLTextAreaElement>(null);
   const set = <K extends keyof ResponseTemplate>(key: K, value: ResponseTemplate[K]) => setDraft((current) => ({ ...current, [key]: value }));
+  const toggleScope = (scope: ConfigScope) => setDraft((current) => {
+    const scopes = responseTemplateScopes(current);
+    if (scope === '공통') return { ...current, scopes: ['공통'] };
+    const businessScopes = scopes.filter((item) => item !== '공통');
+    const nextScopes = businessScopes.includes(scope) ? businessScopes.filter((item) => item !== scope) : [...businessScopes, scope];
+    return nextScopes.length ? { ...current, scopes: nextScopes } : current;
+  });
   const invalid = invalidVariables(draft); const usedVariables = extractVariables(`${draft.subject}\n${draft.body}`); const issues = templateIssues(draft);
   const insertVariable = (variable: string) => { const element = bodyRef.current; const start = element?.selectionStart ?? draft.body.length; const end = element?.selectionEnd ?? draft.body.length; set('body', `${draft.body.slice(0, start)}${variable}${draft.body.slice(end)}`); window.setTimeout(() => { element?.focus(); element?.setSelectionRange(start + variable.length, start + variable.length); }, 0); };
-  const save = () => { if (!draft.name.trim() || !draft.code.trim() || !draft.body.trim()) return setError('템플릿명, 코드, 답변 본문은 필수입니다.'); if (invalid.length) return setError(`지원되지 않는 변수를 수정해 주세요: ${invalid.join(', ')}`); if (!draft.channels.length) return setError('사용 채널을 하나 이상 선택해 주세요.'); onSave({ ...draft, name: draft.name.trim(), code: draft.code.trim().toUpperCase().replace(/\s+/g, '_') }, reason.trim() || (isNew ? '템플릿 생성' : '답변 문구 수정')); };
+  const save = () => { if (!draft.name.trim() || !draft.code.trim() || !draft.body.trim()) return setError('템플릿명, 코드, 답변 본문은 필수입니다.'); if (!responseTemplateScopes(draft).length) return setError('적용 범위를 하나 이상 선택해 주세요.'); if (invalid.length) return setError(`지원되지 않는 변수를 수정해 주세요: ${invalid.join(', ')}`); if (!draft.channels.length) return setError('사용 채널을 하나 이상 선택해 주세요.'); onSave({ ...draft, name: draft.name.trim(), code: draft.code.trim().toUpperCase().replace(/\s+/g, '_') }, reason.trim() || (isNew ? '템플릿 생성' : '답변 문구 수정')); };
   const toggle = <T,>(values: T[], value: T) => values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
 
   const asideRef = useRef<HTMLElement>(null);
@@ -36,6 +44,7 @@ export function ResponseTemplateDrawer({ initial, isNew, startMode = 'view', onC
       </>}
 
       {tab === 'links' && <>
+        <Section title="적용 범위"><div className={styles.channelChecks}>{CONFIG_SCOPES.map((scope) => <label key={scope}><input type="checkbox" disabled={!editing} checked={responseTemplateScopes(draft).includes(scope)} onChange={() => toggleScope(scope)} />{scope}</label>)}</div></Section>
         <Section title="문의 유형 연결 (복수 선택)"><div className={styles.checkList}>{TEMPLATE_INQUIRY_TYPES.map((value) => <label key={value}><input type="checkbox" disabled={!editing} checked={draft.inquiryTypes.includes(value)} onChange={() => set('inquiryTypes', toggle(draft.inquiryTypes, value))} />{value}</label>)}</div><label className={styles.recommendToggle}><input type="checkbox" disabled={!editing} checked={draft.recommended} onChange={(e) => set('recommended', e.target.checked)} /> 연결된 문의 유형의 답변창에서 우선 추천</label>{draft.recommended && <Field label="추천 우선순위"><input type="number" min="1" disabled={!editing} value={draft.recommendationOrder} onChange={(e) => set('recommendationOrder', Number(e.target.value))} /></Field>}</Section>
         <Section title="사용 채널 / 대상"><div className={styles.channelChecks}>{TEMPLATE_CHANNELS.map((value) => <label key={value}><input type="checkbox" disabled={!editing} checked={draft.channels.includes(value)} onChange={() => set('channels', toggle(draft.channels, value as TemplateChannel))} />{value}</label>)}</div><div className={styles.formGrid}><Field label="사용 대상"><select disabled={!editing} value={draft.target} onChange={(e) => set('target', e.target.value as ResponseTemplate['target'])}><option>전체 상담원</option><option>특정 팀</option></select></Field><Field label="노출 순서"><input type="number" min="1" disabled={!editing} value={draft.displayOrder} onChange={(e) => set('displayOrder', Number(e.target.value))} /></Field></div>{draft.target === '특정 팀' && <div className={styles.channelChecks}>{TEMPLATE_TEAMS.map((value) => <label key={value}><input type="checkbox" disabled={!editing} checked={draft.teams.includes(value)} onChange={() => set('teams', toggle(draft.teams, value))} />{value}</label>)}</div>}</Section>
         <Section title="관련 FAQ">{draft.relatedFaqs.length ? draft.relatedFaqs.map((faq) => <div key={faq.id} className={styles.faqRow}><span>{faq.id}</span><strong>{faq.title}</strong><em className={faq.status === '비공개' ? styles.faqHidden : ''}>{faq.status}</em><button type="button">보기 ↗</button></div>) : <div className={drawer.emptyInline}>연결된 FAQ가 없습니다.</div>}</Section>

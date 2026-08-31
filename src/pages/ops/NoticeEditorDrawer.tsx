@@ -1,4 +1,3 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useRef, useState } from 'react';
 import styles from './opsDrawerShared.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
@@ -161,9 +160,9 @@ export function NoticeEditorDrawer({ notice, todayIso, onCancel, onSubmit }: Pro
           </label>
           {pinEnabled && (
             <div className={styles.dateTimeRow} style={{ marginTop: 8 }}>
-              <DatePicker className={styles.dateInput} value={pinStart} onChange={(e) => setPinStart(e.target.value)} />
+              <input type="date" className={styles.dateInput} value={pinStart} onChange={(e) => setPinStart(e.target.value)} />
               <span style={{ alignSelf: 'center', color: '#a1a1aa', fontSize: 12 }}>~</span>
-              <DatePicker className={styles.dateInput} value={pinEnd} onChange={(e) => setPinEnd(e.target.value)} />
+              <input type="date" className={styles.dateInput} value={pinEnd} onChange={(e) => setPinEnd(e.target.value)} />
             </div>
           )}
         </div>
@@ -200,7 +199,7 @@ export function NoticeEditorDrawer({ notice, todayIso, onCancel, onSubmit }: Pro
         </div>
         {publishMode === '예약' && (
           <div className={styles.dateTimeRow}>
-            <DatePicker className={styles.dateInput} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            <input type="date" className={styles.dateInput} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             <input type="time" className={styles.timeInput} value={startTime} onChange={(e) => setStartTime(e.target.value)} />
           </div>
         )}
@@ -212,7 +211,7 @@ export function NoticeEditorDrawer({ notice, todayIso, onCancel, onSubmit }: Pro
         </div>
         {endMode === '지정' && (
           <div className={styles.dateTimeRow}>
-            <DatePicker className={styles.dateInput} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <input type="date" className={styles.dateInput} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             <input type="time" className={styles.timeInput} value={endTime} onChange={(e) => setEndTime(e.target.value)} />
           </div>
         )}

@@ -1,4 +1,3 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './FreeShippingConditionPage.module.css';
@@ -112,11 +111,11 @@ export function FreeShippingConditionDrawer({ initial, isNew, startEditing = fal
               <div className={styles.formGrid}>
                 <label className={styles.formField}>
                   <span>적용 시작일 *</span>
-                  <DatePicker disabled={!editing} value={draft.startDate} onChange={(e) => set('startDate', e.target.value)} />
+                  <input type="date" disabled={!editing} value={draft.startDate} onChange={(e) => set('startDate', e.target.value)} />
                 </label>
                 <label className={styles.formField}>
                   <span>적용 종료일</span><small>비워두면 상시 적용</small>
-                  <DatePicker disabled={!editing} value={draft.endDate ?? ''} onChange={(e) => set('endDate', e.target.value || null)} />
+                  <input type="date" disabled={!editing} value={draft.endDate ?? ''} onChange={(e) => set('endDate', e.target.value || null)} />
                 </label>
               </div>
               <label className={styles.formField}>

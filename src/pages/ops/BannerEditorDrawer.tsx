@@ -1,4 +1,3 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useRef, useState } from 'react';
 import styles from './opsDrawerShared.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
@@ -224,7 +223,7 @@ export function BannerEditorDrawer({ banner, allBanners, todayIso, onCancel, onS
         </div>
         {publishMode === '예약' && (
           <div className={styles.dateTimeRow}>
-            <DatePicker className={styles.dateInput} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            <input type="date" className={styles.dateInput} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             <input type="time" className={styles.timeInput} value={startTime} onChange={(e) => setStartTime(e.target.value)} />
           </div>
         )}
@@ -235,7 +234,7 @@ export function BannerEditorDrawer({ banner, allBanners, todayIso, onCancel, onS
         </div>
         {endMode === '지정' && (
           <div className={styles.dateTimeRow}>
-            <DatePicker className={styles.dateInput} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <input type="date" className={styles.dateInput} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             <input type="time" className={styles.timeInput} value={endTime} onChange={(e) => setEndTime(e.target.value)} />
           </div>
         )}

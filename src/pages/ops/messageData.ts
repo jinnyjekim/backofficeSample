@@ -1,3 +1,5 @@
+import type { ConfigScope } from '../../lib/business';
+
 export type MessageStatus = '작성중' | '발송 예정' | '발송중' | '발송 완료' | '일부 실패' | '실패' | '중지';
 export type MessageChannel = '앱 내' | 'Push' | '이메일' | 'SMS';
 export type TargetType = '전체 사용자' | '조건 지정' | '개별 지정';
@@ -5,7 +7,7 @@ export type TargetType = '전체 사용자' | '조건 지정' | '개별 지정';
 export interface DeliveryFailure { userId: string; channel: MessageChannel; reason: string; at: string }
 export interface MessageHistory { at: string; actor: string; action: string; detail: string }
 export interface OperatingMessage {
-  id: string; managementName: string; title: string; type: string; channels: MessageChannel[]; targetType: TargetType;
+  id: string; businessScope?: ConfigScope; managementName: string; title: string; type: string; channels: MessageChannel[]; targetType: TargetType;
   targetDetail: string; estimatedTargets: number; actualTargets: number; status: MessageStatus; scheduledAt: string | null;
   sentAt: string | null; content: string; createdBy: string; createdAt: string; updatedAt: string;
   result: { success: number; failed: number; opened: number; clicked: number }; failures: DeliveryFailure[]; history: MessageHistory[];
@@ -13,6 +15,22 @@ export interface OperatingMessage {
 
 export const MESSAGE_TYPES = ['공지', '안내', '이벤트', '점검', '정책 변경', '기타'];
 export const CHANNELS: MessageChannel[] = ['앱 내', 'Push', '이메일', 'SMS'];
+
+const MESSAGE_SCOPE_BY_ID: Record<string, ConfigScope> = {
+  'MSG-20260826-001': '공통',
+  'MSG-20260825-004': '공통',
+  'MSG-20260825-003': 'B2C',
+  'MSG-20260825-002': '공통',
+  'MSG-20260824-008': 'C2C',
+  'MSG-20260823-002': 'B2C',
+  'MSG-20260822-006': '공통',
+  'MSG-20260821-003': '공통',
+  'MSG-20260820-001': 'B2B',
+};
+
+export function operatingMessageScope(message: OperatingMessage): ConfigScope {
+  return message.businessScope ?? MESSAGE_SCOPE_BY_ID[message.id] ?? '공통';
+}
 const body = (subject: string) => `안녕하세요.\n\n${subject}와 관련하여 안내드립니다.\n서비스 이용에 참고해 주시기 바라며, 자세한 내용은 연결된 화면에서 확인하실 수 있습니다.\n\n감사합니다.`;
 
 export const OPERATING_MESSAGES: OperatingMessage[] = [

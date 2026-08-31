@@ -1,4 +1,3 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useEffect, useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
@@ -6,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
 import styles from './PaymentListPage.module.css';
 import { PaymentDetailDrawer } from './PaymentDetailDrawer';
+import { BUSINESS_BADGE_META, BUSINESS_SCOPES, type BusinessScope } from '../../lib/business';
 import {
   INITIAL_PAYMENTS,
   PAYMENT_METHODS,
@@ -27,6 +27,7 @@ import {
 
 const COLUMNS = [
   { label: '결제번호' },
+  { label: '서비스' },
   { label: '주문번호' },
   { label: '고객' },
   { label: '결제일' },
@@ -70,6 +71,7 @@ export function PaymentListPage() {
   const [payments, setPayments] = useState(INITIAL_PAYMENTS);
 
   const [quickFilter, setQuickFilter] = useState<QuickFilter>('전체');
+  const [businessScope, setBusinessScope] = useState<BusinessScope>('통합');
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
   const [methodFilter, setMethodFilter] = useState<PaymentMethod | ''>('');
@@ -100,6 +102,7 @@ export function PaymentListPage() {
     () =>
       payments.filter((p) => {
         if (!matchesQuickFilter(p, quickFilter, payments)) return false;
+        if (businessScope !== '통합' && p.businessType !== businessScope) return false;
         if (search) {
           const haystack = `${p.id} ${p.orderId} ${p.customerName} ${p.externalTxId ?? ''}`.toLowerCase();
           if (!haystack.includes(search.toLowerCase())) return false;
@@ -111,7 +114,7 @@ export function PaymentListPage() {
         if (dateTo && p.requestedAt.slice(0, 10) > dateTo) return false;
         return true;
       }).sort((a, b) => b.requestedAt.localeCompare(a.requestedAt)),
-    [payments, quickFilter, search, methodFilter, statusFilter, matchFilter, dateFrom, dateTo],
+    [payments, quickFilter, businessScope, search, methodFilter, statusFilter, matchFilter, dateFrom, dateTo],
   );
 
   const toastBriefly = (message: string) => {
@@ -122,6 +125,7 @@ export function PaymentListPage() {
   const reset = () => {
     setKeyword('');
     setSearch('');
+    setBusinessScope('통합');
     setMethodFilter('');
     setStatusFilter('');
     setMatchFilter('');
@@ -157,6 +161,7 @@ export function PaymentListPage() {
       bg: issues.length ? '#fffdf8' : undefined,
       cells: [
         { kind: 'titleWarn', title: p.id, hasIssue: issues.length > 0, issueTitle: issues.join(' · ') },
+        { kind: 'badge', text: p.businessType, bg: BUSINESS_BADGE_META[p.businessType].bg, fg: BUSINESS_BADGE_META[p.businessType].fg },
         { kind: 'text', text: p.orderId, size: '12px', color: '#3f3f46' },
         { kind: 'text', text: p.customerName, size: '12px', color: '#3f3f46' },
         { kind: 'stack', title: date, subtitle: time },
@@ -168,12 +173,9 @@ export function PaymentListPage() {
         {
           kind: 'rowMenu',
           align: 'right',
-          detailLabel: '상세',
-          onDetail: () => setSelectedId(p.id),
           open: openMenu === p.id,
           onToggle: () => setOpenMenu(openMenu === p.id ? null : p.id),
           items: [
-            { label: '상세 보기', click: () => setSelectedId(p.id) },
             { label: '주문 보기', click: () => navigate('/orders/processing') },
             ...(p.status === '처리중' || match !== '정상' ? [{ label: '상태 재조회', click: () => setRecheckTarget(p) }] : []),
           ],
@@ -187,8 +189,8 @@ export function PaymentListPage() {
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>결제 목록</h1>
-            <p className={shared.subtitle}>발생한 결제 내역과 결제 상태를 조회하고 관리합니다.</p>
+            <h1 className={shared.title}>결제 건 조회</h1>
+            <p className={shared.subtitle}>B2C·C2C·B2B에서 발생한 결제 승인·취소·환불 상태를 통합 조회합니다.</p>
           </div>
         </div>
 
@@ -201,7 +203,7 @@ export function PaymentListPage() {
               onClick={() => { setQuickFilter(filter); setSelected([]); }}
             >
               <span className={shared.qfLabel}>{filter}</span>
-              <span className={shared.qfCount}>{payments.filter((p) => matchesQuickFilter(p, filter, payments)).length}</span>
+              <span className={shared.qfCount}>{payments.filter((p) => (businessScope === '통합' || p.businessType === businessScope) && matchesQuickFilter(p, filter, payments)).length}</span>
             </button>
           ))}
         </div>
@@ -217,6 +219,9 @@ export function PaymentListPage() {
             <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
           <div className={shared.filterRow2}>
+            <select className={shared.selectSm} value={businessScope} onChange={(e) => setBusinessScope(e.target.value as BusinessScope)}>
+              {BUSINESS_SCOPES.map((scope) => <option key={scope}>{scope}</option>)}
+            </select>
             <select className={shared.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as PaymentStatus | '')}>
               <option value="">전체 상태</option>
               {PAYMENT_STATUSES.map((s) => <option key={s}>{s}</option>)}
@@ -240,8 +245,8 @@ export function PaymentListPage() {
           </div>
           {showAdvanced && (
             <div className={styles.advancedFilters}>
-              <label>결제일 <DatePicker value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></label>
-              <label>~ <DatePicker value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></label>
+              <label>결제일 <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></label>
+              <label>~ <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></label>
             </div>
           )}
         </div>
@@ -264,8 +269,8 @@ export function PaymentListPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="112px 100px 100px 96px 88px 116px 140px 92px 100px 70px"
-          minWidth="1240px"
+          gridTemplate="112px 72px 100px 100px 96px 88px 116px 140px 92px 100px 54px"
+          minWidth="1310px"
           selectable
           allSelected={filtered.length > 0 && filtered.every((p) => selected.includes(p.id))}
           onToggleAll={() => setSelected(filtered.every((p) => selected.includes(p.id)) ? [] : filtered.map((p) => p.id))}
@@ -318,7 +323,7 @@ export function PaymentListPage() {
             <div className={shared.dialogSummary}>
               <div className={shared.dialogSummaryRow}>
                 <span>포함 항목</span>
-                <strong>결제번호 · 주문번호 · 고객 · 결제일 · 수단 · 결제금액 · 환불금액 · 잔여금액 · 상태 · 외부거래번호</strong>
+                <strong>결제번호 · 서비스 · 주문번호 · 고객 · 결제일 · 수단 · 결제금액 · 환불금액 · 잔여금액 · 상태 · 외부거래번호</strong>
               </div>
             </div>
             <div className={shared.dialogActions}>

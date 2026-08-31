@@ -1,7 +1,7 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
+import { BUSINESS_BADGE_META, BUSINESS_SCOPES, type BusinessScope } from '../../lib/business';
 import { InquiryDetailDrawer } from './InquiryDetailDrawer';
 import shared from '../ops/opsShared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
@@ -29,7 +29,7 @@ import {
 type DialogState = { kind: 'assign'; ids: string[] } | { kind: 'complete'; ids: string[] } | null;
 
 const COLUMNS = [
-  { label: '문의번호' }, { label: '유형' }, { label: '문의 제목' }, { label: '고객' }, { label: '관련 대상' },
+  { label: '문의번호' }, { label: '서비스' }, { label: '유형' }, { label: '문의 제목' }, { label: '고객' }, { label: '관련 대상' },
   { label: '접수일' }, { label: '1차 답변 기한' }, { label: '담당자' }, { label: '상태' }, { label: '우선순위' }, { label: '관리', align: 'right' as const },
 ];
 
@@ -50,6 +50,7 @@ function appendHistory(inquiry: InquiryEntry, action: string, detail?: string): 
 export function CsInquiriesPage() {
   const [inquiries, setInquiries] = useState(INQUIRIES);
   const [quickFilter, setQuickFilter] = useState<InquiryQuickFilter>('처리 필요');
+  const [businessScope, setBusinessScope] = useState<BusinessScope>('통합');
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<InquiryStatus | ''>('');
@@ -70,7 +71,8 @@ export function CsInquiriesPage() {
   const [completeMemo, setCompleteMemo] = useState('');
   const [toast, setToast] = useState('');
 
-  const filtered = useMemo(() => inquiries.filter((inquiry) => {
+  const scopeItems = useMemo(() => inquiries.filter((inquiry) => businessScope === '통합' || inquiry.businessType === businessScope), [inquiries, businessScope]);
+  const filtered = useMemo(() => scopeItems.filter((inquiry) => {
     if (!matchesQuickFilter(inquiry, quickFilter)) return false;
     const haystack = `${inquiry.id} ${inquiry.title} ${inquiry.body} ${inquiry.customer.id} ${inquiry.customer.name} ${inquiry.relatedItems.map((item) => item.id).join(' ')}`.toLowerCase();
     if (search && !haystack.includes(search.toLowerCase())) return false;
@@ -82,7 +84,7 @@ export function CsInquiriesPage() {
     if (receivedTo && inquiry.receivedAt.slice(0, 10) > receivedTo) return false;
     if (dueTo && inquiry.dueAt.slice(0, 10) > dueTo) return false;
     return true;
-  }), [inquiries, quickFilter, search, status, category, manager, priority, receivedFrom, receivedTo, dueTo]);
+  }), [scopeItems, quickFilter, search, status, category, manager, priority, receivedFrom, receivedTo, dueTo]);
 
   const currentInquiry = inquiries.find((inquiry) => inquiry.id === selectedInquiryId) ?? null;
   const patchInquiry = (id: string, transform: (item: InquiryEntry) => InquiryEntry) => {
@@ -124,13 +126,13 @@ export function CsInquiriesPage() {
   const reopen = (id: string) => patchInquiry(id, (item) => appendHistory({ ...item, status: '처리중', reopened: true }, '문의 재오픈', '추가 확인 및 답변 필요'));
 
   const resetFilters = () => {
-    setKeyword(''); setSearch(''); setStatus(''); setCategory(''); setManager(''); setPriority('');
+    setBusinessScope('통합'); setKeyword(''); setSearch(''); setStatus(''); setCategory(''); setManager(''); setPriority('');
     setReceivedFrom(''); setReceivedTo(''); setDueTo(''); setSelected([]);
   };
 
   const download = (items: InquiryEntry[]) => {
-    const header = '문의번호,유형,제목,고객,접수일,기한,담당자,상태,우선순위';
-    const lines = items.map((item) => [item.id, item.category, item.title, item.customer.name, item.receivedAt, item.dueAt, item.assignee ?? '미배정', item.status, item.priority]
+    const header = '문의번호,서비스,유형,제목,고객,접수일,기한,담당자,상태,우선순위';
+    const lines = items.map((item) => [item.id, item.businessType, item.category, item.title, item.customer.name, item.receivedAt, item.dueAt, item.assignee ?? '미배정', item.status, item.priority]
       .map((value) => `"${String(value).replaceAll('"', '""')}"`).join(','));
     const url = URL.createObjectURL(new Blob([`\ufeff${[header, ...lines].join('\n')}`], { type: 'text/csv;charset=utf-8' }));
     const anchor = document.createElement('a');
@@ -138,11 +140,10 @@ export function CsInquiriesPage() {
   };
 
   const menuItems = (inquiry: InquiryEntry) => {
-    const detail = { label: '상세 보기', click: () => setSelectedInquiryId(inquiry.id) };
-    if (inquiry.status === '접수') return [detail, { label: '담당자 지정', click: () => setDialog({ kind: 'assign', ids: [inquiry.id] }) }, { label: '처리 시작', click: () => start(inquiry.id) }];
-    if (inquiry.status === '답변 완료') return [detail, { label: '추가 답변', click: () => setSelectedInquiryId(inquiry.id) }, { sep: true }, { label: '처리 완료', click: () => setDialog({ kind: 'complete', ids: [inquiry.id] }) }];
-    if (inquiry.status === '처리 완료') return [detail, { label: '전체 이력 보기', click: () => setSelectedInquiryId(inquiry.id) }, { label: '재오픈', click: () => reopen(inquiry.id) }];
-    return [detail, { label: inquiry.status === '고객 답변 대기' ? '고객 메시지 확인' : '답변 작성', click: () => setSelectedInquiryId(inquiry.id) }, { label: '담당자 변경', click: () => setDialog({ kind: 'assign', ids: [inquiry.id] }) }, { sep: true }, { label: '보류', click: () => hold(inquiry.id) }];
+    if (inquiry.status === '접수') return [{ label: '담당자 지정', click: () => setDialog({ kind: 'assign', ids: [inquiry.id] }) }, { label: '처리 시작', click: () => start(inquiry.id) }];
+    if (inquiry.status === '답변 완료') return [{ label: '추가 답변', click: () => setSelectedInquiryId(inquiry.id) }, { sep: true }, { label: '처리 완료', click: () => setDialog({ kind: 'complete', ids: [inquiry.id] }) }];
+    if (inquiry.status === '처리 완료') return [{ label: '전체 이력 보기', click: () => setSelectedInquiryId(inquiry.id) }, { label: '재오픈', click: () => reopen(inquiry.id) }];
+    return [{ label: inquiry.status === '고객 답변 대기' ? '고객 메시지 확인' : '답변 작성', click: () => setSelectedInquiryId(inquiry.id) }, { label: '담당자 변경', click: () => setDialog({ kind: 'assign', ids: [inquiry.id] }) }, { sep: true }, { label: '보류', click: () => hold(inquiry.id) }];
   };
 
   const rows: GridRow[] = filtered.map((inquiry) => {
@@ -162,6 +163,7 @@ export function CsInquiriesPage() {
       mark: sla.state === 'overdue' ? 'inset 3px 0 #ef4444' : undefined,
       cells: [
         { kind: 'noTag', no: inquiry.id, hasTag: inquiry.reopened, tagText: '재문의', tagBg: '#fff7ed', tagFg: '#c2410c' },
+        { kind: 'badge', text: inquiry.businessType, ...BUSINESS_BADGE_META[inquiry.businessType] },
         { kind: 'pillText', text: inquiry.category, sub: inquiry.subcategory, bg: '#f4f4f5', fg: '#52525b' },
         { kind: 'titleWarn', title: inquiry.title, hasIssue: issues.length > 0, issueTitle: issues.join(' · ') },
         { kind: 'avatarText', title: inquiry.customer.name, subtitle: inquiry.customer.id, avatarChar: inquiry.customer.name.slice(0, 1), avatarBg: '#eef2ff', avatarFg: '#4f46e5' },
@@ -171,7 +173,7 @@ export function CsInquiriesPage() {
         { kind: 'text', text: inquiry.assignee ?? '미배정', size: '12px', color: inquiry.assignee ? '#3f3f46' : '#dc2626', weight: inquiry.assignee ? 500 : 700 },
         { kind: 'badge', text: inquiry.status, bg: statusMeta.bg, fg: statusMeta.fg },
         { kind: 'pillText', text: inquiry.priority, bg: priorityMeta.bg, fg: priorityMeta.fg },
-        { kind: 'rowMenu', align: 'right', detailLabel: '상세', onDetail: () => setSelectedInquiryId(inquiry.id), open: openMenu === inquiry.id, onToggle: () => setOpenMenu(openMenu === inquiry.id ? null : inquiry.id), items: menuItems(inquiry) },
+        { kind: 'rowMenu', align: 'right', open: openMenu === inquiry.id, onToggle: () => setOpenMenu(openMenu === inquiry.id ? null : inquiry.id), items: menuItems(inquiry) },
       ],
     };
   });
@@ -182,15 +184,15 @@ export function CsInquiriesPage() {
         <div className={shared.headRow}>
           <div><h1 className={shared.title}>1:1 문의</h1><p className={shared.subtitle}>접수부터 답변, 완료까지 문의 처리 흐름과 SLA를 한 화면에서 관리합니다.</p></div>
           <div className={styles.headerStats}>
-            <div><span>답변 필요</span><strong>{inquiries.filter((item) => matchesQuickFilter(item, '답변 대기')).length}</strong></div>
-            <div><span>SLA 임박·초과</span><strong>{inquiries.filter((item) => ['imminent', 'overdue'].includes(getSlaInfo(item).state)).length}</strong></div>
-            <div><span>미배정</span><strong>{inquiries.filter((item) => !item.assignee).length}</strong></div>
+            <div><span>답변 필요</span><strong>{scopeItems.filter((item) => matchesQuickFilter(item, '답변 대기')).length}</strong></div>
+            <div><span>SLA 임박·초과</span><strong>{scopeItems.filter((item) => ['imminent', 'overdue'].includes(getSlaInfo(item).state)).length}</strong></div>
+            <div><span>미배정</span><strong>{scopeItems.filter((item) => !item.assignee).length}</strong></div>
           </div>
         </div>
 
         <div className={shared.quickFilters}>
           {QUICK_FILTERS.map((filter) => {
-            const count = inquiries.filter((item) => matchesQuickFilter(item, filter)).length;
+            const count = scopeItems.filter((item) => matchesQuickFilter(item, filter)).length;
             return <button key={filter} type="button" className={`${shared.qfBtn} ${quickFilter === filter ? styles.quickActive : ''}`} onClick={() => { setQuickFilter(filter); setSelected([]); }}><span className={shared.qfLabel}>{filter}</span><span className={shared.qfCount}>{count}</span></button>;
           })}
         </div>
@@ -201,6 +203,7 @@ export function CsInquiriesPage() {
             <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
           <div className={shared.filterRow2}>
+            <select className={shared.selectSm} value={businessScope} onChange={(event) => { setBusinessScope(event.target.value as BusinessScope); setSelected([]); }} aria-label="비즈니스 범위">{BUSINESS_SCOPES.map((item) => <option key={item}>{item}</option>)}</select>
             <select className={shared.selectSm} value={status} onChange={(event) => setStatus(event.target.value as InquiryStatus | '')}><option value="">전체 상태</option>{INQUIRY_STATUSES.map((item) => <option key={item}>{item}</option>)}</select>
             <select className={shared.selectSm} value={category} onChange={(event) => setCategory(event.target.value)}><option value="">전체 유형</option>{INQUIRY_CATEGORIES.map((item) => <option key={item}>{item}</option>)}</select>
             <select className={shared.selectSm} value={manager} onChange={(event) => setManager(event.target.value)}><option value="">전체 담당자</option><option>미배정</option>{INQUIRY_MANAGERS.map((item) => <option key={item}>{item}</option>)}</select>
@@ -209,9 +212,9 @@ export function CsInquiriesPage() {
             <span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={resetFilters}>필터 초기화</button>
           </div>
           {showAdvanced && <div className={styles.advancedFilters}>
-            <label>접수일 시작<DatePicker value={receivedFrom} onChange={(event) => setReceivedFrom(event.target.value)} /></label>
-            <label>접수일 종료<DatePicker value={receivedTo} onChange={(event) => setReceivedTo(event.target.value)} /></label>
-            <label>답변 기한까지<DatePicker value={dueTo} onChange={(event) => setDueTo(event.target.value)} /></label>
+            <label>접수일 시작<input type="date" value={receivedFrom} onChange={(event) => setReceivedFrom(event.target.value)} /></label>
+            <label>접수일 종료<input type="date" value={receivedTo} onChange={(event) => setReceivedTo(event.target.value)} /></label>
+            <label>답변 기한까지<input type="date" value={dueTo} onChange={(event) => setDueTo(event.target.value)} /></label>
           </div>}
         </div>
       </div>
@@ -235,7 +238,7 @@ export function CsInquiriesPage() {
           <span className={shared.resultLabel}>총 {filtered.length}건</span>
           <div className={shared.resultActions}><button type="button" className={shared.downloadBtn} onClick={() => download(filtered)}>목록 다운로드</button><select className={shared.pageSizeSelect}><option>20개씩</option><option>50개씩</option></select></div>
         </div>
-        <DataGrid columns={COLUMNS} rows={rows} gridTemplate="112px 118px minmax(200px,1.7fr) 126px 150px 100px 138px 84px 100px 76px 92px" minWidth="1400px" selectable allSelected={filtered.length > 0 && filtered.every((item) => selected.includes(item.id))} onToggleAll={() => setSelected(filtered.every((item) => selected.includes(item.id)) ? [] : filtered.map((item) => item.id))} empty={filtered.length === 0} emptyText="조건에 맞는 문의가 없습니다." emptySubtext="빠른 필터나 검색 조건을 변경해 보세요." emptyActionLabel="필터 초기화" emptyActionClick={resetFilters} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
+        <DataGrid columns={COLUMNS} rows={rows} gridTemplate="112px 68px 118px minmax(200px,1.7fr) 126px 150px 100px 138px 84px 100px 76px 68px" minWidth="1470px" selectable allSelected={filtered.length > 0 && filtered.every((item) => selected.includes(item.id))} onToggleAll={() => setSelected(filtered.every((item) => selected.includes(item.id)) ? [] : filtered.map((item) => item.id))} empty={filtered.length === 0} emptyText="조건에 맞는 문의가 없습니다." emptySubtext="빠른 필터나 검색 조건을 변경해 보세요." emptyActionLabel="필터 초기화" emptyActionClick={resetFilters} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
       </div>
 
       {currentInquiry && <InquiryDetailDrawer key={currentInquiry.id} inquiry={currentInquiry} onClose={() => setSelectedInquiryId(null)} onAssign={() => setDialog({ kind: 'assign', ids: [currentInquiry.id] })} onStart={() => start(currentInquiry.id)} onHold={() => hold(currentInquiry.id)} onComplete={() => setDialog({ kind: 'complete', ids: [currentInquiry.id] })} onReopen={() => reopen(currentInquiry.id)} onSaveDraft={(body) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, replyDraft: body, draftSavedAt: '2026-08-24 14:00' }, '답변 임시저장'))} onSendReply={(body, channels) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, status: '답변 완료', replyDraft: '', draftSavedAt: null, messages: [...item.messages, { id: nextMessageId(item), role: 'admin', author: item.assignee ?? 'admin01', sentAt: '2026-08-24 14:00', body, notificationResult: `${channels.join(' / ') || '서비스 내'} 발송 완료` }] }, '고객 답변 발송', channels.join(' / ')))} onAddMemo={(body) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, internalMemos: [...item.internalMemos, { id: `MEMO-${Date.now()}`, author: 'admin01', createdAt: '2026-08-24 14:00', body }] }, '내부 메모 등록'))} />}

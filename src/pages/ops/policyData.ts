@@ -1,3 +1,5 @@
+import type { ConfigScope } from '../../lib/business';
+
 export type PolicyStatus = '임시저장' | '적용 예정' | '적용중' | '종료';
 export type PolicyVisibility = '공개' | '내부용';
 
@@ -27,6 +29,7 @@ export interface PolicyDefinition {
   type: string;
   visibility: PolicyVisibility;
   description: string;
+  scopes?: ConfigScope[];
   versions: PolicyVersion[];
   history: PolicyHistory[];
 }
@@ -56,4 +59,13 @@ export const POLICIES: PolicyDefinition[] = [
 
 export function currentPolicyVersion(policy: PolicyDefinition) {
   return policy.versions.find((version) => version.status === '적용 예정') ?? policy.versions.find((version) => version.status === '적용중') ?? policy.versions[0];
+}
+
+export function policyScopes(policy: PolicyDefinition): ConfigScope[] {
+  if (policy.scopes?.length) return policy.scopes;
+  if (policy.code === 'POLICY_COMMUNITY') return ['C2C'];
+  if (policy.code === 'POLICY_CONTENT_REVIEW') return ['B2C', 'C2C', 'B2B'];
+  if (policy.code === 'POLICY_PARTNER_OLD') return ['B2B'];
+  if (policy.code === 'POLICY_PROMOTION_OLD') return ['B2C'];
+  return ['공통'];
 }

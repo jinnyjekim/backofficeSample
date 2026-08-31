@@ -1,4 +1,3 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styles from '../ops/opsShared.module.css';
@@ -245,9 +244,9 @@ export function AdminsListPage() {
               <option value="">역할 전체</option>
               {ROLES.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
             </select>
-            <DatePicker className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
-            <DatePicker className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>

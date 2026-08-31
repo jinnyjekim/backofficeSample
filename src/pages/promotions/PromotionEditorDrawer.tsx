@@ -1,4 +1,3 @@
-import { DatePicker } from '../../components/forms/DatePicker';
 import { useRef, useState } from 'react';
 import styles from '../ops/opsDrawerShared.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
@@ -284,7 +283,7 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
         <div className={styles.sectionTitleLoose}>적용 기간</div>
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>시작 *</label>
-          <DatePicker className={styles.dateInput} style={{ width: '100%' }} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+          <input type="date" className={styles.dateInput} style={{ width: '100%' }} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
         </div>
         <div className={styles.radioRow}>
           <label className={styles.radioOption}><input type="radio" checked={endMode === '없음'} onChange={() => setEndMode('없음')} />종료일 없음</label>
@@ -292,7 +291,7 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
         </div>
         {endMode === '지정' && (
           <div className={styles.formGroup}>
-            <DatePicker className={styles.dateInput} style={{ width: '100%' }} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <input type="date" className={styles.dateInput} style={{ width: '100%' }} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
           </div>
         )}
         {endMode === '없음' && <div className={styles.emptyInline} style={{ marginBottom: 12 }}>⚠ 종료일이 없는 프로모션입니다.</div>}

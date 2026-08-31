@@ -47,6 +47,17 @@ function buildRows(items: NavItem[]): Row[] {
   return rows;
 }
 
+function businessTagClass(business: NonNullable<NavItem['business']>) {
+  if (business === 'B') return styles.businessB;
+  if (business === 'C') return styles.businessC;
+  if (business === 'B2B') return styles.businessB2B;
+  return styles.businessBC;
+}
+
+function businessTagLabel(business: NonNullable<NavItem['business']>) {
+  return business === 'BC' ? 'B·C' : business;
+}
+
 export function Sidebar({ open, onToggle }: Props) {
   const { pathname } = useLocation();
   const activeKey = activeKeyForPath(pathname);
@@ -68,7 +79,7 @@ export function Sidebar({ open, onToggle }: Props) {
           {isSub ? <span className={styles.dot} /> : Icon ? <Icon size={16} strokeWidth={2} /> : null}
         </span>
         <span className={styles.text}>{open ? item.label : ''}</span>
-        {open && item.business && <span className={`${styles.businessTag} ${item.business === 'B' ? styles.businessB : item.business === 'C' ? styles.businessC : styles.businessBC}`}>{item.business === 'BC' ? 'B·C' : item.business}</span>}
+        {open && item.business && <span className={`${styles.businessTag} ${businessTagClass(item.business)}`}>{businessTagLabel(item.business)}</span>}
         <span className={styles.badge}>{open && item.badge ? item.badge : ''}</span>
       </>
     );
@@ -104,7 +115,7 @@ export function Sidebar({ open, onToggle }: Props) {
       >
         <span className={styles.icon}>{Icon ? <Icon size={16} strokeWidth={2} /> : null}</span>
         <span className={styles.text}>{open ? header.label : ''}</span>
-        {open && header.business && <span className={`${styles.businessTag} ${header.business === 'B' ? styles.businessB : header.business === 'C' ? styles.businessC : styles.businessBC}`}>{header.business === 'BC' ? 'B·C' : header.business}</span>}
+        {open && header.business && <span className={`${styles.businessTag} ${businessTagClass(header.business)}`}>{businessTagLabel(header.business)}</span>}
         <span className={styles.badge}>{open && header.badge ? header.badge : ''}</span>
         {open && <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}>›</span>}
       </button>

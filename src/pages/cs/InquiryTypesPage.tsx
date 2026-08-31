@@ -4,13 +4,14 @@ import type { GridRow } from '../../components/DataGrid/types';
 import shared from '../ops/opsShared.module.css';
 import { InquiryTypeDrawer } from './InquiryTypeDrawer';
 import styles from './InquiryTypesPage.module.css';
-import { INQUIRY_TYPES, TYPE_TEAMS, newInquiryType, typeErrors, type InquiryTypeEntry, type TypeStatus } from './inquiryTypesData';
+import { CONFIG_SCOPE_FILTERS, matchesConfigScope, type ConfigScopeFilter } from '../../lib/business';
+import { INQUIRY_TYPES, TYPE_TEAMS, inquiryTypeScopes, newInquiryType, typeErrors, type InquiryTypeEntry, type TypeStatus } from './inquiryTypesData';
 
 type QuickFilter = '전체' | '사용중' | '비활성' | '설정 오류' | '담당팀 미설정' | '사용자 숨김';
 type ConfirmState = { kind: 'deactivate'; item: InquiryTypeEntry } | { kind: 'delete'; item: InquiryTypeEntry } | null;
 
 const QUICK_FILTERS: QuickFilter[] = ['전체', '사용중', '비활성', '설정 오류', '담당팀 미설정', '사용자 숨김'];
-const COLUMNS = [{ label: '문의 유형명' }, { label: '상위 유형' }, { label: '유형 코드' }, { label: '기본 담당팀' }, { label: '우선순위' }, { label: 'SLA' }, { label: '신규 접수' }, { label: '사용자 노출' }, { label: '상태' }, { label: '최근 30일' }, { label: '수정일' }, { label: '관리', align: 'right' as const }];
+const COLUMNS = [{ label: '문의 유형명' }, { label: '적용 범위' }, { label: '상위 유형' }, { label: '유형 코드' }, { label: '기본 담당팀' }, { label: '우선순위' }, { label: 'SLA' }, { label: '신규 접수' }, { label: '사용자 노출' }, { label: '상태' }, { label: '최근 30일' }, { label: '수정일' }, { label: '관리', align: 'right' as const }];
 
 function filterMatch(item: InquiryTypeEntry, filter: QuickFilter, all: InquiryTypeEntry[]) {
   if (filter === '사용중') return item.status === '사용';
@@ -28,6 +29,7 @@ function history(item: InquiryTypeEntry, action: string, detail?: string): Inqui
 export function InquiryTypesPage() {
   const [types, setTypes] = useState(INQUIRY_TYPES);
   const [quickFilter, setQuickFilter] = useState<QuickFilter>('전체');
+  const [scopeFilter, setScopeFilter] = useState<ConfigScopeFilter>('통합');
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<TypeStatus | ''>('');
@@ -46,16 +48,17 @@ export function InquiryTypesPage() {
   const parentNames = types.filter((item) => item.depth === 1).map((item) => item.name);
   const filtered = useMemo(() => types.filter((item) => {
     if (!filterMatch(item, quickFilter, types)) return false;
+    if (!matchesConfigScope(inquiryTypeScopes(item), scopeFilter)) return false;
     if (search && !`${item.name} ${item.code} ${item.parent ?? ''}`.toLowerCase().includes(search.toLowerCase())) return false;
     if (status && item.status !== status) return false;
     if (team === '미설정' ? item.team !== null : team && item.team !== team) return false;
     if (depth && item.depth !== Number(depth)) return false;
     if (intake && item.intake !== intake) return false;
     return true;
-  }), [types, quickFilter, search, status, team, depth, intake]);
+  }), [types, quickFilter, scopeFilter, search, status, team, depth, intake]);
 
   const toastBriefly = (message: string) => { setToast(message); window.setTimeout(() => setToast(''), 2400); };
-  const reset = () => { setKeyword(''); setSearch(''); setStatus(''); setTeam(''); setDepth(''); setIntake(''); setSelected([]); };
+  const reset = () => { setKeyword(''); setSearch(''); setScopeFilter('통합'); setStatus(''); setTeam(''); setDepth(''); setIntake(''); setSelected([]); };
   const openCreate = (seed = newInquiryType()) => { setDrawerItem(seed); setIsNew(true); setDrawerMode('edit'); };
 
   const save = (item: InquiryTypeEntry) => {
@@ -105,6 +108,7 @@ export function InquiryTypesPage() {
     const errors = typeErrors(item, types);
     return { id: item.id, selected: selected.includes(item.id), onToggleSelect: () => setSelected((current) => current.includes(item.id) ? current.filter((id) => id !== item.id) : [...current, item.id]), onClick: () => { setDrawerItem(item); setIsNew(false); setDrawerMode('view'); }, bg: errors.length ? '#fffdf8' : undefined, cells: [
       { kind: 'titleWarn', title: `${item.depth === 2 ? '└ ' : ''}${item.name}`, hasIssue: errors.length > 0, issueTitle: errors.join(' · ') },
+      { kind: 'stack', title: inquiryTypeScopes(item).join(' · '), subtitle: inquiryTypeScopes(item).includes('공통') ? '전 서비스' : `${inquiryTypeScopes(item).length}개 서비스` },
       { kind: 'text', text: item.parent ?? '대분류', size: '12px', color: item.parent ? '#52525b' : '#a1a1aa' },
       { kind: 'text', text: item.code, size: '11px', color: '#52525b', weight: 600 },
       { kind: 'text', text: item.team ?? '미설정', size: '12px', color: item.team ? '#3f3f46' : '#dc2626', weight: item.team ? 500 : 700 },
@@ -115,7 +119,7 @@ export function InquiryTypesPage() {
       { kind: 'statusDot', text: item.status, dot: item.status === '사용' ? '#10b981' : '#a1a1aa', fg: item.status === '사용' ? '#047857' : '#71717a' },
       { kind: 'text', text: `${item.recentCount.toLocaleString()}건`, size: '12px', numeric: true },
       { kind: 'stack', title: item.updatedAt, subtitle: item.updatedBy },
-      { kind: 'rowMenu', align: 'right', detailLabel: '상세', onDetail: () => { setDrawerItem(item); setIsNew(false); setDrawerMode('view'); }, open: openMenu === item.id, onToggle: () => setOpenMenu(openMenu === item.id ? null : item.id), items: [
+      { kind: 'rowMenu', align: 'right', open: openMenu === item.id, onToggle: () => setOpenMenu(openMenu === item.id ? null : item.id), items: [
         { label: '수정', click: () => { setDrawerItem(item); setIsNew(false); setDrawerMode('edit'); } }, { label: '사용자 화면 미리보기', click: () => { setDrawerItem(item); setIsNew(false); setDrawerMode('preview'); } }, { label: '1:1 문의 보기', click: () => window.location.assign('/cs/inquiries') }, { sep: true }, { label: '복제', click: () => duplicate(item) },
         item.status === '사용' ? { label: '비활성', fg: '#dc2626', click: () => deactivate(item) } : { label: '활성화', click: () => { const updated = history({ ...item, status: '사용' }, '문의 유형 활성화'); setTypes((current) => current.map((value) => value.id === item.id ? updated : value)); } },
         ...(item.totalCount === 0 && !item.exposedBefore ? [{ label: '삭제', fg: '#dc2626', click: () => setConfirm({ kind: 'delete', item }) }] : []),
@@ -126,16 +130,16 @@ export function InquiryTypesPage() {
   return <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
     <div className={shared.headTop}>
       <div className={shared.headRow}><div><h1 className={shared.title}>문의 유형 관리</h1><p className={shared.subtitle}>1:1 문의의 분류, 자동 Routing, 우선순위, SLA와 입력 항목을 관리합니다.</p></div><button type="button" className={shared.createBtn} onClick={() => openCreate()}>+ 문의 유형 등록</button></div>
-      <div className={shared.quickFilters}>{QUICK_FILTERS.map((filter) => <button key={filter} type="button" className={`${shared.qfBtn} ${quickFilter === filter ? styles.quickActive : ''}`} onClick={() => { setQuickFilter(filter); setSelected([]); }}><span className={shared.qfLabel}>{filter}</span><span className={shared.qfCount}>{types.filter((item) => filterMatch(item, filter, types)).length}</span></button>)}</div>
+      <div className={shared.quickFilters}>{QUICK_FILTERS.map((filter) => <button key={filter} type="button" className={`${shared.qfBtn} ${quickFilter === filter ? styles.quickActive : ''}`} onClick={() => { setQuickFilter(filter); setSelected([]); }}><span className={shared.qfLabel}>{filter}</span><span className={shared.qfCount}>{types.filter((item) => matchesConfigScope(inquiryTypeScopes(item), scopeFilter) && filterMatch(item, filter, types)).length}</span></button>)}</div>
       <div className={shared.filterBox}>
         <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}><input className={shared.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="유형명 또는 유형 코드 검색" /><button type="submit" className={shared.searchBtn}>검색</button></form>
-        <div className={shared.filterRow2}><select className={shared.selectSm} value={status} onChange={(e) => setStatus(e.target.value as TypeStatus | '')}><option value="">전체 상태</option><option>사용</option><option>비활성</option></select><select className={shared.selectSm} value={team} onChange={(e) => setTeam(e.target.value)}><option value="">전체 담당팀</option><option>미설정</option>{TYPE_TEAMS.map((value) => <option key={value}>{value}</option>)}</select><select className={shared.selectSm} value={depth} onChange={(e) => setDepth(e.target.value)}><option value="">전체 Depth</option><option value="1">Depth 1</option><option value="2">Depth 2</option></select><select className={shared.selectSm} value={intake} onChange={(e) => setIntake(e.target.value)}><option value="">전체 접수 설정</option><option>가능</option><option>관리자만</option><option>중지</option></select><span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button></div>
+        <div className={shared.filterRow2}><select className={shared.selectSm} value={scopeFilter} onChange={(e) => setScopeFilter(e.target.value as ConfigScopeFilter)}>{CONFIG_SCOPE_FILTERS.map((scope) => <option key={scope}>{scope}</option>)}</select><select className={shared.selectSm} value={status} onChange={(e) => setStatus(e.target.value as TypeStatus | '')}><option value="">전체 상태</option><option>사용</option><option>비활성</option></select><select className={shared.selectSm} value={team} onChange={(e) => setTeam(e.target.value)}><option value="">전체 담당팀</option><option>미설정</option>{TYPE_TEAMS.map((value) => <option key={value}>{value}</option>)}</select><select className={shared.selectSm} value={depth} onChange={(e) => setDepth(e.target.value)}><option value="">전체 Depth</option><option value="1">Depth 1</option><option value="2">Depth 2</option></select><select className={shared.selectSm} value={intake} onChange={(e) => setIntake(e.target.value)}><option value="">전체 접수 설정</option><option>가능</option><option>관리자만</option><option>중지</option></select><span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button></div>
       </div>
     </div>
 
     {selected.length > 0 && <div className={shared.bulkBar}><span className={shared.bulkLabel}>{selected.length}건 선택</span><select className={shared.selectXs} defaultValue="" onChange={(e) => { const value = e.target.value; if (!value) return; setTypes((current) => current.map((item) => selected.includes(item.id) ? history({ ...item, team: value }, '담당팀 일괄 변경', value) : item)); e.target.value = ''; toastBriefly('담당팀을 일괄 변경했습니다.'); }}><option value="">담당팀 변경</option>{TYPE_TEAMS.map((value) => <option key={value}>{value}</option>)}</select><select className={shared.selectXs} defaultValue="" onChange={(e) => { const value = e.target.value as TypeStatus; if (!value) return; setTypes((current) => current.map((item) => selected.includes(item.id) ? history({ ...item, status: value }, '상태 일괄 변경', value) : item)); e.target.value = ''; }}><option value="">상태 변경</option><option>사용</option><option>비활성</option></select><button type="button" className={shared.bulkBtn} onClick={() => { setTypes((current) => current.map((item) => selected.includes(item.id) ? history({ ...item, visible: true }, '사용자 노출 일괄 변경', '노출') : item)); toastBriefly('선택 유형을 사용자 화면에 노출합니다.'); }}>사용자 노출</button><span className={styles.bulkGuard}>SLA는 영향 범위가 커서 개별 유형에서만 변경할 수 있습니다.</span></div>}
 
-    <div className={shared.gridWrap}><div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}개 유형</span><div className={shared.resultActions}><button type="button" className={shared.downloadBtn} onClick={() => setOrderOpen(true)}>☰ 순서 관리</button></div></div><DataGrid columns={COLUMNS} rows={rows} gridTemplate="150px 100px 142px 110px 72px 148px 76px 76px 76px 76px 96px 90px" minWidth="1370px" selectable allSelected={filtered.length > 0 && filtered.every((item) => selected.includes(item.id))} onToggleAll={() => setSelected(filtered.every((item) => selected.includes(item.id)) ? [] : filtered.map((item) => item.id))} empty={filtered.length === 0} emptyText={quickFilter === '설정 오류' ? '현재 확인이 필요한 문의 유형 설정이 없습니다.' : '검색 결과가 없습니다.'} emptySubtext="검색어나 필터 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0개'} /></div>
+    <div className={shared.gridWrap}><div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}개 유형</span><div className={shared.resultActions}><button type="button" className={shared.downloadBtn} onClick={() => setOrderOpen(true)}>☰ 순서 관리</button></div></div><DataGrid columns={COLUMNS} rows={rows} gridTemplate="150px 116px 100px 142px 110px 72px 148px 76px 76px 76px 76px 96px 54px" minWidth="1450px" selectable allSelected={filtered.length > 0 && filtered.every((item) => selected.includes(item.id))} onToggleAll={() => setSelected(filtered.every((item) => selected.includes(item.id)) ? [] : filtered.map((item) => item.id))} empty={filtered.length === 0} emptyText={quickFilter === '설정 오류' ? '현재 확인이 필요한 문의 유형 설정이 없습니다.' : '검색 결과가 없습니다.'} emptySubtext="검색어나 필터 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0개'} /></div>
 
     {drawerItem && <InquiryTypeDrawer key={`${drawerItem.id}-${isNew}-${drawerMode}`} initial={drawerItem} isNew={isNew} startMode={drawerMode} parentNames={parentNames} onClose={() => setDrawerItem(null)} onSave={save} onDeactivate={deactivate} onDuplicate={duplicate} />}
 
