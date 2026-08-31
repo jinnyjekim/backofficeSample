@@ -158,11 +158,11 @@ export function TradeStatusPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.searchRow}>
-            <select className={styles.scopeSelect} defaultValue={SEARCH_SCOPES[0]}>
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.scopeSelect} defaultValue={SEARCH_SCOPES[0]}>
               {SEARCH_SCOPES.map((s) => (
                 <option key={s}>{s}</option>
               ))}
-            </select>
+            </select></label>
             <input
               className={styles.searchInput}
               value={q}
@@ -172,17 +172,17 @@ export function TradeStatusPage() {
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow}>
-            <select className={styles.smallSelect} value={managerFilter} onChange={(e) => setManagerFilter(e.target.value)}>
+            <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={styles.smallSelect} value={managerFilter} onChange={(e) => setManagerFilter(e.target.value)}>
               <option>담당자 전체</option>
               {managers.map((m) => (
                 <option key={m}>{m}</option>
               ))}
-            </select>
-            <select className={styles.smallSelect} defaultValue="회사유형 전체">
+            </select></label>
+            <label className="globalFilterField"><span>회사유형</span><select aria-label="회사유형" className={styles.smallSelect} defaultValue="회사유형 전체">
               <option>회사유형 전체</option>
               <option>법인</option>
               <option>개인사업자</option>
-            </select>
+            </select></label>
             <button type="button" className={styles.moreFilterBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={clearAll}>초기화</button>
@@ -192,7 +192,7 @@ export function TradeStatusPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}개 거래처</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

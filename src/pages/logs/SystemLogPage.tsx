@@ -153,27 +153,27 @@ export function SystemLogPage() {
             {QUICK_RANGES.map((r) => (
               <button key={r} type="button" className={styles.detailFilterBtn} onClick={() => applyQuick(r)}>{r}</button>
             ))}
-            <select className={styles.selectSm} value={moduleFilter} onChange={(e) => setModuleFilter(e.target.value as ModuleName | '')}>
+            <label className="globalFilterField"><span>서비스 모듈</span><select aria-label="서비스 모듈" className={styles.selectSm} value={moduleFilter} onChange={(e) => setModuleFilter(e.target.value as ModuleName | '')}>
               <option value="">서비스/모듈 전체</option>
               {MODULES.map((m) => <option key={m} value={m}>{m}</option>)}
-            </select>
+            </select></label>
             {tab === 'api' ? (
               <>
-                <select className={styles.selectSm} value={resultFilter} onChange={(e) => setResultFilter(e.target.value)}>
+                <label className="globalFilterField"><span>결과</span><select aria-label="결과" className={styles.selectSm} value={resultFilter} onChange={(e) => setResultFilter(e.target.value)}>
                   <option value="">결과 전체</option>
                   <option value="성공">성공</option>
                   <option value="실패">실패</option>
-                </select>
-                <select className={styles.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as HttpMethod | '')}>
+                </select></label>
+                <label className="globalFilterField"><span>요청 방식</span><select aria-label="요청 방식" className={styles.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as HttpMethod | '')}>
                   <option value="">Method 전체</option>
                   {HTTP_METHODS.map((m) => <option key={m} value={m}>{m}</option>)}
-                </select>
+                </select></label>
               </>
             ) : (
-              <select className={styles.selectSm} value={levelFilter} onChange={(e) => setLevelFilter(e.target.value)}>
+              <label className="globalFilterField"><span>오류 수준</span><select aria-label="오류 수준" className={styles.selectSm} value={levelFilter} onChange={(e) => setLevelFilter(e.target.value)}>
                 <option value="">오류 수준 전체</option>
                 {ERROR_LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
-              </select>
+              </select></label>
             )}
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
@@ -183,7 +183,7 @@ export function SystemLogPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {(tab === 'api' ? filteredApi.length : filteredErrors.length).toLocaleString('ko-KR')}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
           </div>
         </div>
       </div>

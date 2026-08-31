@@ -1,6 +1,37 @@
 import styles from './DataGrid.module.css';
 import type { Cell, DataGridProps } from './types';
 
+function cellExportValue(cell: Cell): string {
+  switch (cell.kind) {
+    case 'text':
+    case 'pillText':
+    case 'badge':
+    case 'badgeSquare':
+    case 'statusDot':
+    case 'link':
+      return cell.text;
+    case 'badgeSub':
+      return [cell.text, cell.subText].filter(Boolean).join(' / ');
+    case 'stack':
+      return [cell.title, cell.subtitle].filter(Boolean).join(' / ');
+    case 'avatarText':
+      return [cell.title, cell.subtitle].filter(Boolean).join(' / ');
+    case 'progress':
+      return cell.label;
+    case 'titleWarn':
+      return cell.title;
+    case 'noWarn':
+    case 'noTag':
+      return cell.no;
+    case 'thumbTitle':
+      return `${cell.title} / ${cell.id}`;
+    case 'rowMenu':
+      return '';
+    default:
+      return '';
+  }
+}
+
 function CellView({ cell }: { cell: Cell }) {
   switch (cell.kind) {
     case 'text':
@@ -184,7 +215,7 @@ export function DataGrid({
   const template = (selectable ? '30px ' : '') + gridTemplate;
 
   return (
-    <div className={`${styles.root} ${fillHeight ? styles.fillHeight : ''}`}>
+    <div className={`${styles.root} ${fillHeight ? styles.fillHeight : ''}`} data-datagrid>
       {showTopBar && (
         <div className={styles.topBar}>
           <span className={styles.totalLabel}>{totalLabel}</span>
@@ -202,6 +233,7 @@ export function DataGrid({
         <div
           className={`${styles.headRow} ${stickyHeader ? styles.sticky : ''}`}
           style={{ minWidth, gridTemplateColumns: template }}
+          data-datagrid-head
         >
           {selectable && (
             <input type="checkbox" className={styles.checkbox} checked={!!allSelected} onChange={onToggleAll} />
@@ -209,10 +241,10 @@ export function DataGrid({
           {columns.map((col, i) =>
             col.onClick ? (
               <button key={i} type="button" className={styles.headBtn} style={{ textAlign: col.align }} onClick={col.onClick}>
-                {col.label}
+                <span data-datagrid-column>{col.label}</span>
               </button>
             ) : (
-              <span key={i} style={{ textAlign: col.align }}>
+              <span key={i} style={{ textAlign: col.align }} data-datagrid-column>
                 {col.label}
               </span>
             ),
@@ -225,6 +257,8 @@ export function DataGrid({
             className={styles.row}
             style={{ minWidth, gridTemplateColumns: template, background: row.bg, boxShadow: row.mark }}
             onClick={row.onClick}
+            data-datagrid-row
+            data-selected={row.selected ? 'true' : 'false'}
           >
             {selectable && (
               <input
@@ -239,7 +273,7 @@ export function DataGrid({
               />
             )}
             {row.cells.map((cell, i) => (
-              <div key={i} className={styles.cellWrap} style={{ textAlign: cell.align }}>
+              <div key={i} className={styles.cellWrap} style={{ textAlign: cell.align }} data-datagrid-cell data-export-value={cellExportValue(cell)}>
                 <CellView cell={cell} />
               </div>
             ))}

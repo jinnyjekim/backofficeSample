@@ -224,17 +224,17 @@ export function CouponIssuesPage() {
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <select className={styles.selectSm} value={couponFilter} onChange={(e) => setCouponFilter(e.target.value)}>
+            <label className="globalFilterField"><span>쿠폰</span><select aria-label="쿠폰" className={styles.selectSm} value={couponFilter} onChange={(e) => setCouponFilter(e.target.value)}>
               <option value="">쿠폰 전체</option>
               {COUPONS.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
-            </select>
-            <select className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as HolderStatus | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>보유 상태</span><select aria-label="보유 상태" className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as HolderStatus | '')}>
               <option value="">보유 상태 전체</option>
               <option value="사용 가능">사용 가능</option>
               <option value="사용 완료">사용 완료</option>
               <option value="만료">만료</option>
               <option value="회수">회수</option>
-            </select>
+            </select></label>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>
@@ -243,7 +243,7 @@ export function CouponIssuesPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
           </div>
         </div>
       </div>
@@ -252,7 +252,7 @@ export function CouponIssuesPage() {
         <div className={styles.bulkBar}>
           <span className={styles.bulkLabel}>{selectedIds.length}건 선택됨</span>
           <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkRevoke' })}>쿠폰 회수</button>
-          <button type="button" className={styles.bulkBtn} onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
+          <button type="button" className={styles.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
         </div>
       )}
 

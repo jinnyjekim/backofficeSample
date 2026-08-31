@@ -222,21 +222,21 @@ export function FeePolicyPage() {
             <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
           <div className={shared.filterRow2}>
-            <select className={shared.selectSm} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as FeeType | '')}>
+            <label className="globalFilterField"><span>유형</span><select aria-label="유형" className={shared.selectSm} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as FeeType | '')}>
               <option value="">전체 유형</option>
               {FEE_TYPES.map((t) => <option key={t}>{t}</option>)}
-            </select>
-            <select className={shared.selectSm} value={bearerFilter} onChange={(e) => setBearerFilter(e.target.value as FeeBearer | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>부담주체</span><select aria-label="부담주체" className={shared.selectSm} value={bearerFilter} onChange={(e) => setBearerFilter(e.target.value as FeeBearer | '')}>
               <option value="">전체 부담주체</option>
               <option>구매자</option>
               <option>판매자 / 공급자</option>
               <option>플랫폼</option>
-            </select>
-            <select className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as CalcMethod | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>계산방식</span><select aria-label="계산방식" className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as CalcMethod | '')}>
               <option value="">전체 계산방식</option>
               <option>정률</option>
               <option>정액</option>
-            </select>
+            </select></label>
             <span className={shared.rowSpacer} />
             <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
           </div>

@@ -86,17 +86,17 @@ export function ReviewAnalyticsPage() {
 
         <div className={shared.filterBox}>
           <div className={shared.filterRow2}>
-            <select className={shared.selectSm} value={period} onChange={(event) => setPeriod(event.target.value)}>
+            <label className="globalFilterField"><span>조회 기간</span><select aria-label="조회 기간" className={shared.selectSm} value={period} onChange={(event) => setPeriod(event.target.value)}>
               <option value="7">최근 7일</option>
               <option value="30">최근 30일</option>
               <option value="90">최근 90일</option>
-            </select>
-            <select className={shared.selectSm} value={productFilter} onChange={(event) => setProductFilter(event.target.value)}>
+            </select></label>
+            <label className="globalFilterField"><span>상품</span><select aria-label="상품" className={shared.selectSm} value={productFilter} onChange={(event) => setProductFilter(event.target.value)}>
               <option value="">전체 상품</option>
               {productOptions.map((code) => <option key={code} value={code}>{productName(code)} · {code}</option>)}
-            </select>
+            </select></label>
             <span className={shared.rowSpacer} />
-            <button type="button" className={shared.downloadBtn}>↓ 분석 데이터 다운로드</button>
+          <button type="button" className={shared.downloadBtn} data-grid-download>↓ 분석 데이터 다운로드</button>
           </div>
         </div>
 

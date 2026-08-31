@@ -192,29 +192,29 @@ export function ReceivablesPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <select className={styles.selectSm}>
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm}>
               <option>전체</option>
               <option>거래처명</option>
               <option>청구번호</option>
               <option>주문번호</option>
-            </select>
+            </select></label>
             <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="거래처 또는 청구번호" />
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
-            <select className={styles.selectXs}>
+            <label className="globalFilterField"><span>연체기간</span><select aria-label="연체기간" className={styles.selectXs}>
               <option>연체기간 전체</option>
               <option>1~7일</option>
               <option>8~30일</option>
               <option>31~60일</option>
               <option>61~90일</option>
               <option>90일 초과</option>
-            </select>
-            <select className={styles.selectXs}>
+            </select></label>
+            <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={styles.selectXs}>
               <option>담당자 전체</option>
               <option>admin01</option>
               <option>admin02</option>
-            </select>
+            </select></label>
             <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
@@ -227,7 +227,7 @@ export function ReceivablesPage() {
             <button type="button" className={`${styles.viewToggleBtn} ${view === 'invoice' ? styles.active : ''}`} onClick={() => setView('invoice')}>청구 기준</button>
           </div>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.selectXs}>
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

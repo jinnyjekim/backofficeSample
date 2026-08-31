@@ -26,6 +26,7 @@ export interface RefundPolicy {
 
   approvalRequired: ApprovalRequirement;
   approvalThresholdAmount: number;
+  autoExecuteAfterApproval: boolean;
 
   failureRetryEnabled: boolean;
   autoRetryEnabled: boolean;
@@ -52,6 +53,13 @@ export interface RefundReason {
   order: number;
   requiresDetail: boolean;
 }
+
+export interface LastModified {
+  at: string;
+  by: string;
+}
+
+export const INITIAL_LAST_MODIFIED: LastModified = { at: '2026-08-12', by: '운영 관리자' };
 
 export interface PolicyHistoryEntry {
   id: string;
@@ -82,6 +90,7 @@ export const INITIAL_POLICY: RefundPolicy = {
 
   approvalRequired: '조건부',
   approvalThresholdAmount: 1000000,
+  autoExecuteAfterApproval: true,
 
   failureRetryEnabled: true,
   autoRetryEnabled: false,
@@ -244,6 +253,7 @@ const POLICY_FIELD_LABELS: { key: keyof RefundPolicy; label: string; format: (p:
   { key: 'discountRecalcPolicy', label: '부분환불 할인 재계산', format: (p) => p.discountRecalcPolicy },
   { key: 'approvalRequired', label: '환불 승인', format: (p) => p.approvalRequired },
   { key: 'approvalThresholdAmount', label: '환불 승인 기준금액', format: (p) => fmtWon(p.approvalThresholdAmount) },
+  { key: 'autoExecuteAfterApproval', label: '승인 후 자동 환불 실행', format: (p) => (p.autoExecuteAfterApproval ? '사용' : '사용 안 함') },
   { key: 'failureRetryEnabled', label: '환불 실패 재시도', format: (p) => (p.failureRetryEnabled ? '허용' : '불가') },
   { key: 'autoRetryEnabled', label: '자동 재시도', format: (p) => (p.autoRetryEnabled ? '사용' : '사용 안 함') },
   { key: 'maxRetryCount', label: '최대 자동 재시도', format: (p) => `${p.maxRetryCount}회` },

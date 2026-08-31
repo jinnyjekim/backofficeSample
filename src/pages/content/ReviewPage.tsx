@@ -1,7 +1,10 @@
 import { DatePicker } from '../../components/forms/DatePicker';
-import { useMemo, useState } from 'react';
+import { SearchField } from '../../components/SearchField';
+import { ChevronDown, ChevronUp, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import sh from './contentShared.module.css';
 import styles from './ReviewPage.module.css';
+import filterStyles from './ContentListPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
 import { CHECK_LABELS_BY_BUSINESS, REJECT_REASONS, REVIEW_ITEMS, type ReviewItem, type ReviewItemStatus } from './reviewData';
@@ -37,8 +40,9 @@ export function ReviewPage() {
   const [reqTypeF, setReqTypeF] = useState('전체');
   const [catF, setCatF] = useState('전체');
   const [assigneeF, setAssigneeF] = useState('전체');
-  const [from, setFrom] = useState('2026-07-01');
-  const [to, setTo] = useState('2026-08-13');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [adv, setAdv] = useState(false);
   const [sel, setSel] = useState<string[]>([]);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [modal, setModal] = useState<ModalState | null>(null);
@@ -70,7 +74,8 @@ export function ReviewPage() {
       if (catF !== '전체' && it.cat !== catF) return false;
       if (assigneeF !== '전체' && it.assignee !== assigneeF) return false;
       const d = it.reqAt.slice(0, 10).replace(/\./g, '-');
-      if (!(d >= from && d <= to)) return false;
+      if (from && d < from) return false;
+      if (to && d > to) return false;
       return true;
     });
     out = out.slice().sort((a, b) => (a.reqAt < b.reqAt ? 1 : -1));
@@ -79,19 +84,47 @@ export function ReviewPage() {
 
   const sel_ = sel.filter((id) => list.some((it) => it.id === id));
 
+  const chips = [] as { key: string; label: string; clear: () => void }[];
+  if (tab !== '전체') chips.push({ key: 'status', label: `상태: ${tab}`, clear: () => setTab('전체') });
+  if (q.trim()) chips.push({ key: 'q', label: `검색: ${field} “${q.trim()}”`, clear: () => setQ('') });
+  if (reqTypeF !== '전체') chips.push({ key: 'request', label: `요청 유형: ${reqTypeF}`, clear: () => setReqTypeF('전체') });
+  if (assigneeF !== '전체') chips.push({ key: 'assignee', label: `담당자: ${assigneeF}`, clear: () => setAssigneeF('전체') });
+  if (catF !== '전체') chips.push({ key: 'category', label: `카테고리: ${catF}`, clear: () => setCatF('전체') });
+  if (from || to) chips.push({
+    key: 'date',
+    label: `요청일: ${from ? from.replace(/-/g, '.') : '시작일'} ~ ${to ? to.replace(/-/g, '.') : '종료일'}`,
+    clear: () => { setFrom(''); setTo(''); },
+  });
+
+  const detailFilterCount = [catF !== '전체', Boolean(from || to)].filter(Boolean).length;
+
   function resetAll() {
-    setQ(''); setField('전체'); setReqTypeF('전체'); setCatF('전체'); setAssigneeF('전체');
-    setFrom('2026-07-01'); setTo('2026-08-13'); setSel([]);
+    setTab('전체'); setQ(''); setField('전체'); setReqTypeF('전체'); setCatF('전체'); setAssigneeF('전체');
+    setFrom(''); setTo(''); setAdv(false); setSel([]);
   }
 
   function switchBusiness(next: ContentBusinessType) {
     if (next === businessMode) return;
     setBusinessMode(next);
-    setTab('대기');
     resetAll();
+    setTab('대기');
     setDetailId(null);
     setModal(null);
   }
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const focusSearch = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isEditing = target?.matches('input, textarea, select, [contenteditable="true"]');
+      if (event.key === '/' && !isEditing) {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', focusSearch);
+    return () => window.removeEventListener('keydown', focusSearch);
+  }, []);
 
   function openDetail(id: string) {
     setDetailId(id); setSel([]);
@@ -166,7 +199,7 @@ export function ReviewPage() {
     return { id: it.id, cells, selected: isSel, onToggleSelect: () => setSel((prev) => (isSel ? prev.filter((x) => x !== it.id) : prev.concat([it.id]))), bg: isSel ? '#f7f8ff' : 'transparent' };
   });
 
-  const emptySearch = list.length === 0 && (q.trim() !== '' || tab !== '전체');
+  const emptySearch = list.length === 0 && chips.length > 0;
   const emptyAll = modeItems.length === 0;
 
   const det = detailId ? byId(detailId) : null;
@@ -364,50 +397,114 @@ export function ReviewPage() {
             })}
           </div>
 
-          <div className={sh.filterBox}>
-            <div className={sh.searchRow}>
-              <select className={sh.selectField} value={field} onChange={(e) => setField(e.target.value)}>
+          <div className={filterStyles.stepLabel}>
+            <span className={filterStyles.stepNum}>1</span>
+            <span className={filterStyles.stepTitle}>조건 설정</span>
+            <span className={filterStyles.stepHint}>요청 유형과 담당자를 기준으로 검수 건을 찾아보세요.</span>
+            {chips.length > 0 && <span className={filterStyles.appliedCount}>{chips.length}개 조건 적용</span>}
+          </div>
+
+          <div className={filterStyles.filterPanel}>
+            <div className={filterStyles.searchLine}>
+              <label className="globalFilterField"><span>검색 범위</span><select className={filterStyles.searchScope} aria-label="검색 범위" value={field} onChange={(e) => setField(e.target.value)}>
                 {['전체', '콘텐츠 ID', '제목', '요청자'].map((f) => <option key={f} value={f}>{f}</option>)}
-              </select>
-              <input className={sh.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="콘텐츠 ID · 제목 · 요청자 검색" />
-              <button type="button" className={sh.searchBtn}>검색</button>
+              </select></label>
+              <SearchField
+                ref={searchInputRef}
+                className={filterStyles.searchField}
+                value={q}
+                onValueChange={(value) => { setQ(value); setSel([]); }}
+                placeholder="콘텐츠 ID, 제목 또는 요청자를 검색하세요"
+                shortcutHint="/"
+                aria-label="검수 요청 검색"
+              />
+              <div className={filterStyles.searchActions}>
+                <button type="button" className={`${filterStyles.detailButton} ${detailFilterCount > 0 ? filterStyles.hasFilter : ''}`} onClick={() => setAdv((value) => !value)} aria-expanded={adv}>
+                  <SlidersHorizontal size={14} aria-hidden="true" />
+                  상세 필터
+                  {detailFilterCount > 0 && <span className={filterStyles.detailCount}>{detailFilterCount}</span>}
+                  {adv ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
+                </button>
+                <button type="button" className={filterStyles.resetButton} onClick={resetAll} disabled={chips.length === 0}>
+                  <RotateCcw size={13} aria-hidden="true" />
+                  초기화
+                </button>
+              </div>
             </div>
 
-            <div className={sh.filterRow}>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>요청 유형</span>
-                <select className={sh.smallSelect} value={reqTypeF} onChange={(e) => { setReqTypeF(e.target.value); setSel([]); }}>
+            <div className={filterStyles.primaryFilters}>
+              <label className={filterStyles.filterControl}>
+                <span>요청 유형</span>
+                <select value={reqTypeF} onChange={(e) => { setReqTypeF(e.target.value); setSel([]); }}>
                   {['전체', '신규 등록', '수정', '재검수'].map((o) => <option key={o} value={o}>{o}</option>)}
                 </select>
-              </div>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>카테고리</span>
-                <select className={sh.smallSelect} value={catF} onChange={(e) => { setCatF(e.target.value); setSel([]); }}>
-                  {['전체', ...categories].map((o) => <option key={o} value={o}>{o}</option>)}
-                </select>
-              </div>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>담당자</span>
-                <select className={sh.smallSelect} value={assigneeF} onChange={(e) => { setAssigneeF(e.target.value); setSel([]); }}>
+              </label>
+              <label className={filterStyles.filterControl}>
+                <span>담당자</span>
+                <select value={assigneeF} onChange={(e) => { setAssigneeF(e.target.value); setSel([]); }}>
                   {assignees.map((o) => <option key={o} value={o}>{o}</option>)}
                 </select>
-              </div>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>요청일</span>
-                <DatePicker className={sh.dateInput} value={from} onChange={(e) => setFrom(e.target.value)} />
-                <span className={sh.dateSep}>~</span>
-                <DatePicker className={sh.dateInput} value={to} onChange={(e) => setTo(e.target.value)} />
-              </div>
+              </label>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div className={sh.rowSpacer} />
-              <button type="button" className={sh.resetBtn} onClick={resetAll}>초기화</button>
-            </div>
+            {adv && (
+              <div className={filterStyles.advancedPanel}>
+                <div className={filterStyles.advancedHead}>
+                  <strong>상세 조건</strong>
+                  <span>카테고리 또는 요청 기간으로 범위를 좁힐 수 있습니다.</span>
+                </div>
+                <div className={filterStyles.advancedGrid}>
+                  <label className={filterStyles.filterControl}>
+                    <span>카테고리</span>
+                    <select value={catF} onChange={(e) => { setCatF(e.target.value); setSel([]); }}>
+                      {['전체', ...categories].map((o) => <option key={o} value={o}>{o}</option>)}
+                    </select>
+                  </label>
+                  <label className={`${filterStyles.filterControl} ${filterStyles.dateControl} ${filterStyles.wideDateControl}`}>
+                    <span>요청일</span>
+                    <div className={filterStyles.dateRange}>
+                      <DatePicker controlSize="sm" value={from} onChange={(e) => {
+                        const value = e.target.value;
+                        setFrom(value);
+                        if (value && to && value > to) setTo(value);
+                        setSel([]);
+                      }} />
+                      <span>~</span>
+                      <DatePicker controlSize="sm" value={to} onChange={(e) => {
+                        const value = e.target.value;
+                        setTo(value);
+                        if (value && from && value < from) setFrom(value);
+                        setSel([]);
+                      }} />
+                    </div>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {chips.length > 0 && (
+              <div className={filterStyles.appliedFilters}>
+                <span className={filterStyles.appliedLabel}>적용된 조건</span>
+                <div className={filterStyles.chipList}>
+                  {chips.map((chip) => (
+                    <button key={chip.key} type="button" className={filterStyles.filterChip} onClick={chip.clear} title={`${chip.label} 조건 해제`}>
+                      {chip.label}<span aria-hidden="true">×</span>
+                    </button>
+                  ))}
+                </div>
+                <button type="button" className={filterStyles.clearAllButton} onClick={resetAll}>전체 해제</button>
+              </div>
+            )}
+          </div>
+
+          <div className={`${filterStyles.stepLabel} ${filterStyles.resultStep}`}>
+            <span className={filterStyles.stepNum}>2</span>
+            <span className={filterStyles.stepTitle}>조회 결과</span>
+            <span className={filterStyles.stepHint}>검수 버튼을 선택하면 요청 내용과 변경 사항을 확인할 수 있습니다.</span>
           </div>
         </div>
 
-        <div className={sh.listArea}>
+        <div className={`${sh.listArea} ${filterStyles.listArea}`}>
           <div className={sh.toolbarRow}>
             {sel_.length > 0 ? (
               <div className={sh.selBar}>

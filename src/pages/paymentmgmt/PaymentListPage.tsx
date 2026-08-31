@@ -219,24 +219,24 @@ export function PaymentListPage() {
             <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
           <div className={shared.filterRow2}>
-            <select className={shared.selectSm} value={businessScope} onChange={(e) => setBusinessScope(e.target.value as BusinessScope)}>
+            <label className="globalFilterField"><span>적용 범위</span><select aria-label="적용 범위" className={shared.selectSm} value={businessScope} onChange={(e) => setBusinessScope(e.target.value as BusinessScope)}>
               {BUSINESS_SCOPES.map((scope) => <option key={scope}>{scope}</option>)}
-            </select>
-            <select className={shared.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as PaymentStatus | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>상태</span><select aria-label="상태" className={shared.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as PaymentStatus | '')}>
               <option value="">전체 상태</option>
               {PAYMENT_STATUSES.map((s) => <option key={s}>{s}</option>)}
-            </select>
-            <select className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as PaymentMethod | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>결제수단</span><select aria-label="결제수단" className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as PaymentMethod | '')}>
               <option value="">전체 결제수단</option>
               {PAYMENT_METHODS.map((m) => <option key={m}>{m}</option>)}
-            </select>
-            <select className={shared.selectSm} value={matchFilter} onChange={(e) => setMatchFilter(e.target.value as ExternalMatchStatus | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>외부매칭</span><select aria-label="외부매칭" className={shared.selectSm} value={matchFilter} onChange={(e) => setMatchFilter(e.target.value as ExternalMatchStatus | '')}>
               <option value="">전체 외부매칭</option>
               <option>정상</option>
               <option>상태 불일치</option>
               <option>금액 불일치</option>
               <option>외부 거래 없음</option>
-            </select>
+            </select></label>
             <button type="button" className={shared.detailFilterBtn} onClick={() => setShowAdvanced((current) => !current)}>
               {showAdvanced ? '상세 필터 −' : '상세 필터 +'}
             </button>
@@ -328,7 +328,7 @@ export function PaymentListPage() {
             </div>
             <div className={shared.dialogActions}>
               <button type="button" className={styles.cancelButton} onClick={() => setDownloadOpen(false)}>취소</button>
-              <button type="button" className={styles.primaryButton} onClick={() => { setDownloadOpen(false); toastBriefly('결제 내역을 다운로드했습니다.'); }}>다운로드</button>
+              <button type="button" className={styles.primaryButton} data-grid-download onClick={() => { setDownloadOpen(false); toastBriefly('결제 내역을 다운로드했습니다.'); }}>다운로드</button>
             </div>
           </div>
         </div>

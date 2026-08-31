@@ -129,11 +129,11 @@ export function ContactsPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.searchRow}>
-            <select className={styles.scopeSelect} defaultValue={SEARCH_SCOPES[0]}>
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.scopeSelect} defaultValue={SEARCH_SCOPES[0]}>
               {SEARCH_SCOPES.map((s) => (
                 <option key={s}>{s}</option>
               ))}
-            </select>
+            </select></label>
             <input
               className={styles.searchInput}
               value={q}
@@ -143,14 +143,14 @@ export function ContactsPage() {
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow}>
-            <select className={styles.smallSelect} defaultValue="회사 전체">
+            <label className="globalFilterField"><span>회사</span><select aria-label="회사" className={styles.smallSelect} defaultValue="회사 전체">
               <option>회사 전체</option>
               <option>회사 01</option>
               <option>회사 02</option>
               <option>㈜한빛물산</option>
               <option>원일테크</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="담당 역할 전체">
+            </select></label>
+            <label className="globalFilterField"><span>담당 역할</span><select aria-label="담당 역할" className={styles.smallSelect} defaultValue="담당 역할 전체">
               <option>담당 역할 전체</option>
               <option>구매</option>
               <option>계약</option>
@@ -158,17 +158,17 @@ export function ContactsPage() {
               <option>정산</option>
               <option>발주</option>
               <option>납품</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="상태 전체">
+            </select></label>
+            <label className="globalFilterField"><span>상태</span><select aria-label="상태" className={styles.smallSelect} defaultValue="상태 전체">
               <option>상태 전체</option>
               <option>사용</option>
               <option>미사용</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="주담당 여부 전체">
+            </select></label>
+            <label className="globalFilterField"><span>주담당 여부</span><select aria-label="주담당 여부" className={styles.smallSelect} defaultValue="주담당 여부 전체">
               <option>주담당 여부 전체</option>
               <option>주담당</option>
               <option>일반</option>
-            </select>
+            </select></label>
             <button type="button" className={styles.moreFilterBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={clearAll}>초기화</button>
@@ -178,7 +178,7 @@ export function ContactsPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}명</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

@@ -137,18 +137,18 @@ export function PromotionApplicationsPage() {
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <select className={styles.selectSm} value={promotionFilter} onChange={(e) => setPromotionFilter(e.target.value)}>
+            <label className="globalFilterField"><span>프로모션</span><select aria-label="프로모션" className={styles.selectSm} value={promotionFilter} onChange={(e) => setPromotionFilter(e.target.value)}>
               <option value="">프로모션 전체</option>
               {PROMOTIONS.map((p) => <option key={p.code} value={p.code}>{p.name}</option>)}
-            </select>
-            <select className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as ApplyStatus | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>적용 상태</span><select aria-label="적용 상태" className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as ApplyStatus | '')}>
               <option value="">적용 상태 전체</option>
               <option value="정상 적용">정상 적용</option>
               <option value="적용 취소">적용 취소</option>
               <option value="부분 취소">부분 취소</option>
               <option value="환불 반영">환불 반영</option>
               <option value="부분 환불 반영">부분 환불 반영</option>
-            </select>
+            </select></label>
             <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
             <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
@@ -160,7 +160,7 @@ export function PromotionApplicationsPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
           </div>
         </div>
       </div>

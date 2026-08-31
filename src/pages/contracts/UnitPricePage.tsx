@@ -89,13 +89,13 @@ export function UnitPricePage() {
 
       <div className={styles.filterCard}>
         <div className={styles.searchRow}>
-          <select className={styles.select}>
+          <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.select}>
             <option>전체</option>
             <option>계약번호</option>
             <option>거래처명</option>
             <option>상품명</option>
             <option>상품코드</option>
-          </select>
+          </select></label>
           <input
             className={styles.searchInput}
             value={q}
@@ -105,23 +105,23 @@ export function UnitPricePage() {
           <button type="button" className={styles.searchBtn}>검색</button>
         </div>
         <div className={styles.filterRow}>
-          <select className={styles.selectSm}>
+          <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectSm}>
             <option>거래처 전체</option>
             <option>회사 01</option>
             <option>회사 02</option>
-          </select>
-          <select className={styles.selectSm}>
+          </select></label>
+          <label className="globalFilterField"><span>계약상태</span><select aria-label="계약상태" className={styles.selectSm}>
             <option>계약상태 전체</option>
             <option>계약 예정</option>
             <option>계약중</option>
             <option>만료</option>
-          </select>
-          <select className={styles.selectSm}>
+          </select></label>
+          <label className="globalFilterField"><span>단가상태</span><select aria-label="단가상태" className={styles.selectSm}>
             <option>단가상태 전체</option>
             <option>적용예정</option>
             <option>적용중</option>
             <option>종료</option>
-          </select>
+          </select></label>
           <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
           <div className={styles.spacer} />
           <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
@@ -132,7 +132,7 @@ export function UnitPricePage() {
         <span className={styles.resultLabel}>총 {filtered.length}건</span>
         <div className={styles.resultActions}>
           <button type="button" className={styles.downloadBtn}>대량 등록</button>
-          <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
           <select className={styles.selectSm}>
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>

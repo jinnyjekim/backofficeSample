@@ -29,12 +29,15 @@ interface DialogState {
   buttons: DialogButton[];
 }
 
+const STATUS_LABELS = ['사용', '미사용', '전체'] as const;
+
 export function CategoriesPage() {
   const navigate = useNavigate();
   const [items, setItems] = useState<Category[]>(CATEGORIES);
   const [scope, setScope] = useState<ContentTaxonomyScope>('공통');
   const [selId, setSelId] = useState('com01');
   const [q, setQ] = useState('');
+  const [useFilter, setUseFilter] = useState<(typeof STATUS_LABELS)[number]>('전체');
   const [openIds, setOpenIds] = useState<string[]>(['c01', 'c02', 'c03', 'c031']);
   const [menuId, setMenuId] = useState<string | null>(null);
   const [mode, setMode] = useState<'edit' | 'new'>('edit');
@@ -61,13 +64,16 @@ export function CategoriesPage() {
 
   const query = q.trim().toLowerCase();
   const hit = (it: Category) => it.name.toLowerCase().includes(query) || it.code.toLowerCase().includes(query);
-  const matched = query ? scopeItems.filter(hit).map((x) => x.id) : [];
-  const keep = query
+  const filtering = Boolean(query) || useFilter !== '전체';
+  const matched = filtering
+    ? scopeItems.filter((item) => (!query || hit(item)) && (useFilter === '전체' || (useFilter === '사용' ? item.use : !item.use))).map((item) => item.id)
+    : [];
+  const keep = filtering
     ? matched.reduce<string[]>((a, id) => {
         const out = [id];
         let p = byId(id);
         while (p && p.parent) { out.push(p.parent); p = byId(p.parent); }
-        return a.concat(out, descend(id));
+        return a.concat(out, query && useFilter === '전체' ? descend(id) : []);
       }, [])
     : null;
 
@@ -136,11 +142,17 @@ export function CategoriesPage() {
     setScope(next);
     setSelId(first?.id ?? '');
     setQ('');
+    setUseFilter('전체');
     setMenuId(null);
     setMode('edit');
     setDraft(null);
     setDialog(null);
     setErr('');
+  }
+
+  function statusCount(label: (typeof STATUS_LABELS)[number]) {
+    if (label === '전체') return scopeItems.length;
+    return scopeItems.filter((item) => label === '사용' ? item.use : !item.use).length;
   }
 
   function doSave() {
@@ -231,7 +243,7 @@ export function CategoriesPage() {
     setToast('카테고리 순서가 변경되었습니다.');
   }
 
-  const emptySearch = flat.length === 0 && query !== '';
+  const emptySearch = scopeItems.length > 0 && flat.length === 0 && filtering;
   const emptyAll = scopeItems.length === 0;
 
   return (
@@ -285,6 +297,17 @@ export function CategoriesPage() {
           ＋ 카테고리 등록
         </button>
       </header>
+
+      <div className={styles.statusStrip}>
+        <nav className={sh.quickFilters} aria-label="카테고리 사용 상태 보기">
+          {STATUS_LABELS.map((label) => (
+            <button key={label} type="button" className={`${sh.qfBtn} ${useFilter === label ? sh.active : ''}`} onClick={() => setUseFilter(label)}>
+              <span className={sh.qfLabel}>{label}</span>
+              <span className={sh.qfCount}>{statusCount(label)}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
 
       <div className={styles.body}>
         <div className={styles.tree}>
@@ -348,9 +371,9 @@ export function CategoriesPage() {
 
             {emptySearch && (
               <div className={sh.emptyBlock}>
-                <div className={sh.emptyTitle}>검색 결과가 없습니다.</div>
-                <div className={sh.emptySub}>다른 검색어를 입력해 주세요.</div>
-                <button type="button" className={sh.emptyActionBtn} onClick={() => setQ('')}>검색 초기화</button>
+                <div className={sh.emptyTitle}>조건에 맞는 카테고리가 없습니다.</div>
+                <div className={sh.emptySub}>검색어나 사용 상태를 변경해 주세요.</div>
+                <button type="button" className={sh.emptyActionBtn} onClick={() => { setQ(''); setUseFilter('전체'); }}>필터 초기화</button>
               </div>
             )}
             {emptyAll && (

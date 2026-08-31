@@ -357,30 +357,30 @@ export function NoticesPage() {
 
         <div className={styles.filterBox}>
           <div className={styles.filterRow1}>
-            <select className={styles.selectSm} defaultValue="전체">
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
               <option>전체</option>
               <option>제목</option>
               <option>본문</option>
               <option>공지번호</option>
-            </select>
+            </select></label>
             <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="공지 제목, 본문 또는 번호" />
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
-            <select className={styles.selectXs} value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as '전체' | NoticeCategory)}>
+            <label className="globalFilterField"><span>카테고리</span><select aria-label="카테고리" className={styles.selectXs} value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as '전체' | NoticeCategory)}>
               <option value="전체">카테고리 전체</option>
               {NOTICE_CATEGORIES.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
-            </select>
-            <select className={styles.selectXs} value={importantFilter} onChange={(e) => setImportantFilter(e.target.value as '전체' | '중요만')}>
+            </select></label>
+            <label className="globalFilterField"><span>중요공지</span><select aria-label="중요공지" className={styles.selectXs} value={importantFilter} onChange={(e) => setImportantFilter(e.target.value as '전체' | '중요만')}>
               <option value="전체">중요공지 전체</option>
               <option value="중요만">중요 공지만</option>
-            </select>
-            <select className={styles.selectXs} value={pinnedFilter} onChange={(e) => setPinnedFilter(e.target.value as '전체' | '고정만')}>
+            </select></label>
+            <label className="globalFilterField"><span>상단고정</span><select aria-label="상단고정" className={styles.selectXs} value={pinnedFilter} onChange={(e) => setPinnedFilter(e.target.value as '전체' | '고정만')}>
               <option value="전체">상단고정 전체</option>
               <option value="고정만">고정된 공지만</option>
-            </select>
+            </select></label>
             <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setCategoryFilter('전체'); setImportantFilter('전체'); setPinnedFilter('전체'); setQ(''); }}>초기화</button>
@@ -390,7 +390,7 @@ export function NoticesPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
@@ -404,7 +404,7 @@ export function NoticesPage() {
           <span className={styles.bulkLabel}>{selectedIds.length}건 선택됨</span>
           <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkCategory' })}>카테고리 변경</button>
           <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkEnd' })}>게시 종료</button>
-          <button type="button" className={styles.bulkBtn}>다운로드</button>
+          <button type="button" className={styles.bulkBtn} data-grid-download="selected">다운로드</button>
         </div>
       )}
 

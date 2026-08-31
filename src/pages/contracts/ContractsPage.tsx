@@ -87,14 +87,14 @@ export function ContractsPage() {
 
       <div className={styles.filterCard}>
         <div className={styles.searchRow}>
-          <select className={styles.select}>
+          <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.select}>
             <option>전체</option>
             <option>계약번호</option>
             <option>계약명</option>
             <option>거래처명</option>
             <option>상품명</option>
             <option>견적번호</option>
-          </select>
+          </select></label>
           <input
             className={styles.searchInput}
             value={q}
@@ -104,23 +104,23 @@ export function ContractsPage() {
           <button type="button" className={styles.searchBtn}>검색</button>
         </div>
         <div className={styles.filterRow}>
-          <select className={styles.selectSm}>
+          <label className="globalFilterField"><span>계약유형</span><select aria-label="계약유형" className={styles.selectSm}>
             <option>계약유형 전체</option>
             <option>공급 계약</option>
             <option>단가 계약</option>
             <option>기간 계약</option>
             <option>프레임 계약</option>
-          </select>
-          <select className={styles.selectSm}>
+          </select></label>
+          <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectSm}>
             <option>거래처 전체</option>
             <option>회사 01</option>
             <option>회사 02</option>
-          </select>
-          <select className={styles.selectSm}>
+          </select></label>
+          <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={styles.selectSm}>
             <option>담당자 전체</option>
             <option>admin01</option>
             <option>admin02</option>
-          </select>
+          </select></label>
           <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
           <div className={styles.spacer} />
           <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
@@ -130,7 +130,7 @@ export function ContractsPage() {
       <div className={styles.resultRow}>
         <span className={styles.resultLabel}>총 {filtered.length}건</span>
         <div className={styles.resultActions}>
-          <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
           <select className={styles.selectSm}>
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>

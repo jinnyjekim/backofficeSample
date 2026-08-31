@@ -252,20 +252,20 @@ export function CouponsListPage() {
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <select className={styles.selectSm} value={applyUnitFilter} onChange={(e) => setApplyUnitFilter(e.target.value as CouponApplyUnit | '')}>
+            <label className="globalFilterField"><span>유형</span><select aria-label="유형" className={styles.selectSm} value={applyUnitFilter} onChange={(e) => setApplyUnitFilter(e.target.value as CouponApplyUnit | '')}>
               <option value="">유형 전체</option>
               <option value="상품">상품 쿠폰</option>
               <option value="주문">주문 쿠폰</option>
-            </select>
-            <select className={styles.selectSm} value={issueMethodFilter} onChange={(e) => setIssueMethodFilter(e.target.value as IssueMethod | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>발급방식</span><select aria-label="발급방식" className={styles.selectSm} value={issueMethodFilter} onChange={(e) => setIssueMethodFilter(e.target.value as IssueMethod | '')}>
               <option value="">발급방식 전체</option>
               <option value="관리자 발급">관리자 발급</option>
               <option value="자동 발급">자동 발급</option>
-            </select>
-            <select className={styles.selectSm} value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value)}>
+            </select></label>
+            <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={styles.selectSm} value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value)}>
               <option value="">담당자 전체</option>
               {OWNERS.map((o) => <option key={o}>{o}</option>)}
-            </select>
+            </select></label>
             <button type="button" className={styles.detailFilterBtn}>상세 필터 +</button>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
@@ -275,7 +275,7 @@ export function CouponsListPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
           </div>
         </div>
       </div>
@@ -285,7 +285,7 @@ export function CouponsListPage() {
           <span className={styles.bulkLabel}>{selectedIds.length}건 선택됨</span>
           <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkOwner' })}>담당자 변경</button>
           <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkDeactivate' })}>비활성화</button>
-          <button type="button" className={styles.bulkBtn} onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
+          <button type="button" className={styles.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
         </div>
       )}
 

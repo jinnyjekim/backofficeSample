@@ -149,28 +149,28 @@ export function DepositConfirmPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <select className={styles.selectSm}>
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm}>
               <option>전체</option>
               <option>입금자명</option>
               <option>거래처명</option>
               <option>거래번호</option>
-            </select>
+            </select></label>
             <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="입금자 · 거래처 · 거래번호" />
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
-            <select className={styles.selectXs}>
+            <label className="globalFilterField"><span>매칭상태</span><select aria-label="매칭상태" className={styles.selectXs}>
               <option>매칭상태 전체</option>
               <option>자동매칭</option>
               <option>수동매칭</option>
               <option>일부매칭</option>
               <option>미매칭</option>
-            </select>
-            <select className={styles.selectXs}>
+            </select></label>
+            <label className="globalFilterField"><span>입금계좌</span><select aria-label="입금계좌" className={styles.selectXs}>
               <option>입금계좌 전체</option>
               <option>은행01 · 운영계좌</option>
               <option>은행02 · B2B수금계좌</option>
-            </select>
+            </select></label>
             <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={() => { setFilter('확인대기'); setQ(''); }}>초기화</button>
@@ -180,7 +180,7 @@ export function DepositConfirmPage() {
         <div className={styles.resultBar}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.selectXs}>
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

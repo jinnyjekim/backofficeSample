@@ -120,10 +120,10 @@ export function PointLedgerPage() {
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <select className={styles.selectSm} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as LedgerType | '')}>
+            <label className="globalFilterField"><span>변동 유형</span><select aria-label="변동 유형" className={styles.selectSm} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as LedgerType | '')}>
               <option value="">변동 유형 전체</option>
               {LEDGER_TYPES.map((t) => <option key={t}>{t}</option>)}
-            </select>
+            </select></label>
             <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
             <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
@@ -135,7 +135,7 @@ export function PointLedgerPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
           </div>
         </div>
       </div>

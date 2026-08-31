@@ -221,15 +221,15 @@ export function RegionalShippingFeePage() {
                 <button type="submit" className={shared.searchBtn}>검색</button>
               </form>
               <div className={shared.filterRow2}>
-                <select className={shared.selectSm} value={regionTypeFilter} onChange={(e) => setRegionTypeFilter(e.target.value as RegionType | '')}>
+                <label className="globalFilterField"><span>지역유형</span><select aria-label="지역유형" className={shared.selectSm} value={regionTypeFilter} onChange={(e) => setRegionTypeFilter(e.target.value as RegionType | '')}>
                   <option value="">전체 지역유형</option>
                   <option>행정구역</option>
                   <option>우편번호</option>
-                </select>
-                <select className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as DeliveryMethod | '')}>
+                </select></label>
+                <label className="globalFilterField"><span>배송방법</span><select aria-label="배송방법" className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as DeliveryMethod | '')}>
                   <option value="">전체 배송방법</option>
                   {DELIVERY_METHODS.map((m) => <option key={m}>{m}</option>)}
-                </select>
+                </select></label>
                 <span className={shared.rowSpacer} />
                 <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
               </div>

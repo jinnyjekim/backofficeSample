@@ -232,15 +232,15 @@ export function BrandsListPage() {
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <select className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as BrandStatus | '')}>
+            <label className="globalFilterField"><span>사용 상태</span><select aria-label="사용 상태" className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as BrandStatus | '')}>
               <option value="">사용 상태 전체</option>
               <option value="사용중">사용중</option>
               <option value="미사용">미사용</option>
-            </select>
-            <select className={styles.selectSm} value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value)}>
+            </select></label>
+            <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={styles.selectSm} value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value)}>
               <option value="">담당자 전체</option>
               {OWNERS.map((o) => <option key={o}>{o}</option>)}
-            </select>
+            </select></label>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>
@@ -249,7 +249,7 @@ export function BrandsListPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 다운로드</button>
           </div>
         </div>
       </div>
@@ -259,7 +259,7 @@ export function BrandsListPage() {
           <span className={styles.bulkLabel}>{selectedIds.length}건 선택됨</span>
           <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkExposure', expose: true })}>일괄 노출</button>
           <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkExposure', expose: false })}>일괄 비노출</button>
-          <button type="button" className={styles.bulkBtn} onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
+          <button type="button" className={styles.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
         </div>
       )}
 

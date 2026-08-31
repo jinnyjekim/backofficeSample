@@ -68,7 +68,7 @@ export function SettlementAdjustmentsPage() {
             총 {filtered.length}건 · 순 조정 {signed(netTotal)}
           </span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
           </div>
         </div>
       </div>

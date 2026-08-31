@@ -229,21 +229,21 @@ export function AdminsListPage() {
 
         <div className={styles.filterBox}>
           <form className={styles.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
-            <select className={styles.selectSm} value={scope} onChange={(e) => setScope(e.target.value as SearchScope)}>
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} value={scope} onChange={(e) => setScope(e.target.value as SearchScope)}>
               {SEARCH_SCOPES.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
+            </select></label>
             <input className={styles.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="검색어를 입력하세요" />
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <select className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+            <label className="globalFilterField"><span>상태</span><select aria-label="상태" className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
               <option value="">상태 전체</option>
               {ADMIN_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
-            <select className={styles.selectSm} value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
+            </select></label>
+            <label className="globalFilterField"><span>역할</span><select aria-label="역할" className={styles.selectSm} value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
               <option value="">역할 전체</option>
               {ROLES.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
-            </select>
+            </select></label>
             <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
             <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
@@ -255,7 +255,7 @@ export function AdminsListPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}명</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} onClick={() => toastBriefly('관리자 목록을 다운로드했습니다.')}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('관리자 목록을 다운로드했습니다.')}>↓ 다운로드</button>
           </div>
         </div>
       </div>

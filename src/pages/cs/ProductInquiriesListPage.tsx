@@ -147,22 +147,22 @@ export function ProductInquiriesListPage() {
 
         <div className={styles.filterBox}>
           <form className={styles.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
-            <select className={styles.selectSm} value={scope} onChange={(e) => setScope(e.target.value as SearchScope)}>
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} value={scope} onChange={(e) => setScope(e.target.value as SearchScope)}>
               {SEARCH_SCOPES.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
+            </select></label>
             <input className={styles.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="검색어를 입력하세요" />
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <select className={styles.selectSm} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+            <label className="globalFilterField"><span>문의 유형</span><select aria-label="문의 유형" className={styles.selectSm} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
               <option value="">문의 유형 전체</option>
               {INQUIRY_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-            </select>
-            <select className={styles.selectSm} value={visibilityFilter} onChange={(e) => setVisibilityFilter(e.target.value)}>
+            </select></label>
+            <label className="globalFilterField"><span>공개 여부</span><select aria-label="공개 여부" className={styles.selectSm} value={visibilityFilter} onChange={(e) => setVisibilityFilter(e.target.value)}>
               <option value="">공개 여부 전체</option>
               <option value="공개">공개</option>
               <option value="비공개">비공개</option>
-            </select>
+            </select></label>
             <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
             <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
@@ -174,7 +174,7 @@ export function ProductInquiriesListPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} onClick={() => toastBriefly('상품 문의 목록을 다운로드했습니다.')}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('상품 문의 목록을 다운로드했습니다.')}>↓ 다운로드</button>
           </div>
         </div>
       </div>

@@ -269,29 +269,29 @@ export function RefundPage() {
 
         <div className={shared.filterBox}>
           <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
-            <select className={shared.selectSm} value={searchBy} onChange={(e) => setSearchBy(e.target.value as typeof searchBy)}>
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={shared.selectSm} value={searchBy} onChange={(e) => setSearchBy(e.target.value as typeof searchBy)}>
               <option value="전체">전체</option>
               <option value="환불번호">환불번호</option>
               <option value="주문번호">주문번호</option>
               <option value="회원">회원</option>
-            </select>
+            </select></label>
             <input className={shared.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="환불번호 / 주문번호 / 회원 검색" />
             <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
           <div className={shared.filterRow2}>
-            <select className={shared.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as RefundStatus | '')}>
+            <label className="globalFilterField"><span>상태</span><select aria-label="상태" className={shared.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as RefundStatus | '')}>
               <option value="">전체 상태</option>
               <option>요청</option><option>검토중</option><option>승인</option><option>처리중</option><option>완료</option><option>반려</option><option>실패</option>
-            </select>
-            <select className={shared.selectSm} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as RefundType | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>유형</span><select aria-label="유형" className={shared.selectSm} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as RefundType | '')}>
               <option value="">전체 유형</option>
               <option value="전체 환불">전체 환불</option>
               <option value="부분 환불">부분 환불</option>
-            </select>
-            <select className={shared.selectSm} value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value)}>
+            </select></label>
+            <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={shared.selectSm} value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value)}>
               <option value="">전체 담당자</option>
               {OWNERS.map((o) => <option key={o}>{o}</option>)}
-            </select>
+            </select></label>
             <span className={shared.rowSpacer} />
             <button type="button" className={shared.resetBtn} onClick={reset}>초기화</button>
           </div>
@@ -309,7 +309,7 @@ export function RefundPage() {
           <span className={shared.bulkLabel}>{selected.size}건 선택됨</span>
           <button type="button" className={shared.bulkBtn} onClick={() => setModal({ kind: 'assign', ids: [...selected] })}>담당자 지정</button>
           <button type="button" className={shared.bulkBtn} onClick={runBulkReviewStart}>일괄 검토 시작</button>
-          <button type="button" className={shared.bulkBtn} onClick={() => toastBriefly('다운로드를 준비했습니다.')}>다운로드</button>
+          <button type="button" className={shared.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly('다운로드를 준비했습니다.')}>다운로드</button>
         </div>
       )}
 

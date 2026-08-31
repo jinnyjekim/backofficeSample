@@ -150,12 +150,12 @@ export function CartConversionPage() {
           })}
         </div>
         <div className={styles.filterRow}>
-          <select className={styles.selectSm} value={channel} onChange={(e) => setChannel(e.target.value as Channel)}>
+          <label className="globalFilterField"><span>채널</span><select aria-label="채널" className={styles.selectSm} value={channel} onChange={(e) => setChannel(e.target.value as Channel)}>
             {CHANNELS.map((c) => <option key={c} value={c}>{c === '전체' ? '채널 전체' : c}</option>)}
-          </select>
-          <select className={styles.selectSm} value={category} onChange={(e) => setCategory(e.target.value as Category)}>
+          </select></label>
+          <label className="globalFilterField"><span>카테고리</span><select aria-label="카테고리" className={styles.selectSm} value={category} onChange={(e) => setCategory(e.target.value as Category)}>
             {CATEGORIES.map((c) => <option key={c} value={c}>{c === '전체' ? '카테고리 전체' : c}</option>)}
-          </select>
+          </select></label>
         </div>
         <div className={styles.periodInfo}>
           조회 기간 <b>{fmtDate(start)} ~ {fmtDate(end)}</b> ({agg.days}일){compare && <> · 비교 기간 <b>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</b> ({prevAgg.days}일)</>}

@@ -163,13 +163,13 @@ export function ProductsListPage() {
 
         <div className={styles.filterBox}>
           <div className={styles.searchRow}>
-            <select className={styles.selectField} defaultValue="전체">
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectField} defaultValue="전체">
               <option>전체</option>
               <option>상품명</option>
               <option>상품코드</option>
               <option>카테고리</option>
               <option>담당자</option>
-            </select>
+            </select></label>
             <input
               className={styles.searchInput}
               value={q}
@@ -179,41 +179,41 @@ export function ProductsListPage() {
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow}>
-            <select className={styles.smallSelect} value={brandFilter} onChange={(e) => setBrandFilter(e.target.value)}>
+            <label className="globalFilterField"><span>브랜드</span><select aria-label="브랜드" className={styles.smallSelect} value={brandFilter} onChange={(e) => setBrandFilter(e.target.value)}>
               <option value="">브랜드 전체</option>
               {brandOptions.map(([code, name]) => <option key={code} value={code}>{name} · {code}</option>)}
-            </select>
-            <select className={styles.smallSelect} defaultValue="판매상태 전체">
+            </select></label>
+            <label className="globalFilterField"><span>판매상태</span><select aria-label="판매상태" className={styles.smallSelect} defaultValue="판매상태 전체">
               <option>판매상태 전체</option>
               <option>등록대기</option>
               <option>판매중</option>
               <option>판매중지</option>
               <option>판매종료</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="카테고리 전체">
+            </select></label>
+            <label className="globalFilterField"><span>카테고리</span><select aria-label="카테고리" className={styles.smallSelect} defaultValue="카테고리 전체">
               <option>카테고리 전체</option>
               <option>카테고리 01</option>
               <option>카테고리 02</option>
               <option>카테고리 03</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="상품유형 전체">
+            </select></label>
+            <label className="globalFilterField"><span>상품유형</span><select aria-label="상품유형" className={styles.smallSelect} defaultValue="상품유형 전체">
               <option>상품유형 전체</option>
               <option>일반</option>
               <option>서비스</option>
               <option>기타</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="공급상태 전체">
+            </select></label>
+            <label className="globalFilterField"><span>공급상태</span><select aria-label="공급상태" className={styles.smallSelect} defaultValue="공급상태 전체">
               <option>공급상태 전체</option>
               <option>공급가능</option>
               <option>일시중지</option>
               <option>공급불가</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="담당자 전체">
+            </select></label>
+            <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={styles.smallSelect} defaultValue="담당자 전체">
               <option>담당자 전체</option>
               <option>admin1</option>
               <option>admin2</option>
               <option>admin3</option>
-            </select>
+            </select></label>
             <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.resetBtn} onClick={clearAll}>초기화</button>
@@ -223,7 +223,7 @@ export function ProductsListPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}개</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

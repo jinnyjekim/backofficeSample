@@ -7,6 +7,7 @@ export type ReasonAudience = '고객' | '관리자';
 
 export const ORDER_STAGES = ['주문 접수', '승인 대기', '주문 확정', '처리중', '배송 준비', '출고 대기', '출고 완료', '배송중', '배송 완료'];
 export const POST_SHIPMENT_STAGES = new Set(['출고 완료', '배송중', '배송 완료']);
+export const CANCEL_QUICK_STAGES = ['접수', '승인', '확정', '처리', '출고완료'];
 
 export interface StageCancelRule {
   stage: string;
@@ -31,12 +32,20 @@ export interface CancelPolicy {
   itemLevelPartialEnabled: boolean;
   partialCancelEnabled: boolean;
   defaultTimingBase: CancelTimingBase;
+  cancelAllowedStages: string[];
   postShipmentAction: PostShipmentAction;
   withdrawPolicy: WithdrawPolicy;
   autoCancelOrderWhenFullyCancelled: boolean;
   restockOnCancel: boolean;
   notifyOnCancelEvents: boolean;
 }
+
+export interface LastModified {
+  at: string;
+  by: string;
+}
+
+export const INITIAL_LAST_MODIFIED: LastModified = { at: '2026-08-10', by: '운영 관리자' };
 
 export interface PolicyHistoryEntry {
   id: string;
@@ -55,6 +64,7 @@ export const INITIAL_POLICY: CancelPolicy = {
   itemLevelPartialEnabled: true,
   partialCancelEnabled: true,
   defaultTimingBase: '단계별 설정',
+  cancelAllowedStages: ['접수', '승인', '확정'],
   postShipmentAction: '반품 / 회수 절차로 전환',
   withdrawPolicy: '처리 시작 전까지만 허용',
   autoCancelOrderWhenFullyCancelled: true,
@@ -165,6 +175,7 @@ const POLICY_FIELD_LABELS: { key: keyof CancelPolicy; label: string; format: (p:
   { key: 'itemLevelPartialEnabled', label: '상품 단위 부분취소', format: (p) => (p.itemLevelPartialEnabled ? '사용' : '사용 안 함') },
   { key: 'partialCancelEnabled', label: '부분 취소', format: (p) => (p.partialCancelEnabled ? '허용' : '불가') },
   { key: 'defaultTimingBase', label: '기본 취소 가능 시점', format: (p) => p.defaultTimingBase },
+  { key: 'cancelAllowedStages', label: '단계별 취소 허용', format: (p) => p.cancelAllowedStages.join(', ') || '없음' },
   { key: 'postShipmentAction', label: '출고 후 취소 요청', format: (p) => p.postShipmentAction },
   { key: 'withdrawPolicy', label: '취소 요청 철회', format: (p) => p.withdrawPolicy },
   { key: 'autoCancelOrderWhenFullyCancelled', label: '전량 취소 시 주문 자동 전환', format: (p) => (p.autoCancelOrderWhenFullyCancelled ? '사용' : '사용 안 함') },
@@ -173,7 +184,7 @@ const POLICY_FIELD_LABELS: { key: keyof CancelPolicy; label: string; format: (p:
 ];
 
 export function describePolicyChanges(before: CancelPolicy, after: CancelPolicy): FieldDiff[] {
-  return POLICY_FIELD_LABELS.filter(({ key }) => before[key] !== after[key]).map(({ label, format }) => ({ field: label, before: format(before), after: format(after) }));
+  return POLICY_FIELD_LABELS.filter(({ key }) => JSON.stringify(before[key]) !== JSON.stringify(after[key])).map(({ label, format }) => ({ field: label, before: format(before), after: format(after) }));
 }
 
 export function describeStageChanges(before: StageCancelRule[], after: StageCancelRule[]): FieldDiff[] {

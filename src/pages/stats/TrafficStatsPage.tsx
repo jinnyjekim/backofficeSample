@@ -163,9 +163,9 @@ export function TrafficStatsPage() {
           </label>
           <span style={{ flex: 1 }} />
           <span style={{ fontSize: 12, color: '#52525b' }}>전환 목표</span>
-          <select className={styles.selectSm} value={goal} onChange={(e) => setGoal(e.target.value as ConversionGoal)}>
+          <label className="globalFilterField"><span>전환 목표</span><select aria-label="전환 목표" className={styles.selectSm} value={goal} onChange={(e) => setGoal(e.target.value as ConversionGoal)}>
             {CONVERSION_GOALS.map((g) => <option key={g}>{g}</option>)}
-          </select>
+          </select></label>
         </div>
         <div className={styles.filterRow}>
           {QUICK_RANGES.map((r) => {
@@ -317,7 +317,7 @@ export function TrafficStatsPage() {
             <div className={styles.section}>
               <div className={styles.sectionHead}>
                 <span className={styles.sectionTitle}>유입 / 전환 리포트 · {fmtDate(start)} ~ {fmtDate(end)}</span>
-                <button type="button" className={styles.downloadBtn} onClick={toastDownload}>리포트 다운로드</button>
+          <button type="button" className={styles.downloadBtn} data-grid-download onClick={toastDownload}>리포트 다운로드</button>
               </div>
               {compare && <div className={styles.sectionNote} style={{ marginBottom: 10 }}>비교 기간 {fmtDate(prevStart)} ~ {fmtDate(prevEnd)} · 전환 목표 {goal}</div>}
               <div className={styles.statGrid}>

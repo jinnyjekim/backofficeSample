@@ -262,14 +262,14 @@ export function BundleShippingPage() {
           <button type="submit" className={shared.searchBtn}>검색</button>
         </form>
         <div className={shared.filterRow2}>
-          <select className={shared.selectSm} value={warehouseFilter} onChange={(e) => setWarehouseFilter(e.target.value)}>
+          <label className="globalFilterField"><span>출고지</span><select aria-label="출고지" className={shared.selectSm} value={warehouseFilter} onChange={(e) => setWarehouseFilter(e.target.value)}>
             <option value="">전체 출고지</option>
             {WAREHOUSES.map((w) => <option key={w}>{w}</option>)}
-          </select>
-          <select className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as BundleDeliveryMethod | '')}>
+          </select></label>
+          <label className="globalFilterField"><span>배송방식</span><select aria-label="배송방식" className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as BundleDeliveryMethod | '')}>
             <option value="">전체 배송방식</option>
             {DELIVERY_METHODS.map((m) => <option key={m}>{m}</option>)}
-          </select>
+          </select></label>
           <span className={shared.rowSpacer} />
           <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
         </div>

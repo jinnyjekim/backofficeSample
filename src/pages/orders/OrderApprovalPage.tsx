@@ -139,9 +139,9 @@ export function OrderApprovalPage() {
 
           <div className={styles.filterBox}>
             <div className={styles.filterRow1}>
-              <select className={styles.selectSm} defaultValue="전체">
+              <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
                 <option>전체</option><option>주문번호</option><option>발주번호</option><option>거래처명</option><option>요청자</option>
-              </select>
+              </select></label>
               <input
                 className={styles.searchInput}
                 value={q}
@@ -151,15 +151,15 @@ export function OrderApprovalPage() {
               <button type="button" className={styles.searchBtn}>검색</button>
             </div>
             <div className={styles.filterRow2}>
-              <select className={styles.selectXs} defaultValue="요청자 전체">
+              <label className="globalFilterField"><span>요청자</span><select aria-label="요청자" className={styles.selectXs} defaultValue="요청자 전체">
                 <option>요청자 전체</option><option>admin01</option><option>admin02</option>
-              </select>
-              <select className={styles.selectXs} defaultValue="승인자 전체">
+              </select></label>
+              <label className="globalFilterField"><span>승인자</span><select aria-label="승인자" className={styles.selectXs} defaultValue="승인자 전체">
                 <option>승인자 전체</option><option>admin03</option><option>admin05</option>
-              </select>
-              <select className={styles.selectXs} defaultValue="거래처 전체">
+              </select></label>
+              <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectXs} defaultValue="거래처 전체">
                 <option>거래처 전체</option><option>회사 01</option><option>회사 02</option>
-              </select>
+              </select></label>
               <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
               <div className={styles.rowSpacer} />
               <button type="button" className={styles.resetBtn} onClick={() => { setFilter('승인대기'); setQ(''); }}>초기화</button>
@@ -169,7 +169,7 @@ export function OrderApprovalPage() {
           <div className={styles.resultRow}>
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
-              <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+              <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
               <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option><option>50개씩 보기</option>
               </select>

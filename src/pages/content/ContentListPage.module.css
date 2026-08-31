@@ -1,3 +1,362 @@
+.stepLabel {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 2px 9px;
+}
+
+.stepNum {
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  flex: none;
+  border-radius: 5px;
+  background: #e4e4e7;
+  color: #52525b;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.stepTitle {
+  color: #18181b;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.stepHint {
+  color: #8b8b93;
+  font-size: 11.5px;
+}
+
+.appliedCount {
+  margin-left: auto;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 10.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.filterPanel {
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 11px;
+  background: #fff;
+}
+
+.searchLine {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  min-height: 54px;
+  padding: 9px 11px;
+}
+
+.searchScope,
+.filterControl select {
+  height: 34px;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 9px;
+  outline: 0;
+  background-color: #fff;
+  background-image: linear-gradient(45deg, transparent 50%, #71717a 50%), linear-gradient(135deg, #71717a 50%, transparent 50%);
+  background-position: calc(100% - 16px) 14px, calc(100% - 12px) 14px;
+  background-repeat: no-repeat;
+  background-size: 4px 4px, 4px 4px;
+  color: #3f3f46;
+  font: inherit;
+  font-size: 12.5px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.searchScope {
+  width: 118px;
+  flex: none;
+  padding: 0 32px 0 11px;
+}
+
+.searchScope:focus,
+.filterControl select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 10%, transparent);
+}
+
+.searchField {
+  max-width: none;
+}
+
+.searchActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.detailButton,
+.resetButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  flex: none;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: #fff;
+  color: #52525b;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.detailButton:hover,
+.resetButton:not(:disabled):hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  background: #fafafa;
+  color: #18181b;
+}
+
+.detailButton.hasFilter {
+  border-color: rgba(79, 70, 229, 0.22);
+  background: #f7f8ff;
+  color: #4338ca;
+}
+
+.detailCount {
+  display: grid;
+  place-items: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.resetButton:disabled {
+  color: #c4c4c8;
+  cursor: default;
+}
+
+.primaryFilters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 240px));
+  gap: 10px;
+  padding: 11px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fbfbfc;
+}
+
+.filterControl {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.filterControl > span {
+  color: #71717a;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.filterControl select {
+  width: 100%;
+  padding: 0 32px 0 10px;
+}
+
+.advancedPanel {
+  padding: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  background: #f7f7f8;
+}
+
+.advancedHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 1px 10px;
+}
+
+.advancedHead strong {
+  color: #3f3f46;
+  font-size: 11.5px;
+}
+
+.advancedHead span {
+  color: #a1a1aa;
+  font-size: 11px;
+}
+
+.advancedGrid {
+  display: grid;
+  grid-template-columns: minmax(300px, 1.5fr) repeat(3, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+.dateRange {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.wideDateControl {
+  grid-column: span 2;
+}
+
+.dateRange > span {
+  color: #a1a1aa;
+  font-size: 11px;
+}
+
+.appliedFilters {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  border-top: 1px solid rgba(79, 70, 229, 0.1);
+  background: #fafaff;
+}
+
+.appliedLabel {
+  color: #71717a;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.chipList {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.filterChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 27px;
+  padding: 4px 8px 4px 10px;
+  border: 1px solid rgba(79, 70, 229, 0.18);
+  border-radius: 8px;
+  background: #eef2ff;
+  color: #4338ca;
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.filterChip:hover {
+  border-color: rgba(79, 70, 229, 0.35);
+}
+
+.filterChip span {
+  color: #818cf8;
+  font-size: 13px;
+}
+
+.clearAllButton {
+  padding: 5px 4px;
+  border: 0;
+  background: transparent;
+  color: #71717a;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.clearAllButton:hover {
+  color: #18181b;
+}
+
+.resultStep {
+  margin-top: 17px;
+  margin-bottom: 0;
+}
+
+.listArea {
+  margin-top: 8px;
+}
+
+@media (max-width: 980px) {
+  .searchLine {
+    flex-wrap: wrap;
+  }
+
+  .searchField {
+    max-width: none;
+  }
+
+  .searchActions {
+    margin-left: 0;
+  }
+
+  .advancedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dateControl {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  .stepHint {
+    display: none;
+  }
+
+  .searchScope {
+    width: 104px;
+  }
+
+  .searchField {
+    min-width: calc(100% - 112px);
+  }
+
+  .searchActions {
+    width: 100%;
+  }
+
+  .detailButton,
+  .resetButton {
+    flex: 1;
+  }
+
+  .primaryFilters,
+  .advancedGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .dateControl {
+    grid-column: auto;
+  }
+
+  .dateRange {
+    flex-wrap: wrap;
+  }
+
+  .appliedFilters {
+    grid-template-columns: 1fr auto;
+  }
+
+  .chipList {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
 .previewAside {
   position: absolute;
   top: 0;

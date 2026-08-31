@@ -119,14 +119,14 @@ export function QuoteHistoryPage() {
 
           <div className={styles.filterBox}>
             <div className={styles.filterRow1}>
-              <select className={styles.selectSm}>
+              <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm}>
                 <option>전체</option>
                 <option>견적번호</option>
                 <option>거래처명</option>
                 <option>상품명</option>
                 <option>내부 담당자</option>
                 <option>주문번호</option>
-              </select>
+              </select></label>
               <input
                 className={styles.searchInput}
                 value={q}
@@ -136,23 +136,23 @@ export function QuoteHistoryPage() {
               <button type="button" className={styles.searchBtn}>검색</button>
             </div>
             <div className={styles.filterRow2}>
-              <select className={styles.selectXs}>
+              <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectXs}>
                 <option>거래처 전체</option>
                 <option>회사 01</option>
                 <option>회사 02</option>
                 <option>㈜한빛물산</option>
-              </select>
-              <select className={styles.selectXs}>
+              </select></label>
+              <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={styles.selectXs}>
                 <option>담당자 전체</option>
                 <option>admin01</option>
                 <option>admin02</option>
                 <option>admin03</option>
-              </select>
-              <select className={styles.selectXs}>
+              </select></label>
+              <label className="globalFilterField"><span>견적 버전</span><select aria-label="견적 버전" className={styles.selectXs}>
                 <option>Version 전체</option>
                 <option>1회 작성</option>
                 <option>재견적 있음</option>
-              </select>
+              </select></label>
               <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
               <div className={styles.rowSpacer} />
               <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
@@ -162,7 +162,7 @@ export function QuoteHistoryPage() {
           <div className={styles.resultRow}>
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
-              <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+              <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
               <select className={styles.pageSizeSelect}>
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>

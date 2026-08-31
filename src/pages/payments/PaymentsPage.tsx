@@ -158,14 +158,14 @@ export function PaymentsPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <select className={styles.selectSm}>
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm}>
               <option>전체</option>
               <option>결제번호</option>
               <option>거래처명</option>
               <option>주문번호</option>
               <option>청구번호</option>
               <option>입금자명</option>
-            </select>
+            </select></label>
             <input
               className={styles.searchInput}
               value={q}
@@ -175,23 +175,23 @@ export function PaymentsPage() {
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
-            <select className={styles.selectXs}>
+            <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectXs}>
               <option>거래처 전체</option>
               <option>회사 01</option>
               <option>회사 02</option>
-            </select>
-            <select className={styles.selectXs}>
+            </select></label>
+            <label className="globalFilterField"><span>결제수단</span><select aria-label="결제수단" className={styles.selectXs}>
               <option>결제수단 전체</option>
               <option>계좌이체</option>
               <option>무통장입금</option>
               <option>카드</option>
-            </select>
-            <select className={styles.selectXs}>
+            </select></label>
+            <label className="globalFilterField"><span>매칭상태</span><select aria-label="매칭상태" className={styles.selectXs}>
               <option>매칭상태 전체</option>
               <option>매칭완료</option>
               <option>일부매칭</option>
               <option>미매칭</option>
-            </select>
+            </select></label>
             <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
@@ -201,7 +201,7 @@ export function PaymentsPage() {
         <div className={styles.resultBar}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.selectXs}>
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

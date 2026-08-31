@@ -216,10 +216,10 @@ export function ReviewsListPage() {
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <select className={styles.selectSm} value={ratingFilter} onChange={(e) => setRatingFilter(e.target.value)}>
+            <label className="globalFilterField"><span>평점</span><select aria-label="평점" className={styles.selectSm} value={ratingFilter} onChange={(e) => setRatingFilter(e.target.value)}>
               <option value="">평점 전체</option>
               {[5, 4, 3, 2, 1].map((n) => <option key={n} value={n}>{'★'.repeat(n)}</option>)}
-            </select>
+            </select></label>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>
@@ -228,7 +228,7 @@ export function ReviewsListPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
           </div>
         </div>
       </div>
@@ -238,7 +238,7 @@ export function ReviewsListPage() {
           <span className={styles.bulkLabel}>{selectedIds.length}건 선택됨</span>
           <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkExposure', expose: true })}>선택 노출</button>
           <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkExposure', expose: false })}>선택 비노출</button>
-          <button type="button" className={styles.bulkBtn} onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
+          <button type="button" className={styles.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
         </div>
       )}
 

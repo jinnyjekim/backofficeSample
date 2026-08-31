@@ -129,11 +129,11 @@ export function CreditTermsPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.searchRow}>
-            <select className={styles.scopeSelect} defaultValue={SEARCH_SCOPES[0]}>
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.scopeSelect} defaultValue={SEARCH_SCOPES[0]}>
               {SEARCH_SCOPES.map((s) => (
                 <option key={s}>{s}</option>
               ))}
-            </select>
+            </select></label>
             <input
               className={styles.searchInput}
               value={q}
@@ -143,35 +143,35 @@ export function CreditTermsPage() {
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow}>
-            <select className={styles.smallSelect} defaultValue="신용거래 전체">
+            <label className="globalFilterField"><span>신용거래</span><select aria-label="신용거래" className={styles.smallSelect} defaultValue="신용거래 전체">
               <option>신용거래 전체</option>
               <option>허용</option>
               <option>미허용</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="결제방식 전체">
+            </select></label>
+            <label className="globalFilterField"><span>결제방식</span><select aria-label="결제방식" className={styles.smallSelect} defaultValue="결제방식 전체">
               <option>결제방식 전체</option>
               <option>선결제</option>
               <option>후불</option>
               <option>혼합</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="한도상태 전체">
+            </select></label>
+            <label className="globalFilterField"><span>한도상태</span><select aria-label="한도상태" className={styles.smallSelect} defaultValue="한도상태 전체">
               <option>한도상태 전체</option>
               <option>정상</option>
               <option>임박</option>
               <option>초과</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="거래상태 전체">
+            </select></label>
+            <label className="globalFilterField"><span>거래상태</span><select aria-label="거래상태" className={styles.smallSelect} defaultValue="거래상태 전체">
               <option>거래상태 전체</option>
               <option>거래중</option>
               <option>거래중지</option>
               <option>거래종료</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="내부담당자 전체">
+            </select></label>
+            <label className="globalFilterField"><span>내부담당자</span><select aria-label="내부담당자" className={styles.smallSelect} defaultValue="내부담당자 전체">
               <option>내부담당자 전체</option>
               <option>admin1</option>
               <option>admin2</option>
               <option>admin3</option>
-            </select>
+            </select></label>
             <button type="button" className={styles.moreFilterBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={clearAll}>초기화</button>
@@ -181,7 +181,7 @@ export function CreditTermsPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}개 거래처</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

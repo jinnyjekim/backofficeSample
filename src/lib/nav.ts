@@ -316,8 +316,8 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { key: 'stats', icon: BarChart3, label: '통계', to: '/stats/overview' },
       { key: 'stats_overview', sub: true, label: '통합 통계', to: '/stats/overview' },
-      { key: 'stats_sales', sub: true, label: '매출 분석', to: '/stats/sales', business: 'B' },
-      { key: 'stats_inventory', sub: true, label: '재고 분석', to: '/stats/inventory', business: 'B' },
+      { key: 'stats_sales', sub: true, label: '매출 분석', to: '/stats/sales' },
+      { key: 'stats_inventory', sub: true, label: '재고 분석', to: '/stats/inventory' },
       { key: 'stats_delivery_claims', sub: true, label: '배송/클레임 분석', to: '/stats/delivery-claims', business: 'B' },
       { key: 'stats_promotions', sub: true, label: '프로모션 분석', to: '/stats/promotions', business: 'B' },
       { key: 'stats_customers', sub: true, label: '고객 구매 분석', to: '/stats/customers', business: 'B' },

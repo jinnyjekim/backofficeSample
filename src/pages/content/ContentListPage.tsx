@@ -1,4 +1,6 @@
 import { DatePicker } from '../../components/forms/DatePicker';
+import { SearchField } from '../../components/SearchField';
+import { ChevronDown, ChevronUp, RotateCcw, SlidersHorizontal } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import sh from './contentShared.module.css';
@@ -13,7 +15,7 @@ import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType
 const GRID_TEMPLATE = 'minmax(230px,2fr) 104px 96px 74px 62px 62px 74px 72px 34px';
 const FIELD_OPTIONS = ['전체', '콘텐츠 ID', '제목', '작성자'];
 const STATUS_OPTIONS: ContentStatus[] = ['공개', '비공개', '임시저장', '예약', '삭제'];
-const SUMMARY_LABELS = ['전체', '공개', '비공개', '임시저장', '예약', '검수대기'] as const;
+const SUMMARY_LABELS = ['공개', '비공개', '임시저장', '예약', '검수대기', '전체'] as const;
 
 interface Chip {
   key: string;
@@ -29,6 +31,33 @@ interface EditDraft {
   review: ContentItem['review'];
   expose: ContentItem['expose'];
 }
+
+interface CreateDraft {
+  contentKind: string;
+  audience: string;
+  title: string;
+  desc: string;
+  cat: string;
+  expose: ContentItem['expose'];
+}
+
+const CREATE_OPTIONS: Record<ContentBusinessType, { kinds: string[]; audiences: string[]; categories: string[] }> = {
+  B2C: {
+    kinds: ['기획 콘텐츠', '이벤트 안내', '브랜드 콘텐츠', '상품 가이드'],
+    audiences: ['전체 고객', '일반 회원', 'VIP 고객'],
+    categories: ['기획전', '이벤트', '브랜드', '상품 가이드'],
+  },
+  C2C: {
+    kinds: ['운영 공지', '커뮤니티 가이드', '안전 거래 안내'],
+    audiences: ['전체 회원', '판매 회원', '구매 회원'],
+    categories: ['공지', '이용 가이드', '안전 거래'],
+  },
+  B2B: {
+    kinds: ['거래처 공지', '업무 가이드', '매뉴얼', '업무 자료'],
+    audiences: ['전체 거래처', '거래처 관리자', '구매 담당자'],
+    categories: ['거래처 공지', '업무 자료', '매뉴얼'],
+  },
+};
 
 const USER_SITE_URL = ((import.meta.env.VITE_USER_SITE_URL as string | undefined) ?? 'https://service.example.com').replace(/\/$/, '');
 
@@ -51,8 +80,8 @@ export function ContentListPage() {
   const [exposeFilter, setExposeFilter] = useState('전체');
   const [recFilter, setRecFilter] = useState('전체');
   const [adv, setAdv] = useState(false);
-  const [from, setFrom] = useState('2026-07-01');
-  const [to, setTo] = useState('2026-08-13');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
   const [sel, setSel] = useState<string[]>([]);
   const [allPages, setAllPages] = useState(false);
   const [previewId, setPreviewId] = useState<string | null>(initialPreviewId);
@@ -61,12 +90,17 @@ export function ContentListPage() {
   const [sortDesc, setSortDesc] = useState(true);
   const [page, setPage] = useState(1);
   const [editDraft, setEditDraft] = useState<EditDraft | null>(null);
+  const [createDraft, setCreateDraft] = useState<CreateDraft | null>(null);
   const [requestId, setRequestId] = useState<string | null>(null);
   const [requestText, setRequestText] = useState('운영 정책에 맞게 콘텐츠 내용을 수정한 후 다시 검수를 요청해 주세요.');
   const [toast, setToast] = useState('');
 
   const modeData = useMemo(() => data.filter((item) => item.businessType === businessMode), [businessMode, data]);
   const categories = useMemo(() => Array.from(new Set(modeData.map((r) => r.cat))), [modeData]);
+  const createCategories = useMemo(
+    () => Array.from(new Set([...CREATE_OPTIONS[businessMode].categories, ...categories])),
+    [businessMode, categories],
+  );
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -84,11 +118,14 @@ export function ContentListPage() {
         if (recFilter === '추천만' && r.expose !== '추천') return false;
         if (recFilter === '추천 제외' && r.expose === '추천') return false;
       }
+      const created = r.created.replace(/\./g, '-');
+      if (from && created < from) return false;
+      if (to && created > to) return false;
       return true;
     });
     list = list.slice().sort((a, b) => (sortDesc ? (a.updated < b.updated ? 1 : -1) : a.updated > b.updated ? 1 : -1));
     return list;
-  }, [modeData, q, field, status, catFilter, reviewFilter, exposeFilter, utypeFilter, recFilter, sortDesc]);
+  }, [modeData, q, field, status, catFilter, reviewFilter, exposeFilter, utypeFilter, recFilter, from, to, sortDesc]);
 
   const sel_ = sel.filter((id) => filtered.some((r) => r.id === id));
 
@@ -100,14 +137,20 @@ export function ContentListPage() {
   if (exposeFilter !== '전체') chips.push({ key: 'expose', label: `노출: ${exposeFilter}`, clear: () => setExposeFilter('전체') });
   if (utypeFilter !== '전체') chips.push({ key: 'utype', label: `등록자: ${utypeFilter}`, clear: () => setUtypeFilter('전체') });
   if (recFilter !== '전체') chips.push({ key: 'rec', label: `추천: ${recFilter}`, clear: () => setRecFilter('전체') });
-  if (from !== '2026-07-01' || to !== '2026-08-13') {
-    chips.push({ key: 'date', label: `등록일: ${from.replace(/-/g, '.')} ~ ${to.replace(/-/g, '.')}`, clear: () => { setFrom('2026-07-01'); setTo('2026-08-13'); } });
+  if (from || to) {
+    chips.push({
+      key: 'date',
+      label: `등록일: ${from ? from.replace(/-/g, '.') : '시작일'} ~ ${to ? to.replace(/-/g, '.') : '종료일'}`,
+      clear: () => { setFrom(''); setTo(''); },
+    });
   }
+
+  const detailFilterCount = [utypeFilter !== '전체', exposeFilter !== '전체', recFilter !== '전체', Boolean(from || to)].filter(Boolean).length;
 
   function resetAll() {
     setField('전체'); setQ(''); setStatus('전체'); setReviewFilter('전체'); setCatFilter('전체');
     setUtypeFilter('전체'); setExposeFilter('전체'); setRecFilter('전체'); setAdv(false);
-    setFrom('2026-07-01'); setTo('2026-08-13'); setSel([]); setAllPages(false);
+    setFrom(''); setTo(''); setSel([]); setAllPages(false);
   }
 
   function switchBusiness(next: ContentBusinessType) {
@@ -116,6 +159,7 @@ export function ContentListPage() {
     resetAll();
     setPreviewId(null);
     setEditDraft(null);
+    setCreateDraft(null);
     setRequestId(null);
     setConfirmId(null);
     setMenuId(null);
@@ -152,11 +196,65 @@ export function ContentListPage() {
     setToast(message);
   }
 
+  function bulkChangeStatus(nextStatus: ContentStatus) {
+    const targets = new Set(sel_);
+    setData((prev) => prev.map((item) => targets.has(item.id) ? { ...item, status: nextStatus } : item));
+    flash(`${targets.size}개 콘텐츠의 공개 상태를 '${nextStatus}'(으)로 변경했습니다.`);
+  }
+
+  function bulkChangeCategory(nextCategory: string) {
+    const targets = new Set(sel_);
+    setData((prev) => prev.map((item) => targets.has(item.id) ? {
+      ...item,
+      cat: nextCategory,
+      cats: [nextCategory, ...item.cats.filter((category) => category !== nextCategory && category !== item.cat)],
+    } : item));
+    flash(`${targets.size}개 콘텐츠의 카테고리를 '${nextCategory}'(으)로 변경했습니다.`);
+  }
+
+  function bulkChangeExposure(nextExposure: ContentItem['expose']) {
+    const targets = new Set(sel_);
+    setData((prev) => prev.map((item) => targets.has(item.id) ? { ...item, expose: nextExposure } : item));
+    flash(`${targets.size}개 콘텐츠의 노출 방식을 '${nextExposure}'(으)로 변경했습니다.`);
+  }
+
+  function downloadExcel() {
+    const targets = sel_.length > 0 ? filtered.filter((item) => sel_.includes(item.id)) : filtered;
+    const columns = ['콘텐츠 ID', '비즈니스 타입', '제목', '콘텐츠 유형', '카테고리', '작성자', '등록자 유형', '공개 상태', '검수 상태', '노출 방식', '공개 대상', '등록일', '수정일', '조회수', '본문 요약'];
+    const values = targets.map((item) => [
+      item.id, item.businessType, item.title, item.contentKind, item.cat, item.author, item.utype,
+      item.status, item.review, item.expose, item.audience, item.created, item.updated, item.views, item.desc,
+    ]);
+    const escapeCell = (value: string) => `"${value.replaceAll('"', '""')}"`;
+    const csv = [columns, ...values].map((row) => row.map(escapeCell).join(',')).join('\r\n');
+    const url = URL.createObjectURL(new Blob([`\ufeff${csv}`], { type: 'text/csv;charset=utf-8' }));
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `content-list-${businessMode}-${new Date().toISOString().slice(0, 10).replaceAll('-', '')}.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+    flash(`${targets.length}개 콘텐츠를 Excel용 CSV로 다운로드했습니다.`);
+  }
+
   useEffect(() => {
     if (!toast) return;
     const timer = window.setTimeout(() => setToast(''), 2400);
     return () => window.clearTimeout(timer);
   }, [toast]);
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const focusSearch = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isEditing = target?.matches('input, textarea, select, [contenteditable="true"]');
+      if (event.key === '/' && !isEditing) {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', focusSearch);
+    return () => window.removeEventListener('keydown', focusSearch);
+  }, []);
 
   function openServicePreview(item: ContentItem) {
     const path = item.status === '공개' ? `/contents/${item.id}` : `/preview/contents/${item.id}`;
@@ -166,6 +264,7 @@ export function ContentListPage() {
   }
 
   function startEdit(item: ContentItem) {
+    setCreateDraft(null);
     setPreviewId(item.id);
     setEditDraft({ title: item.title, desc: item.desc, cat: item.cat, status: item.status, review: item.review, expose: item.expose });
     setMenuId(null);
@@ -210,9 +309,64 @@ export function ContentListPage() {
     setPreviewId(null);
   }
 
+  function startCreate() {
+    const options = CREATE_OPTIONS[businessMode];
+    setPreviewId(null);
+    setEditDraft(null);
+    setRequestId(null);
+    setConfirmId(null);
+    setMenuId(null);
+    setCreateDraft({
+      contentKind: options.kinds[0],
+      audience: options.audiences[0],
+      title: '',
+      desc: '',
+      cat: options.categories[0],
+      expose: '일반',
+    });
+  }
+
+  function saveCreate(asDraft: boolean) {
+    if (!createDraft?.title.trim() || !createDraft.desc.trim()) return;
+    const nextNumber = Math.max(10284, ...data.map((item) => Number(item.id.replace(/\D/g, '')) || 0)) + 1;
+    const id = `C${nextNumber}`;
+    const today = new Intl.DateTimeFormat('ko-KR', {
+      timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(new Date()).replace(/\. /g, '.').replace(/\.$/, '');
+    const next: ContentItem = {
+      id,
+      businessType: businessMode,
+      contentKind: createDraft.contentKind,
+      audience: createDraft.audience,
+      title: createDraft.title.trim(),
+      cat: createDraft.cat,
+      cats: [createDraft.cat],
+      author: 'admin01',
+      uid: 'A0001',
+      ujoin: '2023.11.10',
+      utype: '관리자',
+      status: asDraft ? '임시저장' : '비공개',
+      review: asDraft ? '—' : '대기',
+      expose: createDraft.expose,
+      updated: today,
+      created: today,
+      views: '—',
+      desc: createDraft.desc.trim(),
+      tint: businessMode === 'B2C' ? '#fde8ef' : businessMode === 'C2C' ? '#eeeaf7' : '#e6ecfb',
+    };
+    setData((prev) => [next, ...prev]);
+    setCreateDraft(null);
+    resetAll();
+    setPage(1);
+    setPreviewId(id);
+    flash(asDraft ? '콘텐츠를 임시저장했습니다.' : '콘텐츠를 등록하고 검수를 요청했습니다.');
+  }
+
   const preview = previewId ? data.find((r) => r.id === previewId) ?? null : null;
   const previewAsideRef = useRef<HTMLElement>(null);
   useOutsideClose(previewAsideRef, closeDetail, !!preview && !requestId && !confirmId);
+  const createAsideRef = useRef<HTMLElement>(null);
+  useOutsideClose(createAsideRef, () => setCreateDraft(null), !!createDraft);
   const confirmTarget = confirmId ? data.find((r) => r.id === confirmId) ?? null : null;
   const requestTarget = requestId ? data.find((r) => r.id === requestId) ?? null : null;
 
@@ -287,8 +441,8 @@ export function ContentListPage() {
 
   const pages: PageBtn[] = ['1', '2', '3', '4', '5'].map((label) => ({ label, active: String(page) === label, onClick: () => setPage(parseInt(label, 10)) }));
 
-  const isEmptySearch = filtered.length === 0 && (q.trim() !== '' || chips.length > 1);
-  const isEmptyAll = filtered.length === 0 && q.trim() === '' && chips.length <= 1;
+  const isEmptySearch = filtered.length === 0 && chips.length > 0;
+  const isEmptyAll = filtered.length === 0 && chips.length === 0;
 
   const showBanner = sel_.length === filtered.length && filtered.length > 0 && !allPages;
 
@@ -338,6 +492,64 @@ export function ContentListPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {createDraft && (
+        <aside ref={createAsideRef} className={styles.previewAside} aria-label="콘텐츠 등록">
+          <div className={styles.previewHead}>
+            <span className={styles.previewHeadTitle}>콘텐츠 등록</span>
+            <button type="button" className={styles.previewClose} onClick={() => setCreateDraft(null)} aria-label="닫기">×</button>
+          </div>
+          <div className={styles.previewBody}>
+            <div className={styles.editForm}>
+              <div className={styles.editContext}>
+                <span>{businessMode} 관리자 콘텐츠</span>
+                <strong>신규 등록</strong>
+                <small>등록한 콘텐츠는 비공개 상태로 저장되고 검수 대기 목록에 추가됩니다.</small>
+              </div>
+              <div className={styles.editGrid}>
+                <label className={styles.editField}>
+                  <span>콘텐츠 유형 *</span>
+                  <select value={createDraft.contentKind} onChange={(e) => setCreateDraft({ ...createDraft, contentKind: e.target.value })}>
+                    {CREATE_OPTIONS[businessMode].kinds.map((item) => <option key={item}>{item}</option>)}
+                  </select>
+                </label>
+                <label className={styles.editField}>
+                  <span>대상 / 공개 범위 *</span>
+                  <select value={createDraft.audience} onChange={(e) => setCreateDraft({ ...createDraft, audience: e.target.value })}>
+                    {CREATE_OPTIONS[businessMode].audiences.map((item) => <option key={item}>{item}</option>)}
+                  </select>
+                </label>
+              </div>
+              <label className={styles.editField}>
+                <span>제목 *</span>
+                <input value={createDraft.title} onChange={(e) => setCreateDraft({ ...createDraft, title: e.target.value })} placeholder="콘텐츠 제목을 입력하세요." autoFocus />
+              </label>
+              <label className={styles.editField}>
+                <span>본문 요약 *</span>
+                <textarea value={createDraft.desc} onChange={(e) => setCreateDraft({ ...createDraft, desc: e.target.value })} placeholder="목록과 상세 화면에 표시할 콘텐츠 내용을 입력하세요." />
+              </label>
+              <div className={styles.editGrid}>
+                <label className={styles.editField}>
+                  <span>대표 카테고리 *</span>
+                  <select value={createDraft.cat} onChange={(e) => setCreateDraft({ ...createDraft, cat: e.target.value })}>
+                    {createCategories.map((cat) => <option key={cat}>{cat}</option>)}
+                  </select>
+                </label>
+                <label className={styles.editField}>
+                  <span>노출 방식</span>
+                  <select value={createDraft.expose} onChange={(e) => setCreateDraft({ ...createDraft, expose: e.target.value as ContentItem['expose'] })}>
+                    {(['일반', '추천', '고정'] as ContentItem['expose'][]).map((item) => <option key={item}>{item}</option>)}
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div className={styles.previewFooter}>
+            <button type="button" className={styles.previewFooterBtn} disabled={!createDraft.title.trim() || !createDraft.desc.trim()} onClick={() => saveCreate(true)}>임시저장</button>
+            <button type="button" className={styles.previewFooterBtnSolid} disabled={!createDraft.title.trim() || !createDraft.desc.trim()} onClick={() => saveCreate(false)}>등록 및 검수 요청</button>
+          </div>
+        </aside>
       )}
 
       {preview && (
@@ -459,12 +671,12 @@ export function ContentListPage() {
           note={CONTENT_BUSINESS_META[businessMode].listNote}
         />
         <div className={sh.headerSpacer} />
-        <button type="button" className={sh.primaryBtn}>＋ 콘텐츠 등록</button>
+        <button type="button" className={sh.primaryBtn} onClick={startCreate}>＋ 콘텐츠 등록</button>
       </header>
 
       <div className={sh.body}>
         <div className={sh.topPad}>
-          <div className={sh.quickFilters}>
+          <nav className={sh.quickFilters} aria-label="콘텐츠 상태 보기">
             {SUMMARY_LABELS.map((label) => {
               const on = label === '검수대기' ? reviewFilter === '대기' : label === '전체' ? status === '전체' && reviewFilter === '전체' : status === label;
               return (
@@ -474,104 +686,158 @@ export function ContentListPage() {
                 </button>
               );
             })}
+          </nav>
+
+          <div className={styles.stepLabel}>
+            <span className={styles.stepNum}>1</span>
+            <span className={styles.stepTitle}>조건 설정</span>
+            <span className={styles.stepHint}>검색어와 자주 쓰는 조건을 먼저 선택하세요.</span>
+            {chips.length > 0 && <span className={styles.appliedCount}>{chips.length}개 조건 적용</span>}
           </div>
 
-          <div className={sh.filterBox}>
-            <div className={sh.searchRow}>
-              <select className={sh.selectField} value={field} onChange={(e) => setField(e.target.value)}>
+          <div className={styles.filterPanel}>
+            <div className={styles.searchLine}>
+              <label className="globalFilterField"><span>검색 범위</span><select className={styles.searchScope} aria-label="검색 범위" value={field} onChange={(e) => setField(e.target.value)}>
                 {FIELD_OPTIONS.map((f) => <option key={f} value={f}>{f}</option>)}
-              </select>
-              <input className={sh.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="검색어를 입력하고 Enter" />
-              <button type="button" className={sh.searchBtn}>검색</button>
+              </select></label>
+              <SearchField
+                ref={searchInputRef}
+                className={styles.searchField}
+                value={q}
+                onValueChange={(value) => { setQ(value); setSel([]); }}
+                placeholder="콘텐츠 ID, 제목 또는 작성자를 검색하세요"
+                shortcutHint="/"
+                aria-label="콘텐츠 검색"
+              />
+              <div className={styles.searchActions}>
+                <button type="button" className={`${styles.detailButton} ${detailFilterCount > 0 ? styles.hasFilter : ''}`} onClick={() => setAdv((v) => !v)} aria-expanded={adv}>
+                  <SlidersHorizontal size={14} aria-hidden="true" />
+                  상세 필터
+                  {detailFilterCount > 0 && <span className={styles.detailCount}>{detailFilterCount}</span>}
+                  {adv ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
+                </button>
+                <button type="button" className={styles.resetButton} onClick={resetAll} disabled={chips.length === 0}>
+                  <RotateCcw size={13} aria-hidden="true" />
+                  초기화
+                </button>
+              </div>
             </div>
 
-            <div className={sh.filterRow}>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>상태</span>
-                <select className={sh.smallSelect} value={status} onChange={(e) => { setStatus(e.target.value); setSel([]); }}>
-                  {['전체', ...STATUS_OPTIONS].map((o) => <option key={o} value={o}>{o}</option>)}
-                </select>
-              </div>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>카테고리</span>
-                <select className={sh.smallSelect} value={catFilter} onChange={(e) => { setCatFilter(e.target.value); setSel([]); }}>
+            <div className={styles.primaryFilters}>
+              <label className={styles.filterControl}>
+                <span>카테고리</span>
+                <select value={catFilter} onChange={(e) => { setCatFilter(e.target.value); setSel([]); }}>
                   {['전체', ...categories].map((o) => <option key={o} value={o}>{o}</option>)}
                 </select>
-              </div>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>검수 상태</span>
-                <select className={sh.smallSelect} value={reviewFilter} onChange={(e) => { setReviewFilter(e.target.value); setSel([]); }}>
+              </label>
+              <label className={styles.filterControl}>
+                <span>검수 상태</span>
+                <select value={reviewFilter} onChange={(e) => { setReviewFilter(e.target.value); setSel([]); }}>
                   {['전체', '승인', '대기', '반려'].map((o) => <option key={o} value={o}>{o}</option>)}
                 </select>
-              </div>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>등록일</span>
-                <DatePicker className={sh.dateInput} value={from} onChange={(e) => setFrom(e.target.value)} />
-                <span className={sh.dateSep}>~</span>
-                <DatePicker className={sh.dateInput} value={to} onChange={(e) => setTo(e.target.value)} />
-              </div>
+              </label>
             </div>
 
             {adv && (
-              <div className={sh.filterRow} style={{ paddingTop: 10, borderTop: '1px dashed rgba(0,0,0,.1)' }}>
-                <div className={sh.filterField}>
-                  <span className={sh.filterFieldLabel}>등록자 유형</span>
-                  <select className={sh.smallSelect} value={utypeFilter} onChange={(e) => { setUtypeFilter(e.target.value); setSel([]); }}>
-                    {['전체', '회원', '관리자'].map((o) => <option key={o} value={o}>{o}</option>)}
-                  </select>
+              <div className={styles.advancedPanel}>
+                <div className={styles.advancedHead}>
+                  <strong>상세 조건</strong>
+                  <span>필요한 경우에만 추가 조건을 설정하세요.</span>
                 </div>
-                <div className={sh.filterField}>
-                  <span className={sh.filterFieldLabel}>노출 상태</span>
-                  <select className={sh.smallSelect} value={exposeFilter} onChange={(e) => { setExposeFilter(e.target.value); setSel([]); }}>
-                    {['전체', '일반', '추천', '고정'].map((o) => <option key={o} value={o}>{o}</option>)}
-                  </select>
-                </div>
-                <div className={sh.filterField}>
-                  <span className={sh.filterFieldLabel}>추천 여부</span>
-                  <select className={sh.smallSelect} value={recFilter} onChange={(e) => { setRecFilter(e.target.value); setSel([]); }}>
-                    {['전체', '추천만', '추천 제외'].map((o) => <option key={o} value={o}>{o}</option>)}
-                  </select>
+                <div className={styles.advancedGrid}>
+                  <label className={`${styles.filterControl} ${styles.dateControl}`}>
+                    <span>등록일</span>
+                    <div className={styles.dateRange}>
+                      <DatePicker controlSize="sm" value={from} onChange={(e) => {
+                        const value = e.target.value;
+                        setFrom(value);
+                        if (value && to && value > to) setTo(value);
+                        setSel([]);
+                      }} />
+                      <span>~</span>
+                      <DatePicker controlSize="sm" value={to} onChange={(e) => {
+                        const value = e.target.value;
+                        setTo(value);
+                        if (value && from && value < from) setFrom(value);
+                        setSel([]);
+                      }} />
+                    </div>
+                  </label>
+                  <label className={styles.filterControl}>
+                    <span>등록자 유형</span>
+                    <select value={utypeFilter} onChange={(e) => { setUtypeFilter(e.target.value); setSel([]); }}>
+                      {['전체', '회원', '관리자'].map((o) => <option key={o} value={o}>{o}</option>)}
+                    </select>
+                  </label>
+                  <label className={styles.filterControl}>
+                    <span>노출 상태</span>
+                    <select value={exposeFilter} onChange={(e) => { setExposeFilter(e.target.value); setSel([]); }}>
+                      {['전체', '일반', '추천', '고정'].map((o) => <option key={o} value={o}>{o}</option>)}
+                    </select>
+                  </label>
+                  <label className={styles.filterControl}>
+                    <span>추천 여부</span>
+                    <select value={recFilter} onChange={(e) => { setRecFilter(e.target.value); setSel([]); }}>
+                      {['전체', '추천만', '추천 제외'].map((o) => <option key={o} value={o}>{o}</option>)}
+                    </select>
+                  </label>
                 </div>
               </div>
             )}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-              <button type="button" className={sh.dashedBtn} onClick={() => setAdv((v) => !v)}>{adv ? '상세 필터 −' : '상세 필터 +'}</button>
-              <div className={sh.rowSpacer} />
-              <button type="button" className={sh.resetBtn} onClick={resetAll}>초기화</button>
-            </div>
+            {chips.length > 0 && (
+              <div className={styles.appliedFilters}>
+                <span className={styles.appliedLabel}>적용된 조건</span>
+                <div className={styles.chipList}>
+                  {chips.map((c) => (
+                    <button key={c.key} type="button" className={styles.filterChip} onClick={c.clear} title={`${c.label} 조건 해제`}>
+                      {c.label}<span aria-hidden="true">×</span>
+                    </button>
+                  ))}
+                </div>
+                <button type="button" className={styles.clearAllButton} onClick={resetAll}>전체 해제</button>
+              </div>
+            )}
           </div>
 
-          {chips.length > 0 && (
-            <div className={sh.chipsRow}>
-              <span className={sh.chipsLabel}>적용된 조건</span>
-              {chips.map((c) => (
-                <button key={c.key} type="button" className={sh.chip} onClick={c.clear}>
-                  {c.label}<span className={sh.chipX}>×</span>
-                </button>
-              ))}
-              <button type="button" className={sh.clearAllBtn} onClick={resetAll}>전체 초기화</button>
-            </div>
-          )}
+          <div className={`${styles.stepLabel} ${styles.resultStep}`}>
+            <span className={styles.stepNum}>2</span>
+            <span className={styles.stepTitle}>조회 결과</span>
+            <span className={styles.stepHint}>행을 클릭하면 상세 내용을 확인할 수 있습니다.</span>
+          </div>
         </div>
 
-        <div className={sh.listArea}>
+        <div className={`${sh.listArea} ${styles.listArea}`}>
           <div className={sh.toolbarRow}>
             {sel_.length > 0 ? (
               <div className={sh.selBar}>
                 <span className={sh.selCount}>✓ {sel_.length}개 선택됨</span>
-                <button type="button" className={sh.selBtn}>공개 상태 변경 ▾</button>
-                <button type="button" className={sh.selBtn}>카테고리 변경</button>
-                <button type="button" className={sh.selBtn}>노출 설정 ▾</button>
+                <select className={sh.selSelect} value="" aria-label="선택 콘텐츠 공개 상태 변경" onChange={(e) => bulkChangeStatus(e.target.value as ContentStatus)}>
+                  <option value="" disabled>공개 상태 변경</option>
+                  <option value="공개">공개</option>
+                  <option value="비공개">비공개</option>
+                  <option value="임시저장">임시저장</option>
+                </select>
+                <select className={sh.selSelect} value="" aria-label="선택 콘텐츠 카테고리 변경" onChange={(e) => bulkChangeCategory(e.target.value)}>
+                  <option value="" disabled>카테고리 변경</option>
+                  {createCategories.map((category) => <option key={category} value={category}>{category}</option>)}
+                </select>
+                <select className={sh.selSelect} value="" aria-label="선택 콘텐츠 노출 방식 변경" onChange={(e) => bulkChangeExposure(e.target.value as ContentItem['expose'])}>
+                  <option value="" disabled>노출 설정</option>
+                  <option value="일반">일반</option>
+                  <option value="추천">추천</option>
+                  <option value="고정">고정</option>
+                </select>
                 <button type="button" className={sh.selBtn} style={{ width: 30 }}>⋯</button>
                 <div className={sh.rowSpacer} />
+                <button type="button" className={sh.resetBtn} onClick={downloadExcel}>Excel 다운로드</button>
                 <button type="button" className={sh.clearSelBtn} onClick={() => setSel([])}>선택 해제</button>
               </div>
             ) : (
               <div className={sh.noSelBar}>
                 <span className={sh.totalLabel}>{`총 ${filtered.length.toLocaleString('ko-KR')}개`}</span>
                 <div className={sh.rowSpacer} />
-                <button type="button" className={sh.resetBtn}>Excel 다운로드</button>
+                <button type="button" className={sh.resetBtn} onClick={downloadExcel}>Excel 다운로드</button>
                 <select className={sh.pageSizeSelect} defaultValue="20개씩 보기">
                   <option>20개씩 보기</option>
                   <option>50개씩 보기</option>

@@ -171,23 +171,23 @@ export function CsHistoryPage() {
             <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
           <div className={shared.filterRow2}>
-            <select className={shared.selectSm} value={targetType} onChange={(e) => setTargetType(e.target.value as AuditTargetType | '')}>
+            <label className="globalFilterField"><span>대상 유형</span><select aria-label="대상 유형" className={shared.selectSm} value={targetType} onChange={(e) => setTargetType(e.target.value as AuditTargetType | '')}>
               <option value="">전체 대상 유형</option>
               {TARGET_TYPES.map((value) => <option key={value}>{value}</option>)}
-            </select>
-            <select className={shared.selectSm} value={actionFilter} onChange={(e) => setActionFilter(e.target.value)}>
+            </select></label>
+            <label className="globalFilterField"><span>작업 유형</span><select aria-label="작업 유형" className={shared.selectSm} value={actionFilter} onChange={(e) => setActionFilter(e.target.value)}>
               <option value="">전체 작업 유형</option>
               {ACTION_LABELS.map((value) => <option key={value}>{value}</option>)}
-            </select>
-            <select className={shared.selectSm} value={actor} onChange={(e) => setActor(e.target.value)}>
+            </select></label>
+            <label className="globalFilterField"><span>처리자</span><select aria-label="처리자" className={shared.selectSm} value={actor} onChange={(e) => setActor(e.target.value)}>
               <option value="">전체 처리자</option>
               {AUDIT_ADMINS.map((value) => <option key={value}>{value}</option>)}
               <option value="SYSTEM">SYSTEM</option>
-            </select>
-            <select className={shared.selectSm} value={result} onChange={(e) => setResult(e.target.value as AuditResult | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>결과</span><select aria-label="결과" className={shared.selectSm} value={result} onChange={(e) => setResult(e.target.value as AuditResult | '')}>
               <option value="">전체 결과</option>
               {RESULT_TYPES.map((value) => <option key={value}>{value}</option>)}
-            </select>
+            </select></label>
             <button type="button" className={shared.detailFilterBtn} onClick={() => setShowAdvanced((current) => !current)}>
               {showAdvanced ? '상세 필터 −' : '상세 필터 +'}
             </button>
@@ -196,14 +196,14 @@ export function CsHistoryPage() {
           </div>
           {showAdvanced && (
             <div className={styles.advancedFilters}>
-              <select className={shared.selectSm} value={team} onChange={(e) => setTeam(e.target.value)}>
+              <label className="globalFilterField"><span>담당팀</span><select aria-label="담당팀" className={shared.selectSm} value={team} onChange={(e) => setTeam(e.target.value)}>
                 <option value="">전체 담당팀</option>
                 {AUDIT_TEAMS.map((value) => <option key={value}>{value}</option>)}
-              </select>
-              <select className={shared.selectSm} value={source} onChange={(e) => setSource(e.target.value as AuditSource | '')}>
+              </select></label>
+              <label className="globalFilterField"><span>유입 경로</span><select aria-label="유입 경로" className={shared.selectSm} value={source} onChange={(e) => setSource(e.target.value as AuditSource | '')}>
                 <option value="">전체 Source</option>
                 {SOURCE_TYPES.map((value) => <option key={value}>{value}</option>)}
-              </select>
+              </select></label>
               <label>처리일 <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></label>
               <label>~ <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></label>
             </div>
@@ -281,6 +281,7 @@ export function CsHistoryPage() {
               <button
                 type="button"
                 className={styles.primaryButton}
+                data-grid-download
                 onClick={() => {
                   setDownloadOpen(false);
                   toastBriefly('CS 처리 이력을 다운로드했습니다.');

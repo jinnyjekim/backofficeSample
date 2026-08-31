@@ -390,21 +390,21 @@ export function PopupsPage() {
 
         <div className={styles.filterBox}>
           <div className={styles.filterRow1}>
-            <select className={styles.selectSm} defaultValue="전체">
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
               <option>전체</option>
               <option>팝업명</option>
               <option>팝업번호</option>
-            </select>
+            </select></label>
             <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="팝업 관리명, 제목 또는 번호" />
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
-            <select className={styles.selectXs} value={screenFilter} onChange={(e) => setScreenFilter(e.target.value)}>
+            <label className="globalFilterField"><span>노출화면</span><select aria-label="노출화면" className={styles.selectXs} value={screenFilter} onChange={(e) => setScreenFilter(e.target.value)}>
               <option value="전체">노출화면 전체</option>
               {POPUP_SCREENS.map((s) => (
                 <option key={s}>{s}</option>
               ))}
-            </select>
+            </select></label>
             <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setScreenFilter('전체'); setQ(''); }}>초기화</button>
@@ -414,7 +414,7 @@ export function PopupsPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
@@ -427,7 +427,7 @@ export function PopupsPage() {
         <div className={styles.bulkBar}>
           <span className={styles.bulkLabel}>{selectedIds.length}건 선택됨</span>
           <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkStop' })}>노출 중지</button>
-          <button type="button" className={styles.bulkBtn}>다운로드</button>
+          <button type="button" className={styles.bulkBtn} data-grid-download="selected">다운로드</button>
         </div>
       )}
 

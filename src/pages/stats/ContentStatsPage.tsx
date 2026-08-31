@@ -294,7 +294,7 @@ export function ContentStatsPage() {
             <div className={styles.section}>
               <div className={styles.sectionHead}>
                 <span className={styles.sectionTitle}>콘텐츠 리포트 · {fmtDate(start)} ~ {fmtDate(end)}</span>
-                <button type="button" className={styles.downloadBtn} onClick={toastDownload}>리포트 다운로드</button>
+          <button type="button" className={styles.downloadBtn} data-grid-download onClick={toastDownload}>리포트 다운로드</button>
               </div>
               {compare && <div className={styles.sectionNote} style={{ marginBottom: 10 }}>비교 기간 {fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</div>}
               <div className={styles.statGrid}>

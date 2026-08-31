@@ -1,6 +1,6 @@
 import { PRODUCTS } from '../products/productsData';
 
-export const TODAY = '2026-08-25';
+export const TODAY = '2026-08-31';
 const SERIES_START = '2026-01-01';
 
 export function addDays(date: string, n: number): string {

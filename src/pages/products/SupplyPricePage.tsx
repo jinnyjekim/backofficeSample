@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import styles from './SupplyPricePage.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import { useOutsideClose } from '../../lib/useOutsideClose';
+import { downloadCsvFile } from '../../lib/useGridDownload';
 import type { GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
 import {
   SUPPLY_PRICES,
@@ -172,14 +173,14 @@ export function SupplyPricePage() {
 
         <div className={styles.filterBox}>
           <div className={styles.searchRow}>
-            <select className={styles.selectField} defaultValue="전체">
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectField} defaultValue="전체">
               <option>전체</option>
               <option>상품명</option>
               <option>상품코드</option>
               <option>거래처명</option>
               <option>거래처코드</option>
               <option>가격 정책명</option>
-            </select>
+            </select></label>
             <input
               className={styles.searchInput}
               value={q}
@@ -189,7 +190,7 @@ export function SupplyPricePage() {
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow}>
-            <select
+            <label className="globalFilterField"><span>유형</span><select aria-label="유형"
               className={styles.smallSelect}
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
@@ -197,24 +198,24 @@ export function SupplyPricePage() {
               {TYPE_FILTERS.map((t) => (
                 <option key={t}>{t}</option>
               ))}
-            </select>
-            <select className={styles.smallSelect} defaultValue="거래처 전체">
+            </select></label>
+            <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.smallSelect} defaultValue="거래처 전체">
               <option>거래처 전체</option>
               <option>회사 01</option>
               <option>회사 02</option>
               <option>㈜한빛물산</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="카테고리 전체">
+            </select></label>
+            <label className="globalFilterField"><span>카테고리</span><select aria-label="카테고리" className={styles.smallSelect} defaultValue="카테고리 전체">
               <option>카테고리 전체</option>
               <option>카테고리 01</option>
               <option>카테고리 02</option>
               <option>카테고리 03</option>
-            </select>
-            <select className={styles.smallSelect} defaultValue="통화 전체">
+            </select></label>
+            <label className="globalFilterField"><span>통화</span><select aria-label="통화" className={styles.smallSelect} defaultValue="통화 전체">
               <option>통화 전체</option>
               <option>KRW</option>
               <option>USD</option>
-            </select>
+            </select></label>
             <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.resetBtn} onClick={clearAll}>초기화</button>
@@ -224,7 +225,7 @@ export function SupplyPricePage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
@@ -362,7 +363,11 @@ export function SupplyPricePage() {
           <div className={styles.registerBody}>
             <div className={styles.bulkSteps}>1. 양식 다운로드 → 2. 공급가 입력 → 3. 파일 업로드 → 4. 검증 → 5. 등록</div>
             <div className={styles.bulkActionsRow}>
-              <button type="button" className={styles.bulkDownloadBtn}>양식 다운로드</button>
+              <button type="button" className={styles.bulkDownloadBtn} onClick={() => downloadCsvFile(
+                '공급가-대량등록-양식.csv',
+                ['상품 ID', '옵션 ID', '가격유형', '적용대상 ID', '공급가', '최소수량', '적용 시작일', '적용 종료일'],
+                [['P000001', 'OPT000001', '기본 공급가', '', '', '1', '2026-09-01', '']],
+              )}>양식 다운로드</button>
               <button type="button" className={styles.bulkUploadBtn} onClick={() => setBulkValidated(true)}>파일 업로드</button>
             </div>
             {bulkValidated && (

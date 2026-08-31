@@ -1,10 +1,75 @@
 :root {
   --accent: oklch(0.52 0.16 258);
   --accent-hover: oklch(0.46 0.16 258);
+  --common-primary: var(--accent);
+  --common-primary-hover: var(--accent-hover);
+  --common-primary-light: #eef2ff;
+  --common-primary-border: #c7d2fe;
+  --common-bg: #fff;
+  --common-bg-subtle: #f8f8fa;
+  --common-bg-disabled: #f1f2f6;
+  --common-border: #e2e4ec;
+  --common-border-strong: #cbd0df;
+  --common-text: #18181b;
+  --common-text-sub: #52525b;
+  --common-text-muted: #8b8b93;
+  --common-text-disabled: #a1a1aa;
+  --common-success: #059669;
+  --common-warning: #d97706;
+  --common-error: #dc2626;
+  --common-info: #2563eb;
+  --common-radius-sm: 6px;
+  --common-radius-md: 8px;
+  --common-radius-lg: 12px;
+  --common-shadow-popover: 0 10px 30px rgba(0, 0, 0, 0.14);
+  --common-font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --common-input-font-size: 12.5px;
+  --common-input-line-height: 1.45;
 }
 
 * {
   box-sizing: border-box;
+}
+
+.globalFilterField {
+  display: inline-flex;
+  flex: 0 0 128px;
+  min-width: 112px;
+  max-width: 180px;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--common-text-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.globalFilterField > span {
+  overflow: hidden;
+  padding-left: 1px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.globalFilterField > select {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 34px;
+  margin: 0;
+  background-color: #fff !important;
+  color: var(--common-text-sub);
+  font-weight: 400;
+}
+
+:where([class*="filterRow"], [class*="filterGrid"], [class*="filterBar"], [class*="advancedFilter"]) {
+  align-items: flex-end !important;
+}
+
+@media (max-width: 720px) {
+  .globalFilterField {
+    flex: 1 1 140px;
+    max-width: none;
+  }
 }
 
 html, body, #root {
@@ -14,7 +79,7 @@ html, body, #root {
 body {
   margin: 0;
   background: #f6f6f7;
-  font-family: Pretendard, -apple-system, system-ui, sans-serif;
+  font-family: var(--common-font-family);
   color: #18181b;
   -webkit-font-smoothing: antialiased;
 }
@@ -27,8 +92,48 @@ a:hover {
   color: var(--accent-hover);
 }
 
-input, button, select {
+input, button, select, textarea {
   font-family: inherit;
+}
+
+:where(
+  input:not([type]),
+  input[type="text"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="search"],
+  input[type="url"],
+  textarea
+) {
+  font-family: var(--common-font-family) !important;
+  font-size: var(--common-input-font-size);
+  font-weight: 400;
+  font-style: normal;
+  line-height: var(--common-input-line-height);
+  letter-spacing: -0.01em;
+}
+
+:where(
+  input:not([type]),
+  input[type="text"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="search"],
+  input[type="url"],
+  textarea
+)::placeholder {
+  color: var(--common-text-disabled);
+  font-family: var(--common-font-family) !important;
+  font-size: inherit;
+  font-weight: 400;
+  font-style: normal;
+  line-height: inherit;
+  letter-spacing: inherit;
+  opacity: 1;
 }
 
 select:not([multiple]) {
@@ -38,10 +143,6 @@ select:not([multiple]) {
   background-repeat: no-repeat;
   background-position: right 11px center;
   background-size: 12px 12px;
-}
-
-::placeholder {
-  color: #a1a1aa;
 }
 
 ::-webkit-scrollbar {

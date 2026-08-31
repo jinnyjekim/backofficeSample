@@ -89,32 +89,32 @@ export function OutboundWaitingPage() {
 
         <div className={styles.filterBox}>
           <div className={styles.filterRow1}>
-            <select className={styles.selectSm} defaultValue="전체">
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
               <option>전체</option>
               <option>배송번호</option>
               <option>주문번호</option>
               <option>송장번호</option>
               <option>수령인</option>
-            </select>
+            </select></label>
             <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="배송번호 · 주문번호 · 송장번호" />
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
-            <select className={styles.selectXs} defaultValue="출고지 전체">
+            <label className="globalFilterField"><span>출고지</span><select aria-label="출고지" className={styles.selectXs} defaultValue="출고지 전체">
               <option>출고지 전체</option>
               <option>출고지 01</option>
               <option>출고지 02</option>
-            </select>
-            <select className={styles.selectXs} defaultValue="택배사 전체">
+            </select></label>
+            <label className="globalFilterField"><span>택배사</span><select aria-label="택배사" className={styles.selectXs} defaultValue="택배사 전체">
               <option>택배사 전체</option>
               <option>택배사 01</option>
               <option>택배사 02</option>
-            </select>
-            <select className={styles.selectXs} defaultValue="담당자 전체">
+            </select></label>
+            <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={styles.selectXs} defaultValue="담당자 전체">
               <option>담당자 전체</option>
               <option>admin01</option>
               <option>admin02</option>
-            </select>
+            </select></label>
             <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('오늘출고'); setQ(''); }}>초기화</button>
@@ -127,7 +127,7 @@ export function OutboundWaitingPage() {
             <button type="button" className={styles.actionBtn}>출고 확정</button>
             <button type="button" className={styles.actionBtn}>담당자 지정</button>
             <button type="button" className={styles.actionBtn}>출고일 변경</button>
-            <button type="button" className={styles.actionBtn}>↓ 다운로드</button>
+            <button type="button" className={styles.actionBtn} data-grid-download>↓ 다운로드</button>
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

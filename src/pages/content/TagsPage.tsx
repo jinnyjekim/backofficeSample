@@ -1,7 +1,10 @@
 import { DatePicker } from '../../components/forms/DatePicker';
-import { useEffect, useMemo, useState } from 'react';
+import { SearchField } from '../../components/SearchField';
+import { ChevronDown, ChevronUp, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import sh from './contentShared.module.css';
+import filterStyles from './ContentListPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
 import { TAGS, type Tag } from './tagsData';
@@ -10,6 +13,7 @@ import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_TAXONOMY_SCOPES, type ContentTaxonomyScope } from './contentBusiness';
 
 type SortKey = 'name' | 'count' | 'created' | 'updated';
+const STATUS_LABELS = ['사용', '미사용', '전체'] as const;
 
 interface TagModal {
   mode: 'new' | 'edit';
@@ -49,8 +53,9 @@ export function TagsPage() {
   const [field, setField] = useState('전체');
   const [useF, setUseF] = useState('전체');
   const [linkF, setLinkF] = useState('전체');
-  const [from, setFrom] = useState('2026-01-01');
-  const [to, setTo] = useState('2026-08-13');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [adv, setAdv] = useState(false);
   const [sel, setSel] = useState<string[]>([]);
   const [sortKey, setSortKey] = useState<SortKey>('created');
   const [sortDesc, setSortDesc] = useState(true);
@@ -66,6 +71,20 @@ export function TagsPage() {
     return () => clearTimeout(t);
   }, [toast]);
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const focusSearch = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isEditing = target?.matches('input, textarea, select, [contenteditable="true"]');
+      if (event.key === '/' && !isEditing) {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', focusSearch);
+    return () => window.removeEventListener('keydown', focusSearch);
+  }, []);
+
   const byId = (id: string) => items.find((x) => x.id === id);
 
   const list = useMemo(() => {
@@ -78,7 +97,9 @@ export function TagsPage() {
       }
       if (useF !== '전체' && (useF === '사용' ? !it.use : it.use)) return false;
       if (linkF !== '전체' && (linkF === '연결 있음' ? it.count === 0 : it.count > 0)) return false;
-      if (!(d2(it.created) >= from && d2(it.created) <= to)) return false;
+      const created = d2(it.created);
+      if (from && created < from) return false;
+      if (to && created > to) return false;
       return true;
     });
     const cmp: Record<SortKey, (a: Tag, b: Tag) => number> = {
@@ -97,10 +118,27 @@ export function TagsPage() {
   if (q.trim()) chips.push({ key: 'q', label: `검색: ${field} “${q.trim()}”`, clear: () => setQ('') });
   if (useF !== '전체') chips.push({ key: 'use', label: `사용 상태: ${useF}`, clear: () => setUseF('전체') });
   if (linkF !== '전체') chips.push({ key: 'link', label: `연결 상태: ${linkF}`, clear: () => setLinkF('전체') });
-  if (from !== '2026-01-01' || to !== '2026-08-13') chips.push({ key: 'date', label: `등록일: ${from.replace(/-/g, '.')} ~ ${to.replace(/-/g, '.')}`, clear: () => { setFrom('2026-01-01'); setTo('2026-08-13'); } });
+  if (from || to) chips.push({
+    key: 'date',
+    label: `등록일: ${from ? from.replace(/-/g, '.') : '시작일'} ~ ${to ? to.replace(/-/g, '.') : '종료일'}`,
+    clear: () => { setFrom(''); setTo(''); },
+  });
+
+  const detailFilterCount = from || to ? 1 : 0;
 
   function resetAll() {
-    setQ(''); setField('전체'); setUseF('전체'); setLinkF('전체'); setFrom('2026-01-01'); setTo('2026-08-13'); setSel([]);
+    setQ(''); setField('전체'); setUseF('전체'); setLinkF('전체'); setFrom(''); setTo(''); setAdv(false); setSel([]);
+  }
+
+  function statusCount(label: (typeof STATUS_LABELS)[number]) {
+    const scoped = items.filter((item) => item.scope === scope);
+    if (label === '전체') return scoped.length;
+    return scoped.filter((item) => label === '사용' ? item.use : !item.use).length;
+  }
+
+  function pickStatus(label: (typeof STATUS_LABELS)[number]) {
+    setUseF(label);
+    setSel([]);
   }
 
   function switchScope(next: ContentTaxonomyScope) {
@@ -399,51 +437,111 @@ export function TagsPage() {
 
       <div className={sh.body}>
         <div className={sh.topPad}>
-          <div className={sh.filterBox}>
-            <div className={sh.searchRow}>
-              <select className={sh.selectField} value={field} onChange={(e) => setField(e.target.value)}>
-                {['전체', '태그명', '태그 코드'].map((f) => <option key={f} value={f}>{f}</option>)}
-              </select>
-              <input className={sh.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="태그명 또는 태그 코드로 검색" />
-              <button type="button" className={sh.searchBtn}>검색</button>
-            </div>
+          <nav className={sh.quickFilters} aria-label="태그 사용 상태 보기">
+            {STATUS_LABELS.map((label) => (
+              <button key={label} type="button" className={`${sh.qfBtn} ${useF === label ? sh.active : ''}`} onClick={() => pickStatus(label)}>
+                <span className={sh.qfLabel}>{label}</span>
+                <span className={sh.qfCount}>{statusCount(label)}</span>
+              </button>
+            ))}
+          </nav>
 
-            <div className={sh.filterRow}>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>사용 상태</span>
-                <select className={sh.smallSelect} value={useF} onChange={(e) => { setUseF(e.target.value); setSel([]); }}>
-                  {['전체', '사용', '미사용'].map((o) => <option key={o} value={o}>{o}</option>)}
-                </select>
-              </div>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>연결 상태</span>
-                <select className={sh.smallSelect} value={linkF} onChange={(e) => { setLinkF(e.target.value); setSel([]); }}>
-                  {['전체', '연결 있음', '연결 없음'].map((o) => <option key={o} value={o}>{o}</option>)}
-                </select>
-              </div>
-              <div className={sh.filterField}>
-                <span className={sh.filterFieldLabel}>등록일</span>
-                <DatePicker className={sh.dateInput} value={from} onChange={(e) => setFrom(e.target.value)} />
-                <span className={sh.dateSep}>~</span>
-                <DatePicker className={sh.dateInput} value={to} onChange={(e) => setTo(e.target.value)} />
-              </div>
-              <div className={sh.rowSpacer} />
-              <button type="button" className={sh.resetBtn} onClick={resetAll}>초기화</button>
-            </div>
+          <div className={filterStyles.stepLabel}>
+            <span className={filterStyles.stepNum}>1</span>
+            <span className={filterStyles.stepTitle}>조건 설정</span>
+            <span className={filterStyles.stepHint}>태그명과 연결 상태로 빠르게 찾아보세요.</span>
+            {chips.length > 0 && <span className={filterStyles.appliedCount}>{chips.length}개 조건 적용</span>}
           </div>
 
-          {chips.length > 0 && (
-            <div className={sh.chipsRow}>
-              <span className={sh.chipsLabel}>적용된 조건</span>
-              {chips.map((c) => (
-                <button key={c.key} type="button" className={sh.chip} onClick={c.clear}>{c.label}<span className={sh.chipX}>×</span></button>
-              ))}
-              <button type="button" className={sh.clearAllBtn} onClick={resetAll}>전체 초기화</button>
+          <div className={filterStyles.filterPanel}>
+            <div className={filterStyles.searchLine}>
+              <label className="globalFilterField"><span>검색 범위</span><select className={filterStyles.searchScope} aria-label="검색 범위" value={field} onChange={(e) => setField(e.target.value)}>
+                {['전체', '태그명', '태그 코드'].map((f) => <option key={f} value={f}>{f}</option>)}
+              </select></label>
+              <SearchField
+                ref={searchInputRef}
+                className={filterStyles.searchField}
+                value={q}
+                onValueChange={(value) => { setQ(value); setSel([]); }}
+                placeholder="태그명 또는 태그 코드를 검색하세요"
+                shortcutHint="/"
+                aria-label="태그 검색"
+              />
+              <div className={filterStyles.searchActions}>
+                <button type="button" className={`${filterStyles.detailButton} ${detailFilterCount > 0 ? filterStyles.hasFilter : ''}`} onClick={() => setAdv((value) => !value)} aria-expanded={adv}>
+                  <SlidersHorizontal size={14} aria-hidden="true" />
+                  상세 필터
+                  {detailFilterCount > 0 && <span className={filterStyles.detailCount}>{detailFilterCount}</span>}
+                  {adv ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
+                </button>
+                <button type="button" className={filterStyles.resetButton} onClick={resetAll} disabled={chips.length === 0}>
+                  <RotateCcw size={13} aria-hidden="true" />
+                  초기화
+                </button>
+              </div>
             </div>
-          )}
+
+            <div className={filterStyles.primaryFilters}>
+              <label className={filterStyles.filterControl}>
+                <span>연결 상태</span>
+                <select value={linkF} onChange={(e) => { setLinkF(e.target.value); setSel([]); }}>
+                  {['전체', '연결 있음', '연결 없음'].map((o) => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </label>
+            </div>
+
+            {adv && (
+              <div className={filterStyles.advancedPanel}>
+                <div className={filterStyles.advancedHead}>
+                  <strong>상세 조건</strong>
+                  <span>등록 기간이 필요한 경우에만 설정하세요.</span>
+                </div>
+                <div className={filterStyles.advancedGrid}>
+                  <label className={`${filterStyles.filterControl} ${filterStyles.dateControl}`}>
+                    <span>등록일</span>
+                    <div className={filterStyles.dateRange}>
+                      <DatePicker controlSize="sm" value={from} onChange={(e) => {
+                        const value = e.target.value;
+                        setFrom(value);
+                        if (value && to && value > to) setTo(value);
+                        setSel([]);
+                      }} />
+                      <span>~</span>
+                      <DatePicker controlSize="sm" value={to} onChange={(e) => {
+                        const value = e.target.value;
+                        setTo(value);
+                        if (value && from && value < from) setFrom(value);
+                        setSel([]);
+                      }} />
+                    </div>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {chips.length > 0 && (
+              <div className={filterStyles.appliedFilters}>
+                <span className={filterStyles.appliedLabel}>적용된 조건</span>
+                <div className={filterStyles.chipList}>
+                  {chips.map((chip) => (
+                    <button key={chip.key} type="button" className={filterStyles.filterChip} onClick={chip.clear} title={`${chip.label} 조건 해제`}>
+                      {chip.label}<span aria-hidden="true">×</span>
+                    </button>
+                  ))}
+                </div>
+                <button type="button" className={filterStyles.clearAllButton} onClick={resetAll}>전체 해제</button>
+              </div>
+            )}
+          </div>
+
+          <div className={`${filterStyles.stepLabel} ${filterStyles.resultStep}`}>
+            <span className={filterStyles.stepNum}>2</span>
+            <span className={filterStyles.stepTitle}>조회 결과</span>
+            <span className={filterStyles.stepHint}>행을 클릭하면 태그 정보와 연결 현황을 수정할 수 있습니다.</span>
+          </div>
         </div>
 
-        <div className={sh.listArea}>
+        <div className={`${sh.listArea} ${filterStyles.listArea}`}>
           <div className={sh.toolbarRow}>
             {sel_.length > 0 ? (
               <div className={sh.selBar}>
@@ -459,7 +557,7 @@ export function TagsPage() {
               <div className={sh.noSelBar}>
                 <span className={sh.totalLabel}>{`총 ${list.length.toLocaleString('ko-KR')}개`}</span>
                 <div className={sh.rowSpacer} />
-                <button type="button" className={sh.resetBtn}>다운로드</button>
+                <button type="button" className={sh.resetBtn} data-grid-download>다운로드</button>
                 <select className={sh.pageSizeSelect} defaultValue="20개씩 보기">
                   <option>20개씩 보기</option>
                   <option>50개씩 보기</option>

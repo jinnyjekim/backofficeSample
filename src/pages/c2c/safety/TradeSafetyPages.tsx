@@ -140,14 +140,14 @@ export function TradeRiskMonitoringPage() {
       <div className={shared.quickFilters}>{quicks.map((item) => <button type="button" key={item} className={`${shared.qfBtn} ${quick === item ? base.quickActive : ''}`} onClick={() => setQuick(item)}><span className={shared.qfLabel}>{item}</span><span className={shared.qfCount}>{cases.filter((risk) => matchesRiskQuick(risk, item)).length}</span></button>)}</div>
       <FilterBox>
         <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
-          <select className={shared.selectSm}><option>통합 검색</option><option>위험 건 ID</option><option>거래 / 계정 ID</option><option>대상 계정</option></select>
+          <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={shared.selectSm}><option>통합 검색</option><option>위험 건 ID</option><option>거래 / 계정 ID</option><option>대상 계정</option></select></label>
           <input className={shared.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="위험 건 / 거래 / 계정 ID 또는 대상명" />
           <button className={shared.searchBtn}>조회</button>
         </form>
         <div className={shared.filterRow2}>
-          <select className={shared.selectSm} value={signalType} onChange={(event) => selectSignal(event.target.value as RiskSignalType | '')}><option value="">전체 탐지 유형</option>{SIGNALS.map((item) => <option key={item}>{item}</option>)}</select>
-          <select className={shared.selectSm} value={level} onChange={(event) => setLevel(event.target.value as RiskLevel | '')}><option value="">전체 위험도</option><option>긴급</option><option>높음</option><option>보통</option><option>낮음</option></select>
-          <select className={shared.selectSm} value={assignee} onChange={(event) => setAssignee(event.target.value)}><option value="">전체 배정 상태</option><option>미배정</option><option value="배정">담당자 배정</option></select>
+          <label className="globalFilterField"><span>탐지 유형</span><select aria-label="탐지 유형" className={shared.selectSm} value={signalType} onChange={(event) => selectSignal(event.target.value as RiskSignalType | '')}><option value="">전체 탐지 유형</option>{SIGNALS.map((item) => <option key={item}>{item}</option>)}</select></label>
+          <label className="globalFilterField"><span>위험도</span><select aria-label="위험도" className={shared.selectSm} value={level} onChange={(event) => setLevel(event.target.value as RiskLevel | '')}><option value="">전체 위험도</option><option>긴급</option><option>높음</option><option>보통</option><option>낮음</option></select></label>
+          <label className="globalFilterField"><span>배정 상태</span><select aria-label="배정 상태" className={shared.selectSm} value={assignee} onChange={(event) => setAssignee(event.target.value)}><option value="">전체 배정 상태</option><option>미배정</option><option value="배정">담당자 배정</option></select></label>
           <span>탐지일</span><DatePicker className={shared.selectSm} defaultValue="2026-08-20" /><span>~</span><DatePicker className={shared.selectSm} defaultValue="2026-08-27" />
           <span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={reset}>초기화</button>
         </div>
@@ -246,8 +246,8 @@ export function TradeHoldManagementPage() {
     <ControlArea>
       <div className={shared.quickFilters}>{quicks.map((item) => <button type="button" key={item} className={`${shared.qfBtn} ${quick === item ? base.quickActive : ''}`} onClick={() => setQuick(item)}><span className={shared.qfLabel}>{item}</span><span className={shared.qfCount}>{holds.filter((hold) => item === '전체' || hold.status === item).length}</span></button>)}</div>
       <FilterBox>
-        <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}><select className={shared.selectSm}><option>통합 검색</option><option>보류번호</option><option>거래번호</option><option>계정</option></select><input className={shared.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="보류 / 거래 / 위험 건 ID 또는 대상 계정" /><button className={shared.searchBtn}>조회</button></form>
-        <div className={shared.filterRow2}><select className={shared.selectSm} value={scope} onChange={(event) => setScope(event.target.value)}><option value="">전체 보류 범위</option><option>거래 진행</option><option>판매대금 지급</option></select><span>보류일</span><DatePicker className={shared.selectSm} defaultValue="2026-08-20" /><span>~</span><DatePicker className={shared.selectSm} defaultValue="2026-08-27" /><span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={reset}>초기화</button></div>
+        <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}><label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={shared.selectSm}><option>통합 검색</option><option>보류번호</option><option>거래번호</option><option>계정</option></select></label><input className={shared.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="보류 / 거래 / 위험 건 ID 또는 대상 계정" /><button className={shared.searchBtn}>조회</button></form>
+        <div className={shared.filterRow2}><label className="globalFilterField"><span>보류 범위</span><select aria-label="보류 범위" className={shared.selectSm} value={scope} onChange={(event) => setScope(event.target.value)}><option value="">전체 보류 범위</option><option>거래 진행</option><option>판매대금 지급</option></select></label><span>보류일</span><DatePicker className={shared.selectSm} defaultValue="2026-08-20" /><span>~</span><DatePicker className={shared.selectSm} defaultValue="2026-08-27" /><span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={reset}>초기화</button></div>
       </FilterBox>
     </ControlArea>
     <GridArea>

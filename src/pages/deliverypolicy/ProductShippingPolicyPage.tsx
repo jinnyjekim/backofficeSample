@@ -187,10 +187,10 @@ export function ProductShippingPolicyPage() {
             <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
           <div className={shared.filterRow2}>
-            <select className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as DeliveryMethod | '')}>
+            <label className="globalFilterField"><span>배송방법</span><select aria-label="배송방법" className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as DeliveryMethod | '')}>
               <option value="">전체 배송방법</option>
               {DELIVERY_METHODS.map((m) => <option key={m}>{m}</option>)}
-            </select>
+            </select></label>
             <span className={shared.rowSpacer} />
             {selected.size > 0 && (
               <>

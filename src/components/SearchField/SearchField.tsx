@@ -1,8 +1,8 @@
 import { forwardRef, type InputHTMLAttributes } from 'react';
-import { Search } from 'lucide-react';
+import { CommonInput } from '../common/CommonControls';
 import styles from './SearchField.module.css';
 
-interface SearchFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'type' | 'value'> {
+export interface SearchFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'type' | 'value' | 'size' | 'onToggle' | 'prefix'> {
   value: string;
   onValueChange: (value: string) => void;
   shortcutHint?: string;
@@ -13,17 +13,14 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
   ref,
 ) {
   return (
-    <div className={`${styles.field} ${className ?? ''}`}>
-      <Search className={styles.icon} size={15} strokeWidth={1.8} aria-hidden="true" />
-      <input
-        {...inputProps}
-        ref={ref}
-        type="search"
-        className={styles.input}
-        value={value}
-        onChange={(event) => onValueChange(event.target.value)}
-      />
-      {shortcutHint && <span className={styles.shortcut} aria-hidden="true">{shortcutHint}</span>}
-    </div>
+    <CommonInput.Search
+      {...inputProps}
+      ref={ref}
+      className={`${styles.field} ${className ?? ''}`}
+      value={value}
+      clearable={false}
+      suffix={shortcutHint ? <span className={styles.shortcut} aria-hidden="true">{shortcutHint}</span> : undefined}
+      onChange={(event) => onValueChange(event.target.value)}
+    />
   );
 });

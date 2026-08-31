@@ -110,7 +110,7 @@ export function IntegratedStatsPage() {
           </div>
           <div className={styles.headerActions}>
             <span className={styles.dataAsOf}>데이터 기준 {fmtDate(TODAY)} 기준</span>
-            <button type="button" className={styles.reportBtn} onClick={toastDownload}>리포트 다운로드</button>
+          <button type="button" className={styles.reportBtn} data-grid-download onClick={toastDownload}>리포트 다운로드</button>
           </div>
         </div>
       </div>

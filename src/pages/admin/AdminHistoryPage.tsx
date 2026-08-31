@@ -143,29 +143,29 @@ export function AdminHistoryPage() {
 
         <div className={styles.filterBox}>
           <form className={styles.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
-            <select className={styles.selectSm} value={adminFilter} onChange={(e) => setAdminFilter(e.target.value)}>
+            <label className="globalFilterField"><span>관리자</span><select aria-label="관리자" className={styles.selectSm} value={adminFilter} onChange={(e) => setAdminFilter(e.target.value)}>
               <option value="">관리자 전체</option>
               {ADMINS.map((a) => <option key={a.id} value={a.id}>{a.id} · {a.name}</option>)}
-            </select>
+            </select></label>
             <input className={styles.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder={tab === '로그인 이력' ? '관리자 ID, 이름 또는 IP 검색' : '관리자 ID, 이름 또는 대상 ID 검색'} />
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <select className={styles.selectSm} value={resultFilter} onChange={(e) => setResultFilter(e.target.value)}>
+            <label className="globalFilterField"><span>결과</span><select aria-label="결과" className={styles.selectSm} value={resultFilter} onChange={(e) => setResultFilter(e.target.value)}>
               <option value="">결과 전체</option>
               <option value="성공">성공</option>
               <option value="실패">실패</option>
-            </select>
+            </select></label>
             {tab === '작업 이력' && (
               <>
-                <select className={styles.selectSm} value={menuFilter} onChange={(e) => setMenuFilter(e.target.value)}>
+                <label className="globalFilterField"><span>메뉴</span><select aria-label="메뉴" className={styles.selectSm} value={menuFilter} onChange={(e) => setMenuFilter(e.target.value)}>
                   <option value="">메뉴 전체</option>
                   {MENUS.map((m) => <option key={m} value={m}>{m}</option>)}
-                </select>
-                <select className={styles.selectSm} value={actionTypeFilter} onChange={(e) => setActionTypeFilter(e.target.value)}>
+                </select></label>
+                <label className="globalFilterField"><span>작업 유형</span><select aria-label="작업 유형" className={styles.selectSm} value={actionTypeFilter} onChange={(e) => setActionTypeFilter(e.target.value)}>
                   <option value="">작업 유형 전체</option>
                   {ACTION_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-                </select>
+                </select></label>
               </>
             )}
             <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
@@ -179,7 +179,7 @@ export function AdminHistoryPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {total.toLocaleString('ko-KR')}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} onClick={() => toastBriefly('현재 조건으로 이력을 다운로드했습니다.')}>↓ 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('현재 조건으로 이력을 다운로드했습니다.')}>↓ 다운로드</button>
           </div>
         </div>
       </div>

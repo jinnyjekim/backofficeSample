@@ -4,7 +4,9 @@ import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './CancelPolicyPage.module.css';
 import { CancelReasonEditDialog } from './CancelReasonEditDialog';
 import {
+  CANCEL_QUICK_STAGES,
   INITIAL_HISTORY,
+  INITIAL_LAST_MODIFIED,
   INITIAL_POLICY,
   INITIAL_REASONS,
   INITIAL_STAGE_RULES,
@@ -21,6 +23,7 @@ import {
   type CancelReason,
   type CancelTimingBase,
   type FieldDiff,
+  type LastModified,
   type PolicyHistoryEntry,
   type PostShipmentAction,
   type StageCancelRule,
@@ -47,6 +50,7 @@ export function CancelPolicyPage() {
   const [stageRules, setStageRules] = useState(INITIAL_STAGE_RULES);
   const [reasons, setReasons] = useState(INITIAL_REASONS);
   const [history, setHistory] = useState(INITIAL_HISTORY);
+  const [lastModified, setLastModified] = useState<LastModified>(INITIAL_LAST_MODIFIED);
 
   const [tab, setTab] = useState<Tab>('basic');
   const [editing, setEditing] = useState(false);
@@ -113,6 +117,7 @@ export function CancelPolicyPage() {
     setStageRules(draftStageRules);
     setReasons(draftReasons);
     setHistory((current) => [...entries, ...current]);
+    setLastModified({ at: '2026-08-31', by: '운영 관리자' });
     setConfirmSave(null);
     setEditing(false);
     toastBriefly('취소 정책을 저장했습니다.');
@@ -120,6 +125,15 @@ export function CancelPolicyPage() {
 
   const setStage = (stage: string, patch: Partial<StageCancelRule>) => {
     setDraftStageRules((current) => current.map((r) => (r.stage === stage ? { ...r, ...patch } : r)));
+  };
+
+  const toggleCancelStage = (stage: string) => {
+    setDraftPolicy((current) => ({
+      ...current,
+      cancelAllowedStages: current.cancelAllowedStages.includes(stage)
+        ? current.cancelAllowedStages.filter((s) => s !== stage)
+        : [...current.cancelAllowedStages, stage],
+    }));
   };
 
   const saveReason = (updated: CancelReason) => {
@@ -155,17 +169,24 @@ export function CancelPolicyPage() {
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
+            <div className={styles.eyebrow}>거래 정책</div>
             <h1 className={shared.title}>취소 정책</h1>
             <p className={shared.subtitle}>주문 취소 가능 조건과 취소 처리 규칙을 설정합니다.</p>
           </div>
-          {!editing ? (
-            <button type="button" className={shared.createBtn} onClick={startEdit}>정책 수정</button>
-          ) : (
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button type="button" className={styles.cancelButton} onClick={cancelEdit}>수정 취소</button>
-              <button type="button" className={styles.primaryButton} onClick={requestSave}>변경 사항 저장</button>
-            </div>
-          )}
+          <div className={styles.headMeta}>
+            {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
+            {!editing ? (
+              <>
+                <button type="button" className={styles.outlineBtn} onClick={() => setTab('history')}>변경 이력</button>
+                <button type="button" className={styles.darkBtn} onClick={startEdit}>정책 수정</button>
+              </>
+            ) : (
+              <>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>수정 취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>변경 사항 저장</button>
+              </>
+            )}
+          </div>
         </div>
         <div className={styles.viewTabs}>
           {TABS.map(([key, label]) => (
@@ -177,8 +198,14 @@ export function CancelPolicyPage() {
       <div className={styles.body}>
         {warnings.length > 0 && (
           <div className={styles.warningBanner}>
-            <strong>설정 확인 필요</strong>
-            {warnings.map((w) => <span key={w.id}>⚠ {w.message}</span>)}
+            <span className={styles.warningIcon}>!</span>
+            <div className={styles.warningBody}>
+              <div className={styles.warningTitle}>설정 확인 필요 · {warnings.length}건</div>
+              <div className={styles.warningList}>
+                {warnings.map((w) => <div key={w.id} className={styles.warningItem}>{w.message}</div>)}
+              </div>
+            </div>
+            <button type="button" className={styles.warningActionBtn} onClick={() => setTab('stage')}>단계별 취소에서 확인</button>
           </div>
         )}
 
@@ -187,174 +214,294 @@ export function CancelPolicyPage() {
             <div className={styles.summaryCard}>
               <h2>현재 정책 요약</h2>
               <div className={styles.summaryGrid}>
-                <div className={styles.summaryRow}><span>고객 직접 취소</span><strong>{policy.customerCancelEnabled ? '사용' : '사용 안 함'}</strong></div>
-                <div className={styles.summaryRow}><span>관리자 취소</span><strong>{policy.adminCancelEnabled ? '사용' : '사용 안 함'}</strong></div>
-                <div className={styles.summaryRow}><span>부분 취소</span><strong>{policy.partialCancelEnabled ? '가능' : '불가'}</strong></div>
-                <div className={styles.summaryRow}><span>출고 전 취소</span><strong>가능</strong></div>
-                <div className={styles.summaryRow}><span>출고 이후</span><strong>{policy.postShipmentAction}</strong></div>
-                <div className={styles.summaryRow}><span>취소 요청 철회</span><strong>{policy.withdrawPolicy}</strong></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>고객 직접 취소</div><div className={styles.summaryTileValue}>{policy.customerCancelEnabled ? '사용' : '사용 안 함'}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>관리자 취소</div><div className={styles.summaryTileValue}>{policy.adminCancelEnabled ? '사용' : '사용 안 함'}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>부분 취소</div><div className={styles.summaryTileValue}>{policy.partialCancelEnabled ? '가능' : '불가'}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>출고 전 취소</div><div className={styles.summaryTileValue}>가능</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>출고 이후</div><div className={styles.summaryTileValue}>{policy.postShipmentAction}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>취소 요청 철회</div><div className={styles.summaryTileValue}>{policy.withdrawPolicy}</div></div>
               </div>
             </div>
 
-            <div className={styles.formSection}>
-              <h3>취소 기능</h3>
-              <label className={styles.toggleField}>
-                <span>고객 직접 취소 허용</span>
-                <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.customerCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('customerCancelEnabled', !draftPolicy.customerCancelEnabled)}><i /></button>
-              </label>
-              <label className={styles.toggleField}>
-                <span>관리자 취소 허용</span>
-                <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.adminCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('adminCancelEnabled', !draftPolicy.adminCancelEnabled)}><i /></button>
-              </label>
-              <label className={styles.formField}>
-                <span>취소 요청 철회</span>
-                <div className={styles.radioGroup}>
-                  {(['허용', '처리 시작 전까지만 허용', '불가'] as WithdrawPolicy[]).map((v) => (
-                    <label key={v}><input type="radio" disabled={!editing} checked={draftPolicy.withdrawPolicy === v} onChange={() => set('withdrawPolicy', v)} />{v}</label>
-                  ))}
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>취소 기능</div>
+                <div className={styles.cardDesc}>고객·관리자가 취소를 직접 요청할 수 있는지와, 취소 요청 철회 규칙을 정합니다.</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.cardGrid}>
+                  <div className={styles.toggleRow}>
+                    <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.customerCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('customerCancelEnabled', !draftPolicy.customerCancelEnabled)}><i /></button>
+                    <div className={styles.toggleRowText}>
+                      <div className={styles.toggleRowTitle}>고객 직접 취소 허용</div>
+                      <div className={styles.toggleRowDesc}>앱·웹에서 고객이 스스로 취소를 요청합니다.</div>
+                    </div>
+                  </div>
+                  <div className={styles.toggleRow}>
+                    <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.adminCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('adminCancelEnabled', !draftPolicy.adminCancelEnabled)}><i /></button>
+                    <div className={styles.toggleRowText}>
+                      <div className={styles.toggleRowTitle}>관리자 취소 허용</div>
+                      <div className={styles.toggleRowDesc}>백오피스에서 운영자가 직접 취소 처리합니다.</div>
+                    </div>
+                  </div>
                 </div>
-              </label>
+                <div className={styles.dividerTop}>
+                  <div className={styles.fieldLabel}>취소 요청 철회 <span className={styles.fieldLabelHint}>고객이 접수한 취소 요청을 되돌릴 수 있는 범위</span></div>
+                  <div className={styles.pillGroup}>
+                    {(['허용', '처리 시작 전까지만 허용', '불가'] as WithdrawPolicy[]).map((v) => (
+                      <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.withdrawPolicy === v ? styles.pillBtnOn : ''}`} onClick={() => set('withdrawPolicy', v)}>{v}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className={styles.formSection}>
-              <h3>취소 가능 시점</h3>
-              <label className={styles.formField}>
-                <span>기본 취소 가능 시점</span>
-                <div className={styles.radioGroup}>
-                  {(['출고 전', '주문 처리 시작 전', '주문 확정 전', '단계별 설정'] as CancelTimingBase[]).map((v) => (
-                    <label key={v}><input type="radio" disabled={!editing} checked={draftPolicy.defaultTimingBase === v} onChange={() => set('defaultTimingBase', v)} />{v}</label>
-                  ))}
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>취소 가능 시점</div>
+                <div className={styles.cardDesc}>주문 진행 단계에 따라 취소를 언제까지 받을지 정합니다.</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.cardGrid}>
+                  <div>
+                    <div className={styles.fieldLabel}>기본 취소 가능 시점</div>
+                    <div className={styles.pillGroup}>
+                      {(['출고 전', '주문 처리 시작 전', '주문 확정 전', '단계별 설정'] as CancelTimingBase[]).map((v) => (
+                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.defaultTimingBase === v ? styles.pillBtnOn : ''}`} onClick={() => set('defaultTimingBase', v)}>{v}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <div className={styles.fieldLabel}>출고 후 취소 요청</div>
+                    <div className={styles.pillGroup}>
+                      {(['반품 / 회수 절차로 전환', '관리자 확인', '요청 차단'] as PostShipmentAction[]).map((v) => (
+                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.postShipmentAction === v ? styles.pillBtnOn : ''}`} onClick={() => set('postShipmentAction', v)}>{v}</button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </label>
-              <label className={styles.formField}>
-                <span>출고 후 취소 요청</span>
-                <div className={styles.radioGroup}>
-                  {(['반품 / 회수 절차로 전환', '관리자 확인', '요청 차단'] as PostShipmentAction[]).map((v) => (
-                    <label key={v}><input type="radio" disabled={!editing} checked={draftPolicy.postShipmentAction === v} onChange={() => set('postShipmentAction', v)} />{v}</label>
-                  ))}
+                <div className={styles.dividerTop}>
+                  <div className={styles.fieldLabel}>단계별 취소 허용 <span className={styles.fieldLabelHint}>체크한 단계까지 일반 취소를 받습니다</span></div>
+                  <div className={styles.pillGroup}>
+                    {CANCEL_QUICK_STAGES.map((s) => {
+                      const on = draftPolicy.cancelAllowedStages.includes(s);
+                      return (
+                        <button key={s} type="button" disabled={!editing} className={`${styles.stageBtn} ${on ? styles.stageBtnOn : ''}`} onClick={() => toggleCancelStage(s)}>
+                          <span className={`${styles.stageCheck} ${on ? styles.stageCheckOn : ''}`}>{on ? '✓' : ''}</span>
+                          <span className={`${styles.stageLabel} ${on ? styles.stageLabelOn : ''}`}>{s}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </label>
-              <div className={styles.infoNote}>이미 물류가 진행된 주문은 상태를 되돌리지 않고 반품/회수 → 환불 Workflow로 넘기는 것을 권장합니다.</div>
+              </div>
             </div>
+
+            <div className={styles.infoNote}>이미 물류가 진행된 주문은 상태를 되돌리지 않고 반품/회수 → 환불 Workflow로 넘기는 것을 권장합니다.</div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 신규 취소 요청부터 적용되며, 이미 접수된 요청에는 영향을 주지 않습니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
           </>
         )}
 
         {tab === 'stage' && (
           <>
-            <div className={styles.infoNote}>주문 Lifecycle 단계별로 고객·관리자 취소 가능 여부와 승인 필요 여부를 설정합니다. 출고 이후 단계는 배경으로 구분됩니다.</div>
-            <div className={styles.stageTable}>
-              <div className={`${styles.stageRow} ${styles.stageHead}`}>
-                <span>주문 단계</span><span>고객 취소</span><span>관리자 취소</span><span>승인</span>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>단계별 취소</div>
+                <div className={styles.cardDesc}>주문 Lifecycle 단계별로 고객·관리자 취소 가능 여부와 승인 필요 여부를 설정합니다. 출고 이후 단계는 배경으로 구분됩니다.</div>
               </div>
-              {activeStageRules.map((r) => (
-                <div key={r.stage} className={`${styles.stageRow} ${POST_SHIPMENT_STAGES.has(r.stage) ? styles.postShipment : ''}`}>
-                  <span className={styles.stageName}>{r.stage}</span>
-                  {editing ? (
-                    <select value={r.customerCancel} onChange={(e) => setStage(r.stage, { customerCancel: e.target.value as CancelAvailability })}>
-                      <option>가능</option><option>조건부</option><option>불가</option>
-                    </select>
-                  ) : <span className={`${styles.availTag} ${availClass(r.customerCancel)}`}>{r.customerCancel}</span>}
-                  {editing ? (
-                    <select value={r.adminCancel} onChange={(e) => setStage(r.stage, { adminCancel: e.target.value as CancelAvailability })}>
-                      <option>가능</option><option>조건부</option><option>불가</option>
-                    </select>
-                  ) : <span className={`${styles.availTag} ${availClass(r.adminCancel)}`}>{r.adminCancel}</span>}
-                  {editing ? (
-                    <select value={r.approval} onChange={(e) => setStage(r.stage, { approval: e.target.value as ApprovalNeed })}>
-                      <option>불필요</option><option>조건부</option><option>필요</option>
-                    </select>
-                  ) : <span>{r.approval}</span>}
+              <div className={styles.cardBody}>
+                <div className={styles.stageTable}>
+                  <div className={`${styles.stageRow} ${styles.stageHead}`}>
+                    <span>주문 단계</span><span>고객 취소</span><span>관리자 취소</span><span>승인</span>
+                  </div>
+                  {activeStageRules.map((r) => (
+                    <div key={r.stage} className={`${styles.stageRow} ${POST_SHIPMENT_STAGES.has(r.stage) ? styles.postShipment : ''}`}>
+                      <span className={styles.stageName}>{r.stage}</span>
+                      {editing ? (
+                        <select className={styles.textField} value={r.customerCancel} onChange={(e) => setStage(r.stage, { customerCancel: e.target.value as CancelAvailability })}>
+                          <option>가능</option><option>조건부</option><option>불가</option>
+                        </select>
+                      ) : <span className={`${styles.availTag} ${availClass(r.customerCancel)}`}>{r.customerCancel}</span>}
+                      {editing ? (
+                        <select className={styles.textField} value={r.adminCancel} onChange={(e) => setStage(r.stage, { adminCancel: e.target.value as CancelAvailability })}>
+                          <option>가능</option><option>조건부</option><option>불가</option>
+                        </select>
+                      ) : <span className={`${styles.availTag} ${availClass(r.adminCancel)}`}>{r.adminCancel}</span>}
+                      {editing ? (
+                        <select className={styles.textField} value={r.approval} onChange={(e) => setStage(r.stage, { approval: e.target.value as ApprovalNeed })}>
+                          <option>불필요</option><option>조건부</option><option>필요</option>
+                        </select>
+                      ) : <span>{r.approval}</span>}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 신규 취소 요청부터 적용되며, 이미 접수된 요청에는 영향을 주지 않습니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
           </>
         )}
 
         {tab === 'partial' && (
-          <div className={styles.formSection}>
-            <h3>부분 취소</h3>
-            <label className={styles.toggleField}>
-              <span>부분 취소 허용</span>
-              <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.partialCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('partialCancelEnabled', !draftPolicy.partialCancelEnabled)}><i /></button>
-            </label>
-            <label className={styles.toggleField}>
-              <span>전체 주문 취소 허용</span>
-              <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.fullCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('fullCancelEnabled', !draftPolicy.fullCancelEnabled)}><i /></button>
-            </label>
-            <label className={styles.toggleField}>
-              <span>상품 단위 취소 사용<small>부분 취소를 상품 단위까지 허용합니다</small></span>
-              <button type="button" disabled={!editing || !draftPolicy.partialCancelEnabled} className={`${styles.switch} ${draftPolicy.itemLevelPartialEnabled ? styles.switchOn : ''}`} onClick={() => set('itemLevelPartialEnabled', !draftPolicy.itemLevelPartialEnabled)}><i /></button>
-            </label>
+          <>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>부분 취소</div>
+                <div className={styles.cardDesc}>주문을 상품·수량 단위로 나눠 취소할 수 있는지 정합니다.</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.partialCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('partialCancelEnabled', !draftPolicy.partialCancelEnabled)}><i /></button>
+                  <div className={styles.toggleRowText}><div className={styles.toggleRowTitle}>부분 취소 허용</div></div>
+                </div>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.fullCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('fullCancelEnabled', !draftPolicy.fullCancelEnabled)}><i /></button>
+                  <div className={styles.toggleRowText}><div className={styles.toggleRowTitle}>전체 주문 취소 허용</div></div>
+                </div>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing || !draftPolicy.partialCancelEnabled} className={`${styles.switch} ${draftPolicy.itemLevelPartialEnabled ? styles.switchOn : ''}`} onClick={() => set('itemLevelPartialEnabled', !draftPolicy.itemLevelPartialEnabled)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>상품 단위 취소 사용</div>
+                    <div className={styles.toggleRowDesc}>부분 취소를 상품 단위까지 허용합니다.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className={styles.infoNote}>수량 단위 부분취소, MOQ·주문단위 검증은 프로젝트 확장 설정으로 제공됩니다.</div>
-          </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 신규 취소 요청부터 적용되며, 이미 접수된 요청에는 영향을 주지 않습니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
+          </>
         )}
 
         {tab === 'reasons' && (
           <>
             <div className={styles.infoNote}>고객 노출용 사유와 관리자 전용 사유를 분리해서 관리합니다. '기타'처럼 자유 서술이 필요한 사유는 상세 입력 필수로 설정하세요.</div>
-            <div className={styles.formSection}>
-              <h3>고객 취소 사유</h3>
-              <div className={styles.reasonList}>
-                <div className={`${styles.reasonRow} ${styles.reasonHead}`}><span /><span>사유명</span><span>노출</span><span /><span /></div>
-                {customerReasons.map((r) => (
-                  <div key={r.id} className={styles.reasonRow}>
-                    <span className={styles.dragHandle}>☰</span>
-                    <span>{r.label}{r.requiresDetail && <span className={styles.detailTag}>상세필수</span>}</span>
-                    <span style={{ color: r.active ? '#059669' : '#a1a1aa' }}>{r.active ? '노출' : '비노출'}</span>
-                    {editing ? (
-                      <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, -1)}>↑</button><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, 1)}>↓</button></span>
-                    ) : <span />}
-                    {editing ? (
-                      <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => setReasonEditId(r.id)}>수정</button><button type="button" className={styles.smallBtn} onClick={() => removeReason(r.id)}>삭제</button></span>
-                    ) : <span />}
-                  </div>
-                ))}
+
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>고객 취소 사유</div>
               </div>
-              {editing && <button type="button" className={styles.smallBtn} onClick={() => addReason('고객')}>+ 고객 사유 추가</button>}
-            </div>
-            <div className={styles.formSection}>
-              <h3>관리자 취소 사유</h3>
-              <div className={styles.reasonList}>
-                <div className={`${styles.reasonRow} ${styles.reasonHead}`}><span /><span>사유명</span><span>노출</span><span /><span /></div>
-                {adminReasons.map((r) => (
-                  <div key={r.id} className={styles.reasonRow}>
-                    <span className={styles.dragHandle}>☰</span>
-                    <span>{r.label}{r.requiresDetail && <span className={styles.detailTag}>상세필수</span>}</span>
-                    <span style={{ color: r.active ? '#059669' : '#a1a1aa' }}>{r.active ? '노출' : '비노출'}</span>
-                    {editing ? (
-                      <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, -1)}>↑</button><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, 1)}>↓</button></span>
-                    ) : <span />}
-                    {editing ? (
-                      <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => setReasonEditId(r.id)}>수정</button><button type="button" className={styles.smallBtn} onClick={() => removeReason(r.id)}>삭제</button></span>
-                    ) : <span />}
-                  </div>
-                ))}
+              <div className={styles.cardBody}>
+                <div className={styles.reasonList}>
+                  <div className={`${styles.reasonRow} ${styles.reasonHead}`}><span /><span>사유명</span><span>노출</span><span /><span /></div>
+                  {customerReasons.map((r) => (
+                    <div key={r.id} className={styles.reasonRow}>
+                      <span className={styles.dragHandle}>☰</span>
+                      <span>{r.label}{r.requiresDetail && <span className={styles.detailTag}>상세필수</span>}</span>
+                      <span style={{ color: r.active ? '#059669' : '#a1a1aa' }}>{r.active ? '노출' : '비노출'}</span>
+                      {editing ? (
+                        <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, -1)}>↑</button><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, 1)}>↓</button></span>
+                      ) : <span />}
+                      {editing ? (
+                        <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => setReasonEditId(r.id)}>수정</button><button type="button" className={styles.smallBtn} onClick={() => removeReason(r.id)}>삭제</button></span>
+                      ) : <span />}
+                    </div>
+                  ))}
+                </div>
+                {editing && <button type="button" className={styles.smallBtn} onClick={() => addReason('고객')}>+ 고객 사유 추가</button>}
               </div>
-              {editing && <button type="button" className={styles.smallBtn} onClick={() => addReason('관리자')}>+ 관리자 사유 추가</button>}
             </div>
+
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>관리자 취소 사유</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.reasonList}>
+                  <div className={`${styles.reasonRow} ${styles.reasonHead}`}><span /><span>사유명</span><span>노출</span><span /><span /></div>
+                  {adminReasons.map((r) => (
+                    <div key={r.id} className={styles.reasonRow}>
+                      <span className={styles.dragHandle}>☰</span>
+                      <span>{r.label}{r.requiresDetail && <span className={styles.detailTag}>상세필수</span>}</span>
+                      <span style={{ color: r.active ? '#059669' : '#a1a1aa' }}>{r.active ? '노출' : '비노출'}</span>
+                      {editing ? (
+                        <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, -1)}>↑</button><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, 1)}>↓</button></span>
+                      ) : <span />}
+                      {editing ? (
+                        <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => setReasonEditId(r.id)}>수정</button><button type="button" className={styles.smallBtn} onClick={() => removeReason(r.id)}>삭제</button></span>
+                      ) : <span />}
+                    </div>
+                  ))}
+                </div>
+                {editing && <button type="button" className={styles.smallBtn} onClick={() => addReason('관리자')}>+ 관리자 사유 추가</button>}
+              </div>
+            </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 신규 취소 요청부터 적용되며, 이미 접수된 요청에는 영향을 주지 않습니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
           </>
         )}
 
         {tab === 'followup' && (
-          <div className={styles.formSection}>
-            <h3>후속 처리</h3>
-            <label className={styles.toggleField}>
-              <span>전량 취소 시 주문 자동 취소 전환<small>모든 상품의 유효 수량이 0이 되면 주문 상태를 자동으로 전환합니다</small></span>
-              <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.autoCancelOrderWhenFullyCancelled ? styles.switchOn : ''}`} onClick={() => set('autoCancelOrderWhenFullyCancelled', !draftPolicy.autoCancelOrderWhenFullyCancelled)}><i /></button>
-            </label>
-            <label className={styles.toggleField}>
-              <span>취소 시 재고 복원<small>출고되지 않은 수량만 가용 재고로 복원합니다</small></span>
-              <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.restockOnCancel ? styles.switchOn : ''}`} onClick={() => set('restockOnCancel', !draftPolicy.restockOnCancel)}><i /></button>
-            </label>
-            <label className={styles.toggleField}>
-              <span>취소 이벤트 알림<small>취소 접수·완료를 고객에게 안내합니다</small></span>
-              <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.notifyOnCancelEvents ? styles.switchOn : ''}`} onClick={() => set('notifyOnCancelEvents', !draftPolicy.notifyOnCancelEvents)}><i /></button>
-            </label>
+          <>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>후속 처리</div>
+                <div className={styles.cardDesc}>취소 처리 후 주문 상태 전환, 재고 복원, 알림 여부를 정합니다.</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.autoCancelOrderWhenFullyCancelled ? styles.switchOn : ''}`} onClick={() => set('autoCancelOrderWhenFullyCancelled', !draftPolicy.autoCancelOrderWhenFullyCancelled)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>전량 취소 시 주문 자동 취소 전환</div>
+                    <div className={styles.toggleRowDesc}>모든 상품의 유효 수량이 0이 되면 주문 상태를 자동으로 전환합니다.</div>
+                  </div>
+                </div>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.restockOnCancel ? styles.switchOn : ''}`} onClick={() => set('restockOnCancel', !draftPolicy.restockOnCancel)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>취소 시 재고 복원</div>
+                    <div className={styles.toggleRowDesc}>출고되지 않은 수량만 가용 재고로 복원합니다.</div>
+                  </div>
+                </div>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.notifyOnCancelEvents ? styles.switchOn : ''}`} onClick={() => set('notifyOnCancelEvents', !draftPolicy.notifyOnCancelEvents)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>취소 이벤트 알림</div>
+                    <div className={styles.toggleRowDesc}>취소 접수·완료를 고객에게 안내합니다.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className={styles.infoNote}>
               결제 완료 주문의 환불 금액 계산은 <button type="button" className={styles.smallBtn} onClick={() => window.location.assign('/policy/refund')}>환불 정책</button>에서 관리합니다.
               배송비·할인 재계산, 쿠폰/포인트 복원, 정산 조정 연계는 프로젝트 확장 설정으로 제공됩니다.
             </div>
-          </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 신규 취소 요청부터 적용되며, 이미 접수된 요청에는 영향을 주지 않습니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
+          </>
         )}
 
         {tab === 'preview' && (
@@ -394,19 +541,25 @@ export function CancelPolicyPage() {
         )}
 
         {tab === 'history' && (
-          <>
-            {history.length === 0 && <div className={styles.infoNote}>변경 이력이 없습니다.</div>}
-            {history.map((h) => (
-              <div key={h.id} className={timeline.timelineItem}>
-                <span className={timeline.timelineDot} />
-                <div className={timeline.timelineBody}>
-                  <div className={timeline.timelineRow}><strong className={timeline.timelineTitle}>{h.field}</strong><span className={timeline.timelineWhen}>{h.at}</span></div>
-                  <div className={timeline.timelineDetail}>{h.before} → {h.after} · {h.by}</div>
-                  <div className={timeline.timelineDetail}>사유: {h.reason}</div>
+          <div className={styles.card}>
+            <div className={styles.cardHead}>
+              <div className={styles.cardTitle}>변경 이력</div>
+              <div className={styles.cardDesc}>정책, 단계별 취소, 사유 설정 변경 기록입니다.</div>
+            </div>
+            <div className={styles.cardBody}>
+              {history.length === 0 && <div className={styles.infoNote}>변경 이력이 없습니다.</div>}
+              {history.map((h) => (
+                <div key={h.id} className={timeline.timelineItem}>
+                  <span className={timeline.timelineDot} />
+                  <div className={timeline.timelineBody}>
+                    <div className={timeline.timelineRow}><strong className={timeline.timelineTitle}>{h.field}</strong><span className={timeline.timelineWhen}>{h.at}</span></div>
+                    <div className={timeline.timelineDetail}>{h.before} → {h.after} · {h.by}</div>
+                    <div className={timeline.timelineDetail}>사유: {h.reason}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </>
+              ))}
+            </div>
+          </div>
         )}
       </div>
 

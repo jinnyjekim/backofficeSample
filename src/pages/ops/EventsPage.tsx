@@ -312,14 +312,14 @@ export function EventsPage() {
 
         <div className={shared.filterBox}>
           <div className={shared.filterRow1}>
-            <select className={shared.selectSm} value={searchField} onChange={(e) => setSearchField(e.target.value)}><option>전체</option><option>이벤트번호</option><option>관리명</option><option>사용자 노출명</option></select>
+            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={shared.selectSm} value={searchField} onChange={(e) => setSearchField(e.target.value)}><option>전체</option><option>이벤트번호</option><option>관리명</option><option>사용자 노출명</option></select></label>
             <input className={shared.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="이벤트 관리명, 노출명 또는 번호" />
             <button type="button" className={shared.searchBtn}>검색</button>
           </div>
           <div className={shared.filterRow2}>
-            <select className={shared.selectXs} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as '전체' | EventStatus)}><option value="전체">진행상태 전체</option>{Object.keys(EVENT_STATUS_META).map((item) => <option key={item}>{item}</option>)}</select>
-            <select className={shared.selectXs} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as '전체' | EventType)}><option value="전체">이벤트유형 전체</option>{EVENT_TYPES.map((item) => <option key={item}>{item}</option>)}</select>
-            <select className={shared.selectXs} value={targetFilter} onChange={(e) => setTargetFilter(e.target.value as '전체' | EventTarget)}><option value="전체">참여대상 전체</option>{EVENT_TARGETS.map((item) => <option key={item}>{item}</option>)}</select>
+            <label className="globalFilterField"><span>진행상태</span><select aria-label="진행상태" className={shared.selectXs} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as '전체' | EventStatus)}><option value="전체">진행상태 전체</option>{Object.keys(EVENT_STATUS_META).map((item) => <option key={item}>{item}</option>)}</select></label>
+            <label className="globalFilterField"><span>이벤트유형</span><select aria-label="이벤트유형" className={shared.selectXs} value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as '전체' | EventType)}><option value="전체">이벤트유형 전체</option>{EVENT_TYPES.map((item) => <option key={item}>{item}</option>)}</select></label>
+            <label className="globalFilterField"><span>참여대상</span><select aria-label="참여대상" className={shared.selectXs} value={targetFilter} onChange={(e) => setTargetFilter(e.target.value as '전체' | EventTarget)}><option value="전체">참여대상 전체</option>{EVENT_TARGETS.map((item) => <option key={item}>{item}</option>)}</select></label>
             <button type="button" className={shared.detailFilterBtn} onClick={() => setShowAdvanced((value) => !value)}>상세 필터 {showAdvanced ? '−' : '＋'}</button>
             <div className={shared.rowSpacer} />
             <button type="button" className={shared.resetBtn} onClick={resetFilters}>초기화</button>

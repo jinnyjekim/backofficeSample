@@ -140,12 +140,12 @@ export function PointsBalancePage() {
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <select className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as MemberStatus | '')}>
+            <label className="globalFilterField"><span>회원 상태</span><select aria-label="회원 상태" className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as MemberStatus | '')}>
               <option value="">회원 상태 전체</option>
               <option value="정상">정상</option>
               <option value="휴면">휴면</option>
               <option value="탈퇴">탈퇴</option>
-            </select>
+            </select></label>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>
@@ -154,7 +154,7 @@ export function PointsBalancePage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}명</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
+            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
           </div>
         </div>
       </div>

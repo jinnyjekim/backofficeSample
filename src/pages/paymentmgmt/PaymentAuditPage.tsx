@@ -158,19 +158,19 @@ export function PaymentAuditPage() {
             <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
           <div className={shared.filterRow2}>
-            <select className={shared.selectSm} value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as AuditCategory | '')}>
+            <label className="globalFilterField"><span>작업유형</span><select aria-label="작업유형" className={shared.selectSm} value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as AuditCategory | '')}>
               <option value="">전체 작업유형</option>
               {CATEGORIES.map((value) => <option key={value}>{value}</option>)}
-            </select>
-            <select className={shared.selectSm} value={actorTypeFilter} onChange={(e) => setActorTypeFilter(e.target.value as ActorType | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>처리주체</span><select aria-label="처리주체" className={shared.selectSm} value={actorTypeFilter} onChange={(e) => setActorTypeFilter(e.target.value as ActorType | '')}>
               <option value="">전체 처리주체</option>
               <option value="ADMIN">관리자</option>
               <option value="SYSTEM">자동</option>
-            </select>
-            <select className={shared.selectSm} value={resultFilter} onChange={(e) => setResultFilter(e.target.value as AuditResult | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>결과</span><select aria-label="결과" className={shared.selectSm} value={resultFilter} onChange={(e) => setResultFilter(e.target.value as AuditResult | '')}>
               <option value="">전체 결과</option>
               {RESULTS.map((value) => <option key={value}>{value}</option>)}
-            </select>
+            </select></label>
             <button type="button" className={shared.detailFilterBtn} onClick={() => setShowAdvanced((current) => !current)}>
               {showAdvanced ? '상세 필터 −' : '상세 필터 +'}
             </button>
@@ -179,10 +179,10 @@ export function PaymentAuditPage() {
           </div>
           {showAdvanced && (
             <div className={styles.advancedFilters}>
-              <select className={shared.selectSm} value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value as AuditSource | '')}>
+              <label className="globalFilterField"><span>원천 시스템</span><select aria-label="원천 시스템" className={shared.selectSm} value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value as AuditSource | '')}>
                 <option value="">전체 Source</option>
                 {SOURCES.map((value) => <option key={value}>{value}</option>)}
-              </select>
+              </select></label>
               <label>처리일 <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} /></label>
               <label>~ <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} /></label>
             </div>
@@ -252,6 +252,7 @@ export function PaymentAuditPage() {
               <button
                 type="button"
                 className={styles.primaryButton}
+                data-grid-download
                 onClick={() => { setDownloadOpen(false); toastBriefly('결제 처리 이력을 다운로드했습니다.'); }}
               >
                 다운로드

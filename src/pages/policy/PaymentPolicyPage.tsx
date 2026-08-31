@@ -5,6 +5,7 @@ import styles from './PaymentPolicyPage.module.css';
 import { PaymentMethodEditDialog } from './PaymentMethodEditDialog';
 import {
   INITIAL_HISTORY,
+  INITIAL_LAST_MODIFIED,
   INITIAL_METHODS,
   INITIAL_POLICY,
   PAYMENT_STAGES,
@@ -16,6 +17,7 @@ import {
   type ExpiryAction,
   type FailureOrderAction,
   type FieldDiff,
+  type LastModified,
   type PaymentBasis,
   type PaymentMethod,
   type PaymentPolicy,
@@ -23,6 +25,8 @@ import {
   type PolicyHistoryEntry,
   type ShortagePolicy,
 } from './paymentPolicyData';
+
+const TTL_PRESETS = ['15', '30', '60'];
 
 type Tab = 'basic' | 'methods' | 'partial' | 'failure' | 'cancel' | 'history';
 const TABS: [Tab, string][] = [
@@ -38,6 +42,7 @@ export function PaymentPolicyPage() {
   const [policy, setPolicy] = useState(INITIAL_POLICY);
   const [methods, setMethods] = useState(INITIAL_METHODS);
   const [history, setHistory] = useState(INITIAL_HISTORY);
+  const [lastModified, setLastModified] = useState<LastModified>(INITIAL_LAST_MODIFIED);
 
   const [tab, setTab] = useState<Tab>('basic');
   const [editing, setEditing] = useState(false);
@@ -94,6 +99,7 @@ export function PaymentPolicyPage() {
     setPolicy(draftPolicy);
     setMethods(draftMethods);
     setHistory((current) => [...entries, ...current]);
+    setLastModified({ at: '2026-08-31', by: '운영 관리자' });
     setConfirmSave(null);
     setEditing(false);
     toastBriefly('결제 정책을 저장했습니다.');
@@ -129,17 +135,24 @@ export function PaymentPolicyPage() {
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
+            <div className={styles.eyebrow}>거래 정책</div>
             <h1 className={shared.title}>결제 정책</h1>
             <p className={shared.subtitle}>서비스의 결제 방식과 처리 규칙을 설정합니다.</p>
           </div>
-          {!editing ? (
-            <button type="button" className={shared.createBtn} onClick={startEdit}>정책 수정</button>
-          ) : (
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button type="button" className={styles.cancelButton} onClick={cancelEdit}>수정 취소</button>
-              <button type="button" className={styles.primaryButton} onClick={requestSave}>변경 사항 저장</button>
-            </div>
-          )}
+          <div className={styles.headMeta}>
+            {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
+            {!editing ? (
+              <>
+                <button type="button" className={styles.outlineBtn} onClick={() => setTab('history')}>변경 이력</button>
+                <button type="button" className={styles.darkBtn} onClick={startEdit}>정책 수정</button>
+              </>
+            ) : (
+              <>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>수정 취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>변경 사항 저장</button>
+              </>
+            )}
+          </div>
         </div>
         <div className={styles.viewTabs}>
           {TABS.map(([key, label]) => (
@@ -151,8 +164,14 @@ export function PaymentPolicyPage() {
       <div className={styles.body}>
         {warnings.length > 0 && (
           <div className={styles.warningBanner}>
-            <strong>설정 확인 필요</strong>
-            {warnings.map((w) => <span key={w.id}>⚠ {w.message}</span>)}
+            <span className={styles.warningIcon}>!</span>
+            <div className={styles.warningBody}>
+              <div className={styles.warningTitle}>설정 확인 필요 · {warnings.length}건</div>
+              <div className={styles.warningList}>
+                {warnings.map((w) => <div key={w.id} className={styles.warningItem}>{w.message}</div>)}
+              </div>
+            </div>
+            <button type="button" className={styles.warningActionBtn} onClick={() => setTab('partial')}>금액 탭에서 확인</button>
           </div>
         )}
 
@@ -161,240 +180,374 @@ export function PaymentPolicyPage() {
             <div className={styles.summaryCard}>
               <div className={styles.summaryHead}><h2>현재 정책 요약</h2></div>
               <div className={styles.summaryGrid}>
-                <div className={styles.summaryRow}><span>결제 방식</span><strong>{policy.paymentTiming}</strong></div>
-                <div className={styles.summaryRow}><span>기본 결제수단</span><strong>{defaultMethod?.name ?? '없음'}</strong></div>
-                <div className={styles.summaryRow}><span>사용중 결제수단</span><strong>{activeCount}개</strong></div>
-                <div className={styles.summaryRow}><span>부분결제</span><strong>{policy.partialPaymentEnabled ? '허용' : '불가'}</strong></div>
-                <div className={styles.summaryRow}><span>결제 유효시간</span><strong>{policy.sessionExpiryMinutes}분</strong></div>
-                <div className={styles.summaryRow}><span>결제 상태 자동 재조회</span><strong>{policy.autoRequery ? '사용' : '사용 안 함'}</strong></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>결제 방식</div><div className={styles.summaryTileValue}>{policy.paymentTiming}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>기본 결제수단</div><div className={styles.summaryTileValue}>{defaultMethod?.name ?? '없음'}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>사용중 결제수단</div><div className={styles.summaryTileValue}>{activeCount}개</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>부분결제</div><div className={styles.summaryTileValue}>{policy.partialPaymentEnabled ? '허용' : '불가'}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>결제 유효시간</div><div className={styles.summaryTileValue}>{policy.sessionExpiryMinutes}분</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>결제 가능 시점</div><div className={styles.summaryTileValue}>{policy.paymentAllowedStages.length}개 단계</div></div>
               </div>
             </div>
 
-            <div className={styles.formSection}>
-              <h3>결제 필요 여부 · 방식</h3>
-              <label className={styles.toggleField}>
-                <span>주문별 결제 필요</span>
-                <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.paymentRequired ? styles.switchOn : ''}`} onClick={() => set('paymentRequired', !draftPolicy.paymentRequired)}><i /></button>
-              </label>
-              <label className={styles.formField}>
-                <span>기본 결제 방식</span>
-                <div className={styles.radioGroup}>
-                  {(['선결제', '후불', '선결제 + 후불'] as PaymentTiming[]).map((v) => (
-                    <label key={v}><input type="radio" disabled={!editing} checked={draftPolicy.paymentTiming === v} onChange={() => set('paymentTiming', v)} />{v}</label>
-                  ))}
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>결제 필요 여부 · 방식</div>
+                <div className={styles.cardDesc}>주문이 결제를 거쳐야 하는지와, 어느 단계에서 결제를 받을지 정합니다.</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.paymentRequired ? styles.switchOn : ''}`} onClick={() => set('paymentRequired', !draftPolicy.paymentRequired)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>주문별 결제 필요</div>
+                    <div className={styles.toggleRowDesc}>끄면 주문이 결제 없이 완료 처리됩니다.</div>
+                  </div>
                 </div>
-              </label>
-              <label className={styles.formField}>
-                <span>결제 가능 시점 (주문 Lifecycle 단계)</span>
-                <div className={styles.radioGroup}>
-                  {PAYMENT_STAGES.map((s) => (
-                    <label key={s}><input type="checkbox" disabled={!editing} checked={draftPolicy.paymentAllowedStages.includes(s)} onChange={() => toggleStage(s)} />{s}</label>
-                  ))}
+
+                <div className={`${styles.cardGrid} ${styles.dividerTop}`}>
+                  <div>
+                    <div className={styles.fieldLabel}>기본 결제 방식</div>
+                    <div className={styles.pillGroup}>
+                      {(['선결제', '후불', '선결제 + 후불'] as PaymentTiming[]).map((v) => (
+                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.paymentTiming === v ? styles.pillBtnOn : ''}`} onClick={() => set('paymentTiming', v)}>{v}</button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className={styles.fieldLabel}>결제 기준금액</div>
+                    <div className={styles.pillGroup}>
+                      {(['최종 주문금액', '청구 확정금액'] as PaymentBasis[]).map((v) => (
+                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.paymentBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('paymentBasis', v)}>{v}</button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className={styles.cardGridFull}>
+                    <div className={styles.fieldLabel}>결제 가능 시점 <span className={styles.fieldLabelHint}>주문 Lifecycle 단계 · 복수 선택</span></div>
+                    <div className={styles.pillGroup}>
+                      {PAYMENT_STAGES.map((s) => {
+                        const on = draftPolicy.paymentAllowedStages.includes(s);
+                        return (
+                          <button key={s} type="button" disabled={!editing} className={`${styles.stageBtn} ${on ? styles.stageBtnOn : ''}`} onClick={() => toggleStage(s)}>
+                            <span className={`${styles.stageCheck} ${on ? styles.stageCheckOn : ''}`}>{on ? '✓' : ''}</span>
+                            <span className={`${styles.stageLabel} ${on ? styles.stageLabelOn : ''}`}>{s}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
-              </label>
-              <label className={styles.formField}>
-                <span>결제 기준금액</span>
-                <div className={styles.radioGroup}>
-                  {(['최종 주문금액', '청구 확정금액'] as PaymentBasis[]).map((v) => (
-                    <label key={v}><input type="radio" disabled={!editing} checked={draftPolicy.paymentBasis === v} onChange={() => set('paymentBasis', v)} />{v}</label>
-                  ))}
-                </div>
-              </label>
+              </div>
             </div>
 
-            <div className={styles.formSection}>
-              <h3>결제 유효시간</h3>
-              <div className={styles.formGrid}>
-                <label className={styles.formField}>
-                  <span>결제 세션 유효시간 (분)</span>
-                  <input type="number" min="0" disabled={!editing} value={draftPolicy.sessionExpiryMinutes} onChange={(e) => set('sessionExpiryMinutes', Number(e.target.value))} />
-                </label>
-                <label className={styles.formField}>
-                  <span>유효시간 만료 후</span>
-                  <select disabled={!editing} value={draftPolicy.expiryAction} onChange={(e) => set('expiryAction', e.target.value as ExpiryAction)}>
-                    <option>재결제 가능</option>
-                    <option>주문 자동 취소</option>
-                    <option>관리자 확인 필요</option>
-                  </select>
-                </label>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>결제 유효시간</div>
+                <div className={styles.cardDesc}>결제 요청 후 완료까지 허용할 시간과 만료 이후 동작입니다.</div>
               </div>
-              <label className={styles.toggleField}>
-                <span>결제 완료 전 주문 처리 차단<small>선결제 정책에서 결제 확인 전 처리 진행을 막습니다</small></span>
-                <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.blockProcessingBeforePaid ? styles.switchOn : ''}`} onClick={() => set('blockProcessingBeforePaid', !draftPolicy.blockProcessingBeforePaid)}><i /></button>
-              </label>
+              <div className={styles.cardBody}>
+                <div className={styles.cardGrid}>
+                  <div>
+                    <div className={styles.fieldLabel}>결제 세션 유효시간</div>
+                    <div className={styles.ttlRow}>
+                      <input type="number" min="0" className={styles.ttlInput} disabled={!editing} value={draftPolicy.sessionExpiryMinutes} onChange={(e) => set('sessionExpiryMinutes', Number(e.target.value))} />
+                      <span className={styles.ttlUnit}>분</span>
+                      <div className={styles.ttlPresets}>
+                        {TTL_PRESETS.map((v) => {
+                          const on = String(draftPolicy.sessionExpiryMinutes) === v;
+                          return (
+                            <button key={v} type="button" disabled={!editing} className={`${styles.presetBtn} ${on ? styles.presetBtnOn : ''}`} onClick={() => set('sessionExpiryMinutes', Number(v))}>{v}분</button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className={styles.fieldLabel}>유효시간 만료 후</div>
+                    <select disabled={!editing} value={draftPolicy.expiryAction} onChange={(e) => set('expiryAction', e.target.value as ExpiryAction)} className={styles.ttlInput} style={{ width: '100%' }}>
+                      <option>재결제 가능</option>
+                      <option>주문 자동 취소</option>
+                      <option>관리자 확인 필요</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className={`${styles.toggleRow} ${styles.dividerTop}`}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.blockProcessingBeforePaid ? styles.switchOn : ''}`} onClick={() => set('blockProcessingBeforePaid', !draftPolicy.blockProcessingBeforePaid)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>결제 완료 전 주문 처리 차단</div>
+                    <div className={styles.toggleRowDesc}>선결제 정책에서 결제 확인 전 처리 진행을 막습니다.</div>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 신규 주문부터 적용되며, 진행 중인 결제 건에는 영향을 주지 않습니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
           </>
         )}
 
         {tab === 'methods' && (
           <>
-            <div className={styles.infoNote}>사용 여부·금액 제한·PG 연결은 결제수단별로 [수정]에서 설정합니다. 노출 순서는 ↑↓ 버튼으로 조정합니다.</div>
-            <div className={styles.methodList}>
-              <div className={`${styles.methodRow} ${styles.methodHead}`}>
-                <span />
-                <span>결제수단</span>
-                <span>사용</span>
-                <span>결제금액</span>
-                <span>부분결제 / 자동확정</span>
-                <span>PG</span>
-                <span />
-                <span />
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>결제수단</div>
+                <div className={styles.cardDesc}>사용 여부·금액 제한·PG 연결은 결제수단별로 [수정]에서 설정합니다. 노출 순서는 ↑↓ 버튼으로 조정합니다.</div>
               </div>
-              {sortedMethods.map((m) => (
-                <div key={m.id} className={styles.methodRow}>
-                  <span className={styles.dragHandle}>☰</span>
-                  <span className={styles.methodName}>{m.name}{m.isDefault && <span className={styles.defaultTag}>기본</span>}</span>
-                  <span style={{ color: m.active ? '#059669' : '#a1a1aa' }}>{m.active ? '사용' : '비활성'}</span>
-                  <span className={styles.methodDim}>{fmtWon(m.minAmount)} ~ {m.maxAmount === null ? '제한 없음' : fmtWon(m.maxAmount)}</span>
-                  <span className={styles.methodDim}>{m.partialAllowed ? '부분결제 O' : '부분결제 X'} · {m.autoConfirm ? '자동확정' : '수동확정'}</span>
-                  <span className={styles.methodDim}>{m.pg ?? '-'}</span>
-                  {editing ? (
-                    <>
-                      <span style={{ display: 'flex', gap: 4 }}>
-                        <button type="button" className={styles.methodEditBtn} onClick={() => moveMethod(m, -1)}>↑</button>
-                        <button type="button" className={styles.methodEditBtn} onClick={() => moveMethod(m, 1)}>↓</button>
-                      </span>
-                      <button type="button" className={styles.methodEditBtn} onClick={() => setMethodEditId(m.id)}>수정</button>
-                    </>
-                  ) : (
-                    <>
-                      <span />
-                      <span />
-                    </>
-                  )}
+              <div className={styles.cardBody}>
+                <div className={styles.methodList}>
+                  <div className={`${styles.methodRow} ${styles.methodHead}`}>
+                    <span />
+                    <span>결제수단</span>
+                    <span>사용</span>
+                    <span>결제금액</span>
+                    <span>부분결제 / 자동확정</span>
+                    <span>PG</span>
+                    <span />
+                    <span />
+                  </div>
+                  {sortedMethods.map((m) => (
+                    <div key={m.id} className={styles.methodRow}>
+                      <span className={styles.dragHandle}>☰</span>
+                      <span className={styles.methodName}>{m.name}{m.isDefault && <span className={styles.defaultTag}>기본</span>}</span>
+                      <span style={{ color: m.active ? '#059669' : '#a1a1aa' }}>{m.active ? '사용' : '비활성'}</span>
+                      <span className={styles.methodDim}>{fmtWon(m.minAmount)} ~ {m.maxAmount === null ? '제한 없음' : fmtWon(m.maxAmount)}</span>
+                      <span className={styles.methodDim}>{m.partialAllowed ? '부분결제 O' : '부분결제 X'} · {m.autoConfirm ? '자동확정' : '수동확정'}</span>
+                      <span className={styles.methodDim}>{m.pg ?? '-'}</span>
+                      {editing ? (
+                        <>
+                          <span style={{ display: 'flex', gap: 4 }}>
+                            <button type="button" className={styles.methodEditBtn} onClick={() => moveMethod(m, -1)}>↑</button>
+                            <button type="button" className={styles.methodEditBtn} onClick={() => moveMethod(m, 1)}>↓</button>
+                          </span>
+                          <button type="button" className={styles.methodEditBtn} onClick={() => setMethodEditId(m.id)}>수정</button>
+                        </>
+                      ) : (
+                        <>
+                          <span />
+                          <span />
+                        </>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 신규 주문부터 적용되며, 진행 중인 결제 건에는 영향을 주지 않습니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
           </>
         )}
 
         {tab === 'partial' && (
-          <div className={styles.formSection}>
-            <h3>부분결제</h3>
-            <label className={styles.toggleField}>
-              <span>부분결제 허용</span>
-              <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.partialPaymentEnabled ? styles.switchOn : ''}`} onClick={() => set('partialPaymentEnabled', !draftPolicy.partialPaymentEnabled)}><i /></button>
-            </label>
-            {draftPolicy.partialPaymentEnabled && (
-              <>
-                <div className={styles.formGrid}>
-                  <label className={styles.formField}>
-                    <span>최소 1회 결제금액</span>
-                    <input type="number" min="0" disabled={!editing} value={draftPolicy.minPartialAmount} onChange={(e) => set('minPartialAmount', Number(e.target.value))} />
-                  </label>
-                  <label className={styles.formField}>
-                    <span>최소 결제 비율 (%)</span>
-                    <input type="number" min="0" max="100" disabled={!editing} value={draftPolicy.minPartialRatioPct} onChange={(e) => set('minPartialRatioPct', Number(e.target.value))} />
-                  </label>
-                  <label className={styles.formField}>
-                    <span>최대 결제 횟수</span>
-                    <input type="number" min="1" disabled={!editing} value={draftPolicy.maxPartialCount} onChange={(e) => set('maxPartialCount', Number(e.target.value))} />
-                  </label>
-                  <label className={styles.formField}>
-                    <span>잔액 결제 마감 (주문 확정 후 N일)</span>
-                    <input type="number" min="0" disabled={!editing} value={draftPolicy.balanceDueDays} onChange={(e) => set('balanceDueDays', Number(e.target.value))} />
-                  </label>
+          <>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>부분결제</div>
+                <div className={styles.cardDesc}>주문 금액을 여러 번에 나눠 결제할 수 있는지와, 그 조건을 정합니다.</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.partialPaymentEnabled ? styles.switchOn : ''}`} onClick={() => set('partialPaymentEnabled', !draftPolicy.partialPaymentEnabled)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>부분결제 허용</div>
+                  </div>
                 </div>
-                <label className={styles.formField}>
-                  <span>부족 결제 처리</span>
-                  <select disabled={!editing} value={draftPolicy.shortagePolicy} onChange={(e) => set('shortagePolicy', e.target.value as ShortagePolicy)}>
-                    <option>부분결제로 처리</option>
-                    <option>결제 확인 차단</option>
-                    <option>관리자 확인 필요</option>
-                  </select>
-                </label>
-              </>
-            )}
+
+                {draftPolicy.partialPaymentEnabled && (
+                  <div className={styles.cardGrid}>
+                    <div>
+                      <div className={styles.fieldLabel}>최소 1회 결제금액</div>
+                      <input type="number" min="0" className={styles.textField} disabled={!editing} value={draftPolicy.minPartialAmount} onChange={(e) => set('minPartialAmount', Number(e.target.value))} />
+                    </div>
+                    <div>
+                      <div className={styles.fieldLabel}>최소 결제 비율 (%)</div>
+                      <input type="number" min="0" max="100" className={styles.textField} disabled={!editing} value={draftPolicy.minPartialRatioPct} onChange={(e) => set('minPartialRatioPct', Number(e.target.value))} />
+                    </div>
+                    <div>
+                      <div className={styles.fieldLabel}>최대 결제 횟수</div>
+                      <input type="number" min="1" className={styles.textField} disabled={!editing} value={draftPolicy.maxPartialCount} onChange={(e) => set('maxPartialCount', Number(e.target.value))} />
+                    </div>
+                    <div>
+                      <div className={styles.fieldLabel}>잔액 결제 마감 <span className={styles.fieldLabelHint}>주문 확정 후 N일</span></div>
+                      <input type="number" min="0" className={styles.textField} disabled={!editing} value={draftPolicy.balanceDueDays} onChange={(e) => set('balanceDueDays', Number(e.target.value))} />
+                    </div>
+                    <div className={styles.cardGridFull}>
+                      <div className={styles.fieldLabel}>부족 결제 처리</div>
+                      <select disabled={!editing} value={draftPolicy.shortagePolicy} onChange={(e) => set('shortagePolicy', e.target.value as ShortagePolicy)} className={styles.textField}>
+                        <option>부분결제로 처리</option>
+                        <option>결제 확인 차단</option>
+                        <option>관리자 확인 필요</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
             <div className={styles.infoNote}>복수 결제수단 병행, 과결제 처리 등 세부 규칙은 프로젝트 확장 설정으로 제공됩니다.</div>
-          </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 신규 주문부터 적용되며, 진행 중인 결제 건에는 영향을 주지 않습니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
+          </>
         )}
 
         {tab === 'failure' && (
           <>
-            <div className={styles.formSection}>
-              <h3>결제 실패</h3>
-              <label className={styles.formField}>
-                <span>실패 시 주문 상태</span>
-                <select disabled={!editing} value={draftPolicy.failureOrderAction} onChange={(e) => set('failureOrderAction', e.target.value as FailureOrderAction)}>
-                  <option>유지</option>
-                  <option>결제 실패 상태로 전환</option>
-                  <option>주문 취소</option>
-                </select>
-              </label>
-              <label className={styles.toggleField}>
-                <span>사용자 재시도 허용</span>
-                <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.retryAllowed ? styles.switchOn : ''}`} onClick={() => set('retryAllowed', !draftPolicy.retryAllowed)}><i /></button>
-              </label>
-              {draftPolicy.retryAllowed && (
-                <div className={styles.formGrid}>
-                  <label className={styles.formField}>
-                    <span>최대 재시도</span>
-                    <input type="number" min="1" disabled={!editing} value={draftPolicy.maxRetryCount} onChange={(e) => set('maxRetryCount', Number(e.target.value))} />
-                  </label>
-                  <label className={styles.formField}>
-                    <span>재시도 제한시간 (분)</span>
-                    <input type="number" min="1" disabled={!editing} value={draftPolicy.retryLimitMinutes} onChange={(e) => set('retryLimitMinutes', Number(e.target.value))} />
-                  </label>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>결제 실패</div>
+                <div className={styles.cardDesc}>결제 실패 시 주문 처리와, 사용자에게 재시도를 허용할지 정합니다.</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div>
+                  <div className={styles.fieldLabel}>실패 시 주문 상태</div>
+                  <select disabled={!editing} value={draftPolicy.failureOrderAction} onChange={(e) => set('failureOrderAction', e.target.value as FailureOrderAction)} className={styles.textField} style={{ maxWidth: 260 }}>
+                    <option>유지</option>
+                    <option>결제 실패 상태로 전환</option>
+                    <option>주문 취소</option>
+                  </select>
                 </div>
-              )}
+
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.retryAllowed ? styles.switchOn : ''}`} onClick={() => set('retryAllowed', !draftPolicy.retryAllowed)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>사용자 재시도 허용</div>
+                  </div>
+                </div>
+
+                {draftPolicy.retryAllowed && (
+                  <div className={styles.cardGrid}>
+                    <div>
+                      <div className={styles.fieldLabel}>최대 재시도</div>
+                      <input type="number" min="1" className={styles.textField} disabled={!editing} value={draftPolicy.maxRetryCount} onChange={(e) => set('maxRetryCount', Number(e.target.value))} />
+                    </div>
+                    <div>
+                      <div className={styles.fieldLabel}>재시도 제한시간 <span className={styles.fieldLabelHint}>분</span></div>
+                      <input type="number" min="1" className={styles.textField} disabled={!editing} value={draftPolicy.retryLimitMinutes} onChange={(e) => set('retryLimitMinutes', Number(e.target.value))} />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className={styles.formSection}>
-              <h3>결제 상태 재조회</h3>
-              <label className={styles.toggleField}>
-                <span>결제 상태 자동 재조회<small>내부 상태와 PG 상태가 어긋나는 경우 자동 동기화</small></span>
-                <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.autoRequery ? styles.switchOn : ''}`} onClick={() => set('autoRequery', !draftPolicy.autoRequery)}><i /></button>
-              </label>
-              {draftPolicy.autoRequery && (
-                <label className={styles.formField}>
-                  <span>재조회 횟수</span>
-                  <input type="number" min="1" disabled={!editing} value={draftPolicy.requeryMaxCount} onChange={(e) => set('requeryMaxCount', Number(e.target.value))} />
-                </label>
-              )}
-              <div className={styles.lockedNote}>중복결제 방지는 시스템 필수 기능으로 항상 사용됩니다. (주문번호·결제대상금액·진행중 결제 여부를 자동 검증)</div>
+
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>결제 상태 재조회</div>
+                <div className={styles.cardDesc}>내부 상태와 PG 상태가 어긋나는 경우 자동 동기화할지 정합니다.</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.autoRequery ? styles.switchOn : ''}`} onClick={() => set('autoRequery', !draftPolicy.autoRequery)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>결제 상태 자동 재조회</div>
+                    <div className={styles.toggleRowDesc}>내부 상태와 PG 상태가 어긋나는 경우 자동 동기화합니다.</div>
+                  </div>
+                </div>
+                {draftPolicy.autoRequery && (
+                  <div>
+                    <div className={styles.fieldLabel}>재조회 횟수</div>
+                    <input type="number" min="1" className={styles.textField} style={{ width: 120 }} disabled={!editing} value={draftPolicy.requeryMaxCount} onChange={(e) => set('requeryMaxCount', Number(e.target.value))} />
+                  </div>
+                )}
+                <div className={styles.lockedNote}>중복결제 방지는 시스템 필수 기능으로 항상 사용됩니다. (주문번호·결제대상금액·진행중 결제 여부를 자동 검증)</div>
+              </div>
             </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 신규 주문부터 적용되며, 진행 중인 결제 건에는 영향을 주지 않습니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
           </>
         )}
 
         {tab === 'cancel' && (
-          <div className={styles.formSection}>
-            <h3>취소 연계</h3>
-            <label className={styles.toggleField}>
-              <span>결제 취소 기능 사용</span>
-              <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.cancelEnabled ? styles.switchOn : ''}`} onClick={() => set('cancelEnabled', !draftPolicy.cancelEnabled)}><i /></button>
-            </label>
-            <label className={styles.formField}>
-              <span>결제 완료 후 주문 금액 변경</span>
-              <select disabled={!editing} value={draftPolicy.amountChangePolicy} onChange={(e) => set('amountChangePolicy', e.target.value as AmountChangePolicy)}>
-                <option>직접 수정 허용</option>
-                <option>변경 요청 Workflow</option>
-                <option>수정 불가</option>
-              </select>
-            </label>
-            <label className={styles.toggleField}>
-              <span>관리자 수동 결제 등록 허용</span>
-              <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.manualPaymentEnabled ? styles.switchOn : ''}`} onClick={() => set('manualPaymentEnabled', !draftPolicy.manualPaymentEnabled)}><i /></button>
-            </label>
+          <>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>취소 연계</div>
+                <div className={styles.cardDesc}>결제 취소 기능과, 결제 완료 후 금액 변경 처리 방식을 정합니다.</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.cancelEnabled ? styles.switchOn : ''}`} onClick={() => set('cancelEnabled', !draftPolicy.cancelEnabled)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>결제 취소 기능 사용</div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className={styles.fieldLabel}>결제 완료 후 주문 금액 변경</div>
+                  <select disabled={!editing} value={draftPolicy.amountChangePolicy} onChange={(e) => set('amountChangePolicy', e.target.value as AmountChangePolicy)} className={styles.textField} style={{ maxWidth: 260 }}>
+                    <option>직접 수정 허용</option>
+                    <option>변경 요청 Workflow</option>
+                    <option>수정 불가</option>
+                  </select>
+                </div>
+
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.manualPaymentEnabled ? styles.switchOn : ''}`} onClick={() => set('manualPaymentEnabled', !draftPolicy.manualPaymentEnabled)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>관리자 수동 결제 등록 허용</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className={styles.infoNote}>
               결제 취소 이후 주문 상태 처리, 부분 취소·환불 계산 규칙은 <button type="button" className={styles.methodEditBtn} onClick={() => window.location.assign('/policy/cancellation')}>취소 정책</button>{' '}
               및 <button type="button" className={styles.methodEditBtn} onClick={() => window.location.assign('/policy/refund')}>환불 정책</button>에서 관리합니다.
             </div>
-          </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 신규 주문부터 적용되며, 진행 중인 결제 건에는 영향을 주지 않습니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
+          </>
         )}
 
         {tab === 'history' && (
-          <>
-            {history.length === 0 && <div className={styles.infoNote}>변경 이력이 없습니다.</div>}
-            {history.map((h) => (
-              <div key={h.id} className={timeline.timelineItem}>
-                <span className={timeline.timelineDot} />
-                <div className={timeline.timelineBody}>
-                  <div className={timeline.timelineRow}><strong className={timeline.timelineTitle}>{h.field}</strong><span className={timeline.timelineWhen}>{h.at}</span></div>
-                  <div className={timeline.timelineDetail}>{h.before} → {h.after} · {h.by}</div>
-                  <div className={timeline.timelineDetail}>사유: {h.reason}</div>
+          <div className={styles.card}>
+            <div className={styles.cardHead}>
+              <div className={styles.cardTitle}>변경 이력</div>
+              <div className={styles.cardDesc}>정책 및 결제수단 설정 변경 기록입니다.</div>
+            </div>
+            <div className={styles.cardBody}>
+              {history.length === 0 && <div className={styles.infoNote}>변경 이력이 없습니다.</div>}
+              {history.map((h) => (
+                <div key={h.id} className={timeline.timelineItem}>
+                  <span className={timeline.timelineDot} />
+                  <div className={timeline.timelineBody}>
+                    <div className={timeline.timelineRow}><strong className={timeline.timelineTitle}>{h.field}</strong><span className={timeline.timelineWhen}>{h.at}</span></div>
+                    <div className={timeline.timelineDetail}>{h.before} → {h.after} · {h.by}</div>
+                    <div className={timeline.timelineDetail}>사유: {h.reason}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </>
+              ))}
+            </div>
+          </div>
         )}
       </div>
 

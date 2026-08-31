@@ -187,14 +187,14 @@ export function ExternalTransactionPage() {
             <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
           <div className={shared.filterRow2}>
-            <select className={shared.selectSm} value={pgFilter} onChange={(e) => setPgFilter(e.target.value)}>
+            <label className="globalFilterField"><span>외부 연동</span><select aria-label="외부 연동" className={shared.selectSm} value={pgFilter} onChange={(e) => setPgFilter(e.target.value)}>
               <option value="">전체 외부 연동</option>
               {PG_OPTIONS.map((pg) => <option key={pg}>{pg}</option>)}
-            </select>
-            <select className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as PaymentMethod | '')}>
+            </select></label>
+            <label className="globalFilterField"><span>결제수단</span><select aria-label="결제수단" className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as PaymentMethod | '')}>
               <option value="">전체 결제수단</option>
               {PAYMENT_METHODS.map((m) => <option key={m}>{m}</option>)}
-            </select>
+            </select></label>
             <button type="button" className={shared.detailFilterBtn} onClick={() => setShowAdvanced((current) => !current)}>
               {showAdvanced ? '상세 필터 −' : '상세 필터 +'}
             </button>

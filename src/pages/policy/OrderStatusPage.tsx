@@ -261,14 +261,14 @@ export function OrderStatusPage() {
                 <button type="submit" className={shared.searchBtn}>검색</button>
               </form>
               <div className={shared.filterRow2}>
-                <select className={shared.selectSm} value={stageFilter} onChange={(e) => setStageFilter(e.target.value as LifecycleStage | '')}>
+                <label className="globalFilterField"><span>단계</span><select aria-label="단계" className={shared.selectSm} value={stageFilter} onChange={(e) => setStageFilter(e.target.value as LifecycleStage | '')}>
                   <option value="">전체 단계</option>
                   {LIFECYCLE_STAGES.map((stage) => <option key={stage}>{stage}</option>)}
-                </select>
-                <select className={shared.selectSm} value={modeFilter} onChange={(e) => setModeFilter(e.target.value as ChangeMode | '')}>
+                </select></label>
+                <label className="globalFilterField"><span>변경방식</span><select aria-label="변경방식" className={shared.selectSm} value={modeFilter} onChange={(e) => setModeFilter(e.target.value as ChangeMode | '')}>
                   <option value="">전체 변경방식</option>
                   {CHANGE_MODES.map((mode) => <option key={mode}>{mode}</option>)}
-                </select>
+                </select></label>
                 <span className={shared.rowSpacer} />
                 <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
               </div>

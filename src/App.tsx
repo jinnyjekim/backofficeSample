@@ -67,6 +67,8 @@ import { RefundPolicyPage } from './pages/policy/RefundPolicyPage';
 import { SettlementPolicyPage } from './pages/policy/SettlementPolicyPage';
 import { FeePolicyPage } from './pages/policy/FeePolicyPage';
 import { IntegratedStatsPage } from './pages/stats/IntegratedStatsPage';
+import { SalesAnalysisPage } from './pages/stats/SalesAnalysisPage';
+import { InventoryAnalysisPage } from './pages/stats/InventoryAnalysisPage';
 import { ModulePlaceholderPage } from './pages/common/ModulePlaceholderPage';
 import { BusinessModulePage } from './pages/common/BusinessModulePage';
 import { NotificationDispatchPage } from './pages/notifications/NotificationDispatchPage';
@@ -334,6 +336,8 @@ export default function App() {
         <Route path="policy/fee" element={<FeePolicyPage />} />
 
         <Route path="stats/overview" element={<IntegratedStatsPage />} />
+        <Route path="stats/sales" element={<SalesAnalysisPage />} />
+        <Route path="stats/inventory" element={<InventoryAnalysisPage />} />
         <Route path="stats/*" element={<BusinessModulePage />} />
 
         <Route path="delivery/prep" element={<DeliveryPrepPage />} />
