@@ -6,6 +6,8 @@ import { ACCENT } from '../../lib/theme';
 import { FILTER_KEYS, MATCH_META, PAYMENTS, STATUS_META, fmtWon, type FilterKey, type Payment } from './paymentsData';
 import { buildPaymentDetail } from './paymentDetail';
 import { PaymentDetailDrawer } from './PaymentDetailDrawer';
+import { PaymentRegisterDrawer, type PaymentRegisterValues } from './PaymentRegisterDrawer';
+import { showToast } from '../../components/common';
 
 const GRID_TEMPLATE = '96px 1fr 108px 96px 92px 76px 88px 92px 78px 60px';
 const GRID_MIN_WIDTH = '1240px';
@@ -23,6 +25,15 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '관리' },
 ];
 
+function nextPaymentId(payments: Payment[]) {
+  const max = payments.reduce((current, payment) => Math.max(current, Number(payment.id.replace(/\D/g, '')) || 0), 0);
+  return `PAY-${String(max + 1).padStart(5, '0')}`;
+}
+
+function nowText() {
+  return new Intl.DateTimeFormat('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+}
+
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>(PAYMENTS);
   const [filter, setFilter] = useState<FilterKey>('전체');
@@ -31,6 +42,7 @@ export function PaymentsPage() {
   const [activeTab, setActiveTab] = useState('info');
   const [showAllocatePanel, setShowAllocatePanel] = useState(false);
   const [showCancelPanel, setShowCancelPanel] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = {
@@ -68,6 +80,40 @@ export function PaymentsPage() {
 
   function updateSelected(fn: (p: Payment) => Payment) {
     setPayments((prev) => prev.map((p) => (p.id === selectedId ? fn(p) : p)));
+  }
+
+  function registerPayment(values: PaymentRegisterValues) {
+    const id = nextPaymentId(payments);
+    const registeredAt = nowText();
+    const paidAt = values.paidAt.replace('T', ' ');
+    const payment: Payment = {
+      id,
+      partner: values.partner,
+      method: values.method,
+      amount: values.amount,
+      paidAt,
+      confirmedAt: values.status === '완료' ? registeredAt : null,
+      confirmedBy: values.status === '완료' ? values.owner : null,
+      status: values.status,
+      match: values.match,
+      depositor: values.depositor,
+      bank: values.bank,
+      txId: values.txId || `MAN-${id.slice(4)}`,
+      owner: values.owner,
+      allocations: values.invoiceId && values.match !== '미매칭' ? [{ invoice: values.invoiceId, invoiceAmount: '-', allocated: fmtWon(values.amount) }] : [],
+      links: [{ label: '주문', value: values.orderId || '-' }, { label: '발주', value: '-' }, { label: '계약', value: '-' }, { label: '청구', value: values.invoiceId || '-' }],
+      docs: [],
+      memos: values.memo ? [{ when: registeredAt.slice(0, 10), admin: values.owner, text: values.memo }] : [],
+      history: [{ when: registeredAt, action: '관리자 수동 결제 등록', by: values.owner }],
+      issue: values.match === '미매칭' ? '미매칭 · 연결할 주문 또는 청구 확인 필요' : values.match === '일부매칭' ? '일부 매칭 · 잔여 배분 확인 필요' : null,
+    };
+    setPayments((current) => [payment, ...current]);
+    setFilter('전체');
+    setQ('');
+    setShowRegister(false);
+    setSelectedId(id);
+    setActiveTab('info');
+    showToast({ message: `${id} 결제를 등록했습니다.`, description: `${values.partner} · ${fmtWon(values.amount)}`, type: 'success' });
   }
 
   const rows: GridRow[] = filtered.map((p) => {
@@ -135,7 +181,7 @@ export function PaymentsPage() {
             <div className={styles.title}>결제 관리</div>
             <div className={styles.subtitle}>거래처의 결제 및 입금 내역을 조회하고 주문·청구 건과 연결합니다.</div>
           </div>
-          <button type="button" className={styles.primaryBtn}>+ 결제 등록</button>
+          <button type="button" className={styles.primaryBtn} onClick={() => { setSelectedId(null); setShowRegister(true); }}>+ 결제 등록</button>
         </div>
 
         <div className={styles.quickFilters}>
@@ -225,6 +271,7 @@ export function PaymentsPage() {
       </div>
 
       {detail && <PaymentDetailDrawer detail={detail} onTabChange={setActiveTab} />}
+      {showRegister && <PaymentRegisterDrawer onClose={() => setShowRegister(false)} onSubmit={registerPayment} />}
     </div>
   );
 }
