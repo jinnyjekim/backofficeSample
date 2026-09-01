@@ -86,6 +86,13 @@ export function describePolicyChanges(before: ReturnExchangeBasePolicy, after: R
   return FIELD_LABELS.filter(({ key }) => JSON.stringify(before[key]) !== JSON.stringify(after[key])).map(({ label, format }) => ({ field: label, before: format(before), after: format(after) }));
 }
 
+export interface LastModified {
+  at: string;
+  by: string;
+}
+
+export const INITIAL_LAST_MODIFIED: LastModified = { at: '2026-07-01', by: '운영 관리자' };
+
 export interface PolicyHistoryEntry {
   id: string;
   at: string;

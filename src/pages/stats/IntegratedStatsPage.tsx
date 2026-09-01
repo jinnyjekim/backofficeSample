@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import txStyles from './TransactionStatsPage.module.css';
 import styles from './IntegratedStatsPage.module.css';
@@ -11,6 +12,7 @@ import { ActivityStatsPage } from './ActivityStatsPage';
 import {
   TODAY,
   aggregate as txAggregate,
+  bucketSeries as txBucketSeries,
   delta,
   fmtDate,
   fmtSignedPct,
@@ -98,7 +100,26 @@ export function IntegratedStatsPage() {
     highlights.push('비교 기간이 설정되지 않아 변화율을 계산할 수 없습니다. 상단에서 "이전 기간과 비교"를 켜주세요.');
   }
 
-  const toastDownload = () => window.alert('통합 리포트 다운로드를 준비했습니다. (샘플 데이터에서는 실제 파일이 생성되지 않습니다.)');
+  const toastDownload = () => {
+    const txTrend = txBucketSeries(start, end, '일별');
+    const metric = (label: string, current: number, previous: number) => {
+      const change = compare ? delta(current, previous) : undefined;
+      return { label, current, previous: compare ? previous : undefined, change: change?.abs, changeRate: change ? `${change.pct.toFixed(1)}%` : undefined };
+    };
+    downloadStatisticsReport({
+      reportName: '통합 통계', mode: '통합', period: `${start}~${end}`, comparisonPeriod: compare ? `${prevStart}~${prevEnd}` : undefined,
+      filters: [['현재 영역', DOMAIN_TABS.find(([key]) => key === domain)?.[1] ?? domain], ['비교 사용', compare ? '사용' : '미사용']],
+      summary: [metric('주문 건수', tx.orderCount, txPrev.orderCount), metric('순거래금액', tx.netAmount, txPrev.netAmount), metric('신규 가입', member.newSignups, memberPrev.newSignups), metric('콘텐츠 조회', content.views, contentPrev.views), metric('방문 사용자', traffic.visitors, trafficPrev.visitors), metric('활동 사용자', activity.activeUsers, activityPrev.activeUsers)],
+      trend: { name: '02_거래추이', headers: ['일자', '주문금액', '결제금액', '환불금액', '순거래금액', '주문건수'], rows: txTrend.map((row) => [row.label, row.orderAmount, row.paymentAmount, row.refundAmount, row.netAmount, row.orderCount]) },
+      dimensions: [
+        { name: '영역별핵심지표', headers: ['영역', '지표', '현재값', '비교값'], rows: [['거래', '순거래금액', tx.netAmount, compare ? txPrev.netAmount : '-'], ['회원', '활성 회원', member.activeMembers, compare ? memberPrev.activeMembers : '-'], ['콘텐츠', '조회수', content.views, compare ? contentPrev.views : '-'], ['유입', '전환수', traffic.conversions, compare ? trafficPrev.conversions : '-'], ['활동', '전체 활동', activity.events, compare ? activityPrev.events : '-']] },
+        { name: '주요변화', headers: ['구분', '내용'], rows: highlights.map((value, index) => [index + 1, value]) },
+        { name: '확인필요', headers: ['구분', '내용'], rows: (issues.length ? issues : ['현재 확인이 필요한 이슈가 없습니다.']).map((value, index) => [index + 1, value]) },
+      ],
+      definitions: [{ term: '순거래금액', description: '결제 완료 금액에서 환불 금액을 제외한 금액' }, { term: '활성 회원', description: '조회 기간 중 로그인 또는 주요 서비스 활동이 1회 이상인 고유 회원' }, { term: '전환', description: '회원 가입 목표를 완료한 사용자 수' }, { term: '활동 사용자', description: '서비스 이벤트를 1회 이상 발생시킨 고유 사용자' }],
+      dataAsOf: TODAY,
+    });
+  };
 
   return (
     <section className={shared.page}>

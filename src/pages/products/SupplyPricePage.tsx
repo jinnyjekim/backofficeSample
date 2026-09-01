@@ -14,6 +14,7 @@ import {
 } from './supplyPriceData';
 import { buildSupplyPriceDetail } from './supplyPriceDetail';
 import { SupplyPriceDetailDrawer } from './SupplyPriceDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '1.2fr 108px 128px 100px 80px 140px 78px 70px 60px';
 const COLUMNS: GridColumn[] = [
@@ -216,7 +217,6 @@ export function SupplyPricePage() {
               <option>KRW</option>
               <option>USD</option>
             </select></label>
-            <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.resetBtn} onClick={clearAll}>초기화</button>
           </div>
@@ -225,7 +225,7 @@ export function SupplyPricePage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

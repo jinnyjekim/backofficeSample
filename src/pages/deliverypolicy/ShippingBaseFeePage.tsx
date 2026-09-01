@@ -4,6 +4,7 @@ import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './ShippingBaseFeePage.module.css';
 import {
   INITIAL_HISTORY,
+  INITIAL_LAST_MODIFIED,
   INITIAL_POLICY,
   TEST_ORDERS,
   computeShippingPreview,
@@ -17,6 +18,7 @@ import {
   type FreeShippingBasis,
   type FreeShippingCompare,
   type FreeShippingScope,
+  type LastModified,
   type PolicyHistoryEntry,
   type ShippingBasePolicy,
   type ShippingUsage,
@@ -35,6 +37,7 @@ const TABS: [Tab, string][] = [
 export function ShippingBaseFeePage() {
   const [policy, setPolicy] = useState(INITIAL_POLICY);
   const [history, setHistory] = useState(INITIAL_HISTORY);
+  const [lastModified, setLastModified] = useState<LastModified>(INITIAL_LAST_MODIFIED);
 
   const [tab, setTab] = useState<Tab>('basic');
   const [editing, setEditing] = useState(false);
@@ -84,6 +87,7 @@ export function ShippingBaseFeePage() {
     }));
     setPolicy(draftPolicy);
     setHistory((current) => [...entries, ...current]);
+    setLastModified({ at: '2026-09-01', by: '운영 관리자' });
     setConfirmSave(null);
     setEditing(false);
     toastBriefly('기본 배송비 정책을 저장했습니다.');
@@ -97,17 +101,24 @@ export function ShippingBaseFeePage() {
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
+            <div className={styles.eyebrow}>배송 정책</div>
             <h1 className={shared.title}>기본 배송비</h1>
             <p className={shared.subtitle}>별도 상품·거래처·지역 배송비 조건이 없는 주문에 적용되는 기본 배송비와 무료배송 기준을 설정합니다.</p>
           </div>
-          {!editing ? (
-            <button type="button" className={shared.createBtn} onClick={startEdit}>정책 수정</button>
-          ) : (
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button type="button" className={styles.cancelButton} onClick={cancelEdit}>수정 취소</button>
-              <button type="button" className={styles.primaryButton} onClick={requestSave}>변경 사항 저장</button>
-            </div>
-          )}
+          <div className={styles.headMeta}>
+            {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
+            {!editing ? (
+              <>
+                <button type="button" className={styles.outlineBtn} onClick={() => setTab('history')}>변경 이력</button>
+                <button type="button" className={styles.darkBtn} onClick={startEdit}>정책 수정</button>
+              </>
+            ) : (
+              <>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>수정 취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>변경 사항 저장</button>
+              </>
+            )}
+          </div>
         </div>
         <div className={styles.viewTabs}>
           {TABS.map(([key, label]) => (
@@ -119,8 +130,13 @@ export function ShippingBaseFeePage() {
       <div className={styles.body}>
         {warnings.length > 0 && (
           <div className={styles.warningBanner}>
-            <strong>설정 확인 필요</strong>
-            {warnings.map((w) => <span key={w.id}>⚠ {w.message}</span>)}
+            <span className={styles.warningIcon}>!</span>
+            <div className={styles.warningBody}>
+              <div className={styles.warningTitle}>설정 확인 필요 · {warnings.length}건</div>
+              <div className={styles.warningList}>
+                {warnings.map((w) => <div key={w.id} className={styles.warningItem}>{w.message}</div>)}
+              </div>
+            </div>
           </div>
         )}
 
@@ -129,125 +145,190 @@ export function ShippingBaseFeePage() {
             <div className={styles.summaryCard}>
               <h2>현재 정책 요약</h2>
               <div className={styles.summaryGrid}>
-                <div className={styles.summaryRow}><span>배송비 사용</span><strong>{policy.usage}</strong></div>
-                <div className={styles.summaryRow}><span>기본 배송비</span><strong>{fmtWon(policy.baseFee)}</strong></div>
-                <div className={styles.summaryRow}><span>계산 단위</span><strong>{policy.calcUnit}</strong></div>
-                <div className={styles.summaryRow}><span>무료배송 기준</span><strong>{policy.freeShippingEnabled ? `${fmtWon(policy.freeShippingThreshold)} ${policy.freeShippingCompare}` : '사용 안 함'}</strong></div>
-                <div className={styles.summaryRow}><span>묶음배송 계산</span><strong>{policy.bundleCalc}</strong></div>
-                <div className={styles.summaryRow}><span>적용 시작일</span><strong>{policy.startDate}</strong></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>배송비 사용</div><div className={styles.summaryTileValue}>{policy.usage}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>기본 배송비</div><div className={styles.summaryTileValue}>{fmtWon(policy.baseFee)}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>계산 단위</div><div className={styles.summaryTileValue}>{policy.calcUnit}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>무료배송 기준</div><div className={styles.summaryTileValue}>{policy.freeShippingEnabled ? `${fmtWon(policy.freeShippingThreshold)} ${policy.freeShippingCompare}` : '사용 안 함'}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>묶음배송 계산</div><div className={styles.summaryTileValue}>{policy.bundleCalc}</div></div>
+                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>적용 시작일</div><div className={styles.summaryTileValue}>{policy.startDate}</div></div>
               </div>
             </div>
 
-            <div className={styles.formSection}>
-              <h3>기본 배송비 설정</h3>
-              <label className={styles.formField}>
-                <span>배송비 사용 여부 *</span>
-                <div className={styles.radioGroup}>
-                  {(['사용', '무료배송만 사용', '미사용'] as ShippingUsage[]).map((v) => (
-                    <label key={v}><input type="radio" disabled={!editing} checked={draftPolicy.usage === v} onChange={() => set('usage', v)} />{v}</label>
-                  ))}
-                </div>
-              </label>
-              <div className={styles.formGrid}>
-                <label className={styles.formField}>
-                  <span>기본 배송비 * (원)</span>
-                  <input type="number" min={0} disabled={!editing || draftPolicy.usage === '미사용'} value={draftPolicy.baseFee} onChange={(e) => set('baseFee', Math.max(0, Number(e.target.value) || 0))} />
-                </label>
-                <label className={styles.formField}>
-                  <span>배송비 계산 단위 *</span>
-                  <select disabled={!editing} value={draftPolicy.calcUnit} onChange={(e) => set('calcUnit', e.target.value as CalcUnit)}>
-                    {(['배송건당', '주문당'] as CalcUnit[]).map((v) => <option key={v}>{v}</option>)}
-                  </select>
-                </label>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>기본 배송비 설정</div>
+                <div className={styles.cardDesc}>다른 조건이 없을 때 적용되는 전역 기본 배송비를 정합니다.</div>
               </div>
-              <div className={styles.formGrid}>
-                <label className={styles.formField}>
-                  <span>최소 배송비 (원)</span>
-                  <input type="number" min={0} disabled={!editing} value={draftPolicy.minFee} onChange={(e) => set('minFee', Math.max(0, Number(e.target.value) || 0))} />
-                </label>
-                <label className={styles.formField}>
-                  <span>최대 배송비 (원)</span><small>비워두면 제한 없음</small>
-                  <input type="number" min={0} disabled={!editing} value={draftPolicy.maxFee ?? ''} onChange={(e) => set('maxFee', e.target.value === '' ? null : Math.max(0, Number(e.target.value) || 0))} />
-                </label>
-              </div>
-              <label className={styles.formField}>
-                <span>배송비 과세 구분</span>
-                <div className={styles.radioGroup}>
-                  {(['과세', '비과세', '세금 정책에 따름'] as TaxTreatment[]).map((v) => (
-                    <label key={v}><input type="radio" disabled={!editing} checked={draftPolicy.taxTreatment === v} onChange={() => set('taxTreatment', v)} />{v}</label>
-                  ))}
+              <div className={styles.cardBody}>
+                <div>
+                  <div className={styles.fieldLabel}>배송비 사용 여부</div>
+                  <div className={styles.pillGroup}>
+                    {(['사용', '무료배송만 사용', '미사용'] as ShippingUsage[]).map((v) => (
+                      <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.usage === v ? styles.pillBtnOn : ''}`} onClick={() => set('usage', v)}>{v}</button>
+                    ))}
+                  </div>
                 </div>
-              </label>
-              <label className={styles.formField}>
-                <span>적용 시작일 *</span>
-                <input type="date" disabled={!editing} value={draftPolicy.startDate} onChange={(e) => set('startDate', e.target.value)} />
-              </label>
-              <div className={styles.infoNote}>
-                지역별 추가 배송비, 상품별·거래처별 배송비 Override는 각각 <button type="button" className={styles.linkBtn} onClick={() => window.location.assign('/delivery-policy/region-fee')}>지역별 추가 배송비</button>, 상품/거래처 상세에서 별도로 관리합니다. 이 페이지의 값은 다른 조건이 없을 때 적용되는 전역 기본값입니다.
+
+                <div className={styles.cardGrid}>
+                  <div>
+                    <div className={styles.fieldLabel}>기본 배송비 <span className={styles.fieldLabelHint}>원</span></div>
+                    <input type="number" min={0} className={styles.textField} disabled={!editing || draftPolicy.usage === '미사용'} value={draftPolicy.baseFee} onChange={(e) => set('baseFee', Math.max(0, Number(e.target.value) || 0))} />
+                  </div>
+                  <div>
+                    <div className={styles.fieldLabel}>배송비 계산 단위</div>
+                    <div className={styles.pillGroup}>
+                      {(['배송건당', '주문당'] as CalcUnit[]).map((v) => (
+                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.calcUnit === v ? styles.pillBtnOn : ''}`} onClick={() => set('calcUnit', v)}>{v}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <div className={styles.fieldLabel}>최소 배송비 <span className={styles.fieldLabelHint}>원</span></div>
+                    <input type="number" min={0} className={styles.textField} disabled={!editing} value={draftPolicy.minFee} onChange={(e) => set('minFee', Math.max(0, Number(e.target.value) || 0))} />
+                  </div>
+                  <div>
+                    <div className={styles.fieldLabel}>최대 배송비 <span className={styles.fieldLabelHint}>비워두면 제한 없음</span></div>
+                    <input type="number" min={0} className={styles.textField} disabled={!editing} value={draftPolicy.maxFee ?? ''} onChange={(e) => set('maxFee', e.target.value === '' ? null : Math.max(0, Number(e.target.value) || 0))} />
+                  </div>
+                </div>
+
+                <div className={styles.dividerTop}>
+                  <div className={styles.fieldLabel}>배송비 과세 구분</div>
+                  <div className={styles.pillGroup}>
+                    {(['과세', '비과세', '세금 정책에 따름'] as TaxTreatment[]).map((v) => (
+                      <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.taxTreatment === v ? styles.pillBtnOn : ''}`} onClick={() => set('taxTreatment', v)}>{v}</button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className={styles.fieldLabel}>적용 시작일</div>
+                  <input type="date" className={styles.textField} style={{ maxWidth: 220 }} disabled={!editing} value={draftPolicy.startDate} onChange={(e) => set('startDate', e.target.value)} />
+                </div>
               </div>
             </div>
+
+            <div className={styles.infoNote}>
+              지역별 추가 배송비, 상품별·거래처별 배송비 Override는 각각 <button type="button" className={styles.linkBtn} onClick={() => window.location.assign('/delivery-policy/region-fee')}>지역별 추가 배송비</button>, 상품/거래처 상세에서 별도로 관리합니다. 이 페이지의 값은 다른 조건이 없을 때 적용되는 전역 기본값입니다.
+            </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 적용 시작일부터 신규 주문에 적용되며, 이미 확정된 주문의 배송비 Snapshot은 유지됩니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
           </>
         )}
 
         {tab === 'free' && (
-          <div className={styles.formSection}>
-            <h3>무료배송</h3>
-            <label className={styles.toggleField}>
-              <span>무료배송 사용</span>
-              <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.freeShippingEnabled ? styles.switchOn : ''}`} onClick={() => set('freeShippingEnabled', !draftPolicy.freeShippingEnabled)}><i /></button>
-            </label>
-            <label className={styles.formField}>
-              <span>무료배송 기준금액 * (원)</span>
-              <input type="number" min={0} disabled={!editing || !draftPolicy.freeShippingEnabled} value={draftPolicy.freeShippingThreshold} onChange={(e) => set('freeShippingThreshold', Math.max(0, Number(e.target.value) || 0))} />
-            </label>
-            <label className={styles.formField}>
-              <span>기준금액 계산</span>
-              <div className={styles.radioGroup}>
-                {(['할인 후 상품금액', '할인 전 상품금액', '최종 결제금액', '배송비 제외 주문금액'] as FreeShippingBasis[]).map((v) => (
-                  <label key={v}><input type="radio" disabled={!editing || !draftPolicy.freeShippingEnabled} checked={draftPolicy.freeShippingBasis === v} onChange={() => set('freeShippingBasis', v)} />{v}</label>
-                ))}
+          <>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>무료배송</div>
+                <div className={styles.cardDesc}>기준금액 이상 주문 시 배송비를 면제할지 정합니다.</div>
               </div>
-            </label>
-            <label className={styles.formField}>
-              <span>무료배송 기준 비교</span>
-              <div className={styles.radioGroup}>
-                {(['이상', '초과'] as FreeShippingCompare[]).map((v) => (
-                  <label key={v}><input type="radio" disabled={!editing || !draftPolicy.freeShippingEnabled} checked={draftPolicy.freeShippingCompare === v} onChange={() => set('freeShippingCompare', v)} />{v}</label>
-                ))}
+              <div className={styles.cardBody}>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.freeShippingEnabled ? styles.switchOn : ''}`} onClick={() => set('freeShippingEnabled', !draftPolicy.freeShippingEnabled)}><i /></button>
+                  <div className={styles.toggleRowText}><div className={styles.toggleRowTitle}>무료배송 사용</div></div>
+                </div>
+
+                <div className={styles.cardGrid}>
+                  <div>
+                    <div className={styles.fieldLabel}>무료배송 기준금액 <span className={styles.fieldLabelHint}>원</span></div>
+                    <input type="number" min={0} className={styles.textField} disabled={!editing || !draftPolicy.freeShippingEnabled} value={draftPolicy.freeShippingThreshold} onChange={(e) => set('freeShippingThreshold', Math.max(0, Number(e.target.value) || 0))} />
+                  </div>
+                  <div>
+                    <div className={styles.fieldLabel}>무료배송 기준 비교</div>
+                    <div className={styles.pillGroup}>
+                      {(['이상', '초과'] as FreeShippingCompare[]).map((v) => (
+                        <button key={v} type="button" disabled={!editing || !draftPolicy.freeShippingEnabled} className={`${styles.pillBtn} ${draftPolicy.freeShippingCompare === v ? styles.pillBtnOn : ''}`} onClick={() => set('freeShippingCompare', v)}>{v}</button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className={styles.fieldLabel}>기준금액 계산</div>
+                  <div className={styles.pillGroup}>
+                    {(['할인 후 상품금액', '할인 전 상품금액', '최종 결제금액', '배송비 제외 주문금액'] as FreeShippingBasis[]).map((v) => (
+                      <button key={v} type="button" disabled={!editing || !draftPolicy.freeShippingEnabled} className={`${styles.pillBtn} ${draftPolicy.freeShippingBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('freeShippingBasis', v)}>{v}</button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className={styles.dividerTop}>
+                  <div className={styles.fieldLabel}>무료배송 적용 범위</div>
+                  <div className={styles.pillGroup}>
+                    {(['기본 배송비만 면제', '지역 추가배송비 포함 전체 면제'] as FreeShippingScope[]).map((v) => (
+                      <button key={v} type="button" disabled={!editing || !draftPolicy.freeShippingEnabled} className={`${styles.pillBtn} ${draftPolicy.freeShippingScope === v ? styles.pillBtnOn : ''}`} onClick={() => set('freeShippingScope', v)}>{v}</button>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </label>
-            <label className={styles.formField}>
-              <span>무료배송 적용 범위</span>
-              <div className={styles.radioGroup}>
-                {(['기본 배송비만 면제', '지역 추가배송비 포함 전체 면제'] as FreeShippingScope[]).map((v) => (
-                  <label key={v}><input type="radio" disabled={!editing || !draftPolicy.freeShippingEnabled} checked={draftPolicy.freeShippingScope === v} onChange={() => set('freeShippingScope', v)} />{v}</label>
-                ))}
-              </div>
-            </label>
+            </div>
+
             <div className={styles.infoNote}>포인트 사용액은 결제수단으로 취급되어 '최종 결제금액' 기준을 선택했을 때만 무료배송 기준금액에서 차감됩니다. 할인 전/후 기준을 선택하면 포인트 사용 여부와 무관하게 계산됩니다.</div>
-          </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 적용 시작일부터 신규 주문에 적용되며, 이미 확정된 주문의 배송비 Snapshot은 유지됩니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
+          </>
         )}
 
         {tab === 'bundle' && (
-          <div className={styles.formSection}>
-            <h3>묶음배송</h3>
-            <label className={styles.formField}>
-              <span>묶음배송 시 배송비 계산</span>
-              <div className={styles.radioGroup}>
-                {(['배송비 1회만 부과', '가장 높은 배송비 1건 적용', '모든 배송비 합산'] as BundleCalc[]).map((v) => (
-                  <label key={v}><input type="radio" disabled={!editing} checked={draftPolicy.bundleCalc === v} onChange={() => set('bundleCalc', v)} />{v}</label>
-                ))}
+          <>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>묶음배송</div>
+                <div className={styles.cardDesc}>여러 배송 그룹이 함께 결제될 때 배송비를 어떻게 계산할지 정합니다.</div>
               </div>
-            </label>
+              <div className={styles.cardBody}>
+                <div>
+                  <div className={styles.fieldLabel}>묶음배송 시 배송비 계산</div>
+                  <div className={styles.pillGroup}>
+                    {(['배송비 1회만 부과', '가장 높은 배송비 1건 적용', '모든 배송비 합산'] as BundleCalc[]).map((v) => (
+                      <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.bundleCalc === v ? styles.pillBtnOn : ''}`} onClick={() => set('bundleCalc', v)}>{v}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className={styles.infoNote}>개별배송 상품(상품 상세에서 별도 설정)은 묶음배송 대상에서 항상 제외되어 별도 배송비가 추가됩니다.</div>
 
-            <h3 style={{ marginTop: 18 }}>분할배송</h3>
-            <label className={styles.toggleField}>
-              <span>운영상 분할배송 시 추가 배송비 부과<small>재고 문제 등으로 시스템이 배송을 나눈 경우</small></span>
-              <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.splitShippingExtraFee ? styles.switchOn : ''}`} onClick={() => set('splitShippingExtraFee', !draftPolicy.splitShippingExtraFee)}><i /></button>
-            </label>
+            <div className={styles.card}>
+              <div className={styles.cardHead}>
+                <div className={styles.cardTitle}>분할배송</div>
+                <div className={styles.cardDesc}>운영 사정으로 배송이 여러 건으로 나뉠 때 추가 배송비를 부과할지 정합니다.</div>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.toggleRow}>
+                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.splitShippingExtraFee ? styles.switchOn : ''}`} onClick={() => set('splitShippingExtraFee', !draftPolicy.splitShippingExtraFee)}><i /></button>
+                  <div className={styles.toggleRowText}>
+                    <div className={styles.toggleRowTitle}>운영상 분할배송 시 추가 배송비 부과</div>
+                    <div className={styles.toggleRowDesc}>재고 문제 등으로 시스템이 배송을 나눈 경우입니다.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className={styles.infoNote}>고객이 결제한 배송비는 주문 확정 시점에 Snapshot으로 고정됩니다. 이후 운영 사정으로 배송이 나뉘어도 기본적으로 추가 배송비를 부과하지 않는 것을 권장합니다.</div>
-          </div>
+
+            {editing && (
+              <div className={styles.footerBar}>
+                <span className={styles.footerNote}>저장하면 적용 시작일부터 신규 주문에 적용되며, 이미 확정된 주문의 배송비 Snapshot은 유지됩니다.</span>
+                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+              </div>
+            )}
+          </>
         )}
 
         {tab === 'preview' && (
@@ -291,19 +372,25 @@ export function ShippingBaseFeePage() {
         )}
 
         {tab === 'history' && (
-          <>
-            {history.length === 0 && <div className={styles.infoNote}>변경 이력이 없습니다.</div>}
-            {history.map((h) => (
-              <div key={h.id} className={timeline.timelineItem}>
-                <span className={timeline.timelineDot} />
-                <div className={timeline.timelineBody}>
-                  <div className={timeline.timelineRow}><strong className={timeline.timelineTitle}>{h.field}</strong><span className={timeline.timelineWhen}>{h.at}</span></div>
-                  <div className={timeline.timelineDetail}>{h.before} → {h.after} · {h.by}</div>
-                  <div className={timeline.timelineDetail}>사유: {h.reason}</div>
+          <div className={styles.card}>
+            <div className={styles.cardHead}>
+              <div className={styles.cardTitle}>변경 이력</div>
+              <div className={styles.cardDesc}>기본 배송비 정책 변경 기록입니다.</div>
+            </div>
+            <div className={styles.cardBody}>
+              {history.length === 0 && <div className={styles.infoNote}>변경 이력이 없습니다.</div>}
+              {history.map((h) => (
+                <div key={h.id} className={timeline.timelineItem}>
+                  <span className={timeline.timelineDot} />
+                  <div className={timeline.timelineBody}>
+                    <div className={timeline.timelineRow}><strong className={timeline.timelineTitle}>{h.field}</strong><span className={timeline.timelineWhen}>{h.at}</span></div>
+                    <div className={timeline.timelineDetail}>{h.before} → {h.after} · {h.by}</div>
+                    <div className={timeline.timelineDetail}>사유: {h.reason}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </>
+              ))}
+            </div>
+          </div>
         )}
       </div>
 

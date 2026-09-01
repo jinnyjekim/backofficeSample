@@ -17,6 +17,7 @@ import {
   type Popup,
   type PopupQuickFilter,
 } from './popupsData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '76px 1.3fr 92px 84px 108px 92px 68px 84px 56px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -405,7 +406,6 @@ export function PopupsPage() {
                 <option key={s}>{s}</option>
               ))}
             </select></label>
-            <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setScreenFilter('전체'); setQ(''); }}>초기화</button>
           </div>
@@ -414,7 +414,7 @@ export function PopupsPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

@@ -8,6 +8,7 @@ import { buildPaymentDetail } from './paymentDetail';
 import { PaymentDetailDrawer } from './PaymentDetailDrawer';
 import { PaymentRegisterDrawer, type PaymentRegisterValues } from './PaymentRegisterDrawer';
 import { showToast } from '../../components/common';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '96px 1fr 108px 96px 92px 76px 88px 92px 78px 60px';
 const GRID_MIN_WIDTH = '1240px';
@@ -238,7 +239,6 @@ export function PaymentsPage() {
               <option>일부매칭</option>
               <option>미매칭</option>
             </select></label>
-            <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
           </div>
@@ -247,7 +247,7 @@ export function PaymentsPage() {
         <div className={styles.resultBar}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.selectXs}>
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

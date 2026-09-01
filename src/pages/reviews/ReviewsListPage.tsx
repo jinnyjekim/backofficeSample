@@ -18,6 +18,7 @@ import {
   type QuickFilter,
   type Review,
 } from './reviewsData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '130px 90px 1.5fr 70px 90px 90px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -228,7 +229,7 @@ export function ReviewsListPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')} />
           </div>
         </div>
       </div>

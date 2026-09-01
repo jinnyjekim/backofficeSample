@@ -7,6 +7,7 @@ import { QUOTE_REQUESTS, QUICK_FILTER_KEYS, STATUS_META, type QuoteRequest } fro
 import { buildRequestDetail } from './requestDetail';
 import { QuoteRequestDetailDrawer } from './QuoteRequestDetailDrawer';
 import { useOutsideClose } from '../../lib/useOutsideClose';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '104px 1fr 1.1fr 90px 90px 92px 84px 78px 60px';
 const GRID_MIN_WIDTH = '1160px';
@@ -201,7 +202,6 @@ export function QuoteRequestsPage() {
                 <option>재견적</option>
                 <option>조건 변경</option>
               </select></label>
-              <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
               <div className={styles.rowSpacer} />
               <button type="button" className={styles.resetBtn} onClick={() => { setStatusFilter('전체'); setQ(''); }}>초기화</button>
             </div>
@@ -210,7 +210,7 @@ export function QuoteRequestsPage() {
           <div className={styles.resultRow}>
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
-              <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+              <ExcelDownloadButton type="button" data-grid-download />
               <select className={styles.pageSizeSelect}>
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>

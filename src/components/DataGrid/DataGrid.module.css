@@ -97,6 +97,10 @@
   cursor: pointer;
 }
 
+.row[data-selected='true'] {
+  background: #f7f8ff !important;
+}
+
 .cellWrap {
   min-width: 0;
 }

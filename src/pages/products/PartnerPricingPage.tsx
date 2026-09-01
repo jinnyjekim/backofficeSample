@@ -14,6 +14,7 @@ import {
 } from './partnerPricingData';
 import { buildPartnerPricingDetail } from './partnerPricingDetail';
 import { PartnerPricingDetailDrawer } from './PartnerPricingDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '1.1fr 1fr 100px 100px 120px 110px 90px 78px 60px';
 const BASIS_FILTERS = ['가격 기준 전체', '개별 가격', '기본가 사용', '계약 적용'];
@@ -247,7 +248,6 @@ export function PartnerPricingPage() {
                 <option key={b}>{b}</option>
               ))}
             </select></label>
-            <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.resetBtn} onClick={clearAll}>초기화</button>
           </div>
@@ -256,7 +256,7 @@ export function PartnerPricingPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

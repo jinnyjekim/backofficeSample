@@ -14,6 +14,7 @@ import {
   type CompanyStatus,
 } from './companiesData';
 import { CompanyDetailDrawer } from './CompanyDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '88px minmax(160px,1.3fr) 120px 88px 92px 60px 84px 92px 104px 88px 60px';
 const COLUMN_LABELS = ['회사코드', '회사명', '사업자번호', '회사유형', '거래상태', '등급', '담당자', '최근거래일', '미수금', '등록일', '관리'];
@@ -171,7 +172,6 @@ export function CompaniesPage() {
               <option>admin2</option>
               <option>admin3</option>
             </select></label>
-            <button type="button" className={styles.moreFilterBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={clearAll}>초기화</button>
           </div>
@@ -180,7 +180,7 @@ export function CompaniesPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}개 회사</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

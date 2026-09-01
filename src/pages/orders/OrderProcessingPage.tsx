@@ -12,6 +12,7 @@ import {
   type FilterKey,
   type ProcessingOrder,
 } from './orderProcessingData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '96px 1fr 1fr 100px 92px 140px 84px 84px 70px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -189,7 +190,6 @@ export function OrderProcessingPage() {
               <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={styles.selectXs} defaultValue="담당자 전체">
                 <option>담당자 전체</option><option>admin01</option><option>admin02</option><option>미배정</option>
               </select></label>
-              <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
               <div className={styles.rowSpacer} />
               <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
             </div>
@@ -198,7 +198,7 @@ export function OrderProcessingPage() {
           <div className={styles.resultRow}>
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
-              <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+              <ExcelDownloadButton type="button" data-grid-download />
               <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option><option>50개씩 보기</option>
               </select>

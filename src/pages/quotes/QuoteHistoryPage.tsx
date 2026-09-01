@@ -6,6 +6,7 @@ import { ACCENT } from '../../lib/theme';
 import { QUOTE_RECORDS, STATUSES, STATUS_META, fmt } from './quoteHistoryData';
 import { buildHistoryDetail } from './quoteHistoryDetail';
 import { QuoteHistoryDetailDrawer } from './QuoteHistoryDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '96px 1fr 110px 110px 76px 84px 84px 78px 78px 60px';
 const GRID_MIN_WIDTH = '1180px';
@@ -153,7 +154,6 @@ export function QuoteHistoryPage() {
                 <option>1회 작성</option>
                 <option>재견적 있음</option>
               </select></label>
-              <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
               <div className={styles.rowSpacer} />
               <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
             </div>
@@ -162,7 +162,7 @@ export function QuoteHistoryPage() {
           <div className={styles.resultRow}>
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
-              <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+              <ExcelDownloadButton type="button" data-grid-download />
               <select className={styles.pageSizeSelect}>
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>

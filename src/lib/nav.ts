@@ -321,6 +321,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'stats_delivery_claims', sub: true, label: '배송/클레임 분석', to: '/stats/delivery-claims', business: 'B' },
       { key: 'stats_promotions', sub: true, label: '프로모션 분석', to: '/stats/promotions', business: 'B' },
       { key: 'stats_customers', sub: true, label: '고객 구매 분석', to: '/stats/customers', business: 'B' },
+      { key: 'stats_products', sub: true, label: '상품 등록 분석', to: '/stats/products', business: 'B' },
+      { key: 'stats_conversion', sub: true, label: '거래 전환 분석', to: '/stats/conversion', business: 'B' },
       { key: 'c2c_stats_products', sub: true, label: '등록 상품 수', to: '/c2c/stats/products', business: 'C' },
       { key: 'c2c_stats_conversion', sub: true, label: '거래 성사율', to: '/c2c/stats/conversion', business: 'C' },
       { key: 'c2c_stats_sellers', sub: true, label: '판매자 활동', to: '/c2c/stats/sellers', business: 'C' },
@@ -446,6 +448,8 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   stats_delivery_claims: ['분석 · 시스템 · 통계', '배송/클레임 분석'],
   stats_promotions: ['분석 · 시스템 · 통계', '프로모션 분석'],
   stats_customers: ['분석 · 시스템 · 통계', '고객 구매 분석'],
+  stats_products: ['분석 · 시스템 · 통계', '상품 등록 분석'],
+  stats_conversion: ['분석 · 시스템 · 통계', '거래 전환 분석'],
 
   admin_list: ['분석 · 시스템 · 관리자', '관리자 목록'],
   admin_roles: ['분석 · 시스템 · 관리자', '역할 및 권한 관리'],
@@ -598,6 +602,8 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/stats/delivery-claims')) return 'stats_delivery_claims';
   if (pathname.startsWith('/stats/promotions')) return 'stats_promotions';
   if (pathname.startsWith('/stats/customers')) return 'stats_customers';
+  if (pathname.startsWith('/stats/products')) return 'stats_products';
+  if (pathname.startsWith('/stats/conversion')) return 'stats_conversion';
   if (pathname.startsWith('/stats/overview')) return 'stats_overview';
 
   if (pathname.startsWith('/delivery/prep')) return 'delivery_prep';

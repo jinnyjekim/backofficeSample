@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import styles from './TransactionStatsPage.module.css';
 import {
@@ -123,7 +124,24 @@ export function ActivityStatsPage() {
     highlights.push('비교 기간이 설정되지 않아 변화율을 계산할 수 없습니다. 상단에서 "이전 기간과 비교"를 켜주세요.');
   }
 
-  const toastDownload = () => window.alert('다운로드를 준비했습니다. (샘플 데이터에서는 실제 파일이 생성되지 않습니다.)');
+  const toastDownload = () => {
+    const metricRow = (label: string, key: keyof ActivityPeriodAggregate) => {
+      const change = d(key);
+      return { label, current: agg[key] as number, previous: compare ? prevAgg[key] as number : undefined, change: change?.abs, changeRate: change ? `${change.pct.toFixed(1)}%` : undefined };
+    };
+    downloadStatisticsReport({
+      reportName: '활동 통계', mode: '통합', period: `${start}~${end}`, comparisonPeriod: compare ? `${prevStart}~${prevEnd}` : undefined,
+      filters: [['집계 단위', granularity], ['현재 탭', TABS.find(([key]) => key === tab)?.[1] ?? tab]],
+      summary: [metricRow('활동 사용자', 'activeUsers'), metricRow('전체 활동', 'events'), metricRow('사용자당 활동', 'avgEventsPerUser')],
+      trend: { name: '02_활동추이', headers: ['기간', '활동 사용자', '전체 활동'], rows: buckets.map((row) => [row.label, row.activeUsers, row.events]) },
+      dimensions: [
+        { name: '기능별', headers: ['기능', '카테고리', '이벤트', '사용자', '사용자당 활동', '비중(%)'], rows: features.map((row) => [row.name, row.category, row.events, row.users, Number(row.avgPerUser.toFixed(2)), Number(row.share.toFixed(2))]) },
+        { name: '활동유형별', headers: ['활동 유형', '사용자', '이벤트', '사용자당 활동', '비중(%)'], rows: categories.map((row) => [row.name, row.users, row.events, Number(row.avgPerUser.toFixed(2)), Number(row.share.toFixed(2))]) },
+        { name: '회원유형별', headers: ['회원 유형', '사용자', '이벤트', '사용자당 활동'], rows: memberTypes.map((row) => [row.name, row.users, row.events, Number(row.avgPerUser.toFixed(2))]) },
+      ],
+      definitions: [{ term: '활동 사용자', description: '조회 기간 중 서비스 이벤트를 1회 이상 발생시킨 고유 사용자' }, { term: '전체 활동', description: '조회 기간 내 주요 서비스 이벤트의 총합' }, { term: '사용자당 활동', description: '전체 활동 수를 활동 사용자 수로 나눈 값' }],
+    });
+  };
 
   return (
     <section className={shared.page}>

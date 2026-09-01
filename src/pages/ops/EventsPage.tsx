@@ -26,6 +26,7 @@ import {
   type EventTarget,
   type EventType,
 } from './eventsData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = 'minmax(230px,2fr) 76px 168px 82px 76px 110px 98px 112px 90px 78px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -331,7 +332,7 @@ export function EventsPage() {
           </div>}
         </div>
 
-        <div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}건</span><div className={shared.resultActions}><button type="button" className={shared.downloadBtn} onClick={downloadCsv}>↓ 다운로드</button><select className={shared.pageSizeSelect} defaultValue="20개씩 보기"><option>20개씩 보기</option><option>50개씩 보기</option></select></div></div>
+        <div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}건</span><div className={shared.resultActions}><ExcelDownloadButton type="button" onClick={downloadCsv} /><select className={shared.pageSizeSelect} defaultValue="20개씩 보기"><option>20개씩 보기</option><option>50개씩 보기</option></select></div></div>
       </div>
 
       {selectedIds.length > 0 && <div className={shared.bulkBar}><span className={shared.bulkLabel}>{selectedIds.length}건 선택됨</span><select className={styles.bulkManager} value={bulkManager} onChange={(e) => setBulkManager(e.target.value)}>{EVENT_MANAGERS.map((item) => <option key={item}>{item}</option>)}</select><button type="button" className={shared.bulkBtn} onClick={assignManager}>담당자 지정</button><button type="button" className={shared.bulkBtn} onClick={downloadCsv}>다운로드</button></div>}

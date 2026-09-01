@@ -13,6 +13,7 @@ import {
 } from './minOrderQtyData';
 import { buildMoqDetail } from './minOrderQtyDetail';
 import { MinOrderQtyDetailDrawer } from './MinOrderQtyDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '1.1fr 1fr 100px 90px 90px 90px 110px 78px 60px';
 const TYPE_FILTERS = ['조건유형 전체', '기본 MOQ', '거래처별 MOQ', '계약 MOQ'];
@@ -241,7 +242,6 @@ export function MinOrderQtyPage() {
               <option>카테고리 02</option>
               <option>카테고리 03</option>
             </select></label>
-            <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.resetBtn} onClick={clearAll}>초기화</button>
           </div>
@@ -250,7 +250,7 @@ export function MinOrderQtyPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

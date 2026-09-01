@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import styles from './TransactionStatsPage.module.css';
 import {
@@ -148,7 +149,21 @@ export function MemberStatsPage() {
     highlights.push('비교 기간이 설정되지 않아 변화율을 계산할 수 없습니다. 상단에서 "이전 기간과 비교"를 켜주세요.');
   }
 
-  const toastDownload = () => window.alert('다운로드를 준비했습니다. (샘플 데이터에서는 실제 파일이 생성되지 않습니다.)');
+  const toastDownload = () => {
+    const metricRow = (label: string, key: keyof MemberPeriodAggregate) => {
+      const change = d(key);
+      return { label, current: agg[key] as number, previous: compare ? prevAgg[key] as number : undefined, change: change?.abs, changeRate: change ? `${change.pct.toFixed(1)}%` : undefined };
+    };
+    const weightedSheet = (name: string, rows: WeightedRow[]) => ({ name, headers: ['구분', '회원 수', '비중(%)'], rows: rows.map((row) => [row.name, row.count, Number(row.share.toFixed(2))]) });
+    downloadStatisticsReport({
+      reportName: '회원 통계', mode: '통합', period: `${start}~${end}`, comparisonPeriod: compare ? `${prevStart}~${prevEnd}` : undefined,
+      filters: [['집계 단위', granularity], ['현재 탭', TABS.find(([key]) => key === tab)?.[1] ?? tab]],
+      summary: [metricRow('전체 회원', 'totalMembersAtEnd'), metricRow('신규 가입', 'newSignups'), metricRow('활성 회원', 'activeMembers'), metricRow('탈퇴 회원', 'churned'), metricRow('순증 회원', 'netGrowth')],
+      trend: { name: '02_회원추이', headers: ['기간', '신규 가입', '탈퇴', '순증', '전체 회원'], rows: buckets.map((row) => [row.label, row.newSignups, row.churned, row.netGrowth, row.totalMembers]) },
+      dimensions: [weightedSheet('상태별', statuses), weightedSheet('회원유형별', types), weightedSheet('가입채널별', channels), { name: '일별활성', headers: ['일자', '활성 회원'], rows: dailyActiveSeries.map((row) => [row.label, row.value]) }],
+      definitions: [{ term: '활성 회원', description: '조회 기간 중 로그인 또는 주요 서비스 활동이 1회 이상인 고유 회원' }, { term: '순증 회원', description: '신규 가입 회원 수에서 탈퇴 회원 수를 차감한 값' }, { term: '탈퇴율', description: '조회 기간 시작 회원 대비 탈퇴 회원 비율' }],
+    });
+  };
 
   return (
     <section className={shared.page}>

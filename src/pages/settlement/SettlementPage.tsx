@@ -8,6 +8,7 @@ import {
   buildMainQuickCounts, EMPTY_FILTERS, filterSettlements, MAIN_QUICK_FILTERS, uniqueAssignees, uniqueTargets,
   type PayStatus, type SettleStatus, type SettlementFilters,
 } from './settlementData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const PAGE_LABELS = ['1', '2'];
 const SETTLE_STATUS_OPTIONS: (SettleStatus | '전체')[] = ['전체', '정산대기', '검토중', '정산확정', '보류'];
@@ -104,7 +105,7 @@ export function SettlementPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

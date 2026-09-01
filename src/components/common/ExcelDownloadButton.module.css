@@ -1,0 +1,39 @@
+.button {
+  display: inline-flex;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 0, 0, .1);
+  border-radius: 8px;
+  background: #fff;
+  color: #3f3f46;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.button svg {
+  flex: none;
+  color: #217346;
+}
+
+.button:hover:not(:disabled) {
+  border-color: rgba(0, 0, 0, .18);
+  background: #fafafa;
+}
+
+.button:focus-visible {
+  outline: 0;
+  border-color: rgba(79, 70, 229, .45);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, .08);
+}
+
+.button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}

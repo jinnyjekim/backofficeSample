@@ -21,6 +21,7 @@ import {
   type QuickFilter,
   type RevokeReason,
 } from './couponIssuesData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '150px 90px 1.3fr 90px 90px 90px 90px 84px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -243,7 +244,7 @@ export function CouponIssuesPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')}>↓ 데이터 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')} />
           </div>
         </div>
       </div>

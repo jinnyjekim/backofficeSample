@@ -25,6 +25,13 @@ export interface ShippingBasePolicy {
   splitShippingExtraFee: boolean;
 }
 
+export interface LastModified {
+  at: string;
+  by: string;
+}
+
+export const INITIAL_LAST_MODIFIED: LastModified = { at: '2026-08-01', by: '운영 관리자' };
+
 export interface PolicyHistoryEntry {
   id: string;
   at: string;

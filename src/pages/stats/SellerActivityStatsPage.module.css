@@ -1,0 +1,112 @@
+.funnelRow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.funnelStep {
+  flex: 1;
+  min-width: 140px;
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.funnelStepFinal {
+  background: #f5f6ff;
+}
+.funnelStepLabel {
+  font-size: 11.5px;
+  color: #71717a;
+  font-weight: 600;
+}
+.funnelStepCount {
+  font-size: 19px;
+  font-weight: 700;
+  color: #18181b;
+  font-variant-numeric: tabular-nums;
+}
+.funnelStepPct {
+  font-size: 11px;
+  color: #a1a1aa;
+  font-variant-numeric: tabular-nums;
+}
+.funnelArrow {
+  flex: none;
+  width: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: #a1a1aa;
+  font-size: 10.5px;
+}
+.funnelArrow svg {
+  color: #cbd0df;
+}
+.funnelArrowRate {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #3f3f46;
+}
+
+.segmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.segmentList > div {
+  display: grid;
+  grid-template-columns: 74px 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+.segmentBar {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: #f1f2f6;
+  overflow: hidden;
+}
+.segmentBar > b {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.segmentLabel {
+  color: #3f3f46;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.segmentValue {
+  min-width: 66px;
+  color: #18181b;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.segmentValue span {
+  display: block;
+  color: #a1a1aa;
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+.qualityBadge {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.warnValue {
+  color: #dc2626;
+  font-weight: 700;
+}

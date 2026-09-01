@@ -4,6 +4,7 @@ import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import shared from '../ops/opsShared.module.css';
 import styles from './ReviewAnalyticsPage.module.css';
 import { REVIEWS, pendingReportCount, productName } from './reviewsData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const COLUMNS: GridColumn[] = [
   { label: '상품' },
@@ -96,7 +97,7 @@ export function ReviewAnalyticsPage() {
               {productOptions.map((code) => <option key={code} value={code}>{productName(code)} · {code}</option>)}
             </select></label>
             <span className={shared.rowSpacer} />
-          <button type="button" className={shared.downloadBtn} data-grid-download>↓ 분석 데이터 다운로드</button>
+          <ExcelDownloadButton type="button" data-grid-download />
           </div>
         </div>
 

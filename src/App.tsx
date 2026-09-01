@@ -69,6 +69,12 @@ import { FeePolicyPage } from './pages/policy/FeePolicyPage';
 import { IntegratedStatsPage } from './pages/stats/IntegratedStatsPage';
 import { SalesAnalysisPage } from './pages/stats/SalesAnalysisPage';
 import { InventoryAnalysisPage } from './pages/stats/InventoryAnalysisPage';
+import { PromotionAnalysisPage } from './pages/stats/PromotionAnalysisPage';
+import { CustomerPurchaseAnalysisPage } from './pages/stats/CustomerPurchaseAnalysisPage';
+import { ProductRegistrationStatsPage } from './pages/stats/ProductRegistrationStatsPage';
+import { DeliveryClaimsStatsPage } from './pages/stats/DeliveryClaimsStatsPage';
+import { TransactionConversionStatsPage } from './pages/stats/TransactionConversionStatsPage';
+import { SellerActivityStatsPage } from './pages/stats/SellerActivityStatsPage';
 import { ModulePlaceholderPage } from './pages/common/ModulePlaceholderPage';
 import { BusinessModulePage } from './pages/common/BusinessModulePage';
 import { NotificationDispatchPage } from './pages/notifications/NotificationDispatchPage';
@@ -338,6 +344,15 @@ export default function App() {
         <Route path="stats/overview" element={<IntegratedStatsPage />} />
         <Route path="stats/sales" element={<SalesAnalysisPage />} />
         <Route path="stats/inventory" element={<InventoryAnalysisPage />} />
+        <Route path="stats/promotions" element={<PromotionAnalysisPage />} />
+        <Route path="stats/customers" element={<CustomerPurchaseAnalysisPage />} />
+        <Route path="stats/products" element={<ProductRegistrationStatsPage />} />
+        <Route path="c2c/stats/products" element={<ProductRegistrationStatsPage defaultMode="c2c" />} />
+        <Route path="stats/delivery-claims" element={<DeliveryClaimsStatsPage />} />
+        <Route path="stats/conversion" element={<TransactionConversionStatsPage />} />
+        <Route path="c2c/stats/conversion" element={<TransactionConversionStatsPage defaultMode="c2c" />} />
+        <Route path="c2c/stats/sellers" element={<SellerActivityStatsPage />} />
+        <Route path="c2c/stats/buyers" element={<CustomerPurchaseAnalysisPage defaultMode="c2c" />} />
         <Route path="stats/*" element={<BusinessModulePage />} />
 
         <Route path="delivery/prep" element={<DeliveryPrepPage />} />

@@ -13,6 +13,7 @@ import {
   STATUS_META,
   type PrepShipment,
 } from './deliveryPrepData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '96px 1fr 84px 1fr 84px 84px 84px 84px 96px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -116,7 +117,6 @@ export function DeliveryPrepPage() {
               <option>출고지 01</option>
               <option>출고지 02</option>
             </select></label>
-            <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('준비필요'); setQ(''); }}>초기화</button>
           </div>
@@ -128,7 +128,7 @@ export function DeliveryPrepPage() {
             <button type="button" className={styles.actionBtn}>담당자 지정</button>
             <button type="button" className={styles.actionBtn}>택배사 지정</button>
             <button type="button" className={styles.actionBtn}>송장 등록</button>
-            <button type="button" className={styles.actionBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

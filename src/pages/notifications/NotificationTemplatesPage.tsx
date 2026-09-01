@@ -27,6 +27,7 @@ import {
   type TemplateSendType,
   type TemplateStatus,
 } from './notificationTemplatesData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 type Quick = '전체' | TemplateChannel | '비활성' | '변수 오류';
 type DetailTab = 'basic' | 'contents' | 'variables' | 'usage' | 'history';
@@ -300,7 +301,7 @@ export function NotificationTemplatesPage() {
             <span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={resetFilters}>초기화</button>
           </div>
         </div>
-        <div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}건</span><div className={shared.resultActions}><button type="button" className={shared.downloadBtn} onClick={download}>↓ 다운로드</button><select className={shared.pageSizeSelect}><option>20개씩 보기</option><option>50개씩 보기</option></select></div></div>
+        <div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}건</span><div className={shared.resultActions}><ExcelDownloadButton type="button" onClick={download} /><select className={shared.pageSizeSelect}><option>20개씩 보기</option><option>50개씩 보기</option></select></div></div>
       </div>
       <div className={shared.gridWrap}>
         <DataGrid columns={COLUMNS} rows={rows} gridTemplate="minmax(190px,1.5fr) 100px minmax(150px,1.2fr) 130px 82px 72px 92px 76px 54px" minWidth="1120px" empty={rows.length === 0} emptyText={templates.length === 0 ? '등록된 메시지 템플릿이 없습니다.' : '해당 조건의 템플릿이 없습니다.'} emptySubtext={templates.length === 0 ? '반복해서 사용하는 알림·이메일·SMS·Push 내용을 템플릿으로 등록해 주세요.' : '검색어나 필터 조건을 변경해 주세요.'} emptyActionLabel={templates.length === 0 ? '+ 템플릿 등록' : '필터 초기화'} emptyActionClick={templates.length === 0 ? startCreate : resetFilters} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />

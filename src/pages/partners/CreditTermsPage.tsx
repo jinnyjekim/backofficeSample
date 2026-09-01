@@ -11,6 +11,7 @@ import {
   type CreditCompany,
 } from './creditTermsData';
 import { CreditTermsDetailDrawer } from './CreditTermsDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '1.2fr 76px 110px 110px 110px 130px 100px 84px 60px';
 const COLUMN_LABELS = ['회사', '신용거래', '신용한도', '사용액', '잔여한도', '결제조건', '미수금', '상태', '관리'];
@@ -172,7 +173,6 @@ export function CreditTermsPage() {
               <option>admin2</option>
               <option>admin3</option>
             </select></label>
-            <button type="button" className={styles.moreFilterBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={clearAll}>초기화</button>
           </div>
@@ -181,7 +181,7 @@ export function CreditTermsPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}개 거래처</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

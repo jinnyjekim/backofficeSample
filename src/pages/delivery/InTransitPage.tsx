@@ -14,6 +14,7 @@ import {
   TRANSIT_SHIPMENTS,
   type TransitShipment,
 } from './inTransitData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '96px 88px 84px 84px 92px 88px 100px 88px 96px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -112,7 +113,6 @@ export function InTransitPage() {
               <option>출고지 01</option>
               <option>출고지 02</option>
             </select></label>
-            <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체배송중'); setQ(''); }}>초기화</button>
           </div>
@@ -122,7 +122,7 @@ export function InTransitPage() {
           <span className={styles.resultLabel}>{`총 ${filtered.length}건`}</span>
           <div className={styles.resultActions}>
             <button type="button" className={styles.actionBtn}>상태 재조회</button>
-            <button type="button" className={styles.actionBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

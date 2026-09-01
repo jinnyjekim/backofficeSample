@@ -11,6 +11,7 @@ import {
   type Approval,
   type FilterKey,
 } from './orderApprovalData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '90px 90px 1fr 100px 1fr 76px 84px 84px 78px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -160,7 +161,6 @@ export function OrderApprovalPage() {
               <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectXs} defaultValue="거래처 전체">
                 <option>거래처 전체</option><option>회사 01</option><option>회사 02</option>
               </select></label>
-              <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
               <div className={styles.rowSpacer} />
               <button type="button" className={styles.resetBtn} onClick={() => { setFilter('승인대기'); setQ(''); }}>초기화</button>
             </div>
@@ -169,7 +169,7 @@ export function OrderApprovalPage() {
           <div className={styles.resultRow}>
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
-              <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+              <ExcelDownloadButton type="button" data-grid-download />
               <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option><option>50개씩 보기</option>
               </select>

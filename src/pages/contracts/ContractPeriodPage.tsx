@@ -17,6 +17,7 @@ import {
 } from './contractPeriodData';
 import { buildContractPeriodDetail } from './contractPeriodDetail';
 import { ContractPeriodDetailDrawer } from './ContractPeriodDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 export function ContractPeriodPage() {
   const [data, setData] = useState<PeriodContract[]>(PERIOD_CONTRACTS);
@@ -152,7 +153,6 @@ export function ContractPeriodPage() {
             <option>갱신완료</option>
             <option>갱신안함</option>
           </select></label>
-          <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
           <div className={styles.spacer} />
           <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
         </div>
@@ -161,7 +161,7 @@ export function ContractPeriodPage() {
       <div className={styles.resultRow}>
         <span className={styles.resultLabel}>총 {filtered.length}건</span>
         <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
           <select className={styles.selectSm}>
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>

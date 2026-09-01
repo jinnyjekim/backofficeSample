@@ -5,8 +5,9 @@ import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { SettlementDetailDrawer } from './SettlementDetailDrawer';
 import { useSettlementDrawer } from './useSettlementDrawer';
 import { flattenTx } from './settlementData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '112px 66px 108px 1fr 72px 116px 116px 76px 70px';
+const GRID_TEMPLATE = '112px 66px 108px 1fr 72px 116px 116px 76px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '거래번호' },
   { label: '유형' },
@@ -16,7 +17,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '거래금액', align: 'right' },
   { label: '정산반영금액', align: 'right' },
   { label: '상태' },
-  { label: '관리' },
 ];
 
 const TYPE_FILTERS = ['전체', '주문', '환불'] as const;
@@ -29,18 +29,29 @@ export function SettlementTransactionsPage() {
 
   const [type, setType] = useState<(typeof TYPE_FILTERS)[number]>('전체');
   const [q, setQ] = useState('');
+  const [target, setTarget] = useState('전체');
+  const [status, setStatus] = useState('전체');
+  const [month, setMonth] = useState('전체');
   const [page, setPage] = useState('1');
 
   const all = useMemo(() => flattenTx(settlements), [settlements]);
+  const targetOptions = useMemo(() => ['전체', ...new Set(all.map((item) => item.target))], [all]);
+  const statusOptions = useMemo(() => ['전체', ...new Set(all.map((item) => item.status))], [all]);
+  const monthOptions = useMemo(() => ['전체', ...new Set(all.map((item) => item.date.slice(0, 2) + '월'))], [all]);
   const filtered = useMemo(
     () =>
       all.filter((t) => {
         if (type !== '전체' && t.type !== type) return false;
         if (q && !(t.orderId.includes(q) || t.settlementId.includes(q) || t.target.includes(q))) return false;
+        if (target !== '전체' && t.target !== target) return false;
+        if (status !== '전체' && t.status !== status) return false;
+        if (month !== '전체' && `${t.date.slice(0, 2)}월` !== month) return false;
         return true;
       }),
-    [all, type, q],
+    [all, type, q, target, status, month],
   );
+  const hasActiveFilters = type !== '전체' || q !== '' || target !== '전체' || status !== '전체' || month !== '전체';
+  const resetFilters = () => { setType('전체'); setQ(''); setTarget('전체'); setStatus('전체'); setMonth('전체'); };
 
   const rows: GridRow[] = filtered.map((t, i) => ({
     id: `${t.settlementId}-${t.orderId}-${i}`,
@@ -54,7 +65,6 @@ export function SettlementTransactionsPage() {
       { kind: 'text', text: t.amount, color: '#3f3f46', size: '12px', weight: 600, align: 'right', numeric: true },
       { kind: 'text', text: t.reflected, color: t.fg, size: '12px', weight: 600, align: 'right', numeric: true },
       { kind: 'text', text: t.status, color: t.fg, size: '11.5px', weight: 500 },
-      { kind: 'link', text: '정산보기', size: '12px' },
     ],
   }));
 
@@ -94,12 +104,34 @@ export function SettlementTransactionsPage() {
             />
             <button type="button" className={styles.searchBtn}>검색</button>
           </div>
+          <div className={styles.filterRow2}>
+            <label className={styles.filterField}>
+              <span className={styles.filterFieldLabel}>정산대상</span>
+              <select className={styles.selectXs} value={target} onChange={(event) => setTarget(event.target.value)}>
+                {targetOptions.map((option) => <option key={option}>{option}</option>)}
+              </select>
+            </label>
+            <label className={styles.filterField}>
+              <span className={styles.filterFieldLabel}>반영상태</span>
+              <select className={styles.selectXs} value={status} onChange={(event) => setStatus(event.target.value)}>
+                {statusOptions.map((option) => <option key={option}>{option}</option>)}
+              </select>
+            </label>
+            <label className={styles.filterField}>
+              <span className={styles.filterFieldLabel}>거래월</span>
+              <select className={styles.selectXs} value={month} onChange={(event) => setMonth(event.target.value)}>
+                {monthOptions.map((option) => <option key={option}>{option}</option>)}
+              </select>
+            </label>
+            <div className={styles.rowSpacer} />
+            {hasActiveFilters && <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>}
+          </div>
         </div>
 
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
           </div>
         </div>
       </div>
@@ -109,7 +141,7 @@ export function SettlementTransactionsPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1080px"
+          minWidth="1010px"
           showPagination
           pages={['1', '2'].map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
           empty={rows.length === 0}

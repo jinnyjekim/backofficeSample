@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
 import { DatePicker } from '../../components/forms/DatePicker';
-import { downloadCsvFile } from '../../lib/useGridDownload';
+import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import { useOutsideClose } from '../../lib/useOutsideClose';
 import shared from '../ops/opsShared.module.css';
 import styles from './SalesAnalysisPage.module.css';
@@ -420,13 +420,26 @@ export function SalesAnalysisPage() {
 
   function runDownload() {
     const fields = exportDefinitions.filter((field) => downloadFields.has(field.key));
-    downloadCsvFile(
-      `매출분석-${mode === 'all' ? '통합' : mode.toUpperCase()}-${start}-${end}.csv`,
-      fields.map((field) => field.label),
-      analysisRows.map((row) => fields.map((field) => field.value(row))),
-    );
+    const dimensionSheet = (name: string) => ({ name, headers: fields.map((field) => field.label), rows: buildRows(mode, name, metrics, base).map((row) => fields.map((field) => field.value(row))) });
+    const trendRows = currentBuckets.map((bucket) => {
+      const values = scaleMetrics(chartMetrics(bucket, mode), basisFactor);
+      return [bucket.label, values.volume, values.revenue, values.count, values.average, values.cancelRefund];
+    });
+    const metricRow = (label: string, current: number, previous: number) => {
+      const change = compare === '비교 없음' ? undefined : delta(current, previous);
+      return { label, current, previous: compare === '비교 없음' ? undefined : previous, change: change?.abs, changeRate: change ? `${change.pct.toFixed(1)}%` : undefined };
+    };
+    downloadStatisticsReport({
+      reportName: '매출 분석', mode: mode === 'all' ? '통합' : mode.toUpperCase(), period: `${start}~${end}`, comparisonPeriod: compare === '비교 없음' ? undefined : `${prevStart}~${prevEnd}`,
+      filters: [['매출 기준', salesBasis], ['날짜 기준', dateBasis], ['금액 기준', amountBasis], ['거래 상태', tradeState], ['판매 채널', channel], ['집계 단위', granularity]],
+      summary: [metricRow(modeLabels.volume, metrics.volume, previousMetrics.volume), metricRow(modeLabels.revenue, metrics.revenue, previousMetrics.revenue), metricRow(modeLabels.count, metrics.count, previousMetrics.count), metricRow(modeLabels.average, metrics.average, previousMetrics.average), metricRow('취소·환불액', metrics.cancelRefund, previousMetrics.cancelRefund)],
+      trend: { name: '02_매출추이', headers: ['기간', modeLabels.volume, modeLabels.revenue, modeLabels.count, modeLabels.average, '취소·환불'], rows: trendRows },
+      dimensions: [...MODE_DIMENSIONS[mode].map(dimensionSheet), { name: '증감요인', headers: ['요인', '증감 금액'], rows: factors.map(([label, value]) => [label, Math.round(value)]) }],
+      definitions: [{ term: modeLabels.revenue, description: mode === 'c2c' ? '거래액이 아닌 플랫폼 수수료 등 실제 귀속 매출' : '취소·환불·할인 및 조정을 반영한 통계 기준 매출' }, { term: modeLabels.volume, description: mode === 'all' ? 'B2C 판매액, C2C 거래액, B2B 주문금액의 합계' : '선택한 집계 기준의 전체 거래 발생 금액' }, { term: modeLabels.average, description: `${modeLabels.volume}을 ${modeLabels.count} 건수로 나눈 금액` }, { term: '취소·환불액', description: '조회 기간에 취소 또는 환불로 차감된 금액' }],
+      dataAsOf: '2026.08.31 16:55',
+    });
     setDownloadOpen(false);
-    setNotice(`${analysisRows.length}개 분석 항목을 다운로드했습니다.`);
+    setNotice('매출 전체 분석 리포트를 다운로드했습니다.');
     window.setTimeout(() => setNotice(''), 1800);
   }
 
@@ -446,7 +459,7 @@ export function SalesAnalysisPage() {
           </div>
           <div className={styles.headerActions}>
             <button type="button" className={styles.secondaryButton} onClick={() => setShowBasis((value) => !value)}><Info size={15} /> 집계 기준</button>
-            <button type="button" className={styles.primaryButton} onClick={() => setDownloadOpen(true)}><Download size={15} /> 다운로드</button>
+            <button type="button" className={styles.primaryButton} onClick={() => setDownloadOpen(true)}><Download size={15} /> 리포트 다운로드</button>
           </div>
         </div>
 
@@ -501,7 +514,7 @@ export function SalesAnalysisPage() {
         </div>
 
         <section className={styles.card}>
-          <div className={styles.analysisHead}><div><h2>상세 분석</h2><p>행을 클릭하면 해당 항목의 구성과 실제 거래 이동 경로를 확인할 수 있습니다.</p></div><button type="button" className={styles.secondaryButton} onClick={() => setDownloadOpen(true)}><Download size={14} /> 현재 분석 다운로드</button></div>
+          <div className={styles.analysisHead}><div><h2>상세 분석</h2><p>행을 클릭하면 해당 항목의 구성과 실제 거래 이동 경로를 확인할 수 있습니다.</p></div><button type="button" className={styles.secondaryButton} onClick={() => setDownloadOpen(true)}><Download size={14} /> 리포트 다운로드</button></div>
           <div className={styles.dimensionTabs}>{MODE_DIMENSIONS[mode].map((item) => <button key={item} type="button" className={dimension === item ? styles.dimensionActive : ''} onClick={() => setDimension(item)}>{item}</button>)}</div>
           <DataGrid columns={columns} rows={gridRows} gridTemplate={gridTemplate} minWidth={mode === 'b2c' ? '1120px' : '980px'} empty={!analysisRows.length} emptyText="해당 조건에 집계된 매출 데이터가 없습니다." emptySubtext="기간 또는 분석 기준을 변경해 주세요." />
         </section>

@@ -6,6 +6,7 @@ import { ACCENT } from '../../lib/theme';
 import { APPROVALS, FILTER_KEYS, STATUS_META, fmt, type Approval, type FilterKey } from './quoteApprovalData';
 import { buildApprovalDetail } from './quoteApprovalDetail';
 import { QuoteApprovalDetailDrawer } from './QuoteApprovalDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '96px 1fr 108px 78px 70px 76px 90px 100px 78px 60px';
 const GRID_MIN_WIDTH = '1160px';
@@ -180,7 +181,6 @@ export function QuoteApprovalPage() {
                 <option>회사 01</option>
                 <option>회사 02</option>
               </select></label>
-              <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
               <div className={styles.rowSpacer} />
               <button type="button" className={styles.resetBtn} onClick={() => { setFilter('승인대기'); setQ(''); }}>초기화</button>
             </div>
@@ -189,7 +189,7 @@ export function QuoteApprovalPage() {
           <div className={styles.resultRow}>
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
-              <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+              <ExcelDownloadButton type="button" data-grid-download />
               <select className={styles.pageSizeSelect}>
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>

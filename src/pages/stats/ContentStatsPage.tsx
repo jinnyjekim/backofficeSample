@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import styles from './TransactionStatsPage.module.css';
 import {
@@ -145,7 +146,21 @@ export function ContentStatsPage() {
     highlights.push('비교 기간이 설정되지 않아 변화율을 계산할 수 없습니다. 상단에서 "이전 기간과 비교"를 켜주세요.');
   }
 
-  const toastDownload = () => window.alert('다운로드를 준비했습니다. (샘플 데이터에서는 실제 파일이 생성되지 않습니다.)');
+  const toastDownload = () => {
+    const metricRow = (label: string, key: keyof ContentPeriodAggregate) => {
+      const change = d(key);
+      return { label, current: agg[key] as number, previous: compare ? prevAgg[key] as number : undefined, change: change?.abs, changeRate: change ? `${change.pct.toFixed(1)}%` : undefined };
+    };
+    const weightedSheet = (name: string, rows: WeightedRow[]) => ({ name, headers: ['구분', '건수', '비중(%)'], rows: rows.map((row) => [row.name, row.count, Number(row.share.toFixed(2))]) });
+    downloadStatisticsReport({
+      reportName: '콘텐츠 통계', mode: '통합', period: `${start}~${end}`, comparisonPeriod: compare ? `${prevStart}~${prevEnd}` : undefined,
+      filters: [['집계 단위', granularity], ['현재 탭', TABS.find(([key]) => key === tab)?.[1] ?? tab]],
+      summary: [metricRow('전체 콘텐츠', 'totalContentAtEnd'), metricRow('신규 등록', 'newContent'), metricRow('게시', 'published'), metricRow('조회수', 'views'), metricRow('조회 사용자', 'viewingUsers')],
+      trend: { name: '02_콘텐츠추이', headers: ['기간', '신규 등록', '게시', '조회수'], rows: buckets.map((row) => [row.label, row.newContent, row.published, row.views]) },
+      dimensions: [weightedSheet('상태별', statuses), weightedSheet('작성자유형별', authorTypes), weightedSheet('카테고리콘텐츠', categoriesContent), weightedSheet('카테고리조회', categoriesViews), { name: '인기콘텐츠', headers: ['콘텐츠 ID', '제목', '조회수', '비중(%)'], rows: top.map((row) => [row.id, row.title, row.views, Number(row.share.toFixed(2))]) }],
+      definitions: [{ term: '게시 콘텐츠', description: '조회 기간 중 공개 상태로 게시된 콘텐츠' }, { term: '조회 사용자', description: '조회 기간 중 콘텐츠를 1회 이상 조회한 고유 사용자' }, { term: '조회수', description: '콘텐츠 상세 조회 이벤트의 총합' }],
+    });
+  };
 
   return (
     <section className={shared.page}>

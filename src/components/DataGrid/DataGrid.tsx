@@ -1,5 +1,60 @@
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styles from './DataGrid.module.css';
 import type { Cell, DataGridProps } from './types';
+
+const isInlineDetailLabel = (value?: string) => Boolean(value && /^상세(?:\s*보기)?$/.test(value.trim()));
+
+function trimMenuSeparators(items: Extract<Cell, { kind: 'rowMenu' }>['items']) {
+  const withoutDetail = items.filter((item) => !isInlineDetailLabel(item.label));
+  return withoutDetail.filter((item, index) => {
+    if (!item.sep) return true;
+    return index > 0 && index < withoutDetail.length - 1 && !withoutDetail[index - 1].sep && !withoutDetail[index + 1].sep;
+  });
+}
+
+function withoutManagementDetail(cell: Cell | undefined): Cell | null {
+  if (!cell) return null;
+  if (cell.kind === 'rowMenu') {
+    const items = trimMenuSeparators(cell.items);
+    if (!items.some((item) => !item.sep && item.label)) return null;
+    return { ...cell, detailLabel: undefined, onDetail: undefined, items };
+  }
+  if ((cell.kind === 'link' || cell.kind === 'text') && isInlineDetailLabel(cell.text)) return null;
+  return cell;
+}
+
+function hasManagementAction(cell: Cell | null) {
+  if (!cell) return false;
+  if (cell.kind === 'rowMenu') return cell.items.some((item) => !item.sep && item.label);
+  if (cell.kind === 'link' || cell.kind === 'text') return Boolean(cell.text.trim());
+  return true;
+}
+
+function splitGridTracks(template: string) {
+  const tracks: string[] = [];
+  let current = '';
+  let depth = 0;
+  for (const character of template.trim()) {
+    if (character === '(') depth += 1;
+    if (character === ')') depth = Math.max(0, depth - 1);
+    if (/\s/.test(character) && depth === 0) {
+      if (current) tracks.push(current);
+      current = '';
+    } else {
+      current += character;
+    }
+  }
+  if (current) tracks.push(current);
+  return tracks;
+}
+
+function withoutGridTracks(template: string, removed: Set<number>, columnCount: number) {
+  if (!removed.size) return template;
+  const tracks = splitGridTracks(template);
+  if (tracks.length === columnCount) return tracks.filter((_, index) => !removed.has(index)).join(' ');
+  if ([...removed].every((index) => index >= columnCount - removed.size)) return tracks.slice(0, Math.max(0, tracks.length - removed.size)).join(' ');
+  return template;
+}
 
 function cellExportValue(cell: Cell): string {
   switch (cell.kind) {
@@ -212,10 +267,62 @@ export function DataGrid({
   totalLabel,
   actions,
 }: DataGridProps) {
-  const template = (selectable ? '30px ' : '') + gridTemplate;
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [autoSelectable, setAutoSelectable] = useState(false);
+  const [internalSelected, setInternalSelected] = useState<Set<string | number>>(() => new Set());
+
+  useLayoutEffect(() => {
+    if (selectable !== undefined) return;
+    setAutoSelectable(Boolean(rootRef.current?.ownerDocument.querySelector('[data-excel-download]')));
+  }, [selectable]);
+
+  useEffect(() => {
+    const available = new Set(rows.map((row) => row.id));
+    setInternalSelected((current) => {
+      const next = new Set([...current].filter((id) => available.has(id)));
+      return next.size === current.size ? current : next;
+    });
+  }, [rows]);
+
+  const effectiveSelectable = selectable ?? autoSelectable;
+  const selectedOf = (row: DataGridProps['rows'][number]) => row.onToggleSelect || row.selected !== undefined ? Boolean(row.selected) : internalSelected.has(row.id);
+  const effectiveAllSelected = allSelected ?? (rows.length > 0 && rows.every(selectedOf));
+  const toggleAllRows = () => {
+    if (onToggleAll) {
+      onToggleAll();
+      return;
+    }
+    setInternalSelected(effectiveAllSelected ? new Set() : new Set(rows.map((row) => row.id)));
+  };
+  const toggleRow = (row: DataGridProps['rows'][number], event: React.MouseEvent) => {
+    if (row.onToggleSelect) {
+      row.onToggleSelect(event);
+      return;
+    }
+    setInternalSelected((current) => {
+      const next = new Set(current);
+      if (next.has(row.id)) next.delete(row.id);
+      else next.add(row.id);
+      return next;
+    });
+  };
+  const managementIndexes = columns.flatMap((column, index) => column.label.trim() === '관리' ? [index] : []);
+  const cleanedManagement = new Map(managementIndexes.map((index) => [index, rows.map((row) => withoutManagementDetail(row.cells[index]))]));
+  const removedManagement = new Set(managementIndexes.filter((index) => rows.length > 0 && cleanedManagement.get(index)?.every((cell) => !hasManagementAction(cell))));
+  const displayColumns = columns.filter((_, index) => !removedManagement.has(index));
+  const displayRows = rows.map((row, rowIndex) => ({
+    ...row,
+    cells: row.cells.flatMap((cell, cellIndex) => {
+      if (removedManagement.has(cellIndex)) return [];
+      if (!managementIndexes.includes(cellIndex)) return [cell];
+      return [cleanedManagement.get(cellIndex)?.[rowIndex] ?? { kind: 'text', text: '' } as Cell];
+    }),
+  }));
+  const displayGridTemplate = withoutGridTracks(gridTemplate, removedManagement, columns.length);
+  const template = (effectiveSelectable ? '30px ' : '') + displayGridTemplate;
 
   return (
-    <div className={`${styles.root} ${fillHeight ? styles.fillHeight : ''}`} data-datagrid>
+    <div ref={rootRef} className={`${styles.root} ${fillHeight ? styles.fillHeight : ''}`} data-datagrid>
       {showTopBar && (
         <div className={styles.topBar}>
           <span className={styles.totalLabel}>{totalLabel}</span>
@@ -235,10 +342,10 @@ export function DataGrid({
           style={{ minWidth, gridTemplateColumns: template }}
           data-datagrid-head
         >
-          {selectable && (
-            <input type="checkbox" className={styles.checkbox} checked={!!allSelected} onChange={onToggleAll} />
+          {effectiveSelectable && (
+            <input type="checkbox" className={styles.checkbox} checked={effectiveAllSelected} onChange={toggleAllRows} aria-label="현재 목록 전체 선택" />
           )}
-          {columns.map((col, i) =>
+          {displayColumns.map((col, i) =>
             col.onClick ? (
               <button key={i} type="button" className={styles.headBtn} style={{ textAlign: col.align }} onClick={col.onClick}>
                 <span data-datagrid-column>{col.label}</span>
@@ -251,23 +358,24 @@ export function DataGrid({
           )}
         </div>
 
-        {rows.map((row) => (
+        {displayRows.map((row) => (
           <div
             key={row.id}
             className={styles.row}
             style={{ minWidth, gridTemplateColumns: template, background: row.bg, boxShadow: row.mark }}
             onClick={row.onClick}
             data-datagrid-row
-            data-selected={row.selected ? 'true' : 'false'}
+            data-selected={selectedOf(row) ? 'true' : 'false'}
           >
-            {selectable && (
+            {effectiveSelectable && (
               <input
                 type="checkbox"
                 className={styles.checkbox}
-                checked={!!row.selected}
+                checked={selectedOf(row)}
+                aria-label={`${row.id} 선택`}
                 onClick={(e) => {
                   e.stopPropagation();
-                  row.onToggleSelect?.(e);
+                  toggleRow(row, e);
                 }}
                 onChange={() => {}}
               />

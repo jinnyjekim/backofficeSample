@@ -17,6 +17,7 @@ import {
 } from './unitPriceData';
 import { buildUnitPriceDetail } from './unitPriceDetail';
 import { UnitPriceDetailDrawer } from './UnitPriceDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 export function UnitPricePage() {
   const [data, setData] = useState<UnitPrice[]>(UNIT_PRICES);
@@ -122,7 +123,6 @@ export function UnitPricePage() {
             <option>적용중</option>
             <option>종료</option>
           </select></label>
-          <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
           <div className={styles.spacer} />
           <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
         </div>
@@ -132,7 +132,7 @@ export function UnitPricePage() {
         <span className={styles.resultLabel}>총 {filtered.length}건</span>
         <div className={styles.resultActions}>
           <button type="button" className={styles.downloadBtn}>대량 등록</button>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
           <select className={styles.selectSm}>
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>

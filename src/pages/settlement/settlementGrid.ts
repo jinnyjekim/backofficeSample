@@ -1,8 +1,8 @@
 import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { PAY_STATUS_META, SETTLE_STATUS_META, calcAdjustTotal, calcFee, calcFinal, fmt, signed, type Settlement } from './settlementData';
 
-export const SETTLEMENT_GRID_TEMPLATE = '104px 108px 138px 68px 116px 100px 100px 122px 92px 78px 78px 68px 56px';
-export const SETTLEMENT_GRID_MIN_WIDTH = '1400px';
+export const SETTLEMENT_GRID_TEMPLATE = '104px 108px 138px 68px 116px 100px 100px 122px 92px 78px 78px 68px';
+export const SETTLEMENT_GRID_MIN_WIDTH = '1340px';
 
 export const SETTLEMENT_GRID_COLUMNS: GridColumn[] = [
   { label: '정산번호' },
@@ -17,7 +17,6 @@ export const SETTLEMENT_GRID_COLUMNS: GridColumn[] = [
   { label: '정산상태' },
   { label: '지급상태' },
   { label: '담당자' },
-  { label: '관리' },
 ];
 
 export function buildSettlementRows(list: Settlement[], onOpen: (id: string) => void): GridRow[] {
@@ -48,7 +47,6 @@ export function buildSettlementRows(list: Settlement[], onOpen: (id: string) => 
         { kind: 'badge', text: r.settleStatus, bg: sm.bg, fg: sm.fg },
         { kind: 'badge', text: r.payStatus, bg: pm.bg, fg: pm.fg },
         { kind: 'text', text: r.assignee, color: '#52525b', size: '11.5px', weight: 500 },
-        { kind: 'link', text: '상세', size: '12px' },
       ],
     };
   });

@@ -1,0 +1,92 @@
+.dedupNote {
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border: 1px solid #e2e4ec;
+  border-radius: 9px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.typeList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.typeList > div {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+.typeBadge {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  width: fit-content;
+}
+.typeBar {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: #f1f2f6;
+  overflow: hidden;
+}
+.typeBar > b {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.typeValue {
+  min-width: 84px;
+  color: #18181b;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.typeValue span {
+  display: block;
+  color: #a1a1aa;
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+.summaryList {
+  display: flex;
+  flex-direction: column;
+}
+.summaryList > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 12.5px;
+}
+.summaryList > div:first-child {
+  border-top: 0;
+}
+.summaryList span {
+  color: #71717a;
+}
+.summaryList strong {
+  color: #18181b;
+  font-variant-numeric: tabular-nums;
+}
+
+.efficiencyPositive {
+  color: #059669;
+  font-weight: 700;
+}
+.efficiencyNegative {
+  color: #dc2626;
+  font-weight: 700;
+}
+.refundWarn {
+  color: #dc2626;
+  font-weight: 700;
+}

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import styles from './TransactionStatsPage.module.css';
 import {
@@ -150,7 +151,21 @@ export function TransactionStatsPage() {
     highlights.push('비교 기간이 설정되지 않아 변화율을 계산할 수 없습니다. 상단에서 "이전 기간과 비교"를 켜주세요.');
   }
 
-  const toastDownload = () => window.alert('다운로드를 준비했습니다. (샘플 데이터에서는 실제 파일이 생성되지 않습니다.)');
+  const toastDownload = () => {
+    const metricRow = (label: string, key: keyof PeriodAggregate) => {
+      const change = d(key);
+      return { label, current: agg[key] as number, previous: compare ? prevAgg[key] as number : undefined, change: change?.abs, changeRate: change ? `${change.pct.toFixed(1)}%` : undefined };
+    };
+    const weightedSheet = (name: string, rows: WeightedRow[]) => ({ name, headers: ['항목', '금액', '건수', '비중(%)'], rows: rows.map((row) => [row.name, row.amount, row.count, Number(row.share.toFixed(2))]) });
+    downloadStatisticsReport({
+      reportName: '거래 통계', mode: '통합', period: `${start}~${end}`, comparisonPeriod: compare ? `${prevStart}~${prevEnd}` : undefined,
+      filters: [['집계 단위', granularity], ['현재 탭', TABS.find(([key]) => key === tab)?.[1] ?? tab]],
+      summary: [metricRow('주문 건수', 'orderCount'), metricRow('주문 금액', 'orderAmount'), metricRow('결제 금액', 'paymentAmount'), metricRow('환불 금액', 'refundAmount'), metricRow('순거래 금액', 'netAmount'), metricRow('최종 정산', 'settlementFinal')],
+      trend: { name: '02_거래추이', headers: ['기간', '주문금액', '결제금액', '환불금액', '순거래금액', '주문건수'], rows: buckets.map((row) => [row.label, row.orderAmount, row.paymentAmount, row.refundAmount, row.netAmount, row.orderCount]) },
+      dimensions: [weightedSheet('거래처별', companies), weightedSheet('상품별', products), weightedSheet('결제수단별', methods), weightedSheet('환불사유별', reasons), { name: '주문상태별', headers: ['상태', '건수'], rows: orderStatus.map((row) => [row.label, row.count]) }],
+      definitions: [{ term: '순거래금액', description: '결제 완료 금액에서 환불 금액을 제외한 금액' }, { term: '결제 성공률', description: '결제 시도 건수 중 결제 성공 건수의 비율' }, { term: '최종 정산', description: '정산 대상에서 공제 및 조정 금액을 반영한 최종 금액' }],
+    });
+  };
 
   return (
     <section className={shared.page}>

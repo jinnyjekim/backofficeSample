@@ -12,6 +12,7 @@ import {
   type CompletedOrder,
   type FilterKey,
 } from './orderCompletedData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '96px 1fr 1fr 100px 96px 84px 88px 76px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -155,7 +156,6 @@ export function OrderCompletedPage() {
               <label className="globalFilterField"><span>수금상태</span><select aria-label="수금상태" className={styles.selectXs} defaultValue="수금상태 전체">
                 <option>수금상태 전체</option><option>수금완료</option><option>미수금</option><option>부분수금</option>
               </select></label>
-              <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
               <div className={styles.rowSpacer} />
               <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체 완료'); setQ(''); }}>초기화</button>
             </div>
@@ -164,7 +164,7 @@ export function OrderCompletedPage() {
           <div className={styles.resultRow}>
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
-              <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+              <ExcelDownloadButton type="button" data-grid-download />
               <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option><option>50개씩 보기</option>
               </select>

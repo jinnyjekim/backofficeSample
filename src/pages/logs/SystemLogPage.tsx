@@ -22,6 +22,7 @@ import {
   type ModuleName,
   type QuickRange,
 } from './systemLogData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 type Tab = 'api' | 'error';
 const TABS: [Tab, string][] = [['api', 'API 로그'], ['error', '오류 로그']];
@@ -183,7 +184,7 @@ export function SystemLogPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {(tab === 'api' ? filteredApi.length : filteredErrors.length).toLocaleString('ko-KR')}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
           </div>
         </div>
       </div>

@@ -19,6 +19,7 @@ import {
   type NoticeCategory,
   type NoticeQuickFilter,
 } from './noticesData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '1.7fr 100px 60px 108px 84px 100px 68px 76px 88px 56px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -381,7 +382,6 @@ export function NoticesPage() {
               <option value="전체">상단고정 전체</option>
               <option value="고정만">고정된 공지만</option>
             </select></label>
-            <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setCategoryFilter('전체'); setImportantFilter('전체'); setPinnedFilter('전체'); setQ(''); }}>초기화</button>
           </div>
@@ -390,7 +390,7 @@ export function NoticesPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

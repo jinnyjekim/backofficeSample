@@ -5,6 +5,7 @@ import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types'
 import { AdminHistoryDetailDrawer } from './AdminHistoryDetailDrawer';
 import { ADMINS } from './adminData';
 import { ACTION_TYPES, ACTION_LOGS, LOGIN_LOGS, MENUS, type ActionLogEntry, type LoginLogEntry } from './adminHistoryData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 type Tab = '로그인 이력' | '작업 이력';
 const TABS: Tab[] = ['로그인 이력', '작업 이력'];
@@ -179,7 +180,7 @@ export function AdminHistoryPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {total.toLocaleString('ko-KR')}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('현재 조건으로 이력을 다운로드했습니다.')}>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('현재 조건으로 이력을 다운로드했습니다.')} />
           </div>
         </div>
       </div>

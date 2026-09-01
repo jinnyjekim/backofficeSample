@@ -22,6 +22,7 @@ import {
   type AdminStatus,
   type SearchScope,
 } from './adminData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '84px minmax(90px,1fr) minmax(130px,1.2fr) minmax(120px,1.3fr) 70px 110px 90px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -255,7 +256,7 @@ export function AdminsListPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}명</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('관리자 목록을 다운로드했습니다.')}>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('관리자 목록을 다운로드했습니다.')} />
           </div>
         </div>
       </div>

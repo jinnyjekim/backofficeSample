@@ -25,6 +25,7 @@ import {
   type QuickFilter,
   type TargetType,
 } from './promotionsData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '1.5fr 68px 140px 90px 150px 60px 84px 76px 56px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -285,7 +286,6 @@ export function PromotionsListPage() {
               <option value="">담당자 전체</option>
               {OWNERS.map((o) => <option key={o}>{o}</option>)}
             </select></label>
-            <button type="button" className={styles.detailFilterBtn}>상세 필터 +</button>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>
@@ -294,7 +294,7 @@ export function PromotionsListPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('다운로드를 준비했습니다.')}>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('다운로드를 준비했습니다.')} />
           </div>
         </div>
       </div>

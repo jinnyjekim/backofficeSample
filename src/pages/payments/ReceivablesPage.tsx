@@ -6,6 +6,7 @@ import { ACCENT } from '../../lib/theme';
 import { FILTER_KEYS, PARTNERS, STATUS_META, computePartner, fmtWon, type Activity, type FilterKey, type Partner, type PartnerCalc } from './receivablesData';
 import { buildReceivableDetail } from './receivableDetail';
 import { ReceivableDetailDrawer } from './ReceivableDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '1fr 84px 96px 96px 96px 84px 96px 84px 78px 60px';
 const GRID_MIN_WIDTH = '1240px';
@@ -215,7 +216,6 @@ export function ReceivablesPage() {
               <option>admin01</option>
               <option>admin02</option>
             </select></label>
-            <button type="button" className={styles.dashedBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
           </div>
@@ -227,7 +227,7 @@ export function ReceivablesPage() {
             <button type="button" className={`${styles.viewToggleBtn} ${view === 'invoice' ? styles.active : ''}`} onClick={() => setView('invoice')}>청구 기준</button>
           </div>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.selectXs}>
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

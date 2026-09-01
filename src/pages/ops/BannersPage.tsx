@@ -18,6 +18,7 @@ import {
   type Banner,
   type BannerQuickFilter,
 } from './bannersData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '76px 1.4fr 108px 76px 108px 84px 56px 92px 76px 56px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -411,7 +412,6 @@ export function BannersPage() {
               <option value="PC">PC</option>
               <option value="Mobile">Mobile</option>
             </select></label>
-            <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setPositionFilter('전체'); setDeviceFilter('전체'); setQ(''); }}>초기화</button>
           </div>
@@ -420,7 +420,7 @@ export function BannersPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

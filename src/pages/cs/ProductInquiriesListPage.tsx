@@ -14,6 +14,7 @@ import {
   type ProductInquiry,
   type QuickFilter,
 } from './productInquiriesData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '84px minmax(120px,1fr) minmax(160px,1.6fr) 90px 90px 110px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -174,7 +175,7 @@ export function ProductInquiriesListPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download onClick={() => toastBriefly('상품 문의 목록을 다운로드했습니다.')}>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('상품 문의 목록을 다운로드했습니다.')} />
           </div>
         </div>
       </div>

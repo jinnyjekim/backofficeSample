@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import styles from './TransactionStatsPage.module.css';
 import {
@@ -139,7 +140,24 @@ export function TrafficStatsPage() {
     highlights.push('비교 기간이 설정되지 않아 변화율을 계산할 수 없습니다. 상단에서 "이전 기간과 비교"를 켜주세요.');
   }
 
-  const toastDownload = () => window.alert('다운로드를 준비했습니다. (샘플 데이터에서는 실제 파일이 생성되지 않습니다.)');
+  const toastDownload = () => {
+    const metricRow = (label: string, key: keyof TrafficPeriodAggregate) => {
+      const change = d(key);
+      return { label, current: agg[key] as number, previous: compare ? prevAgg[key] as number : undefined, change: change?.abs, changeRate: change ? `${change.pct.toFixed(1)}%` : undefined };
+    };
+    downloadStatisticsReport({
+      reportName: '유입 전환 통계', mode: '통합', period: `${start}~${end}`, comparisonPeriod: compare ? `${prevStart}~${prevEnd}` : undefined,
+      filters: [['전환 목표', goal], ['집계 단위', granularity], ['현재 탭', TABS.find(([key]) => key === tab)?.[1] ?? tab]],
+      summary: [metricRow('방문 사용자', 'visitors'), metricRow('세션', 'sessions'), metricRow('전환', 'conversions'), metricRow('전환율', 'conversionRate')],
+      trend: { name: '02_유입추이', headers: ['기간', '방문 사용자', '세션', '전환', '전환율(%)'], rows: buckets.map((row) => [row.label, row.visitors, row.sessions, row.conversions, Number(row.conversionRate.toFixed(2))]) },
+      dimensions: [
+        { name: '채널별', headers: ['채널', 'Source', 'Medium', '방문자', '세션', '전환', '전환율(%)', '비중(%)'], rows: channels.map((row) => [row.name, row.source, row.medium, row.visitors, row.sessions, row.conversions, Number(row.conversionRate.toFixed(2)), Number(row.share.toFixed(2))]) },
+        { name: '랜딩별', headers: ['페이지', '세션', '방문자', '전환', '전환율(%)', '비중(%)'], rows: landings.map((row) => [row.page, row.sessions, row.visitors, row.conversions, Number(row.conversionRate.toFixed(2)), Number(row.share.toFixed(2))]) },
+        { name: 'Funnel', headers: ['단계', '사용자', '이전 단계 대비(%)'], rows: funnel.map((row) => [row.label, row.count, row.pctOfPrev == null ? '-' : Number(row.pctOfPrev.toFixed(2))]) },
+      ],
+      definitions: [{ term: '방문 사용자', description: '조회 기간 중 서비스를 방문한 고유 사용자' }, { term: '전환', description: `선택한 목표(${goal})를 완료한 사용자 수` }, { term: '전환율', description: '방문 사용자 중 전환을 완료한 사용자의 비율' }],
+    });
+  };
 
   return (
     <section className={shared.page}>

@@ -5,6 +5,7 @@ import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
 import { CONTACTS, CONTACT_FILTERS, CONTACT_STATUS_META, type Contact, type ContactStatus } from './contactsData';
 import { ContactDetailDrawer } from './ContactDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '1.1fr 1.1fr 1fr 84px 110px 1.2fr 66px 74px 80px 60px';
 const COLUMN_LABELS = ['담당자', '회사', '부서/직책', '역할', '연락처', '이메일', '상태', '주담당', '수정일', '관리'];
@@ -169,7 +170,6 @@ export function ContactsPage() {
               <option>주담당</option>
               <option>일반</option>
             </select></label>
-            <button type="button" className={styles.moreFilterBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={clearAll}>초기화</button>
           </div>
@@ -178,7 +178,7 @@ export function ContactsPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}명</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

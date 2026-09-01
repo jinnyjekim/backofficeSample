@@ -11,6 +11,7 @@ import {
   type TradeStatusRecord,
 } from './tradeStatusData';
 import { TradeStatusDetailDrawer } from './TradeStatusDetailDrawer';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '1.1fr 84px 96px 92px 92px 1fr 84px 1fr 60px';
 const COLUMN_LABELS = ['회사', '현재상태', '거래시작일', '최근거래일', '최근변경', '변경사유', '담당자', '이슈', '관리'];
@@ -183,7 +184,6 @@ export function TradeStatusPage() {
               <option>법인</option>
               <option>개인사업자</option>
             </select></label>
-            <button type="button" className={styles.moreFilterBtn}>상세 필터 ＋</button>
             <div className={styles.spacer} />
             <button type="button" className={styles.clearBtn} onClick={clearAll}>초기화</button>
           </div>
@@ -192,7 +192,7 @@ export function TradeStatusPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}개 거래처</span>
           <div className={styles.resultActions}>
-            <button type="button" className={styles.downloadBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

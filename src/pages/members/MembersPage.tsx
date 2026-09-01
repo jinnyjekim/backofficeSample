@@ -9,6 +9,7 @@ import { MemberDetailDrawer } from './MemberDetailDrawer';
 import { buildMemberDetail } from './memberDetail';
 import { MemberExportModal, MemberStatusModal } from './MemberModals';
 import { SearchField } from '../../components/SearchField';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const MODES: BusinessMode[] = ['B2C', 'C2C', 'B2B'];
 const PAGE_LABELS = ['‹', '1', '2', '3', '4', '5', '›'];
@@ -353,9 +354,7 @@ export function MembersPage() {
               </div>
             )}
           </div>
-          <button type="button" className={styles.exportBtn} onClick={() => setModal({ kind: 'export' })}>
-            <span>↓</span>내보내기
-          </button>
+          <ExcelDownloadButton onClick={() => setModal({ kind: 'export' })} />
         </div>
       </header>
 

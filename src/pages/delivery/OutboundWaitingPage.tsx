@@ -14,6 +14,7 @@ import {
   WAITING_SHIPMENTS,
   type WaitingShipment,
 } from './outboundWaitingData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '96px 88px 1fr 84px 88px 96px 84px 84px 88px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -115,7 +116,6 @@ export function OutboundWaitingPage() {
               <option>admin01</option>
               <option>admin02</option>
             </select></label>
-            <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('오늘출고'); setQ(''); }}>초기화</button>
           </div>
@@ -127,7 +127,7 @@ export function OutboundWaitingPage() {
             <button type="button" className={styles.actionBtn}>출고 확정</button>
             <button type="button" className={styles.actionBtn}>담당자 지정</button>
             <button type="button" className={styles.actionBtn}>출고일 변경</button>
-            <button type="button" className={styles.actionBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

@@ -14,6 +14,7 @@ import {
   SHIP_META,
   type OutboundShipment,
 } from './outboundCompleteData';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '96px 88px 1fr 74px 88px 96px 108px 78px 88px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -114,7 +115,6 @@ export function OutboundCompletePage() {
               <option>출고지 01</option>
               <option>출고지 02</option>
             </select></label>
-            <button type="button" className={styles.detailFilterBtn}>상세 필터 ＋</button>
             <div className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('오늘출고'); setQ(''); }}>초기화</button>
           </div>
@@ -124,7 +124,7 @@ export function OutboundCompletePage() {
           <span className={styles.resultLabel}>{`총 ${filtered.length}건`}</span>
           <div className={styles.resultActions}>
             <button type="button" className={styles.actionBtn}>배송상태 조회</button>
-            <button type="button" className={styles.actionBtn} data-grid-download>↓ 다운로드</button>
+            <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
