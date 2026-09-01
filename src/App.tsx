@@ -75,6 +75,10 @@ import { ProductRegistrationStatsPage } from './pages/stats/ProductRegistrationS
 import { DeliveryClaimsStatsPage } from './pages/stats/DeliveryClaimsStatsPage';
 import { TransactionConversionStatsPage } from './pages/stats/TransactionConversionStatsPage';
 import { SellerActivityStatsPage } from './pages/stats/SellerActivityStatsPage';
+import { ReportRateStatsPage } from './pages/stats/ReportRateStatsPage';
+import { DisputeRateStatsPage } from './pages/stats/DisputeRateStatsPage';
+import { CancelRateStatsPage } from './pages/stats/CancelRateStatsPage';
+import { SellerProceedsStatsPage } from './pages/stats/SellerProceedsStatsPage';
 import { ModulePlaceholderPage } from './pages/common/ModulePlaceholderPage';
 import { BusinessModulePage } from './pages/common/BusinessModulePage';
 import { NotificationDispatchPage } from './pages/notifications/NotificationDispatchPage';
@@ -353,6 +357,10 @@ export default function App() {
         <Route path="c2c/stats/conversion" element={<TransactionConversionStatsPage defaultMode="c2c" />} />
         <Route path="c2c/stats/sellers" element={<SellerActivityStatsPage />} />
         <Route path="c2c/stats/buyers" element={<CustomerPurchaseAnalysisPage defaultMode="c2c" />} />
+        <Route path="c2c/stats/reports" element={<ReportRateStatsPage />} />
+        <Route path="c2c/stats/disputes" element={<DisputeRateStatsPage />} />
+        <Route path="c2c/stats/cancels" element={<CancelRateStatsPage />} />
+        <Route path="c2c/stats/proceeds" element={<SellerProceedsStatsPage />} />
         <Route path="stats/*" element={<BusinessModulePage />} />
 
         <Route path="delivery/prep" element={<DeliveryPrepPage />} />

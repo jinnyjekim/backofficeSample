@@ -238,13 +238,14 @@
 }
 
 .dialogOverlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 30;
-  background: rgba(0, 0, 0, 0.35);
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(2px);
 }
 .dialogBox {
   width: min(420px, 92%);

@@ -67,6 +67,8 @@ function cellExportValue(cell: Cell): string {
       return cell.text;
     case 'badgeSub':
       return [cell.text, cell.subText].filter(Boolean).join(' / ');
+    case 'checkGroup':
+      return cell.items.map((item) => item.label).join(' / ');
     case 'stack':
       return [cell.title, cell.subtitle].filter(Boolean).join(' / ');
     case 'avatarText':
@@ -130,6 +132,17 @@ function CellView({ cell }: { cell: Cell }) {
       return (
         <span className={styles.badgeSquare} style={{ background: cell.bg, color: cell.fg }}>
           {cell.text}
+        </span>
+      );
+    case 'checkGroup':
+      return (
+        <span className={styles.checkGroup}>
+          {cell.items.map((item) => (
+            <span key={`${item.label}-${item.tone}`} className={`${styles.checkChip} ${styles[`checkChip_${item.tone}`]}`}>
+              <i aria-hidden="true">{item.tone === 'success' ? '✓' : item.tone === 'error' ? '×' : item.tone === 'warning' ? '!' : '·'}</i>
+              {item.label}
+            </span>
+          ))}
         </span>
       );
     case 'statusDot':

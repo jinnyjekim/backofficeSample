@@ -169,6 +169,35 @@
   height: 20px;
 }
 
+/* compact multi-check result */
+.checkGroup {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.checkChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 20px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+.checkChip i {
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+}
+.checkChip_success { background: #ecfdf5; color: #047857; }
+.checkChip_warning { background: #fff7ed; color: #c2410c; }
+.checkChip_error { background: #fef2f2; color: #dc2626; }
+.checkChip_muted { background: #f4f4f5; color: #71717a; }
+
 /* statusDot */
 .statusDot {
   display: inline-flex;

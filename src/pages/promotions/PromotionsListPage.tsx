@@ -27,7 +27,7 @@ import {
 } from './promotionsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.5fr 68px 140px 90px 150px 60px 84px 76px 56px';
+const GRID_TEMPLATE = '1.5fr 44px 100px 64px 150px 40px 76px 58px 44px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '프로모션' },
   { label: '유형' },
@@ -313,7 +313,7 @@ export function PromotionsListPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1080px"
+          minWidth="920px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}

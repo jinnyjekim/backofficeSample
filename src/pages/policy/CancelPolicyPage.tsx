@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './CancelPolicyPage.module.css';
@@ -46,6 +47,7 @@ function availClass(a: CancelAvailability): string {
 }
 
 export function CancelPolicyPage() {
+  const navigate = useNavigate();
   const [policy, setPolicy] = useState(INITIAL_POLICY);
   const [stageRules, setStageRules] = useState(INITIAL_STAGE_RULES);
   const [reasons, setReasons] = useState(INITIAL_REASONS);
@@ -76,19 +78,31 @@ export function CancelPolicyPage() {
     window.setTimeout(() => setToast(''), 2400);
   };
 
-  const set = <K extends keyof CancelPolicy>(key: K, value: CancelPolicy[K]) => setDraftPolicy((current) => ({ ...current, [key]: value }));
+  const set = <K extends keyof CancelPolicy>(key: K, value: CancelPolicy[K]) => {
+    if (!editing) {
+      setDraftPolicy({ ...policy, [key]: value });
+      setDraftStageRules(stageRules);
+      setDraftReasons(reasons);
+      setEditing(true);
+      toastBriefly('취소 정책 수정 모드로 전환되었습니다.');
+      return;
+    }
+    setDraftPolicy((current) => ({ ...current, [key]: value }));
+  };
 
   const startEdit = () => {
     setDraftPolicy(policy);
     setDraftStageRules(stageRules);
     setDraftReasons(reasons);
     setEditing(true);
+    toastBriefly('취소 정책 수정 모드입니다. 변경 후 상단의 [변경 사항 저장]을 클릭하세요.');
   };
   const cancelEdit = () => {
     setEditing(false);
     setDraftPolicy(policy);
     setDraftStageRules(stageRules);
     setDraftReasons(reasons);
+    toastBriefly('수정을 취소했습니다.');
   };
   const requestSave = () => {
     const diffs = [
@@ -96,7 +110,11 @@ export function CancelPolicyPage() {
       ...describeStageChanges(stageRules, draftStageRules),
       ...describeReasonChanges(reasons, draftReasons),
     ];
-    if (diffs.length === 0) return setEditing(false);
+    if (diffs.length === 0) {
+      setEditing(false);
+      toastBriefly('변경된 내용이 없어 수정 모드를 종료합니다.');
+      return;
+    }
     setReason('');
     setSaveError('');
     setConfirmSave(diffs);
@@ -124,35 +142,90 @@ export function CancelPolicyPage() {
   };
 
   const setStage = (stage: string, patch: Partial<StageCancelRule>) => {
-    setDraftStageRules((current) => current.map((r) => (r.stage === stage ? { ...r, ...patch } : r)));
+    const currentRules = editing ? draftStageRules : stageRules;
+    const updated = currentRules.map((r) => (r.stage === stage ? { ...r, ...patch } : r));
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftStageRules(updated);
+      setDraftReasons(reasons);
+      setEditing(true);
+      toastBriefly('단계별 취소 규칙이 수정 모드로 전환되었습니다.');
+    } else {
+      setDraftStageRules(updated);
+    }
   };
 
   const toggleCancelStage = (stage: string) => {
-    setDraftPolicy((current) => ({
-      ...current,
-      cancelAllowedStages: current.cancelAllowedStages.includes(stage)
-        ? current.cancelAllowedStages.filter((s) => s !== stage)
-        : [...current.cancelAllowedStages, stage],
-    }));
+    const currentList = editing ? draftPolicy.cancelAllowedStages : policy.cancelAllowedStages;
+    const nextList = currentList.includes(stage) ? currentList.filter((s) => s !== stage) : [...currentList, stage];
+    if (!editing) {
+      setDraftPolicy({ ...policy, cancelAllowedStages: nextList });
+      setDraftStageRules(stageRules);
+      setDraftReasons(reasons);
+      setEditing(true);
+      toastBriefly('취소 허용 단계가 수정 모드로 전환되었습니다.');
+    } else {
+      setDraftPolicy((current) => ({ ...current, cancelAllowedStages: nextList }));
+    }
   };
 
   const saveReason = (updated: CancelReason) => {
-    setDraftReasons((current) => (current.find((r) => r.id === updated.id) ? current.map((r) => (r.id === updated.id ? updated : r)) : [...current, updated]));
+    const currentReasons = editing ? draftReasons : reasons;
+    const nextReasons = currentReasons.find((r) => r.id === updated.id) ? currentReasons.map((r) => (r.id === updated.id ? updated : r)) : [...currentReasons, updated];
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftStageRules(stageRules);
+      setDraftReasons(nextReasons);
+      setEditing(true);
+      toastBriefly('취소 사유가 임시 저장되었습니다. 상단의 [변경 사항 저장]을 클릭하세요.');
+    } else {
+      setDraftReasons(nextReasons);
+    }
     setReasonEditId(null);
   };
   const addReason = (audience: '고객' | '관리자') => {
-    const nextOrder = Math.max(0, ...draftReasons.filter((r) => r.audience === audience).map((r) => r.order)) + 1;
+    const currentReasons = editing ? draftReasons : reasons;
+    const nextOrder = Math.max(0, ...currentReasons.filter((r) => r.audience === audience).map((r) => r.order)) + 1;
     const draft: CancelReason = { id: `NEW-${Date.now()}`, label: '', audience, active: true, order: nextOrder, requiresDetail: false };
-    setDraftReasons((current) => [...current, draft]);
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftStageRules(stageRules);
+      setDraftReasons([...currentReasons, draft]);
+      setEditing(true);
+    } else {
+      setDraftReasons((current) => [...current, draft]);
+    }
     setReasonEditId(draft.id);
   };
-  const removeReason = (id: string) => setDraftReasons((current) => current.filter((r) => r.id !== id));
+  const removeReason = (id: string) => {
+    const currentReasons = editing ? draftReasons : reasons;
+    const nextReasons = currentReasons.filter((r) => r.id !== id);
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftStageRules(stageRules);
+      setDraftReasons(nextReasons);
+      setEditing(true);
+      toastBriefly('사유가 삭제되었습니다. 상단의 [변경 사항 저장]을 클릭하세요.');
+    } else {
+      setDraftReasons(nextReasons);
+    }
+  };
   const moveReason = (item: CancelReason, direction: -1 | 1) => {
-    const siblings = draftReasons.filter((r) => r.audience === item.audience).sort((a, b) => a.order - b.order);
+    const currentReasons = editing ? draftReasons : reasons;
+    const siblings = currentReasons.filter((r) => r.audience === item.audience).sort((a, b) => a.order - b.order);
     const index = siblings.findIndex((r) => r.id === item.id);
     const swap = siblings[index + direction];
     if (!swap) return;
-    setDraftReasons((current) => current.map((r) => (r.id === item.id ? { ...r, order: swap.order } : r.id === swap.id ? { ...r, order: item.order } : r)));
+    const updated = currentReasons.map((r) => (r.id === item.id ? { ...r, order: swap.order } : r.id === swap.id ? { ...r, order: item.order } : r));
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftStageRules(stageRules);
+      setDraftReasons(updated);
+      setEditing(true);
+      toastBriefly('사유 노출 순서가 변경되었으며 수정 모드로 전환되었습니다.');
+    } else {
+      setDraftReasons(updated);
+    }
   };
 
   const activeStageRules = editing ? draftStageRules : stageRules;
@@ -162,7 +235,7 @@ export function CancelPolicyPage() {
 
   const previewOrder = TEST_ORDERS.find((o) => o.id === previewOrderId)!;
   const previewResult = checkEligibility(previewOrder, previewActor, policy, stageRules);
-  const editingReasonDraft = reasonEditId ? draftReasons.find((r) => r.id === reasonEditId) : null;
+  const editingReasonDraft = reasonEditId ? (editing ? draftReasons : reasons).find((r) => r.id === reasonEditId) : null;
 
   return (
     <section className={shared.page}>
@@ -178,16 +251,35 @@ export function CancelPolicyPage() {
             {!editing ? (
               <>
                 <button type="button" className={styles.outlineBtn} onClick={() => setTab('history')}>변경 이력</button>
-                <button type="button" className={styles.darkBtn} onClick={startEdit}>정책 수정</button>
+                <button type="button" className={styles.darkBtn} onClick={startEdit}>✏️ 정책 수정</button>
               </>
             ) : (
               <>
                 <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>수정 취소</button>
-                <button type="button" className={styles.darkBtn} onClick={requestSave}>변경 사항 저장</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>💾 변경 사항 저장</button>
               </>
             )}
           </div>
         </div>
+
+        <div className={`${styles.modeBanner} ${editing ? styles.modeBannerEdit : styles.modeBannerRead}`}>
+          <div className={styles.modeBannerLeft}>
+            <span className={`${styles.modeTag} ${editing ? styles.modeTagEdit : styles.modeTagRead}`}>
+              {editing ? '수정 모드' : '조회 모드'}
+            </span>
+            <span>
+              {editing
+                ? '정책을 편집 중입니다. 변경을 마치면 [변경 사항 저장] 버튼을 눌러 확정하세요.'
+                : '현재 적용 중인 정책입니다. 버튼이나 스위치를 클릭하면 즉시 수정 모드로 전환됩니다.'}
+            </span>
+          </div>
+          {!editing && (
+            <button type="button" className={styles.modeActionBtn} onClick={startEdit}>
+              정책 수정 시작
+            </button>
+          )}
+        </div>
+
         <div className={styles.viewTabs}>
           {TABS.map(([key, label]) => (
             <button key={key} type="button" className={`${styles.viewTabBtn} ${tab === key ? styles.viewTabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
@@ -231,14 +323,14 @@ export function CancelPolicyPage() {
               <div className={styles.cardBody}>
                 <div className={styles.cardGrid}>
                   <div className={styles.toggleRow}>
-                    <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.customerCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('customerCancelEnabled', !draftPolicy.customerCancelEnabled)}><i /></button>
+                    <button type="button" className={`${styles.switch} ${draftPolicy.customerCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('customerCancelEnabled', !draftPolicy.customerCancelEnabled)}><i /></button>
                     <div className={styles.toggleRowText}>
                       <div className={styles.toggleRowTitle}>고객 직접 취소 허용</div>
                       <div className={styles.toggleRowDesc}>앱·웹에서 고객이 스스로 취소를 요청합니다.</div>
                     </div>
                   </div>
                   <div className={styles.toggleRow}>
-                    <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.adminCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('adminCancelEnabled', !draftPolicy.adminCancelEnabled)}><i /></button>
+                    <button type="button" className={`${styles.switch} ${draftPolicy.adminCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('adminCancelEnabled', !draftPolicy.adminCancelEnabled)}><i /></button>
                     <div className={styles.toggleRowText}>
                       <div className={styles.toggleRowTitle}>관리자 취소 허용</div>
                       <div className={styles.toggleRowDesc}>백오피스에서 운영자가 직접 취소 처리합니다.</div>
@@ -249,7 +341,7 @@ export function CancelPolicyPage() {
                   <div className={styles.fieldLabel}>취소 요청 철회 <span className={styles.fieldLabelHint}>고객이 접수한 취소 요청을 되돌릴 수 있는 범위</span></div>
                   <div className={styles.pillGroup}>
                     {(['허용', '처리 시작 전까지만 허용', '불가'] as WithdrawPolicy[]).map((v) => (
-                      <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.withdrawPolicy === v ? styles.pillBtnOn : ''}`} onClick={() => set('withdrawPolicy', v)}>{v}</button>
+                      <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.withdrawPolicy === v ? styles.pillBtnOn : ''}`} onClick={() => set('withdrawPolicy', v)}>{v}</button>
                     ))}
                   </div>
                 </div>
@@ -267,7 +359,7 @@ export function CancelPolicyPage() {
                     <div className={styles.fieldLabel}>기본 취소 가능 시점</div>
                     <div className={styles.pillGroup}>
                       {(['출고 전', '주문 처리 시작 전', '주문 확정 전', '단계별 설정'] as CancelTimingBase[]).map((v) => (
-                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.defaultTimingBase === v ? styles.pillBtnOn : ''}`} onClick={() => set('defaultTimingBase', v)}>{v}</button>
+                        <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.defaultTimingBase === v ? styles.pillBtnOn : ''}`} onClick={() => set('defaultTimingBase', v)}>{v}</button>
                       ))}
                     </div>
                   </div>
@@ -275,7 +367,7 @@ export function CancelPolicyPage() {
                     <div className={styles.fieldLabel}>출고 후 취소 요청</div>
                     <div className={styles.pillGroup}>
                       {(['반품 / 회수 절차로 전환', '관리자 확인', '요청 차단'] as PostShipmentAction[]).map((v) => (
-                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.postShipmentAction === v ? styles.pillBtnOn : ''}`} onClick={() => set('postShipmentAction', v)}>{v}</button>
+                        <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.postShipmentAction === v ? styles.pillBtnOn : ''}`} onClick={() => set('postShipmentAction', v)}>{v}</button>
                       ))}
                     </div>
                   </div>
@@ -286,7 +378,7 @@ export function CancelPolicyPage() {
                     {CANCEL_QUICK_STAGES.map((s) => {
                       const on = draftPolicy.cancelAllowedStages.includes(s);
                       return (
-                        <button key={s} type="button" disabled={!editing} className={`${styles.stageBtn} ${on ? styles.stageBtnOn : ''}`} onClick={() => toggleCancelStage(s)}>
+                        <button key={s} type="button" className={`${styles.stageBtn} ${on ? styles.stageBtnOn : ''}`} onClick={() => toggleCancelStage(s)}>
                           <span className={`${styles.stageCheck} ${on ? styles.stageCheckOn : ''}`}>{on ? '✓' : ''}</span>
                           <span className={`${styles.stageLabel} ${on ? styles.stageLabelOn : ''}`}>{s}</span>
                         </button>
@@ -364,15 +456,15 @@ export function CancelPolicyPage() {
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.partialCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('partialCancelEnabled', !draftPolicy.partialCancelEnabled)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.partialCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('partialCancelEnabled', !draftPolicy.partialCancelEnabled)}><i /></button>
                   <div className={styles.toggleRowText}><div className={styles.toggleRowTitle}>부분 취소 허용</div></div>
                 </div>
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.fullCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('fullCancelEnabled', !draftPolicy.fullCancelEnabled)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.fullCancelEnabled ? styles.switchOn : ''}`} onClick={() => set('fullCancelEnabled', !draftPolicy.fullCancelEnabled)}><i /></button>
                   <div className={styles.toggleRowText}><div className={styles.toggleRowTitle}>전체 주문 취소 허용</div></div>
                 </div>
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing || !draftPolicy.partialCancelEnabled} className={`${styles.switch} ${draftPolicy.itemLevelPartialEnabled ? styles.switchOn : ''}`} onClick={() => set('itemLevelPartialEnabled', !draftPolicy.itemLevelPartialEnabled)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.itemLevelPartialEnabled ? styles.switchOn : ''}`} onClick={() => set('itemLevelPartialEnabled', !draftPolicy.itemLevelPartialEnabled)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>상품 단위 취소 사용</div>
                     <div className={styles.toggleRowDesc}>부분 취소를 상품 단위까지 허용합니다.</div>
@@ -409,16 +501,31 @@ export function CancelPolicyPage() {
                       <span className={styles.dragHandle}>☰</span>
                       <span>{r.label}{r.requiresDetail && <span className={styles.detailTag}>상세필수</span>}</span>
                       <span style={{ color: r.active ? '#059669' : '#a1a1aa' }}>{r.active ? '노출' : '비노출'}</span>
-                      {editing ? (
-                        <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, -1)}>↑</button><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, 1)}>↓</button></span>
-                      ) : <span />}
-                      {editing ? (
-                        <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => setReasonEditId(r.id)}>수정</button><button type="button" className={styles.smallBtn} onClick={() => removeReason(r.id)}>삭제</button></span>
-                      ) : <span />}
+                      <span style={{ display: 'flex', gap: 4 }}>
+                        <button type="button" className={styles.smallBtn} onClick={() => moveReason(r, -1)}>↑</button>
+                        <button type="button" className={styles.smallBtn} onClick={() => moveReason(r, 1)}>↓</button>
+                      </span>
+                      <span style={{ display: 'flex', gap: 4 }}>
+                        <button
+                          type="button"
+                          className={styles.smallBtn}
+                          onClick={() => {
+                            if (!editing) {
+                              setDraftPolicy(policy);
+                              setDraftStageRules(stageRules);
+                              setDraftReasons(reasons);
+                            }
+                            setReasonEditId(r.id);
+                          }}
+                        >
+                          {editing ? '수정' : '상세/수정'}
+                        </button>
+                        <button type="button" className={styles.smallBtn} onClick={() => removeReason(r.id)}>삭제</button>
+                      </span>
                     </div>
                   ))}
                 </div>
-                {editing && <button type="button" className={styles.smallBtn} onClick={() => addReason('고객')}>+ 고객 사유 추가</button>}
+                <button type="button" className={styles.smallBtn} onClick={() => addReason('고객')}>+ 고객 사유 추가</button>
               </div>
             </div>
 
@@ -434,16 +541,31 @@ export function CancelPolicyPage() {
                       <span className={styles.dragHandle}>☰</span>
                       <span>{r.label}{r.requiresDetail && <span className={styles.detailTag}>상세필수</span>}</span>
                       <span style={{ color: r.active ? '#059669' : '#a1a1aa' }}>{r.active ? '노출' : '비노출'}</span>
-                      {editing ? (
-                        <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, -1)}>↑</button><button type="button" className={styles.smallBtn} onClick={() => moveReason(r, 1)}>↓</button></span>
-                      ) : <span />}
-                      {editing ? (
-                        <span style={{ display: 'flex', gap: 4 }}><button type="button" className={styles.smallBtn} onClick={() => setReasonEditId(r.id)}>수정</button><button type="button" className={styles.smallBtn} onClick={() => removeReason(r.id)}>삭제</button></span>
-                      ) : <span />}
+                      <span style={{ display: 'flex', gap: 4 }}>
+                        <button type="button" className={styles.smallBtn} onClick={() => moveReason(r, -1)}>↑</button>
+                        <button type="button" className={styles.smallBtn} onClick={() => moveReason(r, 1)}>↓</button>
+                      </span>
+                      <span style={{ display: 'flex', gap: 4 }}>
+                        <button
+                          type="button"
+                          className={styles.smallBtn}
+                          onClick={() => {
+                            if (!editing) {
+                              setDraftPolicy(policy);
+                              setDraftStageRules(stageRules);
+                              setDraftReasons(reasons);
+                            }
+                            setReasonEditId(r.id);
+                          }}
+                        >
+                          {editing ? '수정' : '상세/수정'}
+                        </button>
+                        <button type="button" className={styles.smallBtn} onClick={() => removeReason(r.id)}>삭제</button>
+                      </span>
                     </div>
                   ))}
                 </div>
-                {editing && <button type="button" className={styles.smallBtn} onClick={() => addReason('관리자')}>+ 관리자 사유 추가</button>}
+                <button type="button" className={styles.smallBtn} onClick={() => addReason('관리자')}>+ 관리자 사유 추가</button>
               </div>
             </div>
 
@@ -466,21 +588,21 @@ export function CancelPolicyPage() {
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.autoCancelOrderWhenFullyCancelled ? styles.switchOn : ''}`} onClick={() => set('autoCancelOrderWhenFullyCancelled', !draftPolicy.autoCancelOrderWhenFullyCancelled)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.autoCancelOrderWhenFullyCancelled ? styles.switchOn : ''}`} onClick={() => set('autoCancelOrderWhenFullyCancelled', !draftPolicy.autoCancelOrderWhenFullyCancelled)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>전량 취소 시 주문 자동 취소 전환</div>
                     <div className={styles.toggleRowDesc}>모든 상품의 유효 수량이 0이 되면 주문 상태를 자동으로 전환합니다.</div>
                   </div>
                 </div>
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.restockOnCancel ? styles.switchOn : ''}`} onClick={() => set('restockOnCancel', !draftPolicy.restockOnCancel)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.restockOnCancel ? styles.switchOn : ''}`} onClick={() => set('restockOnCancel', !draftPolicy.restockOnCancel)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>취소 시 재고 복원</div>
                     <div className={styles.toggleRowDesc}>출고되지 않은 수량만 가용 재고로 복원합니다.</div>
                   </div>
                 </div>
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.notifyOnCancelEvents ? styles.switchOn : ''}`} onClick={() => set('notifyOnCancelEvents', !draftPolicy.notifyOnCancelEvents)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.notifyOnCancelEvents ? styles.switchOn : ''}`} onClick={() => set('notifyOnCancelEvents', !draftPolicy.notifyOnCancelEvents)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>취소 이벤트 알림</div>
                     <div className={styles.toggleRowDesc}>취소 접수·완료를 고객에게 안내합니다.</div>
@@ -490,7 +612,7 @@ export function CancelPolicyPage() {
             </div>
 
             <div className={styles.infoNote}>
-              결제 완료 주문의 환불 금액 계산은 <button type="button" className={styles.smallBtn} onClick={() => window.location.assign('/policy/refund')}>환불 정책</button>에서 관리합니다.
+              결제 완료 주문의 환불 금액 계산은 <button type="button" className={styles.smallBtn} onClick={() => navigate('/policy/refund')}>환불 정책</button>에서 관리합니다.
               배송비·할인 재계산, 쿠폰/포인트 복원, 정산 조정 연계는 프로젝트 확장 설정으로 제공됩니다.
             </div>
 

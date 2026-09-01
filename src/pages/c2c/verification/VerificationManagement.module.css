@@ -1,1 +1,232 @@
 .checkList{display:flex;flex-direction:column;gap:7px}.checkItem{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:9px 10px;border:1px solid rgba(0,0,0,.07);border-radius:8px;background:#fafafa}.checkItem span{font-size:10.5px}.checkItem strong{font-size:10px}.checkOk{color:#047857}.checkWarn{color:#c2410c}.checkFail{color:#dc2626}.documentList{display:flex;flex-direction:column;gap:7px}.documentItem{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border-radius:8px;background:#fafafa;color:#3f3f46;font-size:10.5px}.documentItem:after{content:'암호화';padding:3px 6px;border-radius:5px;background:#ecfdf5;color:#047857;font-size:9px}.policySteps{display:flex;flex-wrap:wrap;gap:6px}.policyStep{padding:6px 8px;border-radius:7px;background:#f4f4f5;color:#52525b;font-size:10px}.boundaryNote{padding:11px 12px;border-radius:9px;background:#f5f8ff;color:#1e3a8a;font-size:10.5px;line-height:1.65}.decisionBox{padding:12px;border:1px solid rgba(0,0,0,.08);border-radius:10px;background:#fff}.decisionBox textarea{width:100%;min-height:72px;padding:9px;border:1px solid rgba(0,0,0,.1);border-radius:8px;resize:vertical;font:11.5px/1.5 inherit}.decisionActions{display:flex;justify-content:flex-end;gap:7px;margin-top:8px}.auditResult{display:grid;grid-template-columns:1fr 1fr;gap:8px}.auditResult>div{padding:10px;border-radius:9px;background:#fafafa}.auditResult span{display:block;color:#71717a;font-size:9.5px}.auditResult strong{display:block;margin-top:4px;font-size:11px}@media(max-width:700px){.auditResult{grid-template-columns:1fr}}
+
+.dateFilterField {
+  flex: 0 0 auto;
+  max-width: none;
+}
+
+.reviewDateRange {
+  overflow: visible !important;
+  padding-left: 0 !important;
+}
+
+.dateRangeControls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  overflow: visible !important;
+  padding-left: 0 !important;
+}
+
+.dateRangeControls em {
+  color: #71717a;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.slaText {
+  color: #a1a1aa;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.reviewPrimaryBtn {
+  height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #18181b;
+  color: #fff;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.reviewPrimaryBtn:hover { background: #27272a; }
+
+.reviewAlert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  margin: 0 24px 14px;
+  padding: 9px 13px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fff8f7;
+  color: #dc2626;
+}
+
+.reviewAlertIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #dc2626;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.reviewAlert strong {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.reviewAlert > span:not(.reviewAlertIcon) {
+  color: #b45353;
+  font-size: 11px;
+}
+
+.reviewAlert button {
+  flex: 0 0 auto;
+  height: 28px;
+  margin-left: auto;
+  padding: 0 10px;
+  border: 1px solid #fca5a5;
+  border-radius: 7px;
+  background: #fff;
+  color: #dc2626;
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.reviewAlertWarning {
+  border-color: #fed7aa;
+  background: #fffaf5;
+  color: #c2410c;
+}
+
+.reviewAlertWarning .reviewAlertIcon { background: #f59e0b; }
+.reviewAlertWarning > span:not(.reviewAlertIcon) { color: #a16207; }
+.reviewAlertWarning button { border-color: #fdba74; color: #c2410c; }
+
+.reviewToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 24px 14px;
+  padding: 11px 13px;
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-radius: 11px;
+  background: #fff;
+}
+
+.reviewQuickFilters,
+.reviewFilterControls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reviewQuickFilters { flex: 0 0 auto; }
+
+.reviewQuickButton,
+.reviewQuickActive {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, .1);
+  border-radius: 7px;
+  background: #fff;
+  color: #52525b;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.reviewQuickButton span { color: #a1a1aa; }
+.reviewQuickActive { border-color: #18181b; background: #18181b; color: #fff; }
+.reviewQuickActive span { color: #d4d4d8; }
+
+.reviewFilterControls {
+  min-width: 0;
+  margin-left: auto;
+}
+
+.reviewSearch {
+  width: clamp(190px, 18vw, 275px);
+  height: 32px;
+  padding: 0 11px;
+  border: 1px solid rgba(0, 0, 0, .1);
+  border-radius: 8px;
+  background: #fff;
+  color: #18181b;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.4;
+  outline: none;
+}
+
+.reviewSearch:focus { border-color: #18181b; box-shadow: 0 0 0 2px rgba(24, 24, 27, .07); }
+.reviewSearch::placeholder { color: #a1a1aa; }
+
+.reviewSelect { width: 118px; flex: 0 0 118px; }
+.reviewDateRange { width: 304px; flex: 0 0 304px; overflow: visible !important; padding-left: 0 !important; }
+.reviewDateRange input { width: 100px; min-width: 100px; }
+
+.reviewReset {
+  height: 30px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: #a1a1aa;
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.queueCard {
+  border-radius: 12px;
+  background: #fff;
+}
+
+.queueHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: #fff;
+}
+
+.queueHeader div { display: flex; align-items: baseline; gap: 8px; }
+.queueHeader strong { color: #18181b; font-size: 12px; }
+.queueHeader span { color: #a1a1aa; font-size: 10.5px; font-weight: 500; }
+.queueCard :global([data-datagrid]) { border-radius: 0 0 12px 12px; }
+
+@media (max-width: 1480px) {
+  .reviewToolbar { align-items: flex-start; flex-direction: column; }
+  .reviewFilterControls { width: 100%; margin-left: 0; }
+  .reviewSearch { flex: 1 1 240px; width: auto; }
+}
+
+@media (max-width: 900px) {
+  .reviewAlert { align-items: flex-start; flex-wrap: wrap; margin-inline: 14px; }
+  .reviewAlert button { margin-left: 28px; }
+  .reviewToolbar { margin-inline: 14px; }
+  .reviewQuickFilters,
+  .reviewFilterControls { width: 100%; overflow-x: auto; padding-bottom: 2px; }
+  .reviewSearch { min-width: 220px; }
+}

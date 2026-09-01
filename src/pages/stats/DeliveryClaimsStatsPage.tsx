@@ -3,11 +3,13 @@ import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
+import { CommonSelect } from '../../components/common';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import { useOutsideClose } from '../../lib/useOutsideClose';
 import shared from '../ops/opsShared.module.css';
 import layout from './SalesAnalysisPage.module.css';
 import styles from './DeliveryClaimsStatsPage.module.css';
+import { StatisticsDownloadFields } from './StatisticsDownloadFields';
 import {
   CLAIM_TYPE_META,
   DELIVERY_STATUS_META,
@@ -210,8 +212,8 @@ export function DeliveryClaimsStatsPage() {
 
       <div className={layout.filterCard}>
         <div className={layout.filterGrid}>
-          <label className={layout.filterField}><span>기간</span><select value={range} onChange={(e) => setRange(e.target.value as QuickRange)}>{QUICK_RANGES.map((r) => <option key={r}>{r}</option>)}</select></label>
-          <label className={layout.filterField}><span>비교</span><select value={compare} onChange={(e) => setCompare(e.target.value as typeof compare)}><option>이전 기간</option><option>비교 없음</option></select></label>
+          <label className={layout.filterField}><span>기간</span><CommonSelect className={layout.analysisSelect} size="sm" value={range} options={QUICK_RANGES.map((value) => ({ label: value, value }))} onChange={(value) => setRange(value as QuickRange)} /></label>
+          <label className={layout.filterField}><span>비교</span><CommonSelect className={layout.analysisSelect} size="sm" value={compare} options={['이전 기간', '비교 없음'].map((value) => ({ label: value, value }))} onChange={(value) => setCompare(value as typeof compare)} /></label>
           <div className={layout.filterActions}><button type="button" className={layout.resetButton} onClick={reset}>초기화</button><button type="button" className={layout.applyButton} onClick={() => flash('조회 조건을 적용했습니다.')}>조회</button></div>
         </div>
         <div className={layout.periodSummary}>조회기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong> · 비교 <strong>{compare === '비교 없음' ? '없음' : `${fmtDate(prevStart)} ~ ${fmtDate(prevEnd)}`}</strong> · 최근 집계 <strong>{refreshedAt}</strong></div>
@@ -240,7 +242,7 @@ export function DeliveryClaimsStatsPage() {
           <div className={layout.legend}><span><i className={layout.legendCurrent} />{metricLabels[trendMetric]}</span>{compare !== '비교 없음' && <span><i className={layout.legendPrevious} />비교 기간</span>}</div>
         </div>
         <div className={layout.chartToolbar}>
-          <label><span>지표</span><select value={trendMetric} onChange={(e) => setTrendMetric(e.target.value as TrendMetric)}>{Object.entries(metricLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
+          <label><span>지표</span><CommonSelect className={layout.analysisSelect} size="sm" value={trendMetric} options={Object.entries(metricLabels).map(([value, label]) => ({ label, value }))} onChange={(value) => setTrendMetric(value as TrendMetric)} /></label>
         </div>
         {primaryTrend.length ? <TrendChart primary={primaryTrend} secondary={secondaryTrend} labels={trendLabels} /> : <div className={layout.emptyState}><strong>분석할 배송 데이터가 없습니다.</strong><span>기간 또는 조건을 변경해 주세요.</span><button type="button" onClick={reset}>필터 초기화</button></div>}
       </section>
@@ -309,7 +311,7 @@ export function DeliveryClaimsStatsPage() {
       <div className={layout.dialog}>
         <div className={layout.dialogHead}><div><span>배송/클레임 분석 다운로드</span><h2>{MODE_LABELS[mode]} · {dimensionLabel}</h2></div><button type="button" onClick={() => setDownloadOpen(false)} aria-label="닫기"><X size={18} /></button></div>
         <div className={layout.downloadSummary}><span>기간 <b>{fmtDate(start)} ~ {fmtDate(end)}</b></span><span>Mode <b>{MODE_LABELS[mode]}</b></span><span>분석 기준 <b>{dimensionLabel}</b></span></div>
-        <div className={layout.downloadFields}><strong>포함 항목</strong>{exportFields.map((field) => <label key={field.key}><input type="checkbox" checked={downloadFields.has(field.key)} onChange={() => setDownloadFields((current) => { const next = new Set(current); if (next.has(field.key)) next.delete(field.key); else next.add(field.key); return next; })} />{field.label}</label>)}</div>
+        <StatisticsDownloadFields className={layout.downloadFields} fields={exportFields} selected={downloadFields} onChange={setDownloadFields} />
         <div className={layout.dialogActions}><button type="button" className={layout.secondaryButton} onClick={() => setDownloadOpen(false)}>취소</button><button type="button" className={layout.primaryButton} disabled={!downloadFields.size} onClick={download}><Download size={14} /> Excel 다운로드</button></div>
       </div>
     </div>}

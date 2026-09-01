@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CommonCheckbox, CommonSelect } from '../../components/common';
+import { DatePicker } from '../../components/forms/DatePicker';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import styles from './TransactionStatsPage.module.css';
@@ -172,18 +174,13 @@ export function TrafficStatsPage() {
 
       <div className={styles.filterBar}>
         <div className={styles.filterRow}>
-          <input type="date" className={styles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
+          <DatePicker controlSize="sm" className={styles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
           <span className={styles.tilde}>~</span>
-          <input type="date" className={styles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
+          <DatePicker controlSize="sm" className={styles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
           <button type="button" className={styles.applyBtn} onClick={applyCustom}>조회</button>
-          <label className={styles.compareCheck}>
-            <input type="checkbox" checked={compare} onChange={(e) => setCompare(e.target.checked)} /> 이전 기간과 비교
-          </label>
+          <CommonCheckbox className={styles.compareCheck} size="sm" checked={compare} onChange={setCompare}>이전 기간과 비교</CommonCheckbox>
           <span style={{ flex: 1 }} />
-          <span style={{ fontSize: 12, color: '#52525b' }}>전환 목표</span>
-          <label className="globalFilterField"><span>전환 목표</span><select aria-label="전환 목표" className={styles.selectSm} value={goal} onChange={(e) => setGoal(e.target.value as ConversionGoal)}>
-            {CONVERSION_GOALS.map((g) => <option key={g}>{g}</option>)}
-          </select></label>
+          <label className="globalFilterField"><span>전환 목표</span><CommonSelect aria-label="전환 목표" size="sm" value={goal} options={CONVERSION_GOALS.map((value) => ({ label: value, value }))} onChange={(value) => setGoal(value as ConversionGoal)} /></label>
         </div>
         <div className={styles.filterRow}>
           {QUICK_RANGES.map((r) => {

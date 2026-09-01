@@ -114,7 +114,7 @@
 }
 
 .filterCard {
-  overflow: hidden;
+  overflow: visible;
   margin-bottom: 14px;
   border: 1px solid rgba(0, 0, 0, .08);
   border-radius: 12px;
@@ -153,6 +153,11 @@
   color: #3f3f46;
   font-size: 12px;
   outline: none;
+}
+
+.analysisSelect {
+  width: 100%;
+  min-width: 0;
 }
 
 .filterField select:focus,

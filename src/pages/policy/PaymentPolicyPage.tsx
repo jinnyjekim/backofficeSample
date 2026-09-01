@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './PaymentPolicyPage.module.css';
@@ -39,6 +40,7 @@ const TABS: [Tab, string][] = [
 ];
 
 export function PaymentPolicyPage() {
+  const navigate = useNavigate();
   const [policy, setPolicy] = useState(INITIAL_POLICY);
   const [methods, setMethods] = useState(INITIAL_METHODS);
   const [history, setHistory] = useState(INITIAL_HISTORY);
@@ -65,21 +67,36 @@ export function PaymentPolicyPage() {
     window.setTimeout(() => setToast(''), 2400);
   };
 
-  const set = <K extends keyof PaymentPolicy>(key: K, value: PaymentPolicy[K]) => setDraftPolicy((current) => ({ ...current, [key]: value }));
+  const set = <K extends keyof PaymentPolicy>(key: K, value: PaymentPolicy[K]) => {
+    if (!editing) {
+      setDraftPolicy({ ...policy, [key]: value });
+      setDraftMethods(methods);
+      setEditing(true);
+      toastBriefly('정책 수정 모드로 전환되었습니다.');
+      return;
+    }
+    setDraftPolicy((current) => ({ ...current, [key]: value }));
+  };
 
   const startEdit = () => {
     setDraftPolicy(policy);
     setDraftMethods(methods);
     setEditing(true);
+    toastBriefly('정책 수정 모드입니다. 변경 후 상단의 [변경 사항 저장]을 클릭하세요.');
   };
   const cancelEdit = () => {
     setEditing(false);
     setDraftPolicy(policy);
     setDraftMethods(methods);
+    toastBriefly('수정을 취소했습니다.');
   };
   const requestSave = () => {
     const diffs = [...describePolicyChanges(policy, draftPolicy), ...describeMethodChanges(methods, draftMethods)];
-    if (diffs.length === 0) return setEditing(false);
+    if (diffs.length === 0) {
+      setEditing(false);
+      toastBriefly('변경된 내용이 없어 수정 모드를 종료합니다.');
+      return;
+    }
     setReason('');
     setSaveError('');
     setConfirmSave(diffs);
@@ -106,6 +123,15 @@ export function PaymentPolicyPage() {
   };
 
   const toggleStage = (stage: string) => {
+    if (!editing) {
+      const currentList = policy.paymentAllowedStages;
+      const nextList = currentList.includes(stage) ? currentList.filter((s) => s !== stage) : [...currentList, stage];
+      setDraftPolicy({ ...policy, paymentAllowedStages: nextList });
+      setDraftMethods(methods);
+      setEditing(true);
+      toastBriefly('정책 수정 모드로 전환되었습니다.');
+      return;
+    }
     setDraftPolicy((current) => ({
       ...current,
       paymentAllowedStages: current.paymentAllowedStages.includes(stage)
@@ -115,15 +141,31 @@ export function PaymentPolicyPage() {
   };
 
   const moveMethod = (item: PaymentMethod, direction: -1 | 1) => {
-    const ordered = [...draftMethods].sort((a, b) => a.order - b.order);
+    const targetMethods = editing ? draftMethods : methods;
+    const ordered = [...targetMethods].sort((a, b) => a.order - b.order);
     const index = ordered.findIndex((m) => m.id === item.id);
     const swap = ordered[index + direction];
     if (!swap) return;
-    setDraftMethods((current) => current.map((m) => (m.id === item.id ? { ...m, order: swap.order } : m.id === swap.id ? { ...m, order: item.order } : m)));
+    const updated = targetMethods.map((m) => (m.id === item.id ? { ...m, order: swap.order } : m.id === swap.id ? { ...m, order: item.order } : m));
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftMethods(updated);
+      setEditing(true);
+      toastBriefly('순서가 변경되었으며 수정 모드로 전환되었습니다.');
+    } else {
+      setDraftMethods(updated);
+    }
   };
 
   const saveMethod = (updated: PaymentMethod) => {
-    setDraftMethods((current) => current.map((m) => (m.id === updated.id ? updated : updated.isDefault ? { ...m, isDefault: false } : m)));
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftMethods(methods.map((m) => (m.id === updated.id ? updated : updated.isDefault ? { ...m, isDefault: false } : m)));
+      setEditing(true);
+      toastBriefly('결제수단 설정이 임시 저장되었습니다. 상단의 [변경 사항 저장]을 클릭하세요.');
+    } else {
+      setDraftMethods((current) => current.map((m) => (m.id === updated.id ? updated : updated.isDefault ? { ...m, isDefault: false } : m)));
+    }
     setMethodEditId(null);
   };
 
@@ -144,16 +186,35 @@ export function PaymentPolicyPage() {
             {!editing ? (
               <>
                 <button type="button" className={styles.outlineBtn} onClick={() => setTab('history')}>변경 이력</button>
-                <button type="button" className={styles.darkBtn} onClick={startEdit}>정책 수정</button>
+                <button type="button" className={styles.darkBtn} onClick={startEdit}>✏️ 정책 수정</button>
               </>
             ) : (
               <>
                 <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>수정 취소</button>
-                <button type="button" className={styles.darkBtn} onClick={requestSave}>변경 사항 저장</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>💾 변경 사항 저장</button>
               </>
             )}
           </div>
         </div>
+
+        <div className={`${styles.modeBanner} ${editing ? styles.modeBannerEdit : styles.modeBannerRead}`}>
+          <div className={styles.modeBannerLeft}>
+            <span className={`${styles.modeTag} ${editing ? styles.modeTagEdit : styles.modeTagRead}`}>
+              {editing ? '수정 모드' : '조회 모드'}
+            </span>
+            <span>
+              {editing
+                ? '정책을 편집 중입니다. 변경을 마치면 [변경 사항 저장] 버튼을 눌러 확정하세요.'
+                : '현재 적용 중인 정책입니다. 버튼이나 스위치를 클릭하면 즉시 수정 모드로 전환됩니다.'}
+            </span>
+          </div>
+          {!editing && (
+            <button type="button" className={styles.modeActionBtn} onClick={startEdit}>
+              정책 수정 시작
+            </button>
+          )}
+        </div>
+
         <div className={styles.viewTabs}>
           {TABS.map(([key, label]) => (
             <button key={key} type="button" className={`${styles.viewTabBtn} ${tab === key ? styles.viewTabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
@@ -196,7 +257,7 @@ export function PaymentPolicyPage() {
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.paymentRequired ? styles.switchOn : ''}`} onClick={() => set('paymentRequired', !draftPolicy.paymentRequired)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.paymentRequired ? styles.switchOn : ''}`} onClick={() => set('paymentRequired', !draftPolicy.paymentRequired)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>주문별 결제 필요</div>
                     <div className={styles.toggleRowDesc}>끄면 주문이 결제 없이 완료 처리됩니다.</div>
@@ -208,7 +269,7 @@ export function PaymentPolicyPage() {
                     <div className={styles.fieldLabel}>기본 결제 방식</div>
                     <div className={styles.pillGroup}>
                       {(['선결제', '후불', '선결제 + 후불'] as PaymentTiming[]).map((v) => (
-                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.paymentTiming === v ? styles.pillBtnOn : ''}`} onClick={() => set('paymentTiming', v)}>{v}</button>
+                        <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.paymentTiming === v ? styles.pillBtnOn : ''}`} onClick={() => set('paymentTiming', v)}>{v}</button>
                       ))}
                     </div>
                   </div>
@@ -217,7 +278,7 @@ export function PaymentPolicyPage() {
                     <div className={styles.fieldLabel}>결제 기준금액</div>
                     <div className={styles.pillGroup}>
                       {(['최종 주문금액', '청구 확정금액'] as PaymentBasis[]).map((v) => (
-                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.paymentBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('paymentBasis', v)}>{v}</button>
+                        <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.paymentBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('paymentBasis', v)}>{v}</button>
                       ))}
                     </div>
                   </div>
@@ -228,7 +289,7 @@ export function PaymentPolicyPage() {
                       {PAYMENT_STAGES.map((s) => {
                         const on = draftPolicy.paymentAllowedStages.includes(s);
                         return (
-                          <button key={s} type="button" disabled={!editing} className={`${styles.stageBtn} ${on ? styles.stageBtnOn : ''}`} onClick={() => toggleStage(s)}>
+                          <button key={s} type="button" className={`${styles.stageBtn} ${on ? styles.stageBtnOn : ''}`} onClick={() => toggleStage(s)}>
                             <span className={`${styles.stageCheck} ${on ? styles.stageCheckOn : ''}`}>{on ? '✓' : ''}</span>
                             <span className={`${styles.stageLabel} ${on ? styles.stageLabelOn : ''}`}>{s}</span>
                           </button>
@@ -250,13 +311,13 @@ export function PaymentPolicyPage() {
                   <div>
                     <div className={styles.fieldLabel}>결제 세션 유효시간</div>
                     <div className={styles.ttlRow}>
-                      <input type="number" min="0" className={styles.ttlInput} disabled={!editing} value={draftPolicy.sessionExpiryMinutes} onChange={(e) => set('sessionExpiryMinutes', Number(e.target.value))} />
+                      <input type="number" min="0" className={styles.ttlInput} value={draftPolicy.sessionExpiryMinutes} onChange={(e) => set('sessionExpiryMinutes', Number(e.target.value))} />
                       <span className={styles.ttlUnit}>분</span>
                       <div className={styles.ttlPresets}>
                         {TTL_PRESETS.map((v) => {
                           const on = String(draftPolicy.sessionExpiryMinutes) === v;
                           return (
-                            <button key={v} type="button" disabled={!editing} className={`${styles.presetBtn} ${on ? styles.presetBtnOn : ''}`} onClick={() => set('sessionExpiryMinutes', Number(v))}>{v}분</button>
+                            <button key={v} type="button" className={`${styles.presetBtn} ${on ? styles.presetBtnOn : ''}`} onClick={() => set('sessionExpiryMinutes', Number(v))}>{v}분</button>
                           );
                         })}
                       </div>
@@ -265,7 +326,7 @@ export function PaymentPolicyPage() {
 
                   <div>
                     <div className={styles.fieldLabel}>유효시간 만료 후</div>
-                    <select disabled={!editing} value={draftPolicy.expiryAction} onChange={(e) => set('expiryAction', e.target.value as ExpiryAction)} className={styles.ttlInput} style={{ width: '100%' }}>
+                    <select value={draftPolicy.expiryAction} onChange={(e) => set('expiryAction', e.target.value as ExpiryAction)} className={styles.ttlInput} style={{ width: '100%' }}>
                       <option>재결제 가능</option>
                       <option>주문 자동 취소</option>
                       <option>관리자 확인 필요</option>
@@ -274,7 +335,7 @@ export function PaymentPolicyPage() {
                 </div>
 
                 <div className={`${styles.toggleRow} ${styles.dividerTop}`}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.blockProcessingBeforePaid ? styles.switchOn : ''}`} onClick={() => set('blockProcessingBeforePaid', !draftPolicy.blockProcessingBeforePaid)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.blockProcessingBeforePaid ? styles.switchOn : ''}`} onClick={() => set('blockProcessingBeforePaid', !draftPolicy.blockProcessingBeforePaid)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>결제 완료 전 주문 처리 차단</div>
                     <div className={styles.toggleRowDesc}>선결제 정책에서 결제 확인 전 처리 진행을 막습니다.</div>
@@ -320,20 +381,23 @@ export function PaymentPolicyPage() {
                       <span className={styles.methodDim}>{fmtWon(m.minAmount)} ~ {m.maxAmount === null ? '제한 없음' : fmtWon(m.maxAmount)}</span>
                       <span className={styles.methodDim}>{m.partialAllowed ? '부분결제 O' : '부분결제 X'} · {m.autoConfirm ? '자동확정' : '수동확정'}</span>
                       <span className={styles.methodDim}>{m.pg ?? '-'}</span>
-                      {editing ? (
-                        <>
-                          <span style={{ display: 'flex', gap: 4 }}>
-                            <button type="button" className={styles.methodEditBtn} onClick={() => moveMethod(m, -1)}>↑</button>
-                            <button type="button" className={styles.methodEditBtn} onClick={() => moveMethod(m, 1)}>↓</button>
-                          </span>
-                          <button type="button" className={styles.methodEditBtn} onClick={() => setMethodEditId(m.id)}>수정</button>
-                        </>
-                      ) : (
-                        <>
-                          <span />
-                          <span />
-                        </>
-                      )}
+                      <span style={{ display: 'flex', gap: 4 }}>
+                        <button type="button" className={styles.methodEditBtn} onClick={() => moveMethod(m, -1)}>↑</button>
+                        <button type="button" className={styles.methodEditBtn} onClick={() => moveMethod(m, 1)}>↓</button>
+                      </span>
+                      <button
+                        type="button"
+                        className={styles.methodEditBtn}
+                        onClick={() => {
+                          if (!editing) {
+                            setDraftPolicy(policy);
+                            setDraftMethods(methods);
+                          }
+                          setMethodEditId(m.id);
+                        }}
+                      >
+                        {editing ? '수정' : '설정 보기'}
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -359,7 +423,7 @@ export function PaymentPolicyPage() {
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.partialPaymentEnabled ? styles.switchOn : ''}`} onClick={() => set('partialPaymentEnabled', !draftPolicy.partialPaymentEnabled)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.partialPaymentEnabled ? styles.switchOn : ''}`} onClick={() => set('partialPaymentEnabled', !draftPolicy.partialPaymentEnabled)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>부분결제 허용</div>
                   </div>
@@ -369,23 +433,23 @@ export function PaymentPolicyPage() {
                   <div className={styles.cardGrid}>
                     <div>
                       <div className={styles.fieldLabel}>최소 1회 결제금액</div>
-                      <input type="number" min="0" className={styles.textField} disabled={!editing} value={draftPolicy.minPartialAmount} onChange={(e) => set('minPartialAmount', Number(e.target.value))} />
+                      <input type="number" min="0" className={styles.textField} value={draftPolicy.minPartialAmount} onChange={(e) => set('minPartialAmount', Number(e.target.value))} />
                     </div>
                     <div>
                       <div className={styles.fieldLabel}>최소 결제 비율 (%)</div>
-                      <input type="number" min="0" max="100" className={styles.textField} disabled={!editing} value={draftPolicy.minPartialRatioPct} onChange={(e) => set('minPartialRatioPct', Number(e.target.value))} />
+                      <input type="number" min="0" max="100" className={styles.textField} value={draftPolicy.minPartialRatioPct} onChange={(e) => set('minPartialRatioPct', Number(e.target.value))} />
                     </div>
                     <div>
                       <div className={styles.fieldLabel}>최대 결제 횟수</div>
-                      <input type="number" min="1" className={styles.textField} disabled={!editing} value={draftPolicy.maxPartialCount} onChange={(e) => set('maxPartialCount', Number(e.target.value))} />
+                      <input type="number" min="1" className={styles.textField} value={draftPolicy.maxPartialCount} onChange={(e) => set('maxPartialCount', Number(e.target.value))} />
                     </div>
                     <div>
                       <div className={styles.fieldLabel}>잔액 결제 마감 <span className={styles.fieldLabelHint}>주문 확정 후 N일</span></div>
-                      <input type="number" min="0" className={styles.textField} disabled={!editing} value={draftPolicy.balanceDueDays} onChange={(e) => set('balanceDueDays', Number(e.target.value))} />
+                      <input type="number" min="0" className={styles.textField} value={draftPolicy.balanceDueDays} onChange={(e) => set('balanceDueDays', Number(e.target.value))} />
                     </div>
                     <div className={styles.cardGridFull}>
                       <div className={styles.fieldLabel}>부족 결제 처리</div>
-                      <select disabled={!editing} value={draftPolicy.shortagePolicy} onChange={(e) => set('shortagePolicy', e.target.value as ShortagePolicy)} className={styles.textField}>
+                      <select value={draftPolicy.shortagePolicy} onChange={(e) => set('shortagePolicy', e.target.value as ShortagePolicy)} className={styles.textField}>
                         <option>부분결제로 처리</option>
                         <option>결제 확인 차단</option>
                         <option>관리자 확인 필요</option>
@@ -418,7 +482,7 @@ export function PaymentPolicyPage() {
               <div className={styles.cardBody}>
                 <div>
                   <div className={styles.fieldLabel}>실패 시 주문 상태</div>
-                  <select disabled={!editing} value={draftPolicy.failureOrderAction} onChange={(e) => set('failureOrderAction', e.target.value as FailureOrderAction)} className={styles.textField} style={{ maxWidth: 260 }}>
+                  <select value={draftPolicy.failureOrderAction} onChange={(e) => set('failureOrderAction', e.target.value as FailureOrderAction)} className={styles.textField} style={{ maxWidth: 260 }}>
                     <option>유지</option>
                     <option>결제 실패 상태로 전환</option>
                     <option>주문 취소</option>
@@ -426,7 +490,7 @@ export function PaymentPolicyPage() {
                 </div>
 
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.retryAllowed ? styles.switchOn : ''}`} onClick={() => set('retryAllowed', !draftPolicy.retryAllowed)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.retryAllowed ? styles.switchOn : ''}`} onClick={() => set('retryAllowed', !draftPolicy.retryAllowed)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>사용자 재시도 허용</div>
                   </div>
@@ -436,11 +500,11 @@ export function PaymentPolicyPage() {
                   <div className={styles.cardGrid}>
                     <div>
                       <div className={styles.fieldLabel}>최대 재시도</div>
-                      <input type="number" min="1" className={styles.textField} disabled={!editing} value={draftPolicy.maxRetryCount} onChange={(e) => set('maxRetryCount', Number(e.target.value))} />
+                      <input type="number" min="1" className={styles.textField} value={draftPolicy.maxRetryCount} onChange={(e) => set('maxRetryCount', Number(e.target.value))} />
                     </div>
                     <div>
                       <div className={styles.fieldLabel}>재시도 제한시간 <span className={styles.fieldLabelHint}>분</span></div>
-                      <input type="number" min="1" className={styles.textField} disabled={!editing} value={draftPolicy.retryLimitMinutes} onChange={(e) => set('retryLimitMinutes', Number(e.target.value))} />
+                      <input type="number" min="1" className={styles.textField} value={draftPolicy.retryLimitMinutes} onChange={(e) => set('retryLimitMinutes', Number(e.target.value))} />
                     </div>
                   </div>
                 )}
@@ -454,7 +518,7 @@ export function PaymentPolicyPage() {
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.autoRequery ? styles.switchOn : ''}`} onClick={() => set('autoRequery', !draftPolicy.autoRequery)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.autoRequery ? styles.switchOn : ''}`} onClick={() => set('autoRequery', !draftPolicy.autoRequery)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>결제 상태 자동 재조회</div>
                     <div className={styles.toggleRowDesc}>내부 상태와 PG 상태가 어긋나는 경우 자동 동기화합니다.</div>
@@ -463,7 +527,7 @@ export function PaymentPolicyPage() {
                 {draftPolicy.autoRequery && (
                   <div>
                     <div className={styles.fieldLabel}>재조회 횟수</div>
-                    <input type="number" min="1" className={styles.textField} style={{ width: 120 }} disabled={!editing} value={draftPolicy.requeryMaxCount} onChange={(e) => set('requeryMaxCount', Number(e.target.value))} />
+                    <input type="number" min="1" className={styles.textField} style={{ width: 120 }} value={draftPolicy.requeryMaxCount} onChange={(e) => set('requeryMaxCount', Number(e.target.value))} />
                   </div>
                 )}
                 <div className={styles.lockedNote}>중복결제 방지는 시스템 필수 기능으로 항상 사용됩니다. (주문번호·결제대상금액·진행중 결제 여부를 자동 검증)</div>
@@ -489,7 +553,7 @@ export function PaymentPolicyPage() {
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.cancelEnabled ? styles.switchOn : ''}`} onClick={() => set('cancelEnabled', !draftPolicy.cancelEnabled)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.cancelEnabled ? styles.switchOn : ''}`} onClick={() => set('cancelEnabled', !draftPolicy.cancelEnabled)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>결제 취소 기능 사용</div>
                   </div>
@@ -497,7 +561,7 @@ export function PaymentPolicyPage() {
 
                 <div>
                   <div className={styles.fieldLabel}>결제 완료 후 주문 금액 변경</div>
-                  <select disabled={!editing} value={draftPolicy.amountChangePolicy} onChange={(e) => set('amountChangePolicy', e.target.value as AmountChangePolicy)} className={styles.textField} style={{ maxWidth: 260 }}>
+                  <select value={draftPolicy.amountChangePolicy} onChange={(e) => set('amountChangePolicy', e.target.value as AmountChangePolicy)} className={styles.textField} style={{ maxWidth: 260 }}>
                     <option>직접 수정 허용</option>
                     <option>변경 요청 Workflow</option>
                     <option>수정 불가</option>
@@ -505,7 +569,7 @@ export function PaymentPolicyPage() {
                 </div>
 
                 <div className={styles.toggleRow}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.manualPaymentEnabled ? styles.switchOn : ''}`} onClick={() => set('manualPaymentEnabled', !draftPolicy.manualPaymentEnabled)}><i /></button>
+                  <button type="button" className={`${styles.switch} ${draftPolicy.manualPaymentEnabled ? styles.switchOn : ''}`} onClick={() => set('manualPaymentEnabled', !draftPolicy.manualPaymentEnabled)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>관리자 수동 결제 등록 허용</div>
                   </div>
@@ -514,8 +578,8 @@ export function PaymentPolicyPage() {
             </div>
 
             <div className={styles.infoNote}>
-              결제 취소 이후 주문 상태 처리, 부분 취소·환불 계산 규칙은 <button type="button" className={styles.methodEditBtn} onClick={() => window.location.assign('/policy/cancellation')}>취소 정책</button>{' '}
-              및 <button type="button" className={styles.methodEditBtn} onClick={() => window.location.assign('/policy/refund')}>환불 정책</button>에서 관리합니다.
+              결제 취소 이후 주문 상태 처리, 부분 취소·환불 계산 규칙은 <button type="button" className={styles.methodEditBtn} onClick={() => navigate('/policy/cancellation')}>취소 정책</button>{' '}
+              및 <button type="button" className={styles.methodEditBtn} onClick={() => navigate('/policy/refund')}>환불 정책</button>에서 관리합니다.
             </div>
 
             {editing && (

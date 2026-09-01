@@ -16,7 +16,7 @@ import {
 import { CompanyDetailDrawer } from './CompanyDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '88px minmax(160px,1.3fr) 120px 88px 92px 60px 84px 92px 104px 88px 60px';
+const GRID_TEMPLATE = '68px minmax(160px,1.3fr) 76px 70px 76px 40px 60px 52px 96px 84px 60px';
 const COLUMN_LABELS = ['회사코드', '회사명', '사업자번호', '회사유형', '거래상태', '등급', '담당자', '최근거래일', '미수금', '등록일', '관리'];
 const SEARCH_SCOPES = ['전체', '회사명', '회사코드', '사업자등록번호', '대표자명', '담당자명'];
 
@@ -194,7 +194,7 @@ export function CompaniesPage() {
             columns={gridColumns}
             rows={rows}
             gridTemplate={GRID_TEMPLATE}
-            minWidth="1080px"
+            minWidth="900px"
             showPagination
             pages={pages}
             empty={rows.length === 0}

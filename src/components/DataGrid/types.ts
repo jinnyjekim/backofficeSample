@@ -41,6 +41,13 @@ export interface BadgeSquareCell extends BaseCell {
   bg: string;
   fg: string;
 }
+export interface CheckGroupCell extends BaseCell {
+  kind: 'checkGroup';
+  items: Array<{
+    label: string;
+    tone: 'success' | 'warning' | 'error' | 'muted';
+  }>;
+}
 export interface StatusDotCell extends BaseCell {
   kind: 'statusDot';
   text: string;
@@ -113,6 +120,7 @@ export type Cell =
   | BadgeCell
   | BadgeSubCell
   | BadgeSquareCell
+  | CheckGroupCell
   | StatusDotCell
   | StackCell
   | AvatarTextCell

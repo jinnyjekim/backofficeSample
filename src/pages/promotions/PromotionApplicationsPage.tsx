@@ -18,7 +18,7 @@ import {
 } from './applicationsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '108px 1.3fr 100px 90px 110px 100px 100px 84px 60px';
+const GRID_TEMPLATE = '86px 1.3fr 72px 60px 70px 80px 80px 84px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '적용일시' },
   { label: '프로모션' },
@@ -171,7 +171,7 @@ export function PromotionApplicationsPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1080px"
+          minWidth="920px"
           empty={rows.length === 0}
           emptyText={applications.length === 0 ? '프로모션 적용 이력이 없습니다.' : quickFilter === '확인 필요' ? '현재 확인이 필요한 프로모션 적용 이력이 없습니다.' : '검색 조건에 해당하는 프로모션 적용 이력이 없습니다.'}
           emptySubtext={applications.length === 0 ? '프로모션이 실제 주문에 적용되면 이곳에서 확인할 수 있습니다.' : '검색어나 필터 조건을 변경해 주세요.'}

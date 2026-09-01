@@ -7,7 +7,7 @@ import { CONTACTS, CONTACT_FILTERS, CONTACT_STATUS_META, type Contact, type Cont
 import { ContactDetailDrawer } from './ContactDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.1fr 1.1fr 1fr 84px 110px 1.2fr 66px 74px 80px 60px';
+const GRID_TEMPLATE = 'minmax(150px,1.1fr) 82px 82px 66px 106px 134px 60px 46px 80px 60px';
 const COLUMN_LABELS = ['담당자', '회사', '부서/직책', '역할', '연락처', '이메일', '상태', '주담당', '수정일', '관리'];
 const SEARCH_SCOPES = ['전체', '담당자명', '회사명', '회사코드', '부서명', '이메일', '연락처'];
 
@@ -192,7 +192,7 @@ export function ContactsPage() {
             columns={gridColumns}
             rows={rows}
             gridTemplate={GRID_TEMPLATE}
-            minWidth="1020px"
+            minWidth="850px"
             showPagination
             pages={pages}
             empty={rows.length === 0}

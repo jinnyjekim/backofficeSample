@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CommonCheckbox } from '../../components/common';
+import { DatePicker } from '../../components/forms/DatePicker';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import styles from './TransactionStatsPage.module.css';
@@ -175,13 +177,11 @@ export function ContentStatsPage() {
 
       <div className={styles.filterBar}>
         <div className={styles.filterRow}>
-          <input type="date" className={styles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
+          <DatePicker controlSize="sm" className={styles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
           <span className={styles.tilde}>~</span>
-          <input type="date" className={styles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
+          <DatePicker controlSize="sm" className={styles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
           <button type="button" className={styles.applyBtn} onClick={applyCustom}>조회</button>
-          <label className={styles.compareCheck}>
-            <input type="checkbox" checked={compare} onChange={(e) => setCompare(e.target.checked)} /> 이전 기간과 비교
-          </label>
+          <CommonCheckbox className={styles.compareCheck} size="sm" checked={compare} onChange={setCompare}>이전 기간과 비교</CommonCheckbox>
         </div>
         <div className={styles.filterRow}>
           {QUICK_RANGES.map((r) => {

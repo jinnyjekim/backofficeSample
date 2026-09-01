@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { CommonSwitch } from '../../components/common';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './RefundPolicyPage.module.css';
@@ -49,12 +50,6 @@ function signed(n: number): string {
 }
 
 const REFUND_TYPES: RefundType[] = ['전체 환불', '부분 환불', '과입금 반환', '조정 환불'];
-const TYPE_BADGE_CLASS: Record<RefundType, string> = {
-  '전체 환불': styles.typeFullRefund,
-  '부분 환불': styles.typePartialRefund,
-  '과입금 반환': styles.typeOverpaidRefund,
-  '조정 환불': styles.typeAdjustRefund,
-};
 
 export function RefundPolicyPage() {
   const [policy, setPolicy] = useState(INITIAL_POLICY);
@@ -88,19 +83,31 @@ export function RefundPolicyPage() {
     window.setTimeout(() => setToast(''), 2400);
   };
 
-  const set = <K extends keyof RefundPolicy>(key: K, value: RefundPolicy[K]) => setDraftPolicy((current) => ({ ...current, [key]: value }));
+  const set = <K extends keyof RefundPolicy>(key: K, value: RefundPolicy[K]) => {
+    if (!editing) {
+      setDraftPolicy({ ...policy, [key]: value });
+      setDraftMethodRules(methodRules);
+      setDraftReasons(reasons);
+      setEditing(true);
+      toastBriefly('환불 정책 수정 모드로 전환되었습니다.');
+      return;
+    }
+    setDraftPolicy((current) => ({ ...current, [key]: value }));
+  };
 
   const startEdit = () => {
     setDraftPolicy(policy);
     setDraftMethodRules(methodRules);
     setDraftReasons(reasons);
     setEditing(true);
+    toastBriefly('환불 정책 수정 모드입니다. 변경 후 상단의 [변경 사항 저장]을 클릭하세요.');
   };
   const cancelEdit = () => {
     setEditing(false);
     setDraftPolicy(policy);
     setDraftMethodRules(methodRules);
     setDraftReasons(reasons);
+    toastBriefly('수정을 취소했습니다.');
   };
   const requestSave = () => {
     const diffs = [
@@ -108,7 +115,11 @@ export function RefundPolicyPage() {
       ...describeMethodChanges(methodRules, draftMethodRules),
       ...describeReasonChanges(reasons, draftReasons),
     ];
-    if (diffs.length === 0) return setEditing(false);
+    if (diffs.length === 0) {
+      setEditing(false);
+      toastBriefly('변경된 내용이 없어 수정 모드를 종료합니다.');
+      return;
+    }
     setReason('');
     setSaveError('');
     setConfirmSave(diffs);
@@ -136,30 +147,78 @@ export function RefundPolicyPage() {
   };
 
   const setMethod = (id: string, patch: Partial<{ active: boolean; pg: string | null }>) => {
-    setDraftMethodRules((current) => current.map((m) => (m.id === id ? { ...m, ...patch } : m)));
+    const currentRules = editing ? draftMethodRules : methodRules;
+    const updated = currentRules.map((m) => (m.id === id ? { ...m, ...patch } : m));
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftMethodRules(updated);
+      setDraftReasons(reasons);
+      setEditing(true);
+      toastBriefly('결제수단별 환불 설정이 수정 모드로 전환되었습니다.');
+    } else {
+      setDraftMethodRules(updated);
+    }
   };
 
   const setReason2 = <K extends keyof RefundReason>(id: string, key: K, value: RefundReason[K]) => {
-    setDraftReasons((current) => current.map((r) => (r.id === id ? { ...r, [key]: value } : r)));
+    const currentReasons = editing ? draftReasons : reasons;
+    const updated = currentReasons.map((r) => (r.id === id ? { ...r, [key]: value } : r));
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftMethodRules(methodRules);
+      setDraftReasons(updated);
+      setEditing(true);
+    } else {
+      setDraftReasons(updated);
+    }
   };
   const addReason = () => {
-    const nextOrder = Math.max(0, ...draftReasons.map((r) => r.order)) + 1;
+    const currentReasons = editing ? draftReasons : reasons;
+    const nextOrder = Math.max(0, ...currentReasons.map((r) => r.order)) + 1;
     const draft: RefundReason = { id: `NEW-${Date.now()}`, label: '', type: '부분 환불', active: true, order: nextOrder, requiresDetail: false };
-    setDraftReasons((current) => [...current, draft]);
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftMethodRules(methodRules);
+      setDraftReasons([...currentReasons, draft]);
+      setEditing(true);
+      toastBriefly('환불 사유가 추가되었습니다. 상단의 [변경 사항 저장]을 클릭하세요.');
+    } else {
+      setDraftReasons((current) => [...current, draft]);
+    }
   };
-  const removeReason = (id: string) => setDraftReasons((current) => current.filter((r) => r.id !== id));
+  const removeReason = (id: string) => {
+    const currentReasons = editing ? draftReasons : reasons;
+    const updated = currentReasons.filter((r) => r.id !== id);
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftMethodRules(methodRules);
+      setDraftReasons(updated);
+      setEditing(true);
+      toastBriefly('환불 사유가 삭제되었습니다. 상단의 [변경 사항 저장]을 클릭하세요.');
+    } else {
+      setDraftReasons(updated);
+    }
+  };
   const reorderReason = (draggedId: string, targetId: string) => {
     if (draggedId === targetId) return;
-    setDraftReasons((current) => {
-      const ordered = current.slice().sort((a, b) => a.order - b.order);
-      const from = ordered.findIndex((r) => r.id === draggedId);
-      const to = ordered.findIndex((r) => r.id === targetId);
-      if (from === -1 || to === -1) return current;
-      const [moved] = ordered.splice(from, 1);
-      ordered.splice(to, 0, moved);
-      const reindexed = new Map(ordered.map((r, i) => [r.id, i + 1]));
-      return current.map((r) => ({ ...r, order: reindexed.get(r.id)! }));
-    });
+    const currentReasons = editing ? draftReasons : reasons;
+    const ordered = currentReasons.slice().sort((a, b) => a.order - b.order);
+    const from = ordered.findIndex((r) => r.id === draggedId);
+    const to = ordered.findIndex((r) => r.id === targetId);
+    if (from === -1 || to === -1) return;
+    const [moved] = ordered.splice(from, 1);
+    ordered.splice(to, 0, moved);
+    const reindexed = new Map(ordered.map((r, i) => [r.id, i + 1]));
+    const updated = currentReasons.map((r) => ({ ...r, order: reindexed.get(r.id)! }));
+    if (!editing) {
+      setDraftPolicy(policy);
+      setDraftMethodRules(methodRules);
+      setDraftReasons(updated);
+      setEditing(true);
+      toastBriefly('환불 사유 순서가 변경되었으며 수정 모드로 전환되었습니다.');
+    } else {
+      setDraftReasons(updated);
+    }
   };
 
   const activeMethodRules = (editing ? draftMethodRules : methodRules).slice().sort((a, b) => a.order - b.order);
@@ -184,16 +243,35 @@ export function RefundPolicyPage() {
             {!editing ? (
               <>
                 <button type="button" className={styles.outlineBtn} onClick={() => setTab('history')}>변경 이력</button>
-                <button type="button" className={styles.darkBtn} onClick={startEdit}>정책 수정</button>
+                <button type="button" className={styles.darkBtn} onClick={startEdit}>✏️ 정책 수정</button>
               </>
             ) : (
               <>
                 <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>수정 취소</button>
-                <button type="button" className={styles.darkBtn} onClick={requestSave}>변경 사항 저장</button>
+                <button type="button" className={styles.darkBtn} onClick={requestSave}>💾 변경 사항 저장</button>
               </>
             )}
           </div>
         </div>
+
+        <div className={`${styles.modeBanner} ${editing ? styles.modeBannerEdit : styles.modeBannerRead}`}>
+          <div className={styles.modeBannerLeft}>
+            <span className={`${styles.modeTag} ${editing ? styles.modeTagEdit : styles.modeTagRead}`}>
+              {editing ? '수정 모드' : '조회 모드'}
+            </span>
+            <span>
+              {editing
+                ? '정책을 편집 중입니다. 변경을 마치면 [변경 사항 저장] 버튼을 눌러 확정하세요.'
+                : '현재 적용 중인 정책입니다. 버튼이나 스위치를 클릭하면 즉시 수정 모드로 전환됩니다.'}
+            </span>
+          </div>
+          {!editing && (
+            <button type="button" className={styles.modeActionBtn} onClick={startEdit}>
+              정책 수정 시작
+            </button>
+          )}
+        </div>
+
         <div className={styles.viewTabs}>
           {TABS.map(([key, label]) => (
             <button key={key} type="button" className={`${styles.viewTabBtn} ${tab === key ? styles.viewTabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
@@ -237,11 +315,11 @@ export function RefundPolicyPage() {
               <div className={styles.cardBody}>
                 <div className={styles.cardGrid}>
                   <div className={styles.toggleRow}>
-                    <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.fullRefundEnabled ? styles.switchOn : ''}`} onClick={() => set('fullRefundEnabled', !draftPolicy.fullRefundEnabled)}><i /></button>
+                    <CommonSwitch checked={draftPolicy.fullRefundEnabled} onChange={(checked) => set('fullRefundEnabled', checked)} aria-label="전체 환불 허용" />
                     <div className={styles.toggleRowText}><div className={styles.toggleRowTitle}>전체 환불 허용</div></div>
                   </div>
                   <div className={styles.toggleRow}>
-                    <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.partialRefundEnabled ? styles.switchOn : ''}`} onClick={() => set('partialRefundEnabled', !draftPolicy.partialRefundEnabled)}><i /></button>
+                    <CommonSwitch checked={draftPolicy.partialRefundEnabled} onChange={(checked) => set('partialRefundEnabled', checked)} aria-label="부분 환불 허용" />
                     <div className={styles.toggleRowText}><div className={styles.toggleRowTitle}>부분 환불 허용</div></div>
                   </div>
                 </div>
@@ -249,7 +327,7 @@ export function RefundPolicyPage() {
                   <div className={styles.fieldLabel}>환불 처리 방식</div>
                   <div className={styles.pillGroup}>
                     {(['원 결제수단 우선', '관리자 지정', '환불계좌 우선'] as RefundMethodBasis[]).map((v) => (
-                      <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.refundMethodBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('refundMethodBasis', v)}>{v}</button>
+                      <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.refundMethodBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('refundMethodBasis', v)}>{v}</button>
                     ))}
                   </div>
                 </div>
@@ -266,7 +344,7 @@ export function RefundPolicyPage() {
                   <div className={styles.fieldLabel}>환불 가능기간 기준</div>
                   <div className={styles.pillGroup}>
                     {(['제한 없음', '거래 완료 후', '반품 완료 후'] as RefundPeriodBasis[]).map((v) => (
-                      <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.refundPeriodBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('refundPeriodBasis', v)}>{v}</button>
+                      <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.refundPeriodBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('refundPeriodBasis', v)}>{v}</button>
                     ))}
                   </div>
                 </div>
@@ -275,12 +353,12 @@ export function RefundPolicyPage() {
                   {draftPolicy.refundPeriodBasis !== '제한 없음' && (
                     <div>
                       <div className={styles.fieldLabel}>기준일로부터 <span className={styles.fieldLabelHint}>일</span></div>
-                      <input type="number" min={1} className={styles.textField} disabled={!editing} value={draftPolicy.refundPeriodDays} onChange={(e) => set('refundPeriodDays', Math.max(1, Number(e.target.value) || 1))} />
+                      <input type="number" min={1} className={styles.textField} value={draftPolicy.refundPeriodDays} onChange={(e) => set('refundPeriodDays', Math.max(1, Number(e.target.value) || 1))} />
                     </div>
                   )}
                   <div>
                     <div className={styles.fieldLabel}>환불 처리기한 <span className={styles.fieldLabelHint}>승인 후 영업일</span></div>
-                    <input type="number" min={0} className={styles.textField} disabled={!editing} value={draftPolicy.refundProcessingDays} onChange={(e) => set('refundProcessingDays', Math.max(0, Number(e.target.value) || 0))} />
+                    <input type="number" min={0} className={styles.textField} value={draftPolicy.refundProcessingDays} onChange={(e) => set('refundProcessingDays', Math.max(0, Number(e.target.value) || 0))} />
                   </div>
                 </div>
 
@@ -288,13 +366,13 @@ export function RefundPolicyPage() {
                   <div className={styles.fieldLabel}>환불 완료 기준</div>
                   <div className={styles.pillGroup}>
                     {(['PG 취소 성공 시', '관리자 지급 처리 시', '은행 출금 확인 시'] as RefundCompletionBasis[]).map((v) => (
-                      <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.refundCompletionBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('refundCompletionBasis', v)}>{v}</button>
+                      <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.refundCompletionBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('refundCompletionBasis', v)}>{v}</button>
                     ))}
                   </div>
                 </div>
 
                 <div className={`${styles.toggleRow} ${styles.dividerTop}`}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.notifyOnRefundEvents ? styles.switchOn : ''}`} onClick={() => set('notifyOnRefundEvents', !draftPolicy.notifyOnRefundEvents)}><i /></button>
+                  <CommonSwitch checked={draftPolicy.notifyOnRefundEvents} onChange={(checked) => set('notifyOnRefundEvents', checked)} aria-label="환불 이벤트 알림" />
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>환불 이벤트 알림</div>
                     <div className={styles.toggleRowDesc}>환불 접수·완료를 고객에게 안내합니다.</div>
@@ -311,7 +389,7 @@ export function RefundPolicyPage() {
               <div className={styles.cardBody}>
                 <div className={styles.pillGroup}>
                   {(['시스템 자동 계산', '관리자 직접 입력'] as RefundCalcMode[]).map((v) => (
-                    <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.refundCalcMode === v ? styles.pillBtnOn : ''}`} onClick={() => set('refundCalcMode', v)}>{v}</button>
+                    <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.refundCalcMode === v ? styles.pillBtnOn : ''}`} onClick={() => set('refundCalcMode', v)}>{v}</button>
                   ))}
                 </div>
               </div>
@@ -355,7 +433,7 @@ export function RefundPolicyPage() {
                     <div className={styles.fieldLabel}>전체 환불 시 배송비</div>
                     <div className={styles.pillGroup}>
                       {(['배송비 반환', '배송비 미반환', '조건에 따라 계산'] as ShippingFullPolicy[]).map((v) => (
-                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.shippingFullPolicy === v ? styles.pillBtnOn : ''}`} onClick={() => set('shippingFullPolicy', v)}>{v}</button>
+                        <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.shippingFullPolicy === v ? styles.pillBtnOn : ''}`} onClick={() => set('shippingFullPolicy', v)}>{v}</button>
                       ))}
                     </div>
                   </div>
@@ -363,7 +441,7 @@ export function RefundPolicyPage() {
                     <div className={styles.fieldLabel}>부분 환불 시 배송비</div>
                     <div className={styles.pillGroup}>
                       {(['잔여 주문 기준 재계산', '원 배송비 유지'] as ShippingPartialPolicy[]).map((v) => (
-                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.shippingPartialPolicy === v ? styles.pillBtnOn : ''}`} onClick={() => set('shippingPartialPolicy', v)}>{v}</button>
+                        <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.shippingPartialPolicy === v ? styles.pillBtnOn : ''}`} onClick={() => set('shippingPartialPolicy', v)}>{v}</button>
                       ))}
                     </div>
                   </div>
@@ -374,7 +452,7 @@ export function RefundPolicyPage() {
                     <div className={styles.toggleRowDesc}>부분환불 후 잔여 주문금액이 이 금액 미만이면 배송비를 재부과합니다.</div>
                   </div>
                   <div className={styles.inlineFieldValue}>
-                    <input type="number" min={0} className={styles.textField} disabled={!editing} value={draftPolicy.freeShippingThreshold} onChange={(e) => set('freeShippingThreshold', Math.max(0, Number(e.target.value) || 0))} />
+                    <input type="number" min={0} className={styles.textField} value={draftPolicy.freeShippingThreshold} onChange={(e) => set('freeShippingThreshold', Math.max(0, Number(e.target.value) || 0))} />
                     <span className={styles.ttlUnit}>원</span>
                   </div>
                 </div>
@@ -389,7 +467,7 @@ export function RefundPolicyPage() {
               <div className={styles.cardBody}>
                 <div className={styles.pillGroup}>
                   {(['기존 할인 배분 기준', '잔여 주문 기준 재계산', '할인 정책에 위임'] as DiscountRecalcPolicy[]).map((v) => (
-                    <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.discountRecalcPolicy === v ? styles.pillBtnOn : ''}`} onClick={() => set('discountRecalcPolicy', v)}>{v}</button>
+                    <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.discountRecalcPolicy === v ? styles.pillBtnOn : ''}`} onClick={() => set('discountRecalcPolicy', v)}>{v}</button>
                   ))}
                 </div>
               </div>
@@ -406,7 +484,7 @@ export function RefundPolicyPage() {
                     <div className={styles.fieldLabel}>승인 필요 범위</div>
                     <div className={styles.pillGroup}>
                       {(['사용 안 함', '조건부', '모든 환불'] as ApprovalRequirement[]).map((v) => (
-                        <button key={v} type="button" disabled={!editing} className={`${styles.pillBtn} ${draftPolicy.approvalRequired === v ? styles.pillBtnOn : ''}`} onClick={() => set('approvalRequired', v)}>{v}</button>
+                        <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.approvalRequired === v ? styles.pillBtnOn : ''}`} onClick={() => set('approvalRequired', v)}>{v}</button>
                       ))}
                     </div>
                   </div>
@@ -414,14 +492,14 @@ export function RefundPolicyPage() {
                     <div>
                       <div className={styles.fieldLabel}>승인 필요 기준금액</div>
                       <div className={styles.ttlRow}>
-                        <input type="number" min={0} className={styles.textField} style={{ width: 140 }} disabled={!editing} value={draftPolicy.approvalThresholdAmount} onChange={(e) => set('approvalThresholdAmount', Math.max(0, Number(e.target.value) || 0))} />
+                        <input type="number" min={0} className={styles.textField} style={{ width: 140 }} value={draftPolicy.approvalThresholdAmount} onChange={(e) => set('approvalThresholdAmount', Math.max(0, Number(e.target.value) || 0))} />
                         <span className={styles.ttlUnit}>원 초과 환불만 승인</span>
                       </div>
                     </div>
                   )}
                 </div>
                 <div className={`${styles.toggleRow} ${styles.dividerTop}`}>
-                  <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.autoExecuteAfterApproval ? styles.switchOn : ''}`} onClick={() => set('autoExecuteAfterApproval', !draftPolicy.autoExecuteAfterApproval)}><i /></button>
+                  <CommonSwitch checked={draftPolicy.autoExecuteAfterApproval} onChange={(checked) => set('autoExecuteAfterApproval', checked)} aria-label="승인 후 자동 환불 실행" />
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>승인 후 자동 환불 실행</div>
                     <div className={styles.toggleRowDesc}>끄면 승인된 건도 운영자가 직접 환불을 실행해야 합니다.</div>
@@ -461,7 +539,7 @@ export function RefundPolicyPage() {
                       ) : (
                         <span className={m.requiresPg && !m.pg ? styles.pgWarn : undefined}>{m.pg ?? '없음'}</span>
                       )}
-                      <button type="button" disabled={!editing} className={`${styles.switch} ${m.active ? styles.switchOn : ''}`} onClick={() => setMethod(m.id, { active: !m.active })}><i /></button>
+                      <CommonSwitch checked={m.active} onChange={(checked) => setMethod(m.id, { active: checked })} aria-label={`${m.name} 사용`} />
                     </div>
                   ))}
                 </div>
@@ -476,14 +554,14 @@ export function RefundPolicyPage() {
               <div className={styles.cardBody}>
                 <div className={styles.cardGrid}>
                   <div className={styles.toggleRow}>
-                    <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.failureRetryEnabled ? styles.switchOn : ''}`} onClick={() => set('failureRetryEnabled', !draftPolicy.failureRetryEnabled)}><i /></button>
+                    <CommonSwitch checked={draftPolicy.failureRetryEnabled} onChange={(checked) => set('failureRetryEnabled', checked)} aria-label="환불 실패 재시도 허용" />
                     <div className={styles.toggleRowText}>
                       <div className={styles.toggleRowTitle}>환불 실패 재시도 허용</div>
                       <div className={styles.toggleRowDesc}>운영자가 실패한 환불을 다시 요청할 수 있습니다.</div>
                     </div>
                   </div>
                   <div className={styles.toggleRow}>
-                    <button type="button" disabled={!editing || !draftPolicy.failureRetryEnabled} className={`${styles.switch} ${draftPolicy.autoRetryEnabled ? styles.switchOn : ''}`} onClick={() => set('autoRetryEnabled', !draftPolicy.autoRetryEnabled)}><i /></button>
+                    <CommonSwitch checked={draftPolicy.autoRetryEnabled} onChange={(checked) => set('autoRetryEnabled', checked)} aria-label="자동 재시도" />
                     <div className={styles.toggleRowText}>
                       <div className={styles.toggleRowTitle}>자동 재시도</div>
                       <div className={styles.toggleRowDesc}>실패 시 시스템이 자동으로 재요청합니다.</div>
@@ -493,7 +571,7 @@ export function RefundPolicyPage() {
                 {draftPolicy.autoRetryEnabled && (
                   <div className={styles.dividerTop}>
                     <div className={styles.fieldLabel}>최대 자동 재시도</div>
-                    <input type="number" min={1} className={styles.textField} style={{ maxWidth: 160 }} disabled={!editing} value={draftPolicy.maxRetryCount} onChange={(e) => set('maxRetryCount', Math.max(1, Number(e.target.value) || 1))} />
+                    <input type="number" min={1} className={styles.textField} style={{ maxWidth: 160 }} value={draftPolicy.maxRetryCount} onChange={(e) => set('maxRetryCount', Math.max(1, Number(e.target.value) || 1))} />
                   </div>
                 )}
               </div>
@@ -520,7 +598,7 @@ export function RefundPolicyPage() {
                   </div>
                   <div className={styles.cardHeadActions}>
                     <input className={`${styles.textField} ${styles.searchInput}`} placeholder="사유명 검색" value={reasonSearch} onChange={(e) => setReasonSearch(e.target.value)} />
-                    <button type="button" className={styles.darkBtn} disabled={!editing} onClick={addReason}>+ 사유 추가</button>
+                    <button type="button" className={styles.darkBtn} onClick={addReason}>+ 사유 추가</button>
                   </div>
                 </div>
               </div>
@@ -531,27 +609,19 @@ export function RefundPolicyPage() {
                     <div
                       key={r.id}
                       className={`${styles.reasonRow} ${!r.active ? styles.reasonRowInactive : ''}`}
-                      draggable={editing}
+                      draggable
                       onDragStart={() => setDragReasonId(r.id)}
-                      onDragOver={(e) => editing && e.preventDefault()}
+                      onDragOver={(e) => e.preventDefault()}
                       onDrop={() => { if (dragReasonId) reorderReason(dragReasonId, r.id); setDragReasonId(null); }}
                     >
                       <span className={styles.dragHandle}>☰</span>
-                      {editing ? (
-                        <input className={styles.reasonLabelInput} value={r.label} placeholder="사유명 입력" onChange={(e) => setReason2(r.id, 'label', e.target.value)} />
-                      ) : (
-                        <span className={styles.reasonLabel}>{r.label}</span>
-                      )}
-                      {editing ? (
-                        <select className={styles.typeSelect} value={r.type} onChange={(e) => setReason2(r.id, 'type', e.target.value as RefundType)}>
-                          {REFUND_TYPES.map((t) => <option key={t}>{t}</option>)}
-                        </select>
-                      ) : (
-                        <span className={`${styles.typeTag} ${TYPE_BADGE_CLASS[r.type]}`}>{r.type}</span>
-                      )}
-                      <button type="button" className={`${styles.detailPill} ${r.requiresDetail ? styles.detailPillOn : ''}`} disabled={!editing} onClick={() => setReason2(r.id, 'requiresDetail', !r.requiresDetail)}>{r.requiresDetail ? '필수' : '선택'}</button>
-                      <button type="button" disabled={!editing} className={`${styles.switch} ${r.active ? styles.switchOn : ''}`} onClick={() => setReason2(r.id, 'active', !r.active)}><i /></button>
-                      <button type="button" className={styles.removeBtn} disabled={!editing} onClick={() => removeReason(r.id)}>×</button>
+                      <input className={styles.reasonLabelInput} value={r.label} placeholder="사유명 입력" onChange={(e) => setReason2(r.id, 'label', e.target.value)} />
+                      <select className={styles.typeSelect} value={r.type} onChange={(e) => setReason2(r.id, 'type', e.target.value as RefundType)}>
+                        {REFUND_TYPES.map((t) => <option key={t}>{t}</option>)}
+                      </select>
+                      <button type="button" className={`${styles.detailPill} ${r.requiresDetail ? styles.detailPillOn : ''}`} onClick={() => setReason2(r.id, 'requiresDetail', !r.requiresDetail)}>{r.requiresDetail ? '필수' : '선택'}</button>
+                      <CommonSwitch checked={r.active} onChange={(checked) => setReason2(r.id, 'active', checked)} aria-label={`${r.label} 노출`} />
+                      <button type="button" className={styles.removeBtn} onClick={() => removeReason(r.id)}>×</button>
                     </div>
                   ))}
                 </div>

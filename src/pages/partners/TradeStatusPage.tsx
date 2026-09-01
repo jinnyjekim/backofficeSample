@@ -13,7 +13,7 @@ import {
 import { TradeStatusDetailDrawer } from './TradeStatusDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.1fr 84px 96px 92px 92px 1fr 84px 1fr 60px';
+const GRID_TEMPLATE = 'minmax(150px,1.1fr) 76px 84px 84px 84px 88px 66px 136px 60px';
 const COLUMN_LABELS = ['회사', '현재상태', '거래시작일', '최근거래일', '최근변경', '변경사유', '담당자', '이슈', '관리'];
 const SEARCH_SCOPES = ['전체', '회사명', '회사코드', '사업자등록번호'];
 
@@ -206,7 +206,7 @@ export function TradeStatusPage() {
             columns={gridColumns}
             rows={rows}
             gridTemplate={GRID_TEMPLATE}
-            minWidth="1080px"
+            minWidth="880px"
             showPagination
             pages={pages}
             empty={rows.length === 0}

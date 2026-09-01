@@ -16,7 +16,7 @@ import {
 } from './productInquiriesData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '84px minmax(120px,1fr) minmax(160px,1.6fr) 90px 90px 110px 60px';
+const GRID_TEMPLATE = '64px 72px minmax(220px,2fr) 60px 76px 54px 46px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '문의번호' }, { label: '상품' }, { label: '문의 제목' }, { label: '작성자' }, { label: '답변 상태' }, { label: '등록일' }, { label: '관리' },
 ];
@@ -185,7 +185,7 @@ export function ProductInquiriesListPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="920px"
+          minWidth="800px"
           empty={rows.length === 0}
           emptyText={quickFilter === '답변 대기' ? '답변 대기 중인 문의가 없습니다.' : '조회된 상품 문의가 없습니다.'}
           emptySubtext="검색어나 필터 조건을 변경해 주세요."

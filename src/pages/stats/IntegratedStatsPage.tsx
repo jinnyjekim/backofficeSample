@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { CommonCheckbox } from '../../components/common';
+import { DatePicker } from '../../components/forms/DatePicker';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import txStyles from './TransactionStatsPage.module.css';
@@ -146,13 +148,11 @@ export function IntegratedStatsPage() {
         <>
           <div className={txStyles.filterBar} style={{ margin: '0 24px 18px' }}>
             <div className={txStyles.filterRow}>
-              <input type="date" className={txStyles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
+              <DatePicker controlSize="sm" className={txStyles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
               <span className={txStyles.tilde}>~</span>
-              <input type="date" className={txStyles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
+              <DatePicker controlSize="sm" className={txStyles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
               <button type="button" className={txStyles.applyBtn} onClick={applyCustom}>조회</button>
-              <label className={txStyles.compareCheck}>
-                <input type="checkbox" checked={compare} onChange={(e) => setCompare(e.target.checked)} /> 이전 기간과 비교
-              </label>
+              <CommonCheckbox className={txStyles.compareCheck} size="sm" checked={compare} onChange={setCompare}>이전 기간과 비교</CommonCheckbox>
             </div>
             <div className={txStyles.filterRow}>
               {QUICK_RANGES.map((r) => {

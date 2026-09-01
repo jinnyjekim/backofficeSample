@@ -3,8 +3,63 @@
 .headMetaText { font-size: 11.5px; color: #a1a1aa; white-space: nowrap; }
 .outlineBtn { height: 34px; padding: 0 15px; border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; border-radius: 8px; font-size: 12.5px; color: #3f3f46; font-weight: 600; cursor: pointer; flex: none; }
 .outlineBtn:hover { background: #fafafa; }
-.darkBtn { height: 34px; padding: 0 16px; border: 0; border-radius: 8px; background: #18181b; color: #fff; font-size: 12.5px; font-weight: 600; cursor: pointer; flex: none; }
+.darkBtn { height: 34px; padding: 0 16px; border: 0; border-radius: 8px; background: #18181b; color: #fff; font-size: 12.5px; font-weight: 600; cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 6px; }
 .darkBtn:hover { background: #3f3f46; }
+
+.modeBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 12.5px;
+}
+.modeBannerRead {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+.modeBannerEdit {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+}
+.modeBannerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.modeTag {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.modeTagRead {
+  background: #e2e8f0;
+  color: #334155;
+}
+.modeTagEdit {
+  background: #2563eb;
+  color: #fff;
+}
+.modeActionBtn {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 0;
+  background: #18181b;
+  color: #fff;
+  flex: none;
+}
+.modeActionBtn:hover {
+  background: #3f3f46;
+}
 
 .viewTabs { display: flex; gap: 2px; margin-bottom: 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.08); flex-wrap: wrap; }
 .viewTabBtn { height: 36px; padding: 0 4px; margin-right: 20px; border: 0; background: transparent; font-size: 13px; font-weight: 500; color: #8b8b93; cursor: pointer; box-shadow: none; }
@@ -68,11 +123,6 @@
 .formField small { color: #a1a1aa; font-size: 10.5px; font-weight: 400; }
 .formField input, .formField select { width: 100%; box-sizing: border-box; height: 34px; padding: 0 10px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 7px; background: #fff; color: #18181b; font: inherit; font-size: 12.5px; }
 .formField input:disabled, .formField select:disabled { background: #fafafa; color: #71717a; opacity: 1; }
-.switch { position: relative; width: 38px; height: 21px; padding: 0; border: 0; border-radius: 999px; background: #d4d4d8; cursor: pointer; transition: 0.15s; flex: none; }
-.switch i { position: absolute; top: 3px; left: 3px; width: 15px; height: 15px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: 0.15s; }
-.switchOn { background: var(--accent); }
-.switchOn i { left: 20px; }
-.switch:disabled { opacity: 0.55; cursor: default; }
 .infoNote { padding: 10px 12px; margin-bottom: 14px; border-radius: 8px; background: #f8fafc; color: #64748b; font-size: 11.5px; line-height: 1.5; }
 .noteText { font-size: 11.5px; color: #a1a1aa; line-height: 1.5; }
 .formulaNote { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: #3f3f46; }

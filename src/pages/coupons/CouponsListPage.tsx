@@ -26,7 +26,7 @@ import {
 } from './couponsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.5fr 68px 130px 90px 110px 150px 100px 84px 56px';
+const GRID_TEMPLATE = '1.5fr 44px 68px 90px 74px 300px 96px 78px 44px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '쿠폰' },
   { label: '유형' },

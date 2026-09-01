@@ -63,6 +63,13 @@ export interface PolicyHistoryEntry {
   reason: string;
 }
 
+export interface LastModified {
+  at: string;
+  by: string;
+}
+
+export const INITIAL_LAST_MODIFIED: LastModified = { at: '2026-08-25', by: '운영 관리자' };
+
 export const INITIAL_POLICY: SettlementPolicy = {
   settlementEnabled: true,
   targetBasis: '배송 완료',
