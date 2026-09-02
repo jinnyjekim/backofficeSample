@@ -269,8 +269,8 @@ export function PaymentListPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="112px 72px 100px 100px 96px 88px 116px 140px 92px 100px 54px"
-          minWidth="1310px"
+          gridTemplate="102px 60px 68px 68px 88px 86px 90px 94px 74px 100px 46px"
+          minWidth="1010px"
           selectable
           allSelected={filtered.length > 0 && filtered.every((p) => selected.includes(p.id))}
           onToggleAll={() => setSelected(filtered.every((p) => selected.includes(p.id)) ? [] : filtered.map((p) => p.id))}

@@ -10,8 +10,8 @@ import { PaymentRegisterDrawer, type PaymentRegisterValues } from './PaymentRegi
 import { showToast } from '../../components/common';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 1fr 108px 96px 92px 76px 88px 92px 78px 60px';
-const GRID_MIN_WIDTH = '1240px';
+const GRID_TEMPLATE = '86px minmax(150px,1fr) 70px 94px 68px 50px 76px 76px 66px 60px';
+const GRID_MIN_WIDTH = '860px';
 
 const GRID_COLUMNS: GridColumn[] = [
   { label: '결제번호' },

@@ -127,8 +127,8 @@ export function filterList(list: PeriodContractCalc[], filter: PeriodFilterKey, 
   });
 }
 
-export const PERIOD_GRID_TEMPLATE = '96px 1fr 1fr 92px 92px 88px 90px 84px 78px 60px';
-export const PERIOD_GRID_MIN_WIDTH = '1220px';
+export const PERIOD_GRID_TEMPLATE = '80px 78px minmax(150px,1fr) 82px 82px 58px 76px 78px 66px 60px';
+export const PERIOD_GRID_MIN_WIDTH = '870px';
 
 export const PERIOD_COLUMNS: GridColumn[] = [
   { label: '계약번호' },

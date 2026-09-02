@@ -19,7 +19,7 @@ import {
 } from './popupsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '76px 1.3fr 92px 84px 108px 92px 68px 84px 56px';
+const GRID_TEMPLATE = '118px 1.3fr 74px 48px 94px 72px 36px 72px 46px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '미리보기' },
   { label: '팝업명' },
@@ -436,7 +436,7 @@ export function PopupsPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1040px"
+          minWidth="940px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}

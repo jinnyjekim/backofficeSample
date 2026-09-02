@@ -8,8 +8,8 @@ import { buildDepositDetail } from './depositDetail';
 import { DepositDetailDrawer } from './DepositDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '120px 1fr 96px 108px 108px 100px 92px 78px 60px';
-const GRID_MIN_WIDTH = '1200px';
+const GRID_TEMPLATE = '116px minmax(150px,1fr) 94px 74px 76px 76px 76px 66px 50px';
+const GRID_MIN_WIDTH = '890px';
 
 const GRID_COLUMNS: GridColumn[] = [
   { label: '입금일시' }, { label: '입금자' }, { label: '입금금액' }, { label: '예상거래처' }, { label: '매칭대상' },

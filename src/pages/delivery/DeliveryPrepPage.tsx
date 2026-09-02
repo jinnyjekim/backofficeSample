@@ -15,7 +15,7 @@ import {
 } from './deliveryPrepData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 1fr 84px 1fr 84px 84px 84px 84px 96px 60px';
+const GRID_TEMPLATE = '68px 1fr 54px 1fr 52px 44px 52px 62px 72px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '주문번호' }, { label: '주문상품' }, { label: '수령인' }, { label: '배송지' },
   { label: '상품준비' }, { label: '송장' }, { label: '출고예정' }, { label: '상태' }, { label: '이슈' }, { label: '관리' },
@@ -142,7 +142,7 @@ export function DeliveryPrepPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1280px"
+          minWidth="1080px"
           showPagination
           pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
           empty={rows.length === 0}

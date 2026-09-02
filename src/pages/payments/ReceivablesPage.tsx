@@ -8,8 +8,8 @@ import { buildReceivableDetail } from './receivableDetail';
 import { ReceivableDetailDrawer } from './ReceivableDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1fr 84px 96px 96px 96px 84px 96px 84px 78px 60px';
-const GRID_MIN_WIDTH = '1240px';
+const GRID_TEMPLATE = 'minmax(150px,1fr) 70px 92px 92px 94px 44px 82px 56px 66px 60px';
+const GRID_MIN_WIDTH = '870px';
 
 const PARTNER_COLUMNS: GridColumn[] = [
   { label: '거래처' }, { label: '미수 청구건' }, { label: '총 청구' }, { label: '수금' }, { label: '미수금' },

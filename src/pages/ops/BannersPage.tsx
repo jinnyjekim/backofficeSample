@@ -20,7 +20,7 @@ import {
 } from './bannersData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '76px 1.4fr 108px 76px 108px 84px 56px 92px 76px 56px';
+const GRID_TEMPLATE = '120px 1.4fr 92px 54px 94px 44px 36px 74px 54px 46px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '미리보기' },
   { label: '배너명' },
@@ -443,7 +443,7 @@ export function BannersPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1100px"
+          minWidth="990px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}

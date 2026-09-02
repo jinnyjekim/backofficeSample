@@ -571,8 +571,8 @@ export function TagsPage() {
             <DataGrid
               columns={columns}
               rows={rows}
-              gridTemplate="minmax(200px,2fr) 120px 96px 70px 74px 74px 34px"
-              minWidth="780px"
+              gridTemplate="minmax(200px,2fr) 146px 81px 66px 68px 52px 40px"
+              minWidth="770px"
               selectable
               allSelected={list.length > 0 && sel_.length === list.length}
               onToggleAll={() => setSel(sel_.length === list.length ? [] : list.map((it) => it.id))}

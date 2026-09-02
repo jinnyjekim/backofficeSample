@@ -354,7 +354,7 @@ export function CustomerPurchaseAnalysisPage({ defaultMode = 'all' }: { defaultM
           <button type="button" className={dimension === 'category' ? layout.dimensionActive : ''} onClick={() => setDimension('category')}>카테고리별</button>
           <button type="button" className={dimension === 'audience' ? layout.dimensionActive : ''} onClick={() => setDimension('audience')}>{AUDIENCE_TAB_LABEL[mode]}</button>
         </div>
-        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.6fr) 100px 100px 130px 110px 100px 90px" minWidth="1080px" empty={!rows.length} emptyText="현재 조건에 해당하는 구매 데이터가 없습니다." emptySubtext="기간, 고객 유형 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
+        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.6fr) 64px 70px 114px 64px 70px 64px" minWidth="740px" empty={!rows.length} emptyText="현재 조건에 해당하는 구매 데이터가 없습니다." emptySubtext="기간, 고객 유형 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
       </section>
     </div>
 

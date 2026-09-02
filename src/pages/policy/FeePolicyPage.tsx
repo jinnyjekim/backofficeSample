@@ -250,8 +250,8 @@ export function FeePolicyPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="1fr 100px 130px 120px 120px 180px 90px 70px"
-          minWidth="1140px"
+          gridTemplate="minmax(180px,1fr) 98px 98px 90px 122px 154px 74px 46px"
+          minWidth="960px"
           empty={filtered.length === 0}
           emptyText={quickFilter === '확인 필요' ? '현재 확인이 필요한 수수료 정책이 없습니다.' : '검색 결과가 없습니다.'}
           emptySubtext="검색어나 필터 조건을 변경해 주세요."

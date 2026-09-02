@@ -20,7 +20,7 @@ import {
 } from './brandsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.4fr 90px 90px 90px 90px 60px';
+const GRID_TEMPLATE = '1.4fr 67px 67px 67px 50px 44px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '브랜드' },
   { label: '연결 상품', align: 'right' },
@@ -269,7 +269,7 @@ export function BrandsListPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="820px"
+          minWidth="700px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}

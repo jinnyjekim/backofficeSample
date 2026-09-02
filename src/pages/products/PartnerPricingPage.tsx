@@ -16,7 +16,7 @@ import { buildPartnerPricingDetail } from './partnerPricingDetail';
 import { PartnerPricingDetailDrawer } from './PartnerPricingDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.1fr 1fr 100px 100px 120px 110px 90px 78px 60px';
+const GRID_TEMPLATE = 'minmax(210px,1.1fr) 70px 78px 82px 114px 110px 60px 76px 60px';
 const BASIS_FILTERS = ['가격 기준 전체', '개별 가격', '기본가 사용', '계약 적용'];
 
 const BULK_PRODUCTS = [
@@ -271,7 +271,7 @@ export function PartnerPricingPage() {
           columns={columns}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1180px"
+          minWidth="920px"
           showPagination
           pages={pages}
           empty={rows.length === 0}

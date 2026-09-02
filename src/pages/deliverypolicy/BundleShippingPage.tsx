@@ -285,8 +285,8 @@ export function BundleShippingPage() {
             { label: '배송비 계산' }, { label: '지역비' }, { label: '상태' }, { label: '관리', align: 'right' as const },
           ]}
           rows={rows}
-          gridTemplate="1.3fr 80px 100px 90px 140px 70px 84px 70px"
-          minWidth="1120px"
+          gridTemplate="1.3fr 44px 56px 52px 92px 52px 58px 40px"
+          minWidth="890px"
           empty={filtered.length === 0}
           emptyText={groups.length === 0 ? '등록된 묶음 배송 그룹이 없습니다.' : quickFilter === '설정 확인' ? '현재 확인이 필요한 묶음배송 설정이 없습니다.' : '검색 결과가 없습니다.'}
           emptySubtext={groups.length === 0 ? '상품별 배송비를 묶어서 계산하려면 배송 그룹을 등록해 주세요.' : '검색어나 필터 조건을 변경해 주세요.'}

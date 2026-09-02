@@ -228,8 +228,8 @@ export function CsHistoryPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="108px 110px 132px 1fr 118px 96px 104px 92px 84px"
-          minWidth="1260px"
+          gridTemplate="88px 110px 132px 1fr 80px 68px 96px 72px 84px"
+          minWidth="1150px"
           selectable
           allSelected={filtered.length > 0 && filtered.every((log) => selected.includes(log.id))}
           onToggleAll={() => setSelected(filtered.every((log) => selected.includes(log.id)) ? [] : filtered.map((log) => log.id))}

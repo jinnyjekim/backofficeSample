@@ -289,8 +289,8 @@ export function OrderStatusPage() {
             <DataGrid
               columns={COLUMNS}
               rows={rows}
-              gridTemplate="56px 140px 140px 76px 100px 72px 90px 84px 90px 130px"
-              minWidth="1180px"
+              gridTemplate="40px 84px 126px 56px 68px 56px 66px 50px 62px 46px"
+              minWidth="780px"
               selectable
               allSelected={filtered.length > 0 && filtered.every((s) => selected.includes(s.id))}
               onToggleAll={() => setSelected(filtered.every((s) => selected.includes(s.id)) ? [] : filtered.map((s) => s.id))}

@@ -218,8 +218,8 @@ export function ProductShippingPolicyPage() {
             { label: '관리', align: 'right' as const },
           ]}
           rows={rows}
-          gridTemplate="1.4fr 100px 100px 170px 90px 90px 70px"
-          minWidth="1080px"
+          gridTemplate="1.4fr 74px 76px 92px 52px 58px 40px"
+          minWidth="860px"
           selectable
           allSelected={filtered.length > 0 && selected.size === filtered.length}
           onToggleAll={toggleAll}

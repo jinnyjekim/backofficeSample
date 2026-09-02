@@ -16,7 +16,7 @@ import {
 } from './outboundCompleteData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 88px 1fr 74px 88px 96px 108px 78px 88px 60px';
+const GRID_TEMPLATE = '82px 66px 1fr 52px 62px 84px 82px 34px 72px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '배송번호' }, { label: '주문번호' }, { label: '배송상품' }, { label: '출고수량' }, { label: '택배사' },
   { label: '송장' }, { label: '실제출고' }, { label: '집하' }, { label: '배송상태' }, { label: '관리' },
@@ -138,7 +138,7 @@ export function OutboundCompletePage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1300px"
+          minWidth="1120px"
           showPagination
           pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
           empty={rows.length === 0}

@@ -18,7 +18,7 @@ import {
 } from './couponUsageData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '150px 1.3fr 90px 100px 100px 100px 90px 110px 60px';
+const GRID_TEMPLATE = '132px 1.3fr 60px 72px 80px 80px 52px 100px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '사용번호' },
   { label: '쿠폰' },
@@ -169,7 +169,7 @@ export function CouponUsagePage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1080px"
+          minWidth="920px"
           empty={rows.length === 0}
           emptyText={usages.length === 0 ? '쿠폰 사용 내역이 없습니다.' : quickFilter === '확인 필요' ? '현재 확인이 필요한 쿠폰 사용 내역이 없습니다.' : '검색 조건에 해당하는 쿠폰 사용 내역이 없습니다.'}
           emptySubtext={usages.length === 0 ? '회원이 쿠폰을 주문에 사용하면 이곳에서 확인할 수 있습니다.' : '검색어나 필터 조건을 변경해 주세요.'}

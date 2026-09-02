@@ -7,7 +7,7 @@ import { useSettlementDrawer } from './useSettlementDrawer';
 import { flattenAdjustments, signed } from './settlementData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '108px 1fr 96px 1.4fr 84px 132px';
+const GRID_TEMPLATE = '76px 1fr 96px 1.4fr 62px 110px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '정산번호' },
   { label: '정산대상' },
@@ -132,7 +132,7 @@ export function SettlementAdjustmentsPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="920px"
+          minWidth="850px"
           showPagination
           pages={['1', '2'].map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
           empty={rows.length === 0}

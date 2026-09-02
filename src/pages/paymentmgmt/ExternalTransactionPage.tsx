@@ -224,8 +224,8 @@ export function ExternalTransactionPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="130px 96px 70px 80px 110px 90px 100px 90px 70px"
-          minWidth="1100px"
+          gridTemplate="120px 88px 52px 60px 90px 78px 78px 88px 46px"
+          minWidth="810px"
           empty={filtered.length === 0}
           emptyText={quickFilter === '미매칭' ? '현재 미매칭 외부 거래가 없습니다.' : quickFilter === '확인 필요' ? '현재 확인이 필요한 외부 거래가 없습니다.' : '검색 결과가 없습니다.'}
           emptySubtext={quickFilter === '미매칭' ? '모든 외부 거래가 내부 결제와 정상적으로 연결되어 있습니다.' : '검색어나 필터 조건을 변경해 주세요.'}

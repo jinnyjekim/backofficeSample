@@ -237,8 +237,8 @@ export function FreeShippingConditionPage() {
           <DataGrid
             columns={COLUMNS}
             rows={rows}
-            gridTemplate="1fr 130px 90px 100px 80px 170px 90px 70px"
-            minWidth="1120px"
+            gridTemplate="1fr 98px 56px 70px 52px 156px 70px 40px"
+            minWidth="940px"
             empty={filtered.length === 0}
             emptyText={quickFilter === '확인 필요' ? '현재 확인이 필요한 무료배송 조건이 없습니다.' : '검색 결과가 없습니다.'}
             emptySubtext={filtered.length === 0 && policies.length === 0 ? '현재 모든 주문에는 기본 배송비 정책이 적용됩니다.' : '검색어나 필터 조건을 변경해 주세요.'}

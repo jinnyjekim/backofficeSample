@@ -122,8 +122,8 @@ export function filterList(list: UnitPriceCalc[], filter: PriceFilterKey, q: str
   });
 }
 
-export const PRICE_GRID_TEMPLATE = '96px 1fr 1fr 96px 96px 84px 122px 84px 88px 60px';
-export const PRICE_GRID_MIN_WIDTH = '1240px';
+export const PRICE_GRID_TEMPLATE = '80px minmax(150px,1fr) 58px 68px 74px 60px 90px 76px 82px 60px';
+export const PRICE_GRID_MIN_WIDTH = '860px';
 
 export const PRICE_COLUMNS: GridColumn[] = [
   { label: '계약번호' },

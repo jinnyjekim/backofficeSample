@@ -13,7 +13,7 @@ import {
 import { CreditTermsDetailDrawer } from './CreditTermsDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.2fr 76px 110px 110px 110px 130px 100px 84px 60px';
+const GRID_TEMPLATE = '1.2fr 50px 96px 96px 98px 130px 100px 58px 60px';
 const COLUMN_LABELS = ['회사', '신용거래', '신용한도', '사용액', '잔여한도', '결제조건', '미수금', '상태', '관리'];
 const RIGHT_ALIGN_INDICES = new Set([2, 3, 4, 6]);
 const SEARCH_SCOPES = ['전체', '회사명', '회사코드', '사업자등록번호', '내부 담당자'];
@@ -195,7 +195,7 @@ export function CreditTermsPage() {
             columns={gridColumns}
             rows={rows}
             gridTemplate={GRID_TEMPLATE}
-            minWidth="1080px"
+            minWidth="990px"
             showPagination
             pages={pages}
             empty={rows.length === 0}

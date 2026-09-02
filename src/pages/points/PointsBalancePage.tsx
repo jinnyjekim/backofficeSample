@@ -19,7 +19,7 @@ import {
 } from './pointsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1fr 90px 110px 110px 100px 100px 100px 60px';
+const GRID_TEMPLATE = '1fr 65px 70px 67px 66px 65px 65px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '회원' },
   { label: '회원 상태' },
@@ -165,7 +165,7 @@ export function PointsBalancePage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="960px"
+          minWidth="760px"
           empty={rows.length === 0}
           emptyText={balances.length === 0 ? '포인트/적립금 보유 정보가 없습니다.' : quickFilter === '확인 필요' ? '현재 확인이 필요한 포인트 보유 정보가 없습니다.' : '검색 조건에 해당하는 회원이 없습니다.'}
           emptySubtext={balances.length > 0 ? '검색어나 필터 조건을 변경해 주세요.' : undefined}

@@ -28,12 +28,12 @@ type Tab = 'api' | 'error';
 const TABS: [Tab, string][] = [['api', 'API 로그'], ['error', '오류 로그']];
 const QUICK_RANGES: QuickRange[] = ['오늘', '어제', '최근 7일', '최근 30일'];
 
-const API_TEMPLATE = '130px 62px minmax(160px,1.6fr) 66px 70px 80px 110px 60px';
+const API_TEMPLATE = '130px 50px minmax(160px,1.6fr) 40px 54px 80px 68px 60px';
 const API_COLUMNS: GridColumn[] = [
   { label: '요청 일시' }, { label: 'Method' }, { label: 'Endpoint' }, { label: 'Status' }, { label: '결과' }, { label: '처리시간' }, { label: '요청자' }, { label: '상세' },
 ];
 
-const ERROR_TEMPLATE = '150px 80px 80px minmax(180px,1.6fr) 80px 110px 60px';
+const ERROR_TEMPLATE = '118px 80px 40px minmax(180px,1.6fr) 38px 114px 60px';
 const ERROR_COLUMNS: GridColumn[] = [
   { label: '오류 코드' }, { label: '수준' }, { label: '모듈' }, { label: '메시지' }, { label: '발생횟수' }, { label: '마지막 발생' }, { label: '상세' },
 ];
@@ -195,7 +195,7 @@ export function SystemLogPage() {
             columns={API_COLUMNS}
             rows={apiRows}
             gridTemplate={API_TEMPLATE}
-            minWidth="960px"
+            minWidth="860px"
             empty={apiRows.length === 0}
             emptyText="조회된 로그가 없습니다."
             emptySubtext="기간 또는 검색 조건을 변경해 주세요."
@@ -207,7 +207,7 @@ export function SystemLogPage() {
             columns={ERROR_COLUMNS}
             rows={errorRows}
             gridTemplate={ERROR_TEMPLATE}
-            minWidth="920px"
+            minWidth="810px"
             empty={errorRows.length === 0}
             emptyText="조회 기간에 발생한 오류가 없습니다."
             emptySubtext="기간 또는 검색 조건을 변경해 주세요."

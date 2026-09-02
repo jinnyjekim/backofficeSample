@@ -284,7 +284,7 @@ export function DeliveryClaimsStatsPage() {
           <button type="button" className={dimension === 'carrier' ? layout.dimensionActive : ''} onClick={() => setDimension('carrier')}>배송사별</button>
           <button type="button" className={dimension === 'reason' ? layout.dimensionActive : ''} onClick={() => setDimension('reason')}>클레임 사유별</button>
         </div>
-        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.6fr) 100px 100px 90px 100px 90px 100px" minWidth="1020px" empty={!rows.length} emptyText="현재 조건에 해당하는 배송 데이터가 없습니다." emptySubtext="기간 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
+        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.6fr) 74px 88px 56px 88px 70px 74px" minWidth="740px" empty={!rows.length} emptyText="현재 조건에 해당하는 배송 데이터가 없습니다." emptySubtext="기간 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
       </section>
     </div>
 

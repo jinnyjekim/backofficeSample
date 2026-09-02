@@ -23,7 +23,7 @@ import {
 } from './couponIssuesData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '150px 90px 1.3fr 90px 90px 90px 90px 84px 60px';
+const GRID_TEMPLATE = '128px 60px 1.3fr 50px 50px 72px 50px 78px 46px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '발급번호' },
   { label: '회원' },
@@ -262,7 +262,7 @@ export function CouponIssuesPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1080px"
+          minWidth="880px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}

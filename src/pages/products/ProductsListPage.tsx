@@ -17,7 +17,7 @@ import { buildProductDetail } from './productDetail';
 import { ProductDetailDrawer } from './ProductDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.3fr 100px 96px 100px 96px 96px 74px 80px 60px';
+const GRID_TEMPLATE = '1.3fr 76px 78px 56px 58px 76px 40px 80px 60px';
 const COLUMNS: GridColumn[] = [
   { label: '상품' },
   { label: '카테고리' },
@@ -238,7 +238,7 @@ export function ProductsListPage() {
           columns={COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1080px"
+          minWidth="920px"
           showPagination
           pages={pages}
           empty={rows.length === 0}

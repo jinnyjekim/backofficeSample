@@ -292,6 +292,10 @@
   gap: 12px;
 }
 
+.body .kpiGrid + * {
+  margin-top: 16px;
+}
+
 .kpiCard {
   min-width: 0;
   padding: 16px;

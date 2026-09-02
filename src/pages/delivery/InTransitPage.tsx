@@ -16,7 +16,7 @@ import {
 } from './inTransitData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 88px 84px 84px 92px 88px 100px 88px 96px 60px';
+const GRID_TEMPLATE = '82px 66px 72px 62px 92px 88px 100px 52px 170px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '배송번호' }, { label: '주문번호' }, { label: '수령인' }, { label: '택배사' }, { label: '송장' },
   { label: '현재상태' }, { label: '최근위치' }, { label: '예상도착' }, { label: '이슈' }, { label: '관리' },
@@ -136,7 +136,7 @@ export function InTransitPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1300px"
+          minWidth="1270px"
           showPagination
           pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
           empty={rows.length === 0}

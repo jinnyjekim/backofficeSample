@@ -8,8 +8,8 @@ import { buildHistoryDetail } from './quoteHistoryDetail';
 import { QuoteHistoryDetailDrawer } from './QuoteHistoryDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 1fr 110px 110px 76px 84px 84px 78px 78px 60px';
-const GRID_MIN_WIDTH = '1180px';
+const GRID_TEMPLATE = '73px 1fr 87px 92px 61px 64px 66px 63px 63px 60px';
+const GRID_MIN_WIDTH = '1030px';
 
 const GRID_COLUMNS: GridColumn[] = [
   { label: '견적번호' },

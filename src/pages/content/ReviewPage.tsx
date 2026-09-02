@@ -530,8 +530,8 @@ export function ReviewPage() {
             <DataGrid
               columns={columns}
               rows={rows}
-              gridTemplate="minmax(220px,2fr) 80px 90px 100px 84px 66px 100px 76px"
-              minWidth="900px"
+              gridTemplate="minmax(220px,2fr) 67px 90px 100px 49px 56px 49px 76px"
+              minWidth="850px"
               selectable
               allSelected={list.length > 0 && sel_.length === list.length}
               onToggleAll={() => setSel(sel_.length === list.length ? [] : list.map((it) => it.id))}

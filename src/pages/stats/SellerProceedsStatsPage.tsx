@@ -274,7 +274,7 @@ export function SellerProceedsStatsPage() {
           <button type="button" className={dimension === 'status' ? layout.dimensionActive : ''} onClick={() => setDimension('status')}>정산 상태별</button>
           <button type="button" className={dimension === 'category' ? layout.dimensionActive : ''} onClick={() => setDimension('category')}>카테고리별</button>
         </div>
-        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.5fr) 100px 130px 110px 130px 100px" minWidth="960px" empty={!rows.length} emptyText="현재 조건에 해당하는 판매대금 데이터가 없습니다." emptySubtext="기간 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
+        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.5fr) 70px 114px 90px 98px 74px" minWidth="740px" empty={!rows.length} emptyText="현재 조건에 해당하는 판매대금 데이터가 없습니다." emptySubtext="기간 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
       </section>
     </div>
 

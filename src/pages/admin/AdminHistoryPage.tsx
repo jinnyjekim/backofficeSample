@@ -10,12 +10,12 @@ import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton
 type Tab = '로그인 이력' | '작업 이력';
 const TABS: Tab[] = ['로그인 이력', '작업 이력'];
 
-const LOGIN_TEMPLATE = '130px 110px 60px minmax(110px,1fr) 150px 130px 60px';
+const LOGIN_TEMPLATE = '130px 110px 56px minmax(110px,1fr) 138px 130px 58px';
 const LOGIN_COLUMNS: GridColumn[] = [
   { label: '로그인 일시' }, { label: '관리자' }, { label: '결과' }, { label: 'IP' }, { label: '접속 환경' }, { label: '로그아웃 일시' }, { label: '상세' },
 ];
 
-const ACTION_TEMPLATE = '130px 100px 110px 80px minmax(140px,1fr) 60px 60px';
+const ACTION_TEMPLATE = '130px 122px 84px 66px minmax(140px,1fr) 56px 58px';
 const ACTION_COLUMNS: GridColumn[] = [
   { label: '작업 일시' }, { label: '관리자' }, { label: '메뉴' }, { label: '작업' }, { label: '대상' }, { label: '결과' }, { label: '상세' },
 ];
@@ -191,7 +191,7 @@ export function AdminHistoryPage() {
             columns={LOGIN_COLUMNS}
             rows={loginRows}
             gridTemplate={LOGIN_TEMPLATE}
-            minWidth="920px"
+            minWidth="900px"
             empty={loginRows.length === 0}
             emptyText="조회된 이력이 없습니다."
             emptySubtext="검색 조건이나 조회 기간을 변경해 주세요."
@@ -203,7 +203,7 @@ export function AdminHistoryPage() {
             columns={ACTION_COLUMNS}
             rows={actionRows}
             gridTemplate={ACTION_TEMPLATE}
-            minWidth="960px"
+            minWidth="940px"
             empty={actionRows.length === 0}
             emptyText="조회된 이력이 없습니다."
             emptySubtext="검색 조건이나 조회 기간을 변경해 주세요."

@@ -110,8 +110,8 @@ export function filterList(list: TradeTermsCalc[], filter: TermsFilterKey, q: st
   });
 }
 
-export const TERMS_GRID_TEMPLATE = '96px 1fr 118px 130px 84px 108px 130px 84px 60px';
-export const TERMS_GRID_MIN_WIDTH = '1220px';
+export const TERMS_GRID_TEMPLATE = '80px minmax(150px,1fr) 68px 80px 56px 62px 124px 76px 60px';
+export const TERMS_GRID_MIN_WIDTH = '810px';
 
 export const TERMS_COLUMNS: GridColumn[] = [
   { label: '계약번호' },

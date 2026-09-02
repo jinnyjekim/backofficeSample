@@ -8,8 +8,8 @@ import { buildApprovalDetail } from './quoteApprovalDetail';
 import { QuoteApprovalDetailDrawer } from './QuoteApprovalDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 1fr 108px 78px 70px 76px 90px 100px 78px 60px';
-const GRID_MIN_WIDTH = '1160px';
+const GRID_TEMPLATE = '73px 1fr 92px 52px 55px 63px 66px 100px 56px 60px';
+const GRID_MIN_WIDTH = '1020px';
 
 const GRID_COLUMNS: GridColumn[] = [
   { label: '견적번호' },

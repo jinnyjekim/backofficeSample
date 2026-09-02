@@ -21,7 +21,7 @@ import {
 } from './noticesData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.7fr 100px 60px 108px 84px 100px 68px 76px 88px 56px';
+const GRID_TEMPLATE = '1.7fr 78px 44px 96px 72px 56px 50px 64px 80px 46px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '제목' },
   { label: '카테고리' },
@@ -413,7 +413,7 @@ export function NoticesPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1240px"
+          minWidth="1090px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}

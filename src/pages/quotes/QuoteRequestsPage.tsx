@@ -9,8 +9,8 @@ import { QuoteRequestDetailDrawer } from './QuoteRequestDetailDrawer';
 import { useOutsideClose } from '../../lib/useOutsideClose';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '104px 1fr 1.1fr 90px 90px 92px 84px 78px 60px';
-const GRID_MIN_WIDTH = '1160px';
+const GRID_TEMPLATE = '104px 1fr 1.1fr 64px 64px 92px 66px 50px 60px';
+const GRID_MIN_WIDTH = '1060px';
 
 const GRID_COLUMNS: GridColumn[] = [
   { label: '요청번호' },

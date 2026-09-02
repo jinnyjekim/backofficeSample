@@ -261,8 +261,8 @@ export function JejuRemotePolicyPage() {
             { label: '배송여부' }, { label: '정책' }, { label: '상태' }, { label: '관리', align: 'right' as const },
           ]}
           rows={rows}
-          gridTemplate="1.3fr 90px 150px 100px 90px 70px 84px 70px"
-          minWidth="1120px"
+          gridTemplate="1.3fr 72px 76px 68px 52px 52px 58px 40px"
+          minWidth="890px"
           empty={filtered.length === 0}
           emptyText={regions.length === 0 ? '등록된 제주/도서산간 지역이 없습니다.' : quickFilter === '확인 필요' ? '현재 확인이 필요한 제주/도서산간 정책이 없습니다.' : '검색 결과가 없습니다.'}
           emptySubtext={regions.length === 0 ? undefined : '검색어나 필터 조건을 변경해 주세요.'}

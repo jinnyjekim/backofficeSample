@@ -304,7 +304,7 @@ export function PromotionAnalysisPage() {
           <button type="button" className={dimension === 'category' ? layout.dimensionActive : ''} onClick={() => setDimension('category')}>카테고리별</button>
           <button type="button" className={dimension === 'audience' ? layout.dimensionActive : ''} onClick={() => setDimension('audience')}>{AUDIENCE_DIMENSION[mode]}</button>
         </div>
-        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.6fr) 82px 110px 100px 110px 110px 74px 96px 100px" minWidth="1180px" empty={!rows.length} emptyText="현재 조건에 해당하는 프로모션 데이터가 없습니다." emptySubtext="기간, 유형 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
+        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.6fr) 56px 90px 82px 94px 102px 50px 88px 74px" minWidth="930px" empty={!rows.length} emptyText="현재 조건에 해당하는 프로모션 데이터가 없습니다." emptySubtext="기간, 유형 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
       </section>
     </div>
 

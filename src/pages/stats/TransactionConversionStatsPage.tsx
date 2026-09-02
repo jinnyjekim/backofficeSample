@@ -322,7 +322,7 @@ export function TransactionConversionStatsPage({ defaultMode = 'all' }: { defaul
           <button type="button" className={dimension === 'type' ? layout.dimensionActive : ''} onClick={() => setDimension('type')}>거래 유형별</button>
           <button type="button" className={dimension === 'fourth' ? layout.dimensionActive : ''} onClick={() => setDimension('fourth')}>{FOURTH_DIMENSION_LABEL[mode]}</button>
         </div>
-        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.5fr) 90px 90px 90px 90px 80px 90px 100px" minWidth="1080px" empty={!rows.length} emptyText="현재 조건에 해당하는 거래 데이터가 없습니다." emptySubtext="기간 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
+        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.5fr) 74px 60px 56px 76px 56px 74px 74px" minWidth="760px" empty={!rows.length} emptyText="현재 조건에 해당하는 거래 데이터가 없습니다." emptySubtext="기간 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
       </section>
     </div>
 

@@ -19,7 +19,7 @@ import {
 } from './faqData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '52px 100px 1.8fr 68px 84px 100px 76px 88px 84px 56px';
+const GRID_TEMPLATE = '36px 70px 1.8fr 44px 72px 44px 54px 80px 68px 46px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '순서', align: 'right' },
   { label: '카테고리' },
@@ -455,7 +455,7 @@ export function FaqPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1180px"
+          minWidth="990px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}

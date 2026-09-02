@@ -246,8 +246,8 @@ export function RegionalShippingFeePage() {
           <DataGrid
             columns={COLUMNS}
             rows={rows}
-            gridTemplate="1fr 84px 150px 110px 84px 170px 90px 70px"
-            minWidth="1160px"
+            gridTemplate="1fr 72px 122px 74px 56px 148px 70px 40px"
+            minWidth="990px"
             empty={filtered.length === 0}
             emptyText={quickFilter === '확인 필요' ? '현재 확인이 필요한 지역 배송비 정책이 없습니다.' : '검색 결과가 없습니다.'}
             emptySubtext="검색어나 필터 조건을 변경해 주세요."

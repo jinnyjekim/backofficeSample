@@ -1,8 +1,8 @@
 import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { PAY_STATUS_META, SETTLE_STATUS_META, calcAdjustTotal, calcFee, calcFinal, fmt, signed, type Settlement } from './settlementData';
 
-export const SETTLEMENT_GRID_TEMPLATE = '104px 108px 138px 68px 116px 100px 100px 122px 92px 78px 78px 68px';
-export const SETTLEMENT_GRID_MIN_WIDTH = '1340px';
+export const SETTLEMENT_GRID_TEMPLATE = '90px 58px 138px 52px 94px 76px 78px 98px 62px 78px 78px 68px';
+export const SETTLEMENT_GRID_MIN_WIDTH = '1140px';
 
 export const SETTLEMENT_GRID_COLUMNS: GridColumn[] = [
   { label: '정산번호' },

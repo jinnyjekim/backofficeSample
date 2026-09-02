@@ -16,7 +16,7 @@ import {
 } from './outboundWaitingData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 88px 1fr 84px 88px 96px 84px 84px 88px 60px';
+const GRID_TEMPLATE = '82px 66px 1fr 58px 60px 84px 52px 72px 88px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '배송번호' }, { label: '주문번호' }, { label: '배송상품' }, { label: '수령인' }, { label: '택배사' },
   { label: '송장번호' }, { label: '출고예정' }, { label: '상태' }, { label: '이슈' }, { label: '관리' },
@@ -141,7 +141,7 @@ export function OutboundWaitingPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1280px"
+          minWidth="1140px"
           showPagination
           pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
           empty={rows.length === 0}

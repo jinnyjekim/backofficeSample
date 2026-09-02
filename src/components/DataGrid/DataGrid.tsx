@@ -89,6 +89,26 @@ function cellExportValue(cell: Cell): string {
   }
 }
 
+function isBadgeCell(cell: Cell) {
+  return cell.kind === 'pillText' || cell.kind === 'badge' || cell.kind === 'badgeSub' || cell.kind === 'badgeSquare';
+}
+
+function isTemporalColumnLabel(label: string) {
+  const compact = label.replace(/\s/g, '');
+  if (compact.includes('날짜') || compact.includes('기간') || compact.includes('일시') || compact.includes('일자')) return true;
+  return compact.split('/').some((part) => part.endsWith('일') || part.endsWith('요일'));
+}
+
+function isSerialColumnLabel(label: string) {
+  const compact = label.replace(/\s/g, '');
+  if (compact.includes('번호')) return true;
+  return compact.split('/').some((part) => /(?:ID|코드|NO\.?|No\.?)$/.test(part));
+}
+
+function isStatusColumnLabel(label: string) {
+  return label.replace(/\s/g, '').includes('상태');
+}
+
 function CellView({ cell }: { cell: Cell }) {
   switch (cell.kind) {
     case 'text':
@@ -331,6 +351,15 @@ export function DataGrid({
       return [cleanedManagement.get(cellIndex)?.[rowIndex] ?? { kind: 'text', text: '' } as Cell];
     }),
   }));
+  const temporalColumnIndexes = new Set(displayColumns.flatMap((column, columnIndex) =>
+    isTemporalColumnLabel(column.label) ? [columnIndex] : [],
+  ));
+  const serialColumnIndexes = new Set(displayColumns.flatMap((column, columnIndex) =>
+    isSerialColumnLabel(column.label) ? [columnIndex] : [],
+  ));
+  const statusColumnIndexes = new Set(displayColumns.flatMap((column, columnIndex) =>
+    isStatusColumnLabel(column.label) ? [columnIndex] : [],
+  ));
   const displayGridTemplate = withoutGridTracks(gridTemplate, removedManagement, columns.length);
   const template = (effectiveSelectable ? '30px ' : '') + displayGridTemplate;
 
@@ -360,11 +389,11 @@ export function DataGrid({
           )}
           {displayColumns.map((col, i) =>
             col.onClick ? (
-              <button key={i} type="button" className={styles.headBtn} style={{ textAlign: col.align }} onClick={col.onClick}>
+              <button key={i} type="button" className={styles.headBtn} style={{ textAlign: 'center' }} onClick={col.onClick}>
                 <span data-datagrid-column>{col.label}</span>
               </button>
             ) : (
-              <span key={i} style={{ textAlign: col.align }} data-datagrid-column>
+              <span key={i} style={{ textAlign: 'center' }} data-datagrid-column>
                 {col.label}
               </span>
             ),
@@ -394,7 +423,7 @@ export function DataGrid({
               />
             )}
             {row.cells.map((cell, i) => (
-              <div key={i} className={styles.cellWrap} style={{ textAlign: cell.align }} data-datagrid-cell data-export-value={cellExportValue(cell)}>
+              <div key={i} className={`${styles.cellWrap} ${isBadgeCell(cell) ? styles.badgeCellWrap : ''}`} style={{ textAlign: temporalColumnIndexes.has(i) || serialColumnIndexes.has(i) || statusColumnIndexes.has(i) ? 'center' : isBadgeCell(cell) ? undefined : cell.align }} data-datagrid-cell data-export-value={cellExportValue(cell)}>
                 <CellView cell={cell} />
               </div>
             ))}

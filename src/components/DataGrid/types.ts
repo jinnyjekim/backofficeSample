@@ -1,4 +1,4 @@
-export type Align = 'left' | 'right';
+export type Align = 'left' | 'center' | 'right';
 
 interface BaseCell {
   align?: Align;

@@ -16,7 +16,7 @@ import { buildSupplyPriceDetail } from './supplyPriceDetail';
 import { SupplyPriceDetailDrawer } from './SupplyPriceDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.2fr 108px 128px 100px 80px 140px 78px 70px 60px';
+const GRID_TEMPLATE = '1.2fr 92px 74px 74px 48px 140px 78px 70px 60px';
 const COLUMNS: GridColumn[] = [
   { label: '상품' },
   { label: '가격유형' },
@@ -240,7 +240,7 @@ export function SupplyPricePage() {
           columns={COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1120px"
+          minWidth="960px"
           showPagination
           pages={pages}
           empty={rows.length === 0}

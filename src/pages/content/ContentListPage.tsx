@@ -12,7 +12,7 @@ import { useOutsideClose } from '../../lib/useOutsideClose';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType } from './contentBusiness';
 
-const GRID_TEMPLATE = 'minmax(230px,2fr) 104px 96px 74px 62px 62px 74px 72px 34px';
+const GRID_TEMPLATE = 'minmax(230px,2fr) 104px 100px 76px 67px 94px 52px 70px 40px';
 const FIELD_OPTIONS = ['전체', '콘텐츠 ID', '제목', '작성자'];
 const STATUS_OPTIONS: ContentStatus[] = ['공개', '비공개', '임시저장', '예약', '삭제'];
 const SUMMARY_LABELS = ['공개', '비공개', '임시저장', '예약', '검수대기', '전체'] as const;
@@ -859,7 +859,7 @@ export function ContentListPage() {
               columns={columns}
               rows={rows}
               gridTemplate={GRID_TEMPLATE}
-              minWidth="1040px"
+              minWidth="1070px"
               selectable
               allSelected={filtered.length > 0 && sel_.length === filtered.length}
               onToggleAll={toggleAll}

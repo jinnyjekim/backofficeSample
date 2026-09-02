@@ -266,7 +266,7 @@ export function CancelRateStatsPage() {
           <button type="button" className={dimension === 'seller' ? layout.dimensionActive : ''} onClick={() => setDimension('seller')}>판매자별</button>
           <button type="button" className={dimension === 'category' ? layout.dimensionActive : ''} onClick={() => setDimension('category')}>카테고리별</button>
         </div>
-        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.5fr) 100px 90px 100px 90px 100px" minWidth="900px" empty={!rows.length} emptyText="현재 조건에 해당하는 취소 데이터가 없습니다." emptySubtext="기간 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
+        <DataGrid columns={columns} rows={gridRows} gridTemplate="minmax(190px,1.5fr) 74px 56px 88px 58px 74px" minWidth="640px" empty={!rows.length} emptyText="현재 조건에 해당하는 취소 데이터가 없습니다." emptySubtext="기간 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
       </section>
     </div>
 

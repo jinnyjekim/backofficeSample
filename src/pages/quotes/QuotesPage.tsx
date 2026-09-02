@@ -9,8 +9,8 @@ import { QuoteDetailDrawer } from './QuoteDetailDrawer';
 import { useOutsideClose } from '../../lib/useOutsideClose';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 1fr 1fr 120px 84px 100px 84px 78px 60px';
-const GRID_MIN_WIDTH = '1160px';
+const GRID_TEMPLATE = '89px 1fr 1fr 92px 64px 76px 66px 50px 60px';
+const GRID_MIN_WIDTH = '1040px';
 
 const GRID_COLUMNS: GridColumn[] = [
   { label: '견적번호' },

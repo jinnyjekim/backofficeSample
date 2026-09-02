@@ -55,6 +55,7 @@
 .headRow {
   display: grid;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   padding: 0 14px;
   height: 34px;
@@ -81,6 +82,7 @@
 .row {
   display: grid;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   padding: 9px 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.045);
@@ -103,6 +105,13 @@
 
 .cellWrap {
   min-width: 0;
+}
+
+.badgeCellWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 /* text */

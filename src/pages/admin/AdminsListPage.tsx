@@ -24,7 +24,7 @@ import {
 } from './adminData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '84px minmax(90px,1fr) minmax(130px,1.2fr) minmax(120px,1.3fr) 70px 110px 90px 60px';
+const GRID_TEMPLATE = '72px minmax(90px,1fr) minmax(130px,1.2fr) minmax(120px,1.3fr) 66px 124px 86px 44px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '관리자 ID' },
   { label: '관리자명' },
@@ -266,7 +266,7 @@ export function AdminsListPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="920px"
+          minWidth="900px"
           showPagination
           pages={pages}
           empty={rows.length === 0}

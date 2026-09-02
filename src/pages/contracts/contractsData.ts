@@ -133,8 +133,8 @@ export function filterContracts(contracts: Contract[], filter: ContractFilterKey
   });
 }
 
-export const CONTRACT_GRID_TEMPLATE = '96px 1fr 1fr 96px 130px 100px 92px 78px 74px 60px';
-export const CONTRACT_GRID_MIN_WIDTH = '1220px';
+export const CONTRACT_GRID_TEMPLATE = '80px minmax(140px,1fr) 74px 62px 130px 54px 78px 66px 54px 60px';
+export const CONTRACT_GRID_MIN_WIDTH = '880px';
 
 export const CONTRACT_COLUMNS: GridColumn[] = [
   { label: '계약번호' },

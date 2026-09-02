@@ -15,7 +15,7 @@ import { buildMoqDetail } from './minOrderQtyDetail';
 import { MinOrderQtyDetailDrawer } from './MinOrderQtyDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '1.1fr 1fr 100px 90px 90px 90px 110px 78px 60px';
+const GRID_TEMPLATE = 'minmax(200px,1.1fr) 76px 88px 54px 52px 60px 110px 66px 60px';
 const TYPE_FILTERS = ['조건유형 전체', '기본 MOQ', '거래처별 MOQ', '계약 MOQ'];
 
 const BULK_PRODUCTS = [
@@ -265,7 +265,7 @@ export function MinOrderQtyPage() {
           columns={columns}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1140px"
+          minWidth="900px"
           showPagination
           pages={pages}
           empty={rows.length === 0}

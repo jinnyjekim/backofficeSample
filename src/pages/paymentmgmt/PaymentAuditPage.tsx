@@ -207,8 +207,8 @@ export function PaymentAuditPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="96px 110px 100px 1fr 118px 96px 84px 76px"
-          minWidth="1180px"
+          gridTemplate="88px 88px 80px minmax(160px,1fr) 80px 84px 50px 76px"
+          minWidth="810px"
           selectable
           allSelected={filtered.length > 0 && filtered.every((log) => selected.includes(log.id))}
           onToggleAll={() => setSelected(filtered.every((log) => selected.includes(log.id)) ? [] : filtered.map((log) => log.id))}

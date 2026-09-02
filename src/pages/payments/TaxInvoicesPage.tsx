@@ -8,8 +8,8 @@ import { buildTaxDetail } from './taxInvoiceDetail';
 import { TaxInvoiceDetailDrawer } from './TaxInvoiceDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 1fr 96px 88px 96px 76px 84px 100px 76px 60px';
-const GRID_MIN_WIDTH = '1240px';
+const GRID_TEMPLATE = '88px minmax(150px,1fr) 92px 84px 96px 50px 76px 96px 50px 60px';
+const GRID_MIN_WIDTH = '900px';
 
 const GRID_COLUMNS: GridColumn[] = [
   { label: '청구번호' }, { label: '거래처' }, { label: '공급가액' }, { label: '세액' }, { label: '합계' },

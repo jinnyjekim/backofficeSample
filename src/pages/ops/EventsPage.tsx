@@ -28,7 +28,7 @@ import {
 } from './eventsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = 'minmax(230px,2fr) 64px 174px 80px 56px 150px 84px 112px 76px 46px';
+const GRID_TEMPLATE = 'minmax(300px,2.2fr) 72px minmax(230px,1.25fr) minmax(105px,.65fr) 76px minmax(175px,1fr) 96px minmax(125px,.75fr) 96px 38px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '이벤트명' }, { label: '유형' }, { label: '참여 / 노출기간' }, { label: '참여대상' },
   { label: '참여', align: 'right' }, { label: '혜택' }, { label: '상태' }, { label: '연결노출' }, { label: '담당자' }, { label: '관리' },
@@ -337,8 +337,8 @@ export function EventsPage() {
 
       {selectedIds.length > 0 && <div className={shared.bulkBar}><span className={shared.bulkLabel}>{selectedIds.length}건 선택됨</span><select className={styles.bulkManager} value={bulkManager} onChange={(e) => setBulkManager(e.target.value)}>{EVENT_MANAGERS.map((item) => <option key={item}>{item}</option>)}</select><button type="button" className={shared.bulkBtn} onClick={assignManager}>담당자 지정</button><button type="button" className={shared.bulkBtn} onClick={downloadCsv}>다운로드</button></div>}
 
-      <div className={shared.gridWrap}>
-        <DataGrid columns={GRID_COLUMNS} rows={gridRows} gridTemplate={GRID_TEMPLATE} minWidth="1280px" selectable allSelected={filtered.length > 0 && filtered.every((event) => selectedIds.includes(event.id))} onToggleAll={toggleAll} showPagination pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))} empty={gridRows.length === 0} emptyText={filter === '진행중' ? '현재 진행중인 이벤트가 없습니다.' : filter === '진행 예정' ? '예정된 이벤트가 없습니다.' : filter === '확인 필요' ? '현재 운영 확인이 필요한 이벤트가 없습니다.' : q || typeFilter !== '전체' || targetFilter !== '전체' ? '검색 결과가 없습니다.' : '등록된 이벤트가 없습니다.'} emptySubtext={gridRows.length === 0 ? '검색어나 필터 조건을 변경해 주세요.' : undefined} emptyActionLabel={gridRows.length === 0 ? '필터 초기화' : undefined} emptyActionClick={resetFilters} />
+      <div className={`${shared.gridWrap} ${styles.eventGrid}`}>
+        <DataGrid columns={GRID_COLUMNS} rows={gridRows} gridTemplate={GRID_TEMPLATE} minWidth="1480px" selectable allSelected={filtered.length > 0 && filtered.every((event) => selectedIds.includes(event.id))} onToggleAll={toggleAll} showPagination pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))} empty={gridRows.length === 0} emptyText={filter === '진행중' ? '현재 진행중인 이벤트가 없습니다.' : filter === '진행 예정' ? '예정된 이벤트가 없습니다.' : filter === '확인 필요' ? '현재 운영 확인이 필요한 이벤트가 없습니다.' : q || typeFilter !== '전체' || targetFilter !== '전체' ? '검색 결과가 없습니다.' : '등록된 이벤트가 없습니다.'} emptySubtext={gridRows.length === 0 ? '검색어나 필터 조건을 변경해 주세요.' : undefined} emptyActionLabel={gridRows.length === 0 ? '필터 초기화' : undefined} emptyActionClick={resetFilters} />
       </div>
 
       {selected && <EventDetailDrawer event={selected} onClose={() => setSelectedId(null)} onEdit={() => openEditor(selected)} onPreview={() => setPreviewId(selected.id)} onDuplicate={() => duplicateEvent(selected.id)} onStart={() => startEvent(selected.id)} onEnd={() => setConfirm({ kind: 'end', id: selected.id })} onToggleActive={() => toggleActive(selected.id)} onAddMemo={(text) => addMemo(selected.id, text)} />}

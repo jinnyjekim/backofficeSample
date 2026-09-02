@@ -389,12 +389,12 @@ export function SalesAnalysisPage() {
   });
 
   const gridTemplate = mode === 'b2c'
-    ? 'minmax(190px,1.4fr) 74px 78px 112px 96px 104px 112px 70px 82px'
+    ? 'minmax(190px,1.4fr) 46px 68px 96px 82px 82px 102px 50px 66px'
     : mode === 'c2c'
-      ? 'minmax(190px,1.4fr) 74px 112px 112px 104px 116px 70px 82px'
+      ? 'minmax(190px,1.4fr) 48px 90px 88px 82px 116px 50px 66px'
       : mode === 'b2b'
-        ? 'minmax(190px,1.4fr) 74px 112px 104px 112px 118px 70px 82px'
-        : 'minmax(190px,1.4fr) 82px 128px 136px 108px 70px 82px';
+        ? 'minmax(190px,1.4fr) 42px 98px 82px 102px 102px 50px 66px'
+        : 'minmax(190px,1.4fr) 74px 102px 134px 90px 50px 66px';
 
   const compositionRows = mode === 'all'
     ? buildRows('all', '비즈니스별', metrics, base)
@@ -518,7 +518,7 @@ export function SalesAnalysisPage() {
         <section className={styles.card}>
           <div className={styles.analysisHead}><div><h2>상세 분석</h2><p>행을 클릭하면 해당 항목의 구성과 실제 거래 이동 경로를 확인할 수 있습니다.</p></div><button type="button" className={styles.secondaryButton} onClick={() => setDownloadOpen(true)}><Download size={14} /> 리포트 다운로드</button></div>
           <div className={styles.dimensionTabs}>{MODE_DIMENSIONS[mode].map((item) => <button key={item} type="button" className={dimension === item ? styles.dimensionActive : ''} onClick={() => setDimension(item)}>{item}</button>)}</div>
-          <DataGrid columns={columns} rows={gridRows} gridTemplate={gridTemplate} minWidth={mode === 'b2c' ? '1120px' : '980px'} empty={!analysisRows.length} emptyText="해당 조건에 집계된 매출 데이터가 없습니다." emptySubtext="기간 또는 분석 기준을 변경해 주세요." />
+          <DataGrid columns={columns} rows={gridRows} gridTemplate={gridTemplate} minWidth={mode === 'b2c' ? '880px' : '840px'} empty={!analysisRows.length} emptyText="해당 조건에 집계된 매출 데이터가 없습니다." emptySubtext="기간 또는 분석 기준을 변경해 주세요." />
         </section>
       </div>
 

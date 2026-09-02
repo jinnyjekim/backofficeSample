@@ -16,7 +16,7 @@ import {
 } from './purchaseOrdersData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 1fr 1fr 100px 84px 84px 90px 84px 78px 60px';
+const GRID_TEMPLATE = '78px 1fr 1fr 88px 52px 62px 54px 64px 46px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '발주번호' }, { label: '거래처' }, { label: '발주내용' }, { label: '발주금액', align: 'right' },
   { label: '요청납기' }, { label: '상태' }, { label: '이슈' }, { label: '담당자' }, { label: '발주일' }, { label: '관리' },
@@ -192,7 +192,7 @@ export function PurchaseOrdersPage() {
             columns={GRID_COLUMNS}
             rows={rows}
             gridTemplate={GRID_TEMPLATE}
-            minWidth="1180px"
+            minWidth="1010px"
             showPagination
             pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
             empty={rows.length === 0}

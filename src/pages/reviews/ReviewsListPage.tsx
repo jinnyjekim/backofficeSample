@@ -20,7 +20,7 @@ import {
 } from './reviewsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '130px 90px 1.5fr 70px 90px 90px 60px';
+const GRID_TEMPLATE = '68px 58px 1.5fr 36px 67px 50px 44px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '상품' },
   { label: '회원' },
@@ -248,7 +248,7 @@ export function ReviewsListPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="920px"
+          minWidth="720px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}

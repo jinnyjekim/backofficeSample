@@ -14,7 +14,7 @@ import {
 } from './orderProcessingData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '96px 1fr 1fr 100px 92px 140px 84px 84px 70px 60px';
+const GRID_TEMPLATE = '70px 1fr 1fr 88px 76px 100px 46px 64px 46px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '주문번호' }, { label: '거래처' }, { label: '주문내용' }, { label: '주문금액', align: 'right' },
   { label: '처리상태' }, { label: '진행률' }, { label: '예정일' }, { label: '담당자' }, { label: '이슈' }, { label: '관리' },
@@ -211,7 +211,7 @@ export function OrderProcessingPage() {
             columns={GRID_COLUMNS}
             rows={rows}
             gridTemplate={GRID_TEMPLATE}
-            minWidth="1160px"
+            minWidth="990px"
             showPagination
             pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
             empty={rows.length === 0}

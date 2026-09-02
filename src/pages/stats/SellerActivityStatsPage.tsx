@@ -173,10 +173,10 @@ export function SellerActivityStatsPage({ defaultMode = 'c2c' }: { defaultMode?:
       });
 
   const gridTemplate = dimension === 'sellers'
-    ? 'minmax(150px,1.3fr) 90px 100px 130px 90px 120px 90px 90px'
+    ? 'minmax(150px,1.3fr) 70px 76px 74px 74px 96px 56px 74px'
     : dimension === 'quality'
-    ? 'minmax(150px,1.3fr) 80px 80px 80px 80px 70px 90px 90px'
-    : 'minmax(140px,1fr) 120px 120px';
+    ? 'minmax(150px,1.3fr) 56px 56px 56px 56px 42px 74px 74px'
+    : 'minmax(140px,1fr) 74px 50px';
 
   const exportFields = [
     { key: 'name', label: ENTITY_LABEL[mode], value: (row: SellerRow) => row.name },
@@ -346,7 +346,7 @@ export function SellerActivityStatsPage({ defaultMode = 'c2c' }: { defaultMode?:
           <button type="button" className={dimension === 'segment' ? layout.dimensionActive : ''} onClick={() => setDimension('segment')}>활동 구간</button>
           <button type="button" className={dimension === 'quality' ? layout.dimensionActive : ''} onClick={() => setDimension('quality')}>운영 품질</button>
         </div>
-        <DataGrid columns={columns} rows={gridRows} gridTemplate={gridTemplate} minWidth={dimension === 'segment' ? '480px' : '980px'} empty={!gridRows.length} emptyText={`현재 조건에 해당하는 ${ENTITY_LABEL[mode]} 데이터가 없습니다.`} emptySubtext="기간 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
+        <DataGrid columns={columns} rows={gridRows} gridTemplate={gridTemplate} minWidth={dimension === 'segment' ? '380px' : '780px'} empty={!gridRows.length} emptyText={`현재 조건에 해당하는 ${ENTITY_LABEL[mode]} 데이터가 없습니다.`} emptySubtext="기간 또는 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} />
       </section>
     </div>
 

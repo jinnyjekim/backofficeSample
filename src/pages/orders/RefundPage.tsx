@@ -321,8 +321,8 @@ export function RefundPage() {
             { label: '상태' }, { label: '요청일' }, { label: '담당자' }, { label: '관리', align: 'right' as const },
           ]}
           rows={rows}
-          gridTemplate="100px 90px 80px 60px 100px 100px 84px 66px 80px 70px"
-          minWidth="1180px"
+          gridTemplate="80px 68px 56px 60px 68px 70px 58px 48px 64px 40px"
+          minWidth="960px"
           selectable
           allSelected={filtered.length > 0 && selected.size === filtered.length}
           onToggleAll={toggleAll}

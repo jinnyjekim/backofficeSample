@@ -16,7 +16,7 @@ import {
 } from './pointLedgerData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '110px 90px 1fr 100px 100px 100px 110px 80px 60px';
+const GRID_TEMPLATE = '82px 58px 1fr 66px 78px 70px 67px 64px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '발생일시' },
   { label: '회원' },
@@ -146,7 +146,7 @@ export function PointLedgerPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1080px"
+          minWidth="880px"
           empty={rows.length === 0}
           emptyText={entries.length === 0 ? '포인트 변동 내역이 없습니다.' : quickFilter === '확인 필요' ? '현재 확인이 필요한 포인트 내역이 없습니다.' : '검색 조건에 해당하는 포인트 내역이 없습니다.'}
           emptySubtext={entries.length > 0 ? '검색어나 필터 조건을 변경해 주세요.' : undefined}
