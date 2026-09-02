@@ -23,6 +23,7 @@ import {
   type QuickRange,
 } from './systemLogData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 type Tab = 'api' | 'error';
 const TABS: [Tab, string][] = [['api', 'API 로그'], ['error', '오류 로그']];
@@ -135,11 +136,20 @@ export function SystemLogPage() {
         </div>
 
         <div className={styles.quickFilters}>
-          {TABS.map(([key, label]) => (
-            <button key={key} type="button" className={styles.qfBtn} style={{ borderColor: tab === key ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: tab === key ? 'var(--accent)' : '#fff' }} onClick={() => setTab(key)}>
-              <span className={styles.qfLabel} style={{ color: tab === key ? '#fff' : '#3f3f46' }}>{label}</span>
-            </button>
-          ))}
+          {TABS.map(([key, label]) => {
+            const active = tab === key;
+            return (
+              <CommonButton
+                key={key}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                onClick={() => setTab(key)}
+              >
+                <span className={styles.qfLabel}>{label}</span>
+              </CommonButton>
+            );
+          })}
         </div>
 
         <div className={styles.filterBox}>

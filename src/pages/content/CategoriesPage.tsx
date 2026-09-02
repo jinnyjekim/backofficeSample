@@ -6,6 +6,7 @@ import { CATEGORIES, MAX_DEPTH, type Category } from './categoriesData';
 import { ACCENT } from '../../lib/theme';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_TAXONOMY_SCOPES, type ContentTaxonomyScope } from './contentBusiness';
+import { CommonButton } from '../../components/common';
 
 interface Draft {
   name: string;
@@ -300,12 +301,21 @@ export function CategoriesPage() {
 
       <div className={styles.statusStrip}>
         <nav className={sh.quickFilters} aria-label="카테고리 사용 상태 보기">
-          {STATUS_LABELS.map((label) => (
-            <button key={label} type="button" className={`${sh.qfBtn} ${useFilter === label ? sh.active : ''}`} onClick={() => setUseFilter(label)}>
-              <span className={sh.qfLabel}>{label}</span>
-              <span className={sh.qfCount}>{statusCount(label)}</span>
-            </button>
-          ))}
+          {STATUS_LABELS.map((label) => {
+            const on = useFilter === label;
+            return (
+              <CommonButton
+                key={label}
+                variant={on ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${sh.qfBtn} ${on ? sh.active : ''}`}
+                onClick={() => setUseFilter(label)}
+              >
+                <span className={sh.qfLabel}>{label}</span>
+                <span className={sh.qfCount}>{statusCount(label)}</span>
+              </CommonButton>
+            );
+          })}
         </nav>
       </div>
 

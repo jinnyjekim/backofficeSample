@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import styles from '../ops/opsShared.module.css';
+import shared from './shared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
 import { CouponDetailDrawer } from './CouponDetailDrawer';
@@ -25,6 +25,7 @@ import {
   type QuickFilter,
 } from './couponsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton, showToast } from '../../components/common';
 
 const GRID_TEMPLATE = '1.5fr 44px 68px 90px 74px 300px 96px 78px 44px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -71,7 +72,6 @@ export function CouponsListPage() {
   const [editTarget, setEditTarget] = useState<'new' | Coupon | null>(null);
   const [confirm, setConfirm] = useState<ConfirmState>(null);
   const [bulkOwner, setBulkOwner] = useState(OWNERS[0]);
-  const [toast, setToast] = useState('');
 
   const issuesMap = useMemo(() => {
     const map: Record<string, string[]> = {};
@@ -98,10 +98,7 @@ export function CouponsListPage() {
     [coupons, quickFilter, search, applyUnitFilter, issueMethodFilter, ownerFilter],
   );
 
-  const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
-  };
+  const toastBriefly = (message: string) => showToast({ message, type: 'success' });
   const resetFilters = () => {
     setKeyword('');
     setSearch('');
@@ -228,68 +225,77 @@ export function CouponsListPage() {
   });
 
   return (
-    <div className={styles.page} onClick={() => menuId && setMenuId(null)}>
-      <div className={styles.headTop}>
-        <div className={styles.headRow}>
+    <div className={shared.page} onClick={() => menuId && setMenuId(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <div className={styles.title}>쿠폰 목록</div>
-            <div className={styles.subtitle}>쿠폰의 할인 조건, 발급 및 사용 가능 상태를 관리합니다.</div>
+            <div className={shared.title}>쿠폰 목록</div>
+            <div className={shared.subtitle}>쿠폰의 할인 조건, 발급 및 사용 가능 상태를 관리합니다.</div>
           </div>
-          <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>+ 쿠폰 등록</button>
+          <button type="button" className={shared.primaryBtn} onClick={() => openEditor('new')}>+ 쿠폰 등록</button>
         </div>
 
-        <div className={styles.quickFilters}>
-          {QUICK_FILTERS.map((f) => (
-            <button key={f} type="button" className={styles.qfBtn} style={{ borderColor: quickFilter === f ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: quickFilter === f ? 'var(--accent)' : '#fff' }} onClick={() => setQuickFilter(f)}>
-              <span className={styles.qfLabel} style={{ color: quickFilter === f ? '#fff' : '#3f3f46' }}>{f}</span>
-              <span className={styles.qfCount} style={{ color: quickFilter === f ? '#fff' : '#3f3f46' }}>{counts[f] ?? 0}</span>
-            </button>
-          ))}
+        <div className={shared.quickFilters}>
+          {QUICK_FILTERS.map((f) => {
+            const active = quickFilter === f;
+            return (
+              <CommonButton
+                key={f}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.quickFilterBtn} ${active ? shared.active : ''}`}
+                onClick={() => setQuickFilter(f)}
+              >
+                <span className={shared.quickFilterLabel}>{f}</span>
+                <span className={shared.quickFilterCount}>{counts[f] ?? 0}</span>
+              </CommonButton>
+            );
+          })}
         </div>
 
-        <div className={styles.filterBox}>
-          <form className={styles.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
-            <input className={styles.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="쿠폰명 또는 쿠폰 코드 검색" />
-            <button type="submit" className={styles.searchBtn}>검색</button>
+        <div className={shared.filterCard}>
+          <form className={shared.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
+            <input className={shared.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="쿠폰명 또는 쿠폰 코드 검색" />
+            <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
-          <div className={styles.filterRow2}>
-            <label className="globalFilterField"><span>유형</span><select aria-label="유형" className={styles.selectSm} value={applyUnitFilter} onChange={(e) => setApplyUnitFilter(e.target.value as CouponApplyUnit | '')}>
+          <div className={shared.filterRow2}>
+            <label className="globalFilterField"><span>유형</span><select aria-label="유형" className={shared.selectSm} value={applyUnitFilter} onChange={(e) => setApplyUnitFilter(e.target.value as CouponApplyUnit | '')}>
               <option value="">유형 전체</option>
               <option value="상품">상품 쿠폰</option>
               <option value="주문">주문 쿠폰</option>
             </select></label>
-            <label className="globalFilterField"><span>발급방식</span><select aria-label="발급방식" className={styles.selectSm} value={issueMethodFilter} onChange={(e) => setIssueMethodFilter(e.target.value as IssueMethod | '')}>
+            <label className="globalFilterField"><span>발급방식</span><select aria-label="발급방식" className={shared.selectSm} value={issueMethodFilter} onChange={(e) => setIssueMethodFilter(e.target.value as IssueMethod | '')}>
               <option value="">발급방식 전체</option>
               <option value="관리자 발급">관리자 발급</option>
               <option value="자동 발급">자동 발급</option>
             </select></label>
-            <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={styles.selectSm} value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value)}>
+            <label className="globalFilterField"><span>담당자</span><select aria-label="담당자" className={shared.selectSm} value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value)}>
               <option value="">담당자 전체</option>
               {OWNERS.map((o) => <option key={o}>{o}</option>)}
             </select></label>
-            <span className={styles.rowSpacer} />
-            <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
+            <span className={shared.spacer} />
+            <button type="button" className={shared.clearBtn} onClick={resetFilters}>초기화</button>
           </div>
         </div>
 
-        <div className={styles.resultRow}>
-          <span className={styles.resultLabel}>총 {filtered.length}건</span>
-          <div className={styles.resultActions}>
+        {selectedIds.length > 0 && (
+          <div className={shared.bulkBar}>
+            <span className={shared.bulkLabel}>{selectedIds.length}건 선택됨</span>
+            <button type="button" className={shared.bulkBtn} onClick={() => setConfirm({ kind: 'bulkOwner' })}>담당자 변경</button>
+            <button type="button" className={shared.bulkBtn} onClick={() => setConfirm({ kind: 'bulkDeactivate' })}>비활성화</button>
+            <button type="button" className={shared.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
+          </div>
+        )}
+
+        <div className={shared.resultBar}>
+          <span className={shared.resultLabel}>총 {filtered.length}건</span>
+          <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')} />
           </div>
         </div>
-      </div>
+      </header>
 
-      {selectedIds.length > 0 && (
-        <div className={styles.bulkBar}>
-          <span className={styles.bulkLabel}>{selectedIds.length}건 선택됨</span>
-          <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkOwner' })}>담당자 변경</button>
-          <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkDeactivate' })}>비활성화</button>
-          <button type="button" className={styles.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
-        </div>
-      )}
-
-      <div className={styles.gridWrap}>
+      <div className={shared.tableWrap}>
         <DataGrid
           columns={GRID_COLUMNS}
           rows={rows}
@@ -330,80 +336,79 @@ export function CouponsListPage() {
       )}
 
       {confirm?.kind === 'stop' && (
-        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
-          <div className={styles.dialogBox}>
-            <div className={styles.dialogTitle}>쿠폰 발급을 중지하시겠습니까?</div>
-            <div className={styles.dialogBody}>{confirm.item.name}</div>
-            <div className={styles.dialogSummary}>
-              <div className={styles.dialogSummaryRow}><span>현재 발급</span><span>{confirm.item.issuedCount.toLocaleString('ko-KR')}장</span></div>
-              <div className={styles.dialogSummaryRow}><span>사용</span><span>{confirm.item.usedCount.toLocaleString('ko-KR')}장</span></div>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
+          <div className={shared.dialogBox}>
+            <div className={shared.dialogTitle}>쿠폰 발급을 중지하시겠습니까?</div>
+            <div className={shared.dialogBody}>{confirm.item.name}</div>
+            <div className={shared.dialogSummary}>
+              <div className={shared.dialogSummaryRow}><span>현재 발급</span><span>{confirm.item.issuedCount.toLocaleString('ko-KR')}장</span></div>
+              <div className={shared.dialogSummaryRow}><span>사용</span><span>{confirm.item.usedCount.toLocaleString('ko-KR')}장</span></div>
             </div>
-            <div className={styles.dialogBody} style={{ marginBottom: 0 }}>신규 발급은 중단되며, 이미 발급된 쿠폰의 사용 가능 여부는 기존 유효기간 정책을 따릅니다.</div>
-            <div className={styles.dialogActions} style={{ marginTop: 16 }}>
-              <button type="button" className={styles.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
-              <button type="button" className={styles.dialogBtn} style={{ border: 0, background: '#dc2626', color: '#fff' }} onClick={confirmAction}>발급 중지</button>
+            <div className={shared.dialogBody} style={{ marginBottom: 0 }}>신규 발급은 중단되며, 이미 발급된 쿠폰의 사용 가능 여부는 기존 유효기간 정책을 따릅니다.</div>
+            <div className={shared.dialogActions} style={{ marginTop: 16 }}>
+              <button type="button" className={shared.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
+              <button type="button" className={shared.dialogBtn} style={{ border: 0, background: '#dc2626', color: '#fff' }} onClick={confirmAction}>발급 중지</button>
             </div>
           </div>
         </div>
       )}
 
       {confirm?.kind === 'delete' && (
-        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
-          <div className={styles.dialogBox}>
-            <div className={styles.dialogTitle}>쿠폰을 삭제하시겠습니까?</div>
-            <div className={styles.dialogBody}>{`'${confirm.item.name}'이(가) 삭제됩니다. 발급 이력이 없는 쿠폰만 삭제할 수 있습니다.`}</div>
-            <div className={styles.dialogActions}>
-              <button type="button" className={styles.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
-              <button type="button" className={styles.dialogBtn} style={{ border: 0, background: '#dc2626', color: '#fff' }} onClick={confirmAction}>삭제</button>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
+          <div className={shared.dialogBox}>
+            <div className={shared.dialogTitle}>쿠폰을 삭제하시겠습니까?</div>
+            <div className={shared.dialogBody}>{`'${confirm.item.name}'이(가) 삭제됩니다. 발급 이력이 없는 쿠폰만 삭제할 수 있습니다.`}</div>
+            <div className={shared.dialogActions}>
+              <button type="button" className={shared.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
+              <button type="button" className={shared.dialogBtn} style={{ border: 0, background: '#dc2626', color: '#fff' }} onClick={confirmAction}>삭제</button>
             </div>
           </div>
         </div>
       )}
 
       {confirm?.kind === 'toggleActive' && (
-        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
-          <div className={styles.dialogBox}>
-            <div className={styles.dialogTitle}>{confirm.item.active ? '쿠폰을 비활성화하시겠습니까?' : '쿠폰을 활성화하시겠습니까?'}</div>
-            <div className={styles.dialogBody}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
+          <div className={shared.dialogBox}>
+            <div className={shared.dialogTitle}>{confirm.item.active ? '쿠폰을 비활성화하시겠습니까?' : '쿠폰을 활성화하시겠습니까?'}</div>
+            <div className={shared.dialogBody}>
               {confirm.item.active ? '비활성화하면 발급 기간과 관계없이 신규 발급이 즉시 중단됩니다.' : '활성화하면 발급 기간 조건에 따라 다시 발급될 수 있습니다.'}
             </div>
-            <div className={styles.dialogActions}>
-              <button type="button" className={styles.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
-              <button type="button" className={styles.dialogBtn} style={{ border: 0, background: 'var(--accent)', color: '#fff' }} onClick={confirmAction}>{confirm.item.active ? '비활성화' : '활성화'}</button>
+            <div className={shared.dialogActions}>
+              <button type="button" className={shared.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
+              <button type="button" className={shared.dialogBtn} style={{ border: 0, background: 'var(--accent)', color: '#fff' }} onClick={confirmAction}>{confirm.item.active ? '비활성화' : '활성화'}</button>
             </div>
           </div>
         </div>
       )}
 
       {confirm?.kind === 'bulkDeactivate' && (
-        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
-          <div className={styles.dialogBox}>
-            <div className={styles.dialogTitle}>{selectedIds.length}건 비활성화</div>
-            <div className={styles.dialogBody}>선택한 쿠폰을 모두 비활성화합니다.</div>
-            <div className={styles.dialogActions}>
-              <button type="button" className={styles.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
-              <button type="button" className={styles.dialogBtn} style={{ border: 0, background: '#dc2626', color: '#fff' }} onClick={confirmAction}>비활성화</button>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
+          <div className={shared.dialogBox}>
+            <div className={shared.dialogTitle}>{selectedIds.length}건 비활성화</div>
+            <div className={shared.dialogBody}>선택한 쿠폰을 모두 비활성화합니다.</div>
+            <div className={shared.dialogActions}>
+              <button type="button" className={shared.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
+              <button type="button" className={shared.dialogBtn} style={{ border: 0, background: '#dc2626', color: '#fff' }} onClick={confirmAction}>비활성화</button>
             </div>
           </div>
         </div>
       )}
 
       {confirm?.kind === 'bulkOwner' && (
-        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
-          <div className={styles.dialogBox}>
-            <div className={styles.dialogTitle}>{selectedIds.length}건 담당자 변경</div>
-            <select className={styles.selectSm} style={{ width: '100%', marginBottom: 16 }} value={bulkOwner} onChange={(e) => setBulkOwner(e.target.value)}>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
+          <div className={shared.dialogBox}>
+            <div className={shared.dialogTitle}>{selectedIds.length}건 담당자 변경</div>
+            <select className={shared.selectSm} style={{ width: '100%', marginBottom: 16 }} value={bulkOwner} onChange={(e) => setBulkOwner(e.target.value)}>
               {OWNERS.map((o) => <option key={o}>{o}</option>)}
             </select>
-            <div className={styles.dialogActions}>
-              <button type="button" className={styles.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
-              <button type="button" className={styles.dialogBtn} style={{ border: 0, background: 'var(--accent)', color: '#fff' }} onClick={confirmAction}>변경</button>
+            <div className={shared.dialogActions}>
+              <button type="button" className={shared.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
+              <button type="button" className={shared.dialogBtn} style={{ border: 0, background: 'var(--accent)', color: '#fff' }} onClick={confirmAction}>변경</button>
             </div>
           </div>
         </div>
       )}
 
-      {toast && <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#18181b', color: '#fff', padding: '10px 18px', borderRadius: 9, fontSize: 12.5, zIndex: 40 }}>{toast}</div>}
     </div>
   );
 }

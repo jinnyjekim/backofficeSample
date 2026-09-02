@@ -1,6 +1,8 @@
 /* oxlint-disable react/only-export-components -- showToast is the guide-defined public API */
 import { useEffect, useState, type ReactNode } from 'react';
 import { CheckCircle2, CircleAlert, Info, X, XCircle } from 'lucide-react';
+import { Loading as M2MLoading } from 'm2m-uiux-react/Loading';
+import { ProgressBar as M2MProgressBar } from 'm2m-uiux-react/ProgressBar';
 import { CommonButton, type CommonClassNames, type CommonSize } from './CommonControls';
 import styles from './common.module.css';
 
@@ -59,14 +61,19 @@ export function ToastProvider({ children, position = 'top-right', maxCount = 5 }
 
 export interface CommonLoadingProps { type?: 'spinner' | 'dots' | 'skeleton'; size?: CommonSize; color?: string; text?: ReactNode; overlay?: boolean; rows?: number; className?: string; classNames?: CommonClassNames; }
 export function CommonLoading({ type = 'spinner', size = 'md', color, text, overlay = false, rows = 3, className, classNames }: CommonLoadingProps) {
-  const indicator = type === 'dots' ? <span className={styles.loadingDots}><i /><i /><i /></span> : type === 'skeleton' ? <span className={styles.skeletonList}>{Array.from({ length: rows }, (_, index) => <i key={index} />)}</span> : <span className={styles.loadingSpinner} />;
-  return <div role="status" aria-live="polite" className={cx(styles.loading, styles[`loading_${size}`], overlay && styles.loadingOverlay, rootClass(classNames), className)} style={{ color }}>{indicator}{text && <span>{text}</span>}<span className={styles.visuallyHidden}>불러오는 중</span></div>;
+  if (type !== 'skeleton') {
+    const packageColor = color === 'white' || color === 'neutral' || color === 'primary' ? color : 'primary';
+    return <M2MLoading type={type} size={size} color={packageColor} text={text} overlay={overlay} classNames={cx(styles.loading, styles[`loading_${size}`], overlay && styles.loadingOverlay, styles.loadingAdapter, rootClass(classNames), className)} style={color && !['white', 'neutral', 'primary'].includes(color) ? { color } : undefined} />;
+  }
+  return <div role="status" aria-live="polite" className={cx(styles.loading, styles[`loading_${size}`], overlay && styles.loadingOverlay, rootClass(classNames), className)} style={{ color }}><span className={styles.skeletonList}>{Array.from({ length: rows }, (_, index) => <i key={index} />)}</span>{text && <span>{text}</span>}<span className={styles.visuallyHidden}>불러오는 중</span></div>;
 }
 
 export interface CommonProgressBarProps { value: number; max?: number; showValue?: boolean; color?: string; thickness?: number; animated?: boolean; label?: ReactNode; className?: string; classNames?: CommonClassNames; }
 export function CommonProgressBar({ value, max = 100, showValue = false, color = 'var(--common-primary)', thickness = 8, animated = false, label, className, classNames }: CommonProgressBarProps) {
   const percentage = Math.min(100, Math.max(0, max ? value / max * 100 : 0));
-  return <div className={cx(styles.progressRoot, rootClass(classNames), className)}>{(label || showValue) && <div className={styles.progressMeta}>{label && <span>{label}</span>}{showValue && <b>{Math.round(percentage)}%</b>}</div>}<div role="progressbar" aria-valuemin={0} aria-valuemax={max} aria-valuenow={value} className={styles.progressTrack} style={{ height: thickness }}><span className={cx(styles.progressFill, animated && styles.progressAnimated)} style={{ width: `${percentage}%`, backgroundColor: color }} /></div></div>;
+  const packageColor = color.includes('success') ? 'success' : color.includes('warning') ? 'warning' : color.includes('error') ? 'error' : 'primary';
+  const packageThickness = thickness <= 4 ? 'sm' : thickness >= 10 ? 'lg' : 'md';
+  return <M2MProgressBar value={percentage} showValue={showValue} color={packageColor} thickness={packageThickness} animated={animated} label={label} classNames={cx(styles.progressRoot, styles.progressAdapter, styles[`progressThickness_${packageThickness}`], rootClass(classNames), className)} />;
 }
 
 export interface CommonStep { key?: string; title: ReactNode; description?: ReactNode; icon?: ReactNode; disabled?: boolean; }

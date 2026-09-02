@@ -17,6 +17,7 @@ import {
   type QuickFilter,
 } from './applicationsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '86px 1.3fr 72px 60px 70px 80px 80px 84px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -124,12 +125,21 @@ export function PromotionApplicationsPage() {
         </div>
 
         <div className={styles.quickFilters}>
-          {QUICK_FILTERS.map((f) => (
-            <button key={f} type="button" className={styles.qfBtn} style={{ borderColor: quickFilter === f ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: quickFilter === f ? 'var(--accent)' : '#fff' }} onClick={() => setQuickFilter(f)}>
-              <span className={styles.qfLabel} style={{ color: quickFilter === f ? '#fff' : '#3f3f46' }}>{f}</span>
-              <span className={styles.qfCount} style={{ color: quickFilter === f ? '#fff' : '#3f3f46' }}>{counts[f] ?? 0}</span>
-            </button>
-          ))}
+          {QUICK_FILTERS.map((f) => {
+            const active = quickFilter === f;
+            return (
+              <CommonButton
+                key={f}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                onClick={() => setQuickFilter(f)}
+              >
+                <span className={styles.qfLabel}>{f}</span>
+                <span className={styles.qfCount}>{counts[f] ?? 0}</span>
+              </CommonButton>
+            );
+          })}
         </div>
 
         <div className={styles.filterBox}>

@@ -57,6 +57,20 @@
   font-variant-numeric: tabular-nums;
 }
 
+.qfBtn.active {
+  border-color: rgba(79, 70, 229, 0.25) !important;
+  background: #eef2ff !important;
+}
+
+.qfBtn.active .qfLabel {
+  color: #4338ca !important;
+}
+
+.qfBtn.active .qfCount {
+  color: #4338ca !important;
+  opacity: 1;
+}
+
 .filterBox {
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);

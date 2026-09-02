@@ -63,23 +63,23 @@
 }
 .quickFilterLabel {
   font-size: 12.5px;
-  color: #3f3f46;
+  color: #52525b;
   font-weight: 600;
 }
 .quickFilterCount {
   font-size: 12px;
   font-weight: 700;
-  color: #3f3f46;
+  color: #18181b;
   opacity: 0.8;
   font-variant-numeric: tabular-nums;
 }
 .quickFilterActive {
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: rgba(79, 70, 229, 0.25);
+  background: #eef2ff;
 }
 .quickFilterActive .quickFilterLabel,
 .quickFilterActive .quickFilterCount {
-  color: #fff;
+  color: #4338ca;
 }
 
 .filterCard {

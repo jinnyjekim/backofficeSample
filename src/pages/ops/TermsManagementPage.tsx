@@ -7,6 +7,7 @@ import drawer from './opsDrawerShared.module.css';
 import shared from './opsShared.module.css';
 import styles from './TermsManagementPage.module.css';
 import { TermsDetailDrawer } from './TermsDetailDrawer';
+import { CommonButton } from '../../components/common';
 import { TERMS, currentVersion, termsScopes, type ConsentType, type TermsDefinition, type TermsStatus, type TermsVersion } from './termsData';
 
 type Quick = '전체' | '적용중' | '적용 예정' | '종료';
@@ -235,7 +236,23 @@ export function TermsManagementPage() {
   return <section className={shared.page} onClick={() => menuId && setMenuId(null)}>
     <div className={shared.headTop}>
       <div className={shared.headRow}><div><h1 className={shared.title}>약관 관리</h1><p className={shared.subtitle}>서비스 약관과 동의 문서를 코드·버전 단위로 등록하고 적용 이력을 관리합니다.</p></div><button type="button" className={shared.createBtn} onClick={() => openCreate()}>+ 약관 등록</button></div>
-      <div className={shared.quickFilters}>{QUICK.map((item) => <button key={item} type="button" className={`${shared.qfBtn} ${quick === item ? styles.quickActive : ''}`} onClick={() => setQuick(item)}><span className={shared.qfLabel}>{item}</span><span className={shared.qfCount}>{terms.filter((term) => matchesConfigScope(termsScopes(term), scopeFilter) && quickMatch(term, item)).length}</span></button>)}</div>
+      <div className={shared.quickFilters}>
+        {QUICK.map((item) => {
+          const active = quick === item;
+          return (
+            <CommonButton
+              key={item}
+              variant={active ? 'primary-light' : 'secondary'}
+              size="md"
+              className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
+              onClick={() => setQuick(item)}
+            >
+              <span className={shared.qfLabel}>{item}</span>
+              <span className={shared.qfCount}>{terms.filter((term) => matchesConfigScope(termsScopes(term), scopeFilter) && quickMatch(term, item)).length}</span>
+            </CommonButton>
+          );
+        })}
+      </div>
       <div className={shared.filterBox}>
         <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}><label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={shared.selectSm}><option>전체 검색</option><option>약관명</option><option>약관 코드</option><option>버전</option></select></label><input className={shared.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="약관명 / 약관 코드 / 버전"/><button type="submit" className={shared.searchBtn}>조회</button></form>
         <div className={shared.filterRow2}><label className="globalFilterField"><span>적용 범위</span><select className={shared.selectSm} value={scopeFilter} onChange={(event) => setScopeFilter(event.target.value as ConfigScopeFilter)} aria-label="적용 범위">{CONFIG_SCOPE_FILTERS.map((item) => <option key={item}>{item}</option>)}</select></label><label className="globalFilterField"><span>유형</span><select aria-label="유형" className={shared.selectSm} value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}><option value="">전체 유형</option>{TYPES.map((item) => <option key={item}>{item}</option>)}</select></label><label className="globalFilterField"><span>상태</span><select aria-label="상태" className={shared.selectSm} value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}><option value="">전체 상태</option>{Object.keys(STATUS_META).map((item) => <option key={item}>{item}</option>)}</select></label><label className="globalFilterField"><span>동의 구분</span><select aria-label="동의 구분" className={shared.selectSm} value={consentFilter} onChange={(event) => setConsentFilter(event.target.value)}><option value="">전체 동의 구분</option><option>필수</option><option>선택</option><option>동의 불필요</option></select></label><label className={styles.checkRow}>시행일 <DatePicker value={dateFrom} onChange={(event) => setDateFrom(event.target.value)}/><span>–</span><DatePicker value={dateTo} onChange={(event) => setDateTo(event.target.value)}/></label><span className={shared.rowSpacer}/><button type="button" className={shared.resetBtn} onClick={resetFilters}>초기화</button></div>

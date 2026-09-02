@@ -12,6 +12,7 @@ import {
 } from './creditTermsData';
 import { CreditTermsDetailDrawer } from './CreditTermsDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '1.2fr 50px 96px 96px 98px 130px 100px 58px 60px';
 const COLUMN_LABELS = ['회사', '신용거래', '신용한도', '사용액', '잔여한도', '결제조건', '미수금', '상태', '관리'];
@@ -116,15 +117,16 @@ export function CreditTermsPage() {
 
         <div className={styles.quickFilters}>
           {quickFilters.map((qf) => (
-            <button
+            <CommonButton
               key={qf.label}
-              type="button"
+              variant={qf.active ? 'primary-light' : 'secondary'}
+              size="md"
               className={`${styles.quickFilterBtn} ${qf.active ? styles.active : ''}`}
               onClick={() => setStatusFilter(qf.label)}
             >
               <span className={styles.quickFilterLabel}>{qf.label}</span>
               <span className={styles.quickFilterCount}>{qf.count}</span>
-            </button>
+            </CommonButton>
           ))}
         </div>
 

@@ -24,6 +24,7 @@ import {
   type RemoteDeliverable,
   type SpecialRegion,
 } from './jejuRemotePolicyData';
+import { CommonButton } from '../../components/common';
 
 const TODAY = '2026-08-25';
 
@@ -170,12 +171,21 @@ export function JejuRemotePolicyPage() {
         </div>
 
         <div className={shared.quickFilters}>
-          {QUICK_FILTERS.map((filter) => (
-            <button key={filter} type="button" className={`${shared.qfBtn} ${quickFilter === filter ? styles.quickActive : ''}`} onClick={() => setQuickFilter(filter)}>
-              <span className={shared.qfLabel}>{filter}</span>
-              <span className={shared.qfCount}>{regions.filter((r) => matchesQuickFilter(r, filter, warnings)).length}</span>
-            </button>
-          ))}
+          {QUICK_FILTERS.map((filter) => {
+            const active = quickFilter === filter;
+            return (
+              <CommonButton
+                key={filter}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
+                onClick={() => setQuickFilter(filter)}
+              >
+                <span className={shared.qfLabel}>{filter}</span>
+                <span className={shared.qfCount}>{regions.filter((r) => matchesQuickFilter(r, filter, warnings)).length}</span>
+              </CommonButton>
+            );
+          })}
         </div>
       </div>
 

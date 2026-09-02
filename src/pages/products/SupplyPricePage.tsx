@@ -15,6 +15,7 @@ import {
 import { buildSupplyPriceDetail } from './supplyPriceDetail';
 import { SupplyPriceDetailDrawer } from './SupplyPriceDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '1.2fr 92px 74px 74px 48px 140px 78px 70px 60px';
 const COLUMNS: GridColumn[] = [
@@ -160,15 +161,16 @@ export function SupplyPricePage() {
 
         <div className={styles.quickFilters}>
           {quickFilters.map((qf) => (
-            <button
+            <CommonButton
               key={qf.label}
-              type="button"
+              variant={qf.active ? 'primary-light' : 'secondary'}
+              size="md"
               className={`${styles.quickFilterBtn} ${qf.active ? styles.active : ''}`}
               onClick={() => setStatusFilter(qf.label)}
             >
               <span className={styles.quickFilterLabel}>{qf.label}</span>
               <span className={styles.quickFilterCount}>{qf.count}</span>
-            </button>
+            </CommonButton>
           ))}
         </div>
 

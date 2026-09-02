@@ -6,6 +6,7 @@ import type { GridColumn, GridRow, PageBtn } from '../../components/DataGrid/typ
 import { CONTACTS, CONTACT_FILTERS, CONTACT_STATUS_META, type Contact, type ContactStatus } from './contactsData';
 import { ContactDetailDrawer } from './ContactDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = 'minmax(150px,1.1fr) 82px 82px 66px 106px 134px 60px 46px 80px 60px';
 const COLUMN_LABELS = ['담당자', '회사', '부서/직책', '역할', '연락처', '이메일', '상태', '주담당', '수정일', '관리'];
@@ -116,15 +117,16 @@ export function ContactsPage() {
 
         <div className={styles.quickFilters}>
           {quickFilters.map((qf) => (
-            <button
+            <CommonButton
               key={qf.label}
-              type="button"
+              variant={qf.active ? 'primary-light' : 'secondary'}
+              size="md"
               className={`${styles.quickFilterBtn} ${qf.active ? styles.active : ''}`}
               onClick={() => setStatusFilter(qf.label)}
             >
               <span className={styles.quickFilterLabel}>{qf.label}</span>
               <span className={styles.quickFilterCount}>{qf.count}</span>
-            </button>
+            </CommonButton>
           ))}
         </div>
 

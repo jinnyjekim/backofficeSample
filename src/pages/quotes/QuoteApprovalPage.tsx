@@ -2,11 +2,11 @@ import { useMemo, useState } from 'react';
 import styles from './quoteShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
-import { ACCENT } from '../../lib/theme';
 import { APPROVALS, FILTER_KEYS, STATUS_META, fmt, type Approval, type FilterKey } from './quoteApprovalData';
 import { buildApprovalDetail } from './quoteApprovalDetail';
 import { QuoteApprovalDetailDrawer } from './QuoteApprovalDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '73px 1fr 92px 52px 55px 63px 66px 100px 56px';
 const GRID_MIN_WIDTH = '1020px';
@@ -133,16 +133,16 @@ export function QuoteApprovalPage() {
             {FILTER_KEYS.map((k) => {
               const active = filter === k;
               return (
-                <button
+                <CommonButton
                   key={k}
-                  type="button"
-                  className={styles.qfBtn}
-                  style={{ borderColor: active ? ACCENT : 'rgba(0,0,0,.1)', background: active ? ACCENT : '#fff' }}
+                  variant={active ? 'primary-light' : 'secondary'}
+                  size="md"
+                  className={`${styles.qfBtn} ${active ? styles.active : ''}`}
                   onClick={() => setFilter(k)}
                 >
-                  <span className={styles.qfLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{k}</span>
-                  <span className={styles.qfCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[k] || 0}</span>
-                </button>
+                  <span className={styles.qfLabel}>{k}</span>
+                  <span className={styles.qfCount}>{counts[k] || 0}</span>
+                </CommonButton>
               );
             })}
           </div>

@@ -12,6 +12,7 @@ import {
 } from './tradeStatusData';
 import { TradeStatusDetailDrawer } from './TradeStatusDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = 'minmax(150px,1.1fr) 76px 84px 84px 84px 88px 66px 136px 60px';
 const COLUMN_LABELS = ['회사', '현재상태', '거래시작일', '최근거래일', '최근변경', '변경사유', '담당자', '이슈', '관리'];
@@ -145,15 +146,16 @@ export function TradeStatusPage() {
 
         <div className={styles.quickFilters}>
           {quickFilters.map((qf) => (
-            <button
+            <CommonButton
               key={qf.label}
-              type="button"
+              variant={qf.active ? 'primary-light' : 'secondary'}
+              size="md"
               className={`${styles.quickFilterBtn} ${qf.active ? styles.active : ''}`}
               onClick={() => setStatusFilter(qf.label)}
             >
               <span className={styles.quickFilterLabel}>{qf.label}</span>
               <span className={styles.quickFilterCount}>{qf.count}</span>
-            </button>
+            </CommonButton>
           ))}
         </div>
 

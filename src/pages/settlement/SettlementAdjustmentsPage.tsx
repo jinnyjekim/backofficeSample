@@ -6,6 +6,7 @@ import { SettlementDetailDrawer } from './SettlementDetailDrawer';
 import { useSettlementDrawer } from './useSettlementDrawer';
 import { flattenAdjustments, signed } from './settlementData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '76px 1fr 96px 1.4fr 62px 110px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -75,10 +76,16 @@ export function SettlementAdjustmentsPage() {
             const active = direction === filter;
             const count = filter === '전체' ? all.length : all.filter((item) => filter === '가산' ? item.amount > 0 : item.amount < 0).length;
             return (
-              <button key={filter} type="button" className={styles.qfBtn} style={{ borderColor: active ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: active ? 'var(--accent)' : '#fff' }} onClick={() => setDirection(filter)}>
-                <span className={styles.qfLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{filter}</span>
-                <span className={styles.qfCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{count}</span>
-              </button>
+              <CommonButton
+                key={filter}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                onClick={() => setDirection(filter)}
+              >
+                <span className={styles.qfLabel}>{filter}</span>
+                <span className={styles.qfCount}>{count}</span>
+              </CommonButton>
             );
           })}
         </div>

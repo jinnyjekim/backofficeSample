@@ -27,6 +27,7 @@ import {
   type EventType,
 } from './eventsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = 'minmax(300px,2.2fr) 72px minmax(230px,1.25fr) minmax(105px,.65fr) 76px minmax(175px,1fr) 96px minmax(125px,.75fr) 96px 38px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -307,7 +308,18 @@ export function EventsPage() {
         <div className={shared.quickFilters}>
           {QUICK_FILTER_LABELS.map((key) => {
             const active = filter === key;
-            return <button key={key} type="button" className={shared.qfBtn} style={{ borderColor: active ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: active ? 'var(--accent)' : '#fff' }} onClick={() => setFilter(key)}><span className={shared.qfLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{key}</span><span className={shared.qfCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[key]}</span></button>;
+            return (
+              <CommonButton
+                key={key}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.qfBtn} ${active ? shared.active : ''}`}
+                onClick={() => setFilter(key)}
+              >
+                <span className={shared.qfLabel}>{key}</span>
+                <span className={shared.qfCount}>{counts[key]}</span>
+              </CommonButton>
+            );
           })}
         </div>
 

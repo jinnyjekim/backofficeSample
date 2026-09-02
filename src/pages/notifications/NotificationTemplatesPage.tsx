@@ -6,6 +6,7 @@ import { DatePicker } from '../../components/forms/DatePicker';
 import shared from '../ops/opsShared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './NotificationTemplatesPage.module.css';
+import { CommonButton } from '../../components/common';
 import {
   MESSAGE_TEMPLATES,
   TEMPLATE_BUSINESSES,
@@ -284,7 +285,21 @@ export function NotificationTemplatesPage() {
           <button type="button" className={shared.createBtn} onClick={startCreate}>+ 템플릿 등록</button>
         </div>
         <div className={shared.quickFilters}>
-          {QUICK_FILTERS.map((item) => <button key={item} type="button" className={`${shared.qfBtn} ${quick === item ? styles.quickActive : ''}`} onClick={() => setQuick(item)}><span className={shared.qfLabel}>{item}</span><span className={shared.qfCount}>{counts[item] ?? 0}</span></button>)}
+          {QUICK_FILTERS.map((item) => {
+            const active = quick === item;
+            return (
+              <CommonButton
+                key={item}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
+                onClick={() => setQuick(item)}
+              >
+                <span className={shared.qfLabel}>{item}</span>
+                <span className={shared.qfCount}>{counts[item] ?? 0}</span>
+              </CommonButton>
+            );
+          })}
         </div>
         <div className={shared.filterBox}>
           <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>

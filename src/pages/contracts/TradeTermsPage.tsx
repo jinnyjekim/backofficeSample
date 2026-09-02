@@ -18,6 +18,7 @@ import {
 import { buildTradeTermsDetail } from './tradeTermsDetail';
 import { TradeTermsDetailDrawer } from './TradeTermsDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 export function TradeTermsPage() {
   const [data, setData] = useState<TradeTerms[]>(TRADE_TERMS);
@@ -75,15 +76,16 @@ export function TradeTermsPage() {
         {FILTER_KEYS.map((k) => {
           const active = filter === k;
           return (
-            <button
+            <CommonButton
               key={k}
-              type="button"
+              variant={active ? 'primary-light' : 'secondary'}
+              size="md"
               className={`${styles.quickFilter} ${active ? styles.quickFilterActive : ''}`}
               onClick={() => setFilter(k)}
             >
               <span className={styles.quickFilterLabel}>{k}</span>
               <span className={styles.quickFilterCount}>{counts[k]}</span>
-            </button>
+            </CommonButton>
           );
         })}
       </div>
@@ -105,22 +107,24 @@ export function TradeTermsPage() {
           <button type="button" className={styles.searchBtn}>검색</button>
         </div>
         <div className={styles.filterRow}>
+          <label className="globalFilterField"><span>결제조건</span><select aria-label="결제조건" className={styles.selectSm}>
+            <option>결제조건 전체</option>
+            <option>익월말 현금</option>
+            <option>당월말 현금</option>
+            <option>선결제</option>
+            <option>어음 60일</option>
+          </select></label>
+          <label className="globalFilterField"><span>납품조건</span><select aria-label="납품조건" className={styles.selectSm}>
+            <option>납품조건 전체</option>
+            <option>발주 후 7일 이내</option>
+            <option>발주 후 14일 이내</option>
+            <option>익일 배송</option>
+            <option>주 1회 정기</option>
+          </select></label>
           <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectSm}>
             <option>거래처 전체</option>
             <option>회사 01</option>
             <option>회사 02</option>
-          </select></label>
-          <label className="globalFilterField"><span>결제조건</span><select aria-label="결제조건" className={styles.selectSm}>
-            <option>결제조건 전체</option>
-            <option>선결제</option>
-            <option>후불</option>
-            <option>혼합</option>
-          </select></label>
-          <label className="globalFilterField"><span>조건상태</span><select aria-label="조건상태" className={styles.selectSm}>
-            <option>조건상태 전체</option>
-            <option>적용예정</option>
-            <option>적용중</option>
-            <option>종료</option>
           </select></label>
           <div className={styles.spacer} />
           <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
@@ -130,7 +134,7 @@ export function TradeTermsPage() {
       <div className={styles.resultRow}>
         <span className={styles.resultLabel}>총 {filtered.length}건</span>
         <div className={styles.resultActions}>
-            <ExcelDownloadButton type="button" data-grid-download />
+          <ExcelDownloadButton type="button" data-grid-download />
           <select className={styles.selectSm}>
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>
@@ -147,7 +151,7 @@ export function TradeTermsPage() {
           showPagination
           pages={pages}
           empty={rows.length === 0}
-          emptyText="등록된 계약 거래조건이 없습니다. 계약별 결제, 주문, 납품 조건을 설정할 수 있습니다."
+          emptyText="해당 조건의 거래 조건이 없습니다."
         />
       </div>
 

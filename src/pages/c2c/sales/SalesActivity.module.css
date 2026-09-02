@@ -1,4 +1,5 @@
-.quickActive{border-color:#18181b!important;background:#18181b!important;color:#fff}
+.quickActive{border-color:rgba(79, 70, 229, 0.25)!important;background:#eef2ff!important;color:#4338ca!important}
+.quickActive span{color:#4338ca!important}
 .headerActions{display:flex;align-items:center;gap:8px}
 .controlArea{padding:0 24px}
 .summaryGrid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;margin:0 24px 18px}

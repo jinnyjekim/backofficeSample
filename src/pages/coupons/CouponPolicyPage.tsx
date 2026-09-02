@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react';
-import shared from '../ops/opsShared.module.css';
+import shared from './shared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
+import { showToast } from '../../components/common';
 import {
   INITIAL_POLICY,
   POLICY_HISTORY,
@@ -19,7 +20,7 @@ import {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className={shared.filterBox} style={{ margin: '0 0 16px' }}>
+    <div className={shared.filterCard} style={{ margin: '0 0 16px' }}>
       <div className={drawer.sectionTitle} style={{ marginBottom: 14, fontSize: 13, fontWeight: 700, color: '#18181b' }}>{title}</div>
       {children}
     </div>
@@ -34,7 +35,6 @@ export function CouponPolicyPage() {
   const [showHistory, setShowHistory] = useState(false);
   const [confirmChanges, setConfirmChanges] = useState<ReturnType<typeof describeChanges> | null>(null);
   const [reason, setReason] = useState('');
-  const [toast, setToast] = useState('');
 
   const historyRef = useRef<HTMLElement>(null);
   useOutsideClose(historyRef, () => setShowHistory(false));
@@ -65,8 +65,7 @@ export function CouponPolicyPage() {
     setEditing(false);
     setConfirmChanges(null);
     setReason('');
-    setToast('쿠폰 정책을 저장했습니다.');
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message: '쿠폰 정책을 저장했습니다.', type: 'success' });
   }
 
   function moveOrder(index: number, dir: -1 | 1) {
@@ -82,28 +81,28 @@ export function CouponPolicyPage() {
 
   return (
     <div className={shared.page}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
             <div className={shared.title}>쿠폰 정책</div>
             <div className={shared.subtitle}>서비스 전체 쿠폰의 사용, 중복 적용 및 취소/환불 처리 기준을 설정합니다.</div>
-            <div style={{ fontSize: 11.5, color: '#a1a1aa', marginTop: -8, marginBottom: 12 }}>최종 수정 {policy.updatedAt} · {policy.updatedBy}</div>
+            <div style={{ fontSize: 11.5, color: '#a1a1aa', marginTop: 4, marginBottom: 0 }}>최종 수정 {policy.updatedAt} · {policy.updatedBy}</div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button type="button" className={shared.resetBtn} style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: 8, color: '#3f3f46' }} onClick={() => setShowHistory(true)}>변경 이력</button>
+            <button type="button" className={shared.clearBtn} style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: 8, color: '#3f3f46' }} onClick={() => setShowHistory(true)}>변경 이력</button>
             {editing ? (
               <>
-                <button type="button" className={shared.resetBtn} style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: 8, color: '#3f3f46' }} onClick={cancelEdit}>취소</button>
-                <button type="button" className={shared.createBtn} onClick={requestSave}>저장</button>
+                <button type="button" className={shared.clearBtn} style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: 8, color: '#3f3f46' }} onClick={cancelEdit}>취소</button>
+                <button type="button" className={shared.primaryBtn} onClick={requestSave}>저장</button>
               </>
             ) : (
-              <button type="button" className={shared.createBtn} onClick={startEdit}>수정</button>
+              <button type="button" className={shared.primaryBtn} onClick={startEdit}>수정</button>
             )}
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className={shared.gridWrap} style={{ maxWidth: 820 }}>
+      <div className={shared.tableWrap} style={{ maxWidth: 820 }}>
         <Section title="1. 사용 / 계산 정책 — 할인 적용 순서">
           {p.discountOrder.map((step, i) => (
             <div key={step} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderBottom: i < p.discountOrder.length - 1 ? '1px solid rgba(0,0,0,.05)' : 'none' }}>
@@ -313,7 +312,6 @@ export function CouponPolicyPage() {
         </div>
       )}
 
-      {toast && <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#18181b', color: '#fff', padding: '10px 18px', borderRadius: 9, fontSize: 12.5, zIndex: 40 }}>{toast}</div>}
     </div>
   );
 }

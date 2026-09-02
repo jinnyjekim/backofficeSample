@@ -7,6 +7,7 @@ import shared from '../../ops/opsShared.module.css';
 import drawer from '../../ops/opsDrawerShared.module.css';
 import base from '../sales/SalesActivity.module.css';
 import styles from './TradeSafety.module.css';
+import { CommonButton } from '../../../components/common';
 import { ControlArea, DetailDrawer, FilterBox, GridArea, Metrics, PageHeading, ResultBar } from '../sales/SalesActivityShared';
 import { downloadCsv, pages } from '../sales/salesActivityUtils';
 import { formatWon } from '../sales/salesActivityData';
@@ -137,7 +138,22 @@ export function TradeRiskMonitoringPage() {
       { label: '오늘 종결', value: `${cases.filter((item) => item.status === '조치완료' || item.status === '오탐종결').length}건`, note: '조치 및 오탐 포함', tone: 'up', dot: '#10b981' },
     ]} />
     <ControlArea>
-      <div className={shared.quickFilters}>{quicks.map((item) => <button type="button" key={item} className={`${shared.qfBtn} ${quick === item ? base.quickActive : ''}`} onClick={() => setQuick(item)}><span className={shared.qfLabel}>{item}</span><span className={shared.qfCount}>{cases.filter((risk) => matchesRiskQuick(risk, item)).length}</span></button>)}</div>
+      <div className={shared.quickFilters}>{quicks.map((item) => {
+        const active = quick === item;
+        return (
+          <CommonButton
+            type="button"
+            key={item}
+            variant={active ? 'primary-light' : 'secondary'}
+            size="md"
+            className={`${shared.qfBtn} ${active ? base.quickActive : ''}`}
+            onClick={() => setQuick(item)}
+          >
+            <span className={shared.qfLabel}>{item}</span>
+            <span className={shared.qfCount}>{cases.filter((risk) => matchesRiskQuick(risk, item)).length}</span>
+          </CommonButton>
+        );
+      })}</div>
       <FilterBox>
         <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
           <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={shared.selectSm}><option>통합 검색</option><option>위험 건 ID</option><option>거래 / 계정 ID</option><option>대상 계정</option></select></label>
@@ -244,7 +260,22 @@ export function TradeHoldManagementPage() {
       { label: '오늘 해제', value: `${holds.filter((item) => item.status === '해제').length}건`, note: '정상 거래 재개', tone: 'up', dot: '#10b981' },
     ]} />
     <ControlArea>
-      <div className={shared.quickFilters}>{quicks.map((item) => <button type="button" key={item} className={`${shared.qfBtn} ${quick === item ? base.quickActive : ''}`} onClick={() => setQuick(item)}><span className={shared.qfLabel}>{item}</span><span className={shared.qfCount}>{holds.filter((hold) => item === '전체' || hold.status === item).length}</span></button>)}</div>
+      <div className={shared.quickFilters}>{quicks.map((item) => {
+        const active = quick === item;
+        return (
+          <CommonButton
+            type="button"
+            key={item}
+            variant={active ? 'primary-light' : 'secondary'}
+            size="md"
+            className={`${shared.qfBtn} ${active ? base.quickActive : ''}`}
+            onClick={() => setQuick(item)}
+          >
+            <span className={shared.qfLabel}>{item}</span>
+            <span className={shared.qfCount}>{holds.filter((hold) => item === '전체' || hold.status === item).length}</span>
+          </CommonButton>
+        );
+      })}</div>
       <FilterBox>
         <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}><label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={shared.selectSm}><option>통합 검색</option><option>보류번호</option><option>거래번호</option><option>계정</option></select></label><input className={shared.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="보류 / 거래 / 위험 건 ID 또는 대상 계정" /><button className={shared.searchBtn}>조회</button></form>
         <div className={shared.filterRow2}><label className="globalFilterField"><span>보류 범위</span><select aria-label="보류 범위" className={shared.selectSm} value={scope} onChange={(event) => setScope(event.target.value)}><option value="">전체 보류 범위</option><option>거래 진행</option><option>판매대금 지급</option></select></label><span>보류일</span><DatePicker className={shared.selectSm} defaultValue="2026-08-20" /><span>~</span><DatePicker className={shared.selectSm} defaultValue="2026-08-27" /><span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={reset}>초기화</button></div>

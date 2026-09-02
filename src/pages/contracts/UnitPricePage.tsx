@@ -18,6 +18,7 @@ import {
 import { buildUnitPriceDetail } from './unitPriceDetail';
 import { UnitPriceDetailDrawer } from './UnitPriceDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 export function UnitPricePage() {
   const [data, setData] = useState<UnitPrice[]>(UNIT_PRICES);
@@ -75,15 +76,16 @@ export function UnitPricePage() {
         {FILTER_KEYS.map((k) => {
           const active = filter === k;
           return (
-            <button
+            <CommonButton
               key={k}
-              type="button"
+              variant={active ? 'primary-light' : 'secondary'}
+              size="md"
               className={`${styles.quickFilter} ${active ? styles.quickFilterActive : ''}`}
               onClick={() => setFilter(k)}
             >
               <span className={styles.quickFilterLabel}>{k}</span>
               <span className={styles.quickFilterCount}>{counts[k]}</span>
-            </button>
+            </CommonButton>
           );
         })}
       </div>
@@ -93,35 +95,35 @@ export function UnitPricePage() {
           <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.select}>
             <option>전체</option>
             <option>계약번호</option>
-            <option>거래처명</option>
-            <option>상품명</option>
             <option>상품코드</option>
+            <option>상품명</option>
+            <option>거래처명</option>
           </select></label>
           <input
             className={styles.searchInput}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="계약번호 · 거래처 · 상품"
+            placeholder="상품코드, 상품명 또는 거래처명"
           />
           <button type="button" className={styles.searchBtn}>검색</button>
         </div>
         <div className={styles.filterRow}>
+          <label className="globalFilterField"><span>상태</span><select aria-label="상태" className={styles.selectSm}>
+            <option>상태 전체</option>
+            <option>적용중</option>
+            <option>적용대기</option>
+            <option>만료</option>
+          </select></label>
+          <label className="globalFilterField"><span>단가유형</span><select aria-label="단가유형" className={styles.selectSm}>
+            <option>단가유형 전체</option>
+            <option>고정가</option>
+            <option>할인율</option>
+            <option>구간할인</option>
+          </select></label>
           <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectSm}>
             <option>거래처 전체</option>
             <option>회사 01</option>
             <option>회사 02</option>
-          </select></label>
-          <label className="globalFilterField"><span>계약상태</span><select aria-label="계약상태" className={styles.selectSm}>
-            <option>계약상태 전체</option>
-            <option>계약 예정</option>
-            <option>계약중</option>
-            <option>만료</option>
-          </select></label>
-          <label className="globalFilterField"><span>단가상태</span><select aria-label="단가상태" className={styles.selectSm}>
-            <option>단가상태 전체</option>
-            <option>적용예정</option>
-            <option>적용중</option>
-            <option>종료</option>
           </select></label>
           <div className={styles.spacer} />
           <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
@@ -131,8 +133,7 @@ export function UnitPricePage() {
       <div className={styles.resultRow}>
         <span className={styles.resultLabel}>총 {filtered.length}건</span>
         <div className={styles.resultActions}>
-          <button type="button" className={styles.downloadBtn}>대량 등록</button>
-            <ExcelDownloadButton type="button" data-grid-download />
+          <ExcelDownloadButton type="button" data-grid-download />
           <select className={styles.selectSm}>
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>
@@ -149,7 +150,7 @@ export function UnitPricePage() {
           showPagination
           pages={pages}
           empty={rows.length === 0}
-          emptyText="등록된 계약 단가가 없습니다. 계약에 포함된 상품의 단가를 설정해 주세요."
+          emptyText="해당 조건의 계약 단가 정보가 없습니다."
         />
       </div>
 

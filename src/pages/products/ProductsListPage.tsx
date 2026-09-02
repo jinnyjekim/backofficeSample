@@ -16,6 +16,7 @@ import {
 import { buildProductDetail } from './productDetail';
 import { ProductDetailDrawer } from './ProductDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '1.3fr 76px 78px 56px 58px 76px 40px 80px 60px';
 const COLUMNS: GridColumn[] = [
@@ -150,15 +151,16 @@ export function ProductsListPage() {
 
         <div className={styles.quickFilters}>
           {quickFilters.map((qf) => (
-            <button
+            <CommonButton
               key={qf.label}
-              type="button"
+              variant={qf.active ? 'primary-light' : 'secondary'}
+              size="md"
               className={`${styles.quickFilterBtn} ${qf.active ? styles.active : ''}`}
               onClick={() => setStatusFilter(qf.label)}
             >
               <span className={styles.quickFilterLabel}>{qf.label}</span>
               <span className={styles.quickFilterCount}>{qf.count}</span>
-            </button>
+            </CommonButton>
           ))}
         </div>
 

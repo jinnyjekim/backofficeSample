@@ -14,6 +14,7 @@ import {
 import { buildMoqDetail } from './minOrderQtyDetail';
 import { MinOrderQtyDetailDrawer } from './MinOrderQtyDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = 'minmax(200px,1.1fr) 76px 88px 54px 52px 60px 110px 66px 60px';
 const TYPE_FILTERS = ['조건유형 전체', '기본 MOQ', '거래처별 MOQ', '계약 MOQ'];
@@ -174,15 +175,16 @@ export function MinOrderQtyPage() {
         <div className={styles.viewToggleRow}>
           <div className={styles.quickFilters} style={{ marginBottom: 0 }}>
             {quickFilters.map((qf) => (
-              <button
+              <CommonButton
                 key={qf.label}
-                type="button"
+                variant={qf.active ? 'primary-light' : 'secondary'}
+                size="md"
                 className={`${styles.quickFilterBtn} ${qf.active ? styles.active : ''}`}
                 onClick={() => setStatusFilter(qf.label)}
               >
                 <span className={styles.quickFilterLabel}>{qf.label}</span>
                 <span className={styles.quickFilterCount}>{qf.count}</span>
-              </button>
+              </CommonButton>
             ))}
           </div>
           <div className={styles.viewToggle}>

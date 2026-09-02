@@ -6,6 +6,7 @@ import shared from '../ops/opsShared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
 import { ResponseTemplateDrawer } from './ResponseTemplateDrawer';
 import styles from './ResponseTemplatesPage.module.css';
+import { CommonButton } from '../../components/common';
 import { CONFIG_SCOPE_FILTERS, matchesConfigScope, type ConfigScopeFilter } from '../../lib/business';
 import { RESPONSE_TEMPLATES, TEMPLATE_CATEGORIES, TEMPLATE_CHANNELS, TEMPLATE_TEAMS, newResponseTemplate, responseTemplateScopes, templateIssues, type ResponseTemplate, type TemplateStatus } from './responseTemplatesData';
 
@@ -38,7 +39,23 @@ export function ResponseTemplatesPage() {
   ]}; });
 
   return <section className={shared.page} onClick={()=>openMenu&&setOpenMenu(null)}><div className={shared.headTop}><div className={shared.headRow}><div><h1 className={shared.title}>답변 템플릿</h1><p className={shared.subtitle}>상담원이 답변 작성 시 불러오는 공통 문구와 자동 치환 변수를 관리합니다.</p></div><button type="button" className={shared.createBtn} onClick={()=>create()}>+ 템플릿 등록</button></div>
-    <div className={shared.quickFilters}>{QUICK_FILTERS.map((filter)=><button key={filter} type="button" className={`${shared.qfBtn} ${quickFilter===filter?styles.quickActive:''}`} onClick={()=>{setQuickFilter(filter);setSelected([]);}}><span className={shared.qfLabel}>{filter}</span><span className={shared.qfCount}>{templates.filter((item)=>matchesConfigScope(responseTemplateScopes(item),scopeFilter)&&quickMatch(item,filter)).length}</span></button>)}</div>
+    <div className={shared.quickFilters}>
+      {QUICK_FILTERS.map((filter) => {
+        const active = quickFilter === filter;
+        return (
+          <CommonButton
+            key={filter}
+            variant={active ? 'primary-light' : 'secondary'}
+            size="md"
+            className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
+            onClick={() => { setQuickFilter(filter); setSelected([]); }}
+          >
+            <span className={shared.qfLabel}>{filter}</span>
+            <span className={shared.qfCount}>{templates.filter((item) => matchesConfigScope(responseTemplateScopes(item), scopeFilter) && quickMatch(item, filter)).length}</span>
+          </CommonButton>
+        );
+      })}
+    </div>
     <div className={shared.filterBox}><form className={shared.filterRow1} onSubmit={(event)=>{event.preventDefault();setSearch(keyword.trim());}}><label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={shared.selectSm}><option>전체 검색</option><option>템플릿명</option><option>답변 본문</option><option>검색 키워드</option></select></label><input className={shared.searchInput} value={keyword} onChange={(e)=>setKeyword(e.target.value)} placeholder="템플릿명, 내용, 키워드 검색"/><button type="submit" className={shared.searchBtn}>검색</button></form><div className={shared.filterRow2}><label className="globalFilterField"><span>적용 범위</span><select aria-label="적용 범위" className={shared.selectSm} value={scopeFilter} onChange={(e)=>setScopeFilter(e.target.value as ConfigScopeFilter)}>{CONFIG_SCOPE_FILTERS.map((scope)=><option key={scope}>{scope}</option>)}</select></label><label className="globalFilterField"><span>문의유형</span><select aria-label="문의유형" className={shared.selectSm} value={inquiryType} onChange={(e)=>setInquiryType(e.target.value)}><option value="">전체 문의유형</option>{TEMPLATE_CATEGORIES.map((value)=><option key={value}>{value}</option>)}</select></label><label className="globalFilterField"><span>카테고리</span><select aria-label="카테고리" className={shared.selectSm} value={category} onChange={(e)=>setCategory(e.target.value)}><option value="">전체 카테고리</option>{TEMPLATE_CATEGORIES.map((value)=><option key={value}>{value}</option>)}</select></label><label className="globalFilterField"><span>채널</span><select aria-label="채널" className={shared.selectSm} value={channel} onChange={(e)=>setChannel(e.target.value)}><option value="">전체 채널</option>{TEMPLATE_CHANNELS.map((value)=><option key={value}>{value}</option>)}</select></label><label className="globalFilterField"><span>담당팀</span><select aria-label="담당팀" className={shared.selectSm} value={team} onChange={(e)=>setTeam(e.target.value)}><option value="">전체 담당팀</option><option>전체 상담원</option>{TEMPLATE_TEAMS.map((value)=><option key={value}>{value}</option>)}</select></label><label className="globalFilterField"><span>상태</span><select aria-label="상태" className={shared.selectSm} value={status} onChange={(e)=>setStatus(e.target.value as TemplateStatus|'')}><option value="">전체 상태</option><option>사용</option><option>비활성</option></select></label><button type="button" className={shared.detailFilterBtn} onClick={()=>setShowAdvanced((current)=>!current)}>상세 필터 {showAdvanced?'−':'+'}</button><span className={shared.rowSpacer}/><button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button></div>{showAdvanced&&<div className={styles.advancedFilters}><label>수정일 이후<DatePicker value={modifiedFrom} onChange={(e)=>setModifiedFrom(e.target.value)}/></label><span>답변 본문과 변수 변경은 개별 템플릿에서만 가능합니다.</span></div>}</div>
   </div>
   {selected.length>0&&<div className={shared.bulkBar}><span className={shared.bulkLabel}>{selected.length}건 선택</span><select className={shared.selectXs} defaultValue="" onChange={(e)=>{const value=e.target.value;if(!value)return;setTemplates((current)=>current.map((item)=>selected.includes(item.id)?{...item,category:value}:item));e.target.value='';toastBriefly('카테고리를 일괄 변경했습니다.');}}><option value="">카테고리 변경</option>{TEMPLATE_CATEGORIES.map((value)=><option key={value}>{value}</option>)}</select><select className={shared.selectXs} defaultValue="" onChange={(e)=>{const value=e.target.value;if(!value)return;setTemplates((current)=>current.map((item)=>selected.includes(item.id)?{...item,target:'특정 팀',teams:[value]}:item));e.target.value='';toastBriefly('사용 대상 팀을 변경했습니다.');}}><option value="">담당팀 변경</option>{TEMPLATE_TEAMS.map((value)=><option key={value}>{value}</option>)}</select><select className={shared.selectXs} defaultValue="" onChange={(e)=>{const value=e.target.value as TemplateStatus;if(!value)return;setTemplates((current)=>current.map((item)=>selected.includes(item.id)?{...item,status:value}:item));e.target.value='';}}><option value="">상태 변경</option><option>사용</option><option>비활성</option></select><button type="button" className={shared.bulkBtn} onClick={()=>download(templates.filter((item)=>selected.includes(item.id)))}>선택 다운로드</button><span className={styles.bulkGuard}>답변 본문·변수는 안전을 위해 일괄 변경할 수 없습니다.</span></div>}

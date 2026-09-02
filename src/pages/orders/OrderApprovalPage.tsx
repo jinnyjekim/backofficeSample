@@ -12,6 +12,7 @@ import {
   type FilterKey,
 } from './orderApprovalData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '70px 72px 1fr 100px 1fr 52px 64px 64px 52px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -124,16 +125,16 @@ export function OrderApprovalPage() {
             {FILTER_KEYS.map((k) => {
               const active = filter === k;
               return (
-                <button
+                <CommonButton
                   key={k}
-                  type="button"
-                  className={styles.qfBtn}
-                  style={{ borderColor: active ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: active ? 'var(--accent)' : '#fff' }}
+                  variant={active ? 'primary-light' : 'secondary'}
+                  size="md"
+                  className={`${styles.qfBtn} ${active ? styles.active : ''}`}
                   onClick={() => setFilter(k)}
                 >
-                  <span className={styles.qfLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{k}</span>
-                  <span className={styles.qfCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[k] || 0}</span>
-                </button>
+                  <span className={styles.qfLabel}>{k}</span>
+                  <span className={styles.qfCount}>{counts[k] || 0}</span>
+                </CommonButton>
               );
             })}
           </div>

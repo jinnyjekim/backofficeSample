@@ -3,7 +3,6 @@ import styles from './deliveryShared.module.css';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { DeliveryPrepDetailDrawer } from './DeliveryPrepDetailDrawer';
-import { quickFilterStyle } from './deliverySharedData';
 import {
   buildPrepCounts,
   calcPrep,
@@ -14,6 +13,7 @@ import {
   type PrepShipment,
 } from './deliveryPrepData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '68px 1fr 54px 1fr 52px 44px 52px 62px 72px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -78,12 +78,17 @@ export function DeliveryPrepPage() {
         <div className={styles.quickFilters}>
           {PREP_FILTER_KEYS.map((k) => {
             const active = filter === k;
-            const st = quickFilterStyle(active);
             return (
-              <button key={k} type="button" className={styles.qfBtn} style={{ borderColor: st.border, background: st.bg }} onClick={() => setFilter(k)}>
-                <span className={styles.qfLabel} style={{ color: st.fg }}>{k}</span>
-                <span className={styles.qfCount} style={{ color: st.fg }}>{counts[k] || 0}</span>
-              </button>
+              <CommonButton
+                key={k}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                onClick={() => setFilter(k)}
+              >
+                <span className={styles.qfLabel}>{k}</span>
+                <span className={styles.qfCount}>{counts[k] || 0}</span>
+              </CommonButton>
             );
           })}
         </div>

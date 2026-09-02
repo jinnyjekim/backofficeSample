@@ -2,11 +2,11 @@ import { useMemo, useState } from 'react';
 import styles from './shared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
-import { ACCENT } from '../../lib/theme';
 import { CONFIRM_META, DEPOSITS, FILTER_KEYS, MATCH_META, fmtWon, type Deposit, type DepositResult, type FilterKey } from './depositConfirmData';
 import { buildDepositDetail } from './depositDetail';
 import { DepositDetailDrawer } from './DepositDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '116px minmax(150px,1fr) 94px 74px 76px 76px 76px 66px 50px';
 const GRID_MIN_WIDTH = '890px';
@@ -134,16 +134,16 @@ export function DepositConfirmPage() {
           {FILTER_KEYS.map((k) => {
             const active = filter === k;
             return (
-              <button
+              <CommonButton
                 key={k}
-                type="button"
-                className={styles.quickFilterBtn}
-                style={{ borderColor: active ? ACCENT : 'rgba(0,0,0,.1)', background: active ? ACCENT : '#fff' }}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.quickFilterBtn} ${active ? styles.active : ''}`}
                 onClick={() => setFilter(k)}
               >
-                <span className={styles.quickFilterLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{k}</span>
-                <span className={styles.quickFilterCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[k] || 0}</span>
-              </button>
+                <span className={styles.quickFilterLabel}>{k}</span>
+                <span className={styles.quickFilterCount}>{counts[k] || 0}</span>
+              </CommonButton>
             );
           })}
         </div>

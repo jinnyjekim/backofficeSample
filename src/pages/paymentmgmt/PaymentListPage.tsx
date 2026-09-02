@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
 import { useLocation, useNavigate } from 'react-router-dom';
-import shared from '../ops/opsShared.module.css';
+import shared from './shared.module.css';
 import styles from './PaymentListPage.module.css';
+import { CommonButton, ExcelDownloadButton, showToast } from '../../components/common';
 import { PaymentDetailDrawer } from './PaymentDetailDrawer';
 import { BUSINESS_BADGE_META, BUSINESS_SCOPES, type BusinessScope } from '../../lib/business';
 import {
@@ -85,8 +86,6 @@ export function PaymentListPage() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [recheckTarget, setRecheckTarget] = useState<PaymentEntry | null>(null);
-  const [downloadOpen, setDownloadOpen] = useState(false);
-  const [toast, setToast] = useState('');
 
   useEffect(() => {
     const openPaymentId = (location.state as { openPaymentId?: string } | null)?.openPaymentId;
@@ -117,11 +116,6 @@ export function PaymentListPage() {
     [payments, quickFilter, businessScope, search, methodFilter, statusFilter, matchFilter, dateFrom, dateTo],
   );
 
-  const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2600);
-  };
-
   const reset = () => {
     setKeyword('');
     setSearch('');
@@ -143,7 +137,7 @@ export function PaymentListPage() {
     const { updated, message } = applyRecheck(recheckTarget);
     setPayments((current) => current.map((p) => (p.id === updated.id ? updated : p)));
     setRecheckTarget(null);
-    toastBriefly(message);
+    showToast({ message, type: 'success' });
   };
 
   const rows: GridRow[] = filtered.map((p) => {
@@ -185,30 +179,34 @@ export function PaymentListPage() {
   });
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>결제 건 조회</h1>
-            <p className={shared.subtitle}>B2C·C2C·B2B에서 발생한 결제 승인·취소·환불 상태를 통합 조회합니다.</p>
+            <div className={shared.title}>결제 건 조회</div>
+            <div className={shared.subtitle}>B2C·C2C·B2B에서 발생한 결제 승인·취소·환불 상태를 통합 조회합니다.</div>
           </div>
         </div>
 
         <div className={shared.quickFilters}>
-          {QUICK_FILTERS.map((filter) => (
-            <button
-              key={filter}
-              type="button"
-              className={`${shared.qfBtn} ${quickFilter === filter ? styles.quickActive : ''}`}
-              onClick={() => { setQuickFilter(filter); setSelected([]); }}
-            >
-              <span className={shared.qfLabel}>{filter}</span>
-              <span className={shared.qfCount}>{payments.filter((p) => (businessScope === '통합' || p.businessType === businessScope) && matchesQuickFilter(p, filter, payments)).length}</span>
-            </button>
-          ))}
+          {QUICK_FILTERS.map((filter) => {
+            const active = quickFilter === filter;
+            return (
+              <CommonButton
+                key={filter}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.quickFilterBtn} ${active ? shared.active : ''}`}
+                onClick={() => { setQuickFilter(filter); setSelected([]); }}
+              >
+                <span className={shared.quickFilterLabel}>{filter}</span>
+                <span className={shared.quickFilterCount}>{payments.filter((p) => (businessScope === '통합' || p.businessType === businessScope) && matchesQuickFilter(p, filter, payments)).length}</span>
+              </CommonButton>
+            );
+          })}
         </div>
 
-        <div className={shared.filterBox}>
+        <div className={shared.filterCard}>
           <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
             <input
               className={shared.searchInput}
@@ -237,11 +235,11 @@ export function PaymentListPage() {
               <option>금액 불일치</option>
               <option>외부 거래 없음</option>
             </select></label>
-            <button type="button" className={shared.detailFilterBtn} onClick={() => setShowAdvanced((current) => !current)}>
+            <button type="button" className={shared.dashedBtn} onClick={() => setShowAdvanced((current) => !current)}>
               {showAdvanced ? '상세 필터 −' : '상세 필터 +'}
             </button>
-            <span className={shared.rowSpacer} />
-            <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
+            <span className={shared.spacer} />
+            <button type="button" className={shared.clearBtn} onClick={reset}>필터 초기화</button>
           </div>
           {showAdvanced && (
             <div className={styles.advancedFilters}>
@@ -250,22 +248,23 @@ export function PaymentListPage() {
             </div>
           )}
         </div>
-      </div>
 
-      {selected.length > 0 && (
-        <div className={shared.bulkBar}>
-          <span className={shared.bulkLabel}>{selected.length}건 선택</span>
-          <button type="button" className={shared.bulkBtn} onClick={() => setDownloadOpen(true)}>다운로드</button>
-        </div>
-      )}
+        {selected.length > 0 && (
+          <div className={shared.bulkBar}>
+            <span className={shared.bulkLabel}>{selected.length}건 선택</span>
+            <ExcelDownloadButton data-grid-download />
+          </div>
+        )}
 
-      <div className={shared.gridWrap}>
-        <div className={shared.resultRow}>
+        <div className={shared.resultBar}>
           <span className={shared.resultLabel}>총 {filtered.length.toLocaleString()}건</span>
           <div className={shared.resultActions}>
-            <button type="button" className={shared.downloadBtn} onClick={() => setDownloadOpen(true)}>다운로드</button>
+            <ExcelDownloadButton data-grid-download />
           </div>
         </div>
+      </header>
+
+      <div className={shared.tableWrap}>
         <DataGrid
           columns={COLUMNS}
           rows={rows}
@@ -306,35 +305,12 @@ export function PaymentListPage() {
               <div className={shared.dialogSummaryRow}><span>최종 조회</span><strong>{recheckTarget.lastSyncedAt ?? '조회 이력 없음'}</strong></div>
             </div>
             <div className={shared.dialogActions}>
-              <button type="button" className={styles.cancelButton} onClick={() => setRecheckTarget(null)}>취소</button>
-              <button type="button" className={styles.primaryButton} onClick={runRecheck}>재조회</button>
+              <button type="button" className={shared.cancelButton} onClick={() => setRecheckTarget(null)}>취소</button>
+              <button type="button" className={shared.primaryButton} onClick={runRecheck}>재조회</button>
             </div>
           </div>
         </div>
       )}
-
-      {downloadOpen && (
-        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setDownloadOpen(false); }}>
-          <div className={shared.dialogBox}>
-            <h2 className={shared.dialogTitle}>결제 내역 다운로드</h2>
-            <p className={shared.dialogBody}>
-              {selected.length > 0 ? `선택한 ${selected.length}건을 다운로드합니다.` : `현재 검색 결과 ${filtered.length}건을 다운로드합니다.`}
-            </p>
-            <div className={shared.dialogSummary}>
-              <div className={shared.dialogSummaryRow}>
-                <span>포함 항목</span>
-                <strong>결제번호 · 서비스 · 주문번호 · 고객 · 결제일 · 수단 · 결제금액 · 환불금액 · 잔여금액 · 상태 · 외부거래번호</strong>
-              </div>
-            </div>
-            <div className={shared.dialogActions}>
-              <button type="button" className={styles.cancelButton} onClick={() => setDownloadOpen(false)}>취소</button>
-              <button type="button" className={styles.primaryButton} data-grid-download onClick={() => { setDownloadOpen(false); toastBriefly('결제 내역을 다운로드했습니다.'); }}>다운로드</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
-.quickActive { border-color: #18181b !important; background: #18181b !important; color: #fff; }
-.quickActive .qfLabel, .quickActive .qfCount { color: #fff; }
+.quickActive { border-color: rgba(79, 70, 229, 0.25) !important; background: #eef2ff !important; color: #4338ca !important; }
+.quickActive .qfLabel, .quickActive .qfCount { color: #4338ca !important; }
 
 .refundDrawer { width: min(660px, 94%) !important; }
 

@@ -11,6 +11,7 @@ import { TAGS, type Tag } from './tagsData';
 import { ACCENT } from '../../lib/theme';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_TAXONOMY_SCOPES, type ContentTaxonomyScope } from './contentBusiness';
+import { CommonButton } from '../../components/common';
 
 type SortKey = 'name' | 'count' | 'created' | 'updated';
 const STATUS_LABELS = ['사용', '미사용', '전체'] as const;
@@ -438,12 +439,21 @@ export function TagsPage() {
       <div className={sh.body}>
         <div className={sh.topPad}>
           <nav className={sh.quickFilters} aria-label="태그 사용 상태 보기">
-            {STATUS_LABELS.map((label) => (
-              <button key={label} type="button" className={`${sh.qfBtn} ${useF === label ? sh.active : ''}`} onClick={() => pickStatus(label)}>
-                <span className={sh.qfLabel}>{label}</span>
-                <span className={sh.qfCount}>{statusCount(label)}</span>
-              </button>
-            ))}
+            {STATUS_LABELS.map((label) => {
+              const on = useF === label;
+              return (
+                <CommonButton
+                  key={label}
+                  variant={on ? 'primary-light' : 'secondary'}
+                  size="md"
+                  className={`${sh.qfBtn} ${on ? sh.active : ''}`}
+                  onClick={() => pickStatus(label)}
+                >
+                  <span className={sh.qfLabel}>{label}</span>
+                  <span className={sh.qfCount}>{statusCount(label)}</span>
+                </CommonButton>
+              );
+            })}
           </nav>
 
           <div className={filterStyles.stepLabel}>

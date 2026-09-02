@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
 import { useNavigate } from 'react-router-dom';
-import shared from '../ops/opsShared.module.css';
+import shared from './shared.module.css';
 import styles from './ExternalTransactionPage.module.css';
 import { ExternalTxDetailDrawer } from './ExternalTxDetailDrawer';
 import {
@@ -22,6 +22,7 @@ import {
   type QuickFilter,
 } from './externalTransactionData';
 import { INITIAL_PAYMENTS, PAYMENT_METHODS, type PaymentMethod } from './paymentListData';
+import { CommonButton, showToast } from '../../components/common';
 
 const COLUMNS = [
   { label: '외부거래번호' },
@@ -69,7 +70,6 @@ export function ExternalTransactionPage() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [recheckTarget, setRecheckTarget] = useState<ExternalTransaction | null>(null);
-  const [toast, setToast] = useState('');
 
   const syncWarnings = useMemo(() => computeStaleSyncWarnings(txList), [txList]);
 
@@ -90,11 +90,6 @@ export function ExternalTransactionPage() {
     [txList, quickFilter, search, pgFilter, methodFilter, dateFrom, dateTo, payments],
   );
 
-  const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2600);
-  };
-
   const reset = () => {
     setKeyword('');
     setSearch('');
@@ -113,7 +108,7 @@ export function ExternalTransactionPage() {
     const { updated, message } = applyRecheck(recheckTarget, txList, payments);
     setTxList((current) => current.map((tx) => (tx.id === updated.id ? updated : tx)));
     setRecheckTarget(null);
-    toastBriefly(message);
+    showToast({ message, type: 'success' });
   };
 
   const rows: GridRow[] = filtered.map((tx) => {
@@ -153,30 +148,34 @@ export function ExternalTransactionPage() {
   });
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>PG / 외부 거래</h1>
-            <p className={shared.subtitle}>PG·은행 등 외부 결제 거래와 내부 결제 데이터의 일치 여부를 확인합니다.</p>
+            <div className={shared.title}>PG / 외부 거래</div>
+            <div className={shared.subtitle}>PG·은행 등 외부 결제 거래와 내부 결제 데이터의 일치 여부를 확인합니다.</div>
           </div>
         </div>
 
         <div className={shared.quickFilters}>
-          {QUICK_FILTERS.map((filter) => (
-            <button
-              key={filter}
-              type="button"
-              className={`${shared.qfBtn} ${quickFilter === filter ? styles.quickActive : ''}`}
-              onClick={() => setQuickFilter(filter)}
-            >
-              <span className={shared.qfLabel}>{filter}</span>
-              <span className={shared.qfCount}>{txList.filter((tx) => matchesQuickFilter(tx, filter, txList, payments)).length}</span>
-            </button>
-          ))}
+          {QUICK_FILTERS.map((filter) => {
+            const active = quickFilter === filter;
+            return (
+              <CommonButton
+                key={filter}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.quickFilterBtn} ${active ? shared.active : ''}`}
+                onClick={() => setQuickFilter(filter)}
+              >
+                <span className={shared.quickFilterLabel}>{filter}</span>
+                <span className={shared.quickFilterCount}>{txList.filter((tx) => matchesQuickFilter(tx, filter, txList, payments)).length}</span>
+              </CommonButton>
+            );
+          })}
         </div>
 
-        <div className={shared.filterBox}>
+        <div className={shared.filterCard}>
           <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
             <input
               className={shared.searchInput}
@@ -195,11 +194,11 @@ export function ExternalTransactionPage() {
               <option value="">전체 결제수단</option>
               {PAYMENT_METHODS.map((m) => <option key={m}>{m}</option>)}
             </select></label>
-            <button type="button" className={shared.detailFilterBtn} onClick={() => setShowAdvanced((current) => !current)}>
+            <button type="button" className={shared.dashedBtn} onClick={() => setShowAdvanced((current) => !current)}>
               {showAdvanced ? '상세 필터 −' : '상세 필터 +'}
             </button>
-            <span className={shared.rowSpacer} />
-            <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
+            <span className={shared.spacer} />
+            <button type="button" className={shared.clearBtn} onClick={reset}>필터 초기화</button>
           </div>
           {showAdvanced && (
             <div className={styles.advancedFilters}>
@@ -215,12 +214,13 @@ export function ExternalTransactionPage() {
             {syncWarnings.map((w) => <span key={w.pg}>⚠ {w.pg} 거래 정보가 최근 동기화되지 않았습니다. 마지막 정상 동기화: {w.lastSyncedAt}</span>)}
           </div>
         )}
-      </div>
 
-      <div className={shared.gridWrap}>
-        <div className={shared.resultRow}>
+        <div className={shared.resultBar}>
           <span className={shared.resultLabel}>총 {filtered.length.toLocaleString()}건</span>
         </div>
+      </header>
+
+      <div className={shared.tableWrap}>
         <DataGrid
           columns={COLUMNS}
           rows={rows}
@@ -260,14 +260,12 @@ export function ExternalTransactionPage() {
               <div className={shared.dialogSummaryRow}><span>마지막 조회</span><strong>{recheckTarget.lastSyncedAt}</strong></div>
             </div>
             <div className={shared.dialogActions}>
-              <button type="button" className={styles.cancelButton} onClick={() => setRecheckTarget(null)}>취소</button>
-              <button type="button" className={styles.primaryButton} onClick={runRecheck}>재조회</button>
+              <button type="button" className={shared.cancelButton} onClick={() => setRecheckTarget(null)}>취소</button>
+              <button type="button" className={shared.primaryButton} onClick={runRecheck}>재조회</button>
             </div>
           </div>
         </div>
       )}
-
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

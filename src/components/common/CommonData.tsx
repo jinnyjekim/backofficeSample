@@ -1,6 +1,7 @@
 import {
-  Fragment,
+  cloneElement,
   createContext,
+  isValidElement,
   useContext,
   useId,
   useState,
@@ -9,6 +10,15 @@ import {
   type ReactNode,
 } from 'react';
 import { ChevronDown, ChevronRight, CircleAlert, Inbox, SearchX } from 'lucide-react';
+import { Breadcrumb as M2MBreadcrumb } from 'm2m-uiux-react/Breadcrumb';
+import { Accordion as M2MAccordion } from 'm2m-uiux-react/Accordion';
+import { List as M2MList } from 'm2m-uiux-react/List';
+import { ListItem as M2MListItem } from 'm2m-uiux-react/ListItem';
+import { Grid as M2MGrid } from 'm2m-uiux-react/Grid';
+import { NoData as M2MNoData } from 'm2m-uiux-react/NoData';
+import { Tabs as M2MTabs } from 'm2m-uiux-react/Tabs';
+import { Table as M2MTable } from 'm2m-uiux-react/Table';
+import { Tooltip as M2MTooltip } from 'm2m-uiux-react/Tooltip';
 import { CommonButton, CommonCheckbox, type CommonClassNames, type CommonSize } from './CommonControls';
 import styles from './common.module.css';
 
@@ -55,7 +65,7 @@ export interface CommonTableProps<T> {
   classNames?: CommonClassNames & { table?: string; header?: string; row?: string; cell?: string };
 }
 
-export function CommonTable<T>({
+export function CommonTable<T extends object>({
   columns,
   data,
   rowKey,
@@ -100,6 +110,40 @@ export function CommonTable<T>({
     setSort({ key, direction });
     onSort?.(key, direction);
   };
+
+  const packageCompatible = !onRowClick
+    && columns.every((column) => column.colSpan == null && column.rowSpan == null && column.className == null && (column.dataIndex == null || String(column.dataIndex) === String(column.key)))
+    && (typeof classNames === 'string' || classNames == null);
+  if (packageCompatible) {
+    return <M2MTable
+      columns={columns.map((column) => ({
+        key: String(column.dataIndex ?? column.key),
+        label: column.title,
+        width: column.width,
+        align: column.align,
+        sortable: sortable || column.sortable,
+        render: column.render,
+      }))}
+      data={data}
+      rowKey={typeof rowKey === 'function' ? (row, index) => rowKey(row) ?? index : rowKey == null ? undefined : String(rowKey)}
+      selectable={selectable}
+      selectedRowKeys={selectedRows}
+      onSelectionChange={onSelectionChange}
+      sort={sort.direction ? { key: sort.key, direction: sort.direction } : null}
+      onSortChange={(next) => {
+        const normalized = next ? { key: next.key, direction: next.direction } : { key: '', direction: null };
+        setSort(normalized);
+        onSort?.(normalized.key, normalized.direction);
+      }}
+      pagination={pagination ? { page, pageSize: pagination.pageSize, total: pagination.total, onChange: (nextPage) => pagination.onChange?.(nextPage, pagination.pageSize) } : undefined}
+      striped={striped}
+      hover
+      emptyText={emptyText}
+      emptyContent={emptyComponent}
+      loading={loading}
+      classNames={cx(styles.tableRoot, styles.tableAdapter, rootClass(classNames), className)}
+    />;
+  }
 
   return (
     <div className={cx(styles.tableRoot, rootClass(classNames), className)} aria-busy={loading || undefined}>
@@ -171,20 +215,29 @@ export function CommonListItem({ title, description, leading, trailing, selected
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (!disabled && onClick && (event.key === 'Enter' || event.key === ' ')) onClick();
   };
-  return <div role={onClick ? 'button' : 'listitem'} tabIndex={onClick && !disabled ? 0 : undefined} aria-disabled={disabled || undefined} className={cx(styles.listItem, selected && styles.listItemSelected, disabled && styles.disabled, className)} onClick={() => !disabled && onClick?.()} onKeyDown={onKeyDown}>{leading && <span className={styles.listLeading}>{leading}</span>}<span className={styles.listBody}>{title && <strong>{title}</strong>}{description && <small>{description}</small>}{children}</span>{trailing && <span className={styles.listTrailing}>{trailing}</span>}</div>;
+  const bodyTitle = title ?? children ?? '';
+  const bodyDescription = title == null ? description : description || children ? <>{description}{children}</> : undefined;
+  return <M2MListItem title={bodyTitle} description={bodyDescription} avatar={leading} extra={trailing} clickable={Boolean(onClick) && !disabled} aria-disabled={disabled || undefined} classNames={cx(styles.listItem, styles.listItemAdapter, selected && styles.listItemSelected, disabled && styles.disabled, className)} onClick={() => !disabled && onClick?.()} onKeyDown={onKeyDown} />;
 }
 
 export interface CommonListProps<T = unknown> { children?: ReactNode; items?: T[]; renderItem?: (item: T, index: number) => ReactNode; itemKey?: keyof T | ((item: T, index: number) => string | number); loading?: boolean; emptyText?: ReactNode; divided?: boolean; bordered?: boolean; className?: string; classNames?: CommonClassNames; }
 export function CommonList<T = unknown>({ children, items, renderItem, itemKey, loading = false, emptyText = '데이터가 없습니다.', divided = true, bordered = false, className, classNames }: CommonListProps<T>) {
   const keyOf = (item: T, index: number) => typeof itemKey === 'function' ? itemKey(item, index) : itemKey != null ? String(item[itemKey]) : (item as { id?: string | number }).id ?? index;
-  let content = children;
-  if (items) content = items.map((item, index) => <Fragment key={keyOf(item, index)}>{renderItem?.(item, index)}</Fragment>);
-  if (loading) content = <div className={styles.listLoading}><span className={styles.spinner} />불러오는 중</div>;
-  else if (items && items.length === 0) content = <CommonNoData title={emptyText} />;
-  return <div role="list" className={cx(styles.list, divided && styles.listDivided, bordered && styles.listBordered, rootClass(classNames), className)}>{content}</div>;
+  if (!loading && items && items.length === 0) return <div role="list" className={cx(styles.list, bordered && styles.listBordered, rootClass(classNames), className)}><CommonNoData title={emptyText} /></div>;
+  return <M2MList
+    items={items}
+    renderItem={items && renderItem ? (item, index) => {
+      const rendered = renderItem(item, index);
+      const element = isValidElement(rendered) ? rendered : <M2MListItem title={rendered ?? ''} />;
+      return cloneElement(element, { key: keyOf(item, index) });
+    } : undefined}
+    loading={loading}
+    divided={divided}
+    classNames={cx(styles.list, divided && styles.listDivided, bordered && styles.listBordered, styles.listAdapter, rootClass(classNames), className)}
+  >{children}</M2MList>;
 }
 
-interface AccordionContextValue { expanded: (value: string) => boolean; toggle: (value: string) => void; disabled?: boolean; }
+interface AccordionContextValue { expanded: (value: string) => boolean; toggle: (value: string) => void; disabled?: boolean; packageBased?: boolean; }
 const AccordionContext = createContext<AccordionContextValue | null>(null);
 
 export interface CommonAccordionItemProps { value?: string; title: ReactNode; children: ReactNode; defaultOpen?: boolean; open?: boolean; disabled?: boolean; onChange?: (open: boolean) => void; className?: string; classNames?: CommonClassNames; }
@@ -193,6 +246,9 @@ export function CommonAccordionItem({ value, title, children, defaultOpen = fals
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
   const group = useContext(AccordionContext);
   const isDisabled = disabled || group?.disabled;
+  if (value && group?.packageBased) {
+    return <M2MAccordion.Item value={value} title={title} disabled={isDisabled} classNames={cx(styles.accordionItem, styles.accordionItemAdapter, rootClass(classNames), className)}>{children}</M2MAccordion.Item>;
+  }
   const expanded = value && group ? group.expanded(value) : open ?? innerOpen;
   const toggle = () => { if (isDisabled) return; if (value && group) group.toggle(value); else if (open === undefined) setInnerOpen(!expanded); onChange?.(!expanded); };
   return <section className={cx(styles.accordionItem, isDisabled && styles.disabled, rootClass(classNames), className)}><button type="button" aria-expanded={expanded} aria-controls={id} disabled={isDisabled} className={styles.accordionButton} onClick={toggle}><span>{title}</span><ChevronDown size={16} /></button>{expanded && <div id={id} className={styles.accordionPanel}>{children}</div>}</section>;
@@ -213,28 +269,28 @@ export function CommonAccordion({ children, type = 'single', value, defaultValue
     if (value === undefined) setInnerValue(next);
     onValueChange?.(next);
   };
+  if (collapsible) {
+    return <AccordionContext.Provider value={{ expanded, toggle, disabled, packageBased: true }}><M2MAccordion type={type} value={value} defaultValue={defaultValue} onValueChange={onValueChange} classNames={cx(styles.accordion, styles.accordionAdapter, bordered && styles.listBordered, rootClass(classNames), className)}>{children}</M2MAccordion></AccordionContext.Provider>;
+  }
   return <AccordionContext.Provider value={{ expanded, toggle, disabled }}><div className={cx(styles.accordion, bordered && styles.listBordered, rootClass(classNames), className)}>{children}</div></AccordionContext.Provider>;
 }
 
 export interface CommonNoDataProps { icon?: ReactNode; title?: ReactNode; description?: ReactNode; action?: ReactNode; type?: 'empty' | 'error' | 'primary' | 'search'; onRetry?: () => void; retryLabel?: ReactNode; className?: string; classNames?: CommonClassNames; }
 export function CommonNoData({ icon, title = '데이터가 없습니다.', description, action, type = 'empty', onRetry, retryLabel = '다시 시도', className, classNames }: CommonNoDataProps) {
   const defaultIcon = type === 'error' ? <CircleAlert /> : type === 'search' ? <SearchX /> : <Inbox />;
-  return <div className={cx(styles.noData, styles[`noData_${type}`], rootClass(classNames), className)}><span className={styles.noDataIcon}>{icon ?? defaultIcon}</span><strong>{title}</strong>{description && <p>{description}</p>}{action ? <div>{action}</div> : onRetry ? <CommonButton variant="secondary" size="sm" onClick={onRetry}>{retryLabel}</CommonButton> : null}</div>;
+  const retryAction = action ?? (onRetry && retryLabel !== '다시 시도' ? <CommonButton variant="secondary" size="sm" onClick={onRetry}>{retryLabel}</CommonButton> : undefined);
+  return <M2MNoData type={type === 'primary' ? 'empty' : type} icon={icon ?? defaultIcon} title={title} description={description} action={retryAction} onRetry={retryAction ? undefined : onRetry} classNames={cx(styles.noData, styles.noDataAdapter, styles[`noData_${type}`], rootClass(classNames), className)} />;
 }
 
 export interface CommonTooltipProps { content: ReactNode; children: ReactNode; placement?: 'top' | 'right' | 'bottom' | 'left'; delay?: number; disabled?: boolean; className?: string; classNames?: CommonClassNames; }
 export function CommonTooltip({ content, children, placement = 'top', delay = 0, disabled, className, classNames }: CommonTooltipProps) {
-  return <span className={cx(styles.tooltip, disabled && styles.tooltipDisabled, rootClass(classNames), className)}><span className={styles.tooltipAnchor}>{children}</span><span role="tooltip" className={cx(styles.tooltipBubble, styles[`tooltip_${placement}`])} style={{ transitionDelay: `${delay}ms` }}>{content}</span></span>;
+  return <M2MTooltip content={content} placement={placement} delay={delay} disabled={disabled} classNames={cx(styles.tooltipAdapter, rootClass(classNames), className)}><span className={styles.tooltipAnchor}>{children}</span></M2MTooltip>;
 }
 
 export interface CommonTabItem { key: string; label: ReactNode; icon?: ReactNode; badge?: ReactNode; disabled?: boolean; content?: ReactNode; }
 export interface CommonTabsProps { items: CommonTabItem[]; value?: string; defaultValue?: string; onChange?: (key: string) => void; type?: 'line' | 'card' | 'pill'; size?: CommonSize; centered?: boolean; fullWidth?: boolean; className?: string; classNames?: CommonClassNames; }
 export function CommonTabs({ items, value, defaultValue, onChange, type = 'line', size = 'md', centered, fullWidth, className, classNames }: CommonTabsProps) {
-  const first = defaultValue ?? items.find((item) => !item.disabled)?.key ?? '';
-  const [innerValue, setInnerValue] = useState(first);
-  const active = value ?? innerValue;
-  const choose = (key: string) => { if (value === undefined) setInnerValue(key); onChange?.(key); };
-  return <div className={cx(styles.tabsRoot, rootClass(classNames), className)}><div role="tablist" className={cx(styles.tabs, styles[`tabs_${type}`], styles[`tabs_${size}`], centered && styles.tabsCentered, fullWidth && styles.tabsFull)}>{items.map((item) => <button key={item.key} role="tab" type="button" aria-selected={active === item.key} disabled={item.disabled} className={cx(active === item.key && styles.tabActive)} onClick={() => choose(item.key)}>{item.icon}{item.label}{item.badge && <span className={styles.tabBadge}>{item.badge}</span>}</button>)}</div>{items.map((item) => item.key === active && item.content != null ? <div key={item.key} role="tabpanel" className={styles.tabPanel}>{item.content}</div> : null)}</div>;
+  return <M2MTabs items={items.map((item) => ({ ...item, badge: typeof item.badge === 'string' || typeof item.badge === 'number' ? item.badge : undefined }))} activeKey={value} defaultKey={defaultValue} onChange={onChange} type={type} size={size} centered={centered} fullWidth={fullWidth} classNames={cx(styles.tabsRoot, styles.tabsAdapter, styles[`tabs_${type}`], styles[`tabs_${size}`], centered && styles.tabsCentered, fullWidth && styles.tabsFull, rootClass(classNames), className)} />;
 }
 
 export function CommonTab(props: CommonTabsProps) {
@@ -244,12 +300,11 @@ export function CommonTab(props: CommonTabsProps) {
 export interface CommonBreadcrumbItem { label: ReactNode; href?: string; onClick?: () => void; icon?: ReactNode; }
 export interface CommonBreadcrumbProps { items: CommonBreadcrumbItem[]; separator?: ReactNode; maxItems?: number; size?: CommonSize; className?: string; classNames?: CommonClassNames; }
 export function CommonBreadcrumb({ items, separator = <ChevronRight size={13} />, maxItems, size = 'md', className, classNames }: CommonBreadcrumbProps) {
-  const shown = maxItems && items.length > maxItems ? [items[0], null, ...items.slice(-(maxItems - 2))] : items;
-  return <nav aria-label="현재 위치" className={cx(styles.breadcrumb, styles[`breadcrumb_${size}`], rootClass(classNames), className)}>{shown.map((item, index) => <Fragment key={item ? `${String(item.label)}-${index}` : `ellipsis-${index}`}>{index > 0 && <span className={styles.breadcrumbSeparator}>{separator}</span>}{item ? item.href ? <a href={item.href} onClick={item.onClick}>{item.icon}{item.label}</a> : <span aria-current={index === shown.length - 1 ? 'page' : undefined}>{item.icon}{item.label}</span> : <span>…</span>}</Fragment>)}</nav>;
+  return <M2MBreadcrumb items={items} separator={separator} maxItems={maxItems} size={size} classNames={cx(styles.breadcrumb, styles[`breadcrumb_${size}`], styles.breadcrumbAdapter, rootClass(classNames), className)} />;
 }
 
 export interface CommonGridProps { children: ReactNode; columns?: number | string; gap?: number | string; minColumnWidth?: number | string; align?: CSSProperties['alignItems']; className?: string; }
 export function CommonGrid({ children, columns = 1, gap = 12, minColumnWidth, align, className }: CommonGridProps) {
   const template = minColumnWidth ? `repeat(auto-fit, minmax(${typeof minColumnWidth === 'number' ? `${minColumnWidth}px` : minColumnWidth}, 1fr))` : typeof columns === 'number' ? `repeat(${columns}, minmax(0, 1fr))` : columns;
-  return <div className={cx(styles.commonGrid, className)} style={{ gridTemplateColumns: template, gap: typeof gap === 'number' ? `${gap}px` : gap, alignItems: align }}>{children}</div>;
+  return <M2MGrid columns={template} gap={gap} alignItems={align as 'start' | 'center' | 'end' | 'stretch' | undefined} classNames={cx(styles.commonGrid, className)}>{children}</M2MGrid>;
 }

@@ -2,11 +2,11 @@ import { useMemo, useState } from 'react';
 import styles from './quoteShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
-import { ACCENT } from '../../lib/theme';
 import { QUOTE_RECORDS, STATUSES, STATUS_META, fmt } from './quoteHistoryData';
 import { buildHistoryDetail } from './quoteHistoryDetail';
 import { QuoteHistoryDetailDrawer } from './QuoteHistoryDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '73px 1fr 87px 92px 61px 64px 66px 63px 63px 60px';
 const GRID_MIN_WIDTH = '1030px';
@@ -104,16 +104,16 @@ export function QuoteHistoryPage() {
             {STATUSES.map((st) => {
               const active = filter === st;
               return (
-                <button
+                <CommonButton
                   key={st}
-                  type="button"
-                  className={styles.qfBtn}
-                  style={{ borderColor: active ? ACCENT : 'rgba(0,0,0,.1)', background: active ? ACCENT : '#fff' }}
+                  variant={active ? 'primary-light' : 'secondary'}
+                  size="md"
+                  className={`${styles.qfBtn} ${active ? styles.active : ''}`}
                   onClick={() => setFilter(st)}
                 >
-                  <span className={styles.qfLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{st}</span>
-                  <span className={styles.qfCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[st] || 0}</span>
-                </button>
+                  <span className={styles.qfLabel}>{st}</span>
+                  <span className={styles.qfCount}>{counts[st] || 0}</span>
+                </CommonButton>
               );
             })}
           </div>

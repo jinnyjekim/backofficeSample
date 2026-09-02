@@ -9,6 +9,7 @@ import {
   type PayStatus, type SettleStatus, type SettlementFilters,
 } from './settlementData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const PAGE_LABELS = ['1', '2'];
 const SETTLE_STATUS_OPTIONS: (SettleStatus | '전체')[] = ['전체', '정산대기', '검토중', '정산확정', '보류'];
@@ -46,16 +47,16 @@ export function SettlementPage() {
           {MAIN_QUICK_FILTERS.map((k) => {
             const active = filters.quick === k;
             return (
-              <button
+              <CommonButton
                 key={k}
-                type="button"
-                className={styles.qfBtn}
-                style={{ borderColor: active ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: active ? 'var(--accent)' : '#fff' }}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
                 onClick={() => setField('quick', k)}
               >
-                <span className={styles.qfLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{k}</span>
-                <span className={styles.qfCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[k] || 0}</span>
-              </button>
+                <span className={styles.qfLabel}>{k}</span>
+                <span className={styles.qfCount}>{counts[k] || 0}</span>
+              </CommonButton>
             );
           })}
         </div>

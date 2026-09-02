@@ -2,11 +2,11 @@ import { useMemo, useState } from 'react';
 import styles from './shared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
-import { ACCENT } from '../../lib/theme';
 import { CALC_META, FILTER_KEYS, ISSUE_META, TAX_RECORDS, fmtWon, type FilterKey, type TaxRecord } from './taxInvoicesData';
 import { buildTaxDetail } from './taxInvoiceDetail';
 import { TaxInvoiceDetailDrawer } from './TaxInvoiceDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '88px minmax(150px,1fr) 92px 84px 96px 50px 76px 96px 50px 60px';
 const GRID_MIN_WIDTH = '900px';
@@ -125,16 +125,16 @@ export function TaxInvoicesPage() {
           {FILTER_KEYS.map((k) => {
             const active = filter === k;
             return (
-              <button
+              <CommonButton
                 key={k}
-                type="button"
-                className={styles.quickFilterBtn}
-                style={{ borderColor: active ? ACCENT : 'rgba(0,0,0,.1)', background: active ? ACCENT : '#fff' }}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.quickFilterBtn} ${active ? styles.active : ''}`}
                 onClick={() => setFilter(k)}
               >
-                <span className={styles.quickFilterLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{k}</span>
-                <span className={styles.quickFilterCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[k] || 0}</span>
-              </button>
+                <span className={styles.quickFilterLabel}>{k}</span>
+                <span className={styles.quickFilterCount}>{counts[k] || 0}</span>
+              </CommonButton>
             );
           })}
         </div>

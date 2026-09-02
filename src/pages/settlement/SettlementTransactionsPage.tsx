@@ -6,6 +6,7 @@ import { SettlementDetailDrawer } from './SettlementDetailDrawer';
 import { useSettlementDrawer } from './useSettlementDrawer';
 import { flattenTx } from './settlementData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '74px 52px 70px 1fr 46px 86px 86px 34px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -78,18 +79,18 @@ export function SettlementTransactionsPage() {
           {TYPE_FILTERS.map((k) => {
             const active = type === k;
             return (
-              <button
+              <CommonButton
                 key={k}
-                type="button"
-                className={styles.qfBtn}
-                style={{ borderColor: active ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: active ? 'var(--accent)' : '#fff' }}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
                 onClick={() => setType(k)}
               >
-                <span className={styles.qfLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{k}</span>
-                <span className={styles.qfCount} style={{ color: active ? '#fff' : '#3f3f46' }}>
+                <span className={styles.qfLabel}>{k}</span>
+                <span className={styles.qfCount}>
                   {k === '전체' ? all.length : all.filter((t) => t.type === k).length}
                 </span>
-              </button>
+              </CommonButton>
             );
           })}
         </div>

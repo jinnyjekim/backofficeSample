@@ -1,4 +1,5 @@
 import { Blocks } from 'lucide-react';
+import { Header as M2MHeader } from 'm2m-uiux-react/Header';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { activeKeyForPath, breadcrumbForKey } from '../../lib/nav';
 import styles from './Header.module.css';
@@ -9,7 +10,7 @@ export function Header() {
   const [root, leaf] = breadcrumbForKey(activeKeyForPath(pathname));
 
   return (
-    <div className={styles.header}>
+    <M2MHeader classNames={styles.header}>
       <div className={styles.crumb}>
         <span>{root}</span>
         <span className={styles.crumbSep}>/</span>
@@ -42,6 +43,6 @@ export function Header() {
         <div className={styles.accountAvatar}>관</div>
         <span className={styles.accountName}>관리자</span>
       </div>
-    </div>
+    </M2MHeader>
   );
 }

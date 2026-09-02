@@ -12,6 +12,7 @@ import { CONTENT_ITEMS } from '../../data/content';
 import { ACCENT } from '../../lib/theme';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType } from './contentBusiness';
+import { CommonButton } from '../../components/common';
 
 const TABS: Array<ReviewItemStatus | '전체'> = ['대기', '검수중', '승인', '반려', '전체'];
 const STATUS_PILL: Record<ReviewItemStatus, { bg: string; fg: string }> = {
@@ -389,10 +390,16 @@ export function ReviewPage() {
               const count = k === '전체' ? modeItems.length : modeItems.filter((it) => it.status === k).length;
               const on = tab === k;
               return (
-                <button key={k} type="button" className={`${sh.qfBtn} ${on ? sh.active : ''}`} onClick={() => { setTab(k); setSel([]); }}>
+                <CommonButton
+                  key={k}
+                  variant={on ? 'primary-light' : 'secondary'}
+                  size="md"
+                  className={`${sh.qfBtn} ${on ? sh.active : ''}`}
+                  onClick={() => { setTab(k); setSel([]); }}
+                >
                   <span className={sh.qfLabel}>{k}</span>
                   <span className={sh.qfCount}>{count.toLocaleString('ko-KR')}</span>
-                </button>
+                </CommonButton>
               );
             })}
           </div>

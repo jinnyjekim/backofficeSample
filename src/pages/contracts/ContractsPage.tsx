@@ -17,6 +17,7 @@ import {
 import { buildContractDetail } from './contractDetail';
 import { ContractDetailDrawer } from './ContractDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 export function ContractsPage() {
   const [data, setData] = useState<Contract[]>(CONTRACTS);
@@ -73,15 +74,16 @@ export function ContractsPage() {
         {FILTER_KEYS.map((k) => {
           const active = filter === k;
           return (
-            <button
+            <CommonButton
               key={k}
-              type="button"
+              variant={active ? 'primary-light' : 'secondary'}
+              size="md"
               className={`${styles.quickFilter} ${active ? styles.quickFilterActive : ''}`}
               onClick={() => setFilter(k)}
             >
               <span className={styles.quickFilterLabel}>{k}</span>
               <span className={styles.quickFilterCount}>{counts[k]}</span>
-            </button>
+            </CommonButton>
           );
         })}
       </div>
@@ -130,7 +132,7 @@ export function ContractsPage() {
       <div className={styles.resultRow}>
         <span className={styles.resultLabel}>총 {filtered.length}건</span>
         <div className={styles.resultActions}>
-            <ExcelDownloadButton type="button" data-grid-download />
+          <ExcelDownloadButton type="button" data-grid-download />
           <select className={styles.selectSm}>
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>

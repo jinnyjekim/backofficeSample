@@ -1,3 +1,4 @@
+import { CommonButton, CommonButtonGroup } from '../common';
 import styles from './BusinessScopeSwitch.module.css';
 
 interface Props<T extends string> {
@@ -12,13 +13,13 @@ export function BusinessScopeSwitch<T extends string>({ value, options, onChange
   return (
     <div className={styles.wrap}>
       <span className={styles.label}>{label}</span>
-      <div className={styles.toggle} role="group" aria-label={label}>
+      <CommonButtonGroup attached className={styles.toggle}>
         {options.map((option) => (
-          <button key={option} type="button" className={`${styles.button} ${value === option ? styles.active : ''}`} aria-pressed={value === option} onClick={() => onChange(option)}>
+          <CommonButton key={option} variant="none" size="sm" className={`${styles.button} ${value === option ? styles.active : ''}`} aria-pressed={value === option} onClick={() => onChange(option)}>
             {option}
-          </button>
+          </CommonButton>
         ))}
-      </div>
+      </CommonButtonGroup>
       {note && <span className={styles.note}>{note}</span>}
     </div>
   );

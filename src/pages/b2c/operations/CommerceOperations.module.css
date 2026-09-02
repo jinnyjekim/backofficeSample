@@ -1,11 +1,11 @@
 .quickActive {
-  border-color: #18181b !important;
-  background: #18181b !important;
-  color: #fff;
+  border-color: rgba(79, 70, 229, 0.25) !important;
+  background: #eef2ff !important;
+  color: #4338ca;
 }
 
 .quickActive span {
-  color: #fff !important;
+  color: #4338ca !important;
 }
 
 .issueBox {

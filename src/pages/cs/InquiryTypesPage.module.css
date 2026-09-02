@@ -1,4 +1,5 @@
-.quickActive { border-color: #18181b !important; background: #18181b !important; color: #fff; }
+.quickActive { border-color: rgba(79, 70, 229, 0.25) !important; background: #eef2ff !important; color: #4338ca !important; }
+.quickActive span { color: #4338ca !important; }
 .bulkGuard { margin-left: auto; color: #a16207; font-size: 11.5px; }
 .typeDrawer { width: min(780px, 96%) !important; }
 .errorBanner { display: flex; flex-direction: column; gap: 4px; padding: 11px 12px; margin-bottom: 16px; border: 1px solid #fed7aa; border-radius: 9px; background: #fff7ed; color: #9a3412; font-size: 11.5px; }

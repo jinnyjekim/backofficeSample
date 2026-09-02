@@ -2,12 +2,11 @@ import { useMemo, useState } from 'react';
 import styles from './shared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow, PageBtn } from '../../components/DataGrid/types';
-import { ACCENT } from '../../lib/theme';
 import { FILTER_KEYS, MATCH_META, PAYMENTS, STATUS_META, fmtWon, type FilterKey, type Payment } from './paymentsData';
 import { buildPaymentDetail } from './paymentDetail';
 import { PaymentDetailDrawer } from './PaymentDetailDrawer';
 import { PaymentRegisterDrawer, type PaymentRegisterValues } from './PaymentRegisterDrawer';
-import { showToast } from '../../components/common';
+import { showToast, CommonButton } from '../../components/common';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
 const GRID_TEMPLATE = '86px minmax(150px,1fr) 70px 94px 68px 50px 76px 76px 66px 60px';
@@ -189,16 +188,16 @@ export function PaymentsPage() {
           {FILTER_KEYS.map((k) => {
             const active = filter === k;
             return (
-              <button
+              <CommonButton
                 key={k}
-                type="button"
-                className={styles.quickFilterBtn}
-                style={{ borderColor: active ? ACCENT : 'rgba(0,0,0,.1)', background: active ? ACCENT : '#fff' }}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.quickFilterBtn} ${active ? styles.active : ''}`}
                 onClick={() => setFilter(k)}
               >
-                <span className={styles.quickFilterLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{k}</span>
-                <span className={styles.quickFilterCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[k] || 0}</span>
-              </button>
+                <span className={styles.quickFilterLabel}>{k}</span>
+                <span className={styles.quickFilterCount}>{counts[k] || 0}</span>
+              </CommonButton>
             );
           })}
         </div>

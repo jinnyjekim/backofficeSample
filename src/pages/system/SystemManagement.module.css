@@ -1,10 +1,10 @@
 .quickActive {
-  border-color: #18181b !important;
-  background: #18181b !important;
-  color: #fff;
+  border-color: rgba(79, 70, 229, 0.25) !important;
+  background: #eef2ff !important;
+  color: #4338ca !important;
 }
 
-.quickActive span { color: #fff !important; }
+.quickActive span { color: #4338ca !important; }
 
 .boundaryNote {
   padding: 11px 12px;

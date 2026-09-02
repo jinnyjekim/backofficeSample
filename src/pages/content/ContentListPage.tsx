@@ -11,6 +11,7 @@ import { CONTENT_ITEMS, STATUS_PILL, REVIEW_PILL, EXPOSE_PILL, type ContentItem,
 import { useOutsideClose } from '../../lib/useOutsideClose';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType } from './contentBusiness';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = 'minmax(230px,2fr) 104px 100px 76px 67px 94px 52px 70px 40px';
 const FIELD_OPTIONS = ['전체', '콘텐츠 ID', '제목', '작성자'];
@@ -680,10 +681,16 @@ export function ContentListPage() {
             {SUMMARY_LABELS.map((label) => {
               const on = label === '검수대기' ? reviewFilter === '대기' : label === '전체' ? status === '전체' && reviewFilter === '전체' : status === label;
               return (
-                <button key={label} type="button" className={`${sh.qfBtn} ${on ? sh.active : ''}`} onClick={() => pickSummary(label)}>
+                <CommonButton
+                  key={label}
+                  variant={on ? 'primary-light' : 'secondary'}
+                  size="md"
+                  className={`${sh.qfBtn} ${on ? sh.active : ''}`}
+                  onClick={() => pickSummary(label)}
+                >
                   <span className={sh.qfLabel}>{label}</span>
                   <span className={sh.qfCount}>{summaryCount(label)}</span>
-                </button>
+                </CommonButton>
               );
             })}
           </nav>

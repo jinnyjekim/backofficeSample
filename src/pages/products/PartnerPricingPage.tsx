@@ -15,6 +15,7 @@ import {
 import { buildPartnerPricingDetail } from './partnerPricingDetail';
 import { PartnerPricingDetailDrawer } from './PartnerPricingDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = 'minmax(210px,1.1fr) 70px 78px 82px 114px 110px 60px 76px 60px';
 const BASIS_FILTERS = ['가격 기준 전체', '개별 가격', '기본가 사용', '계약 적용'];
@@ -179,15 +180,16 @@ export function PartnerPricingPage() {
         <div className={styles.viewToggleRow}>
           <div className={styles.quickFilters} style={{ marginBottom: 0 }}>
             {quickFilters.map((qf) => (
-              <button
+              <CommonButton
                 key={qf.label}
-                type="button"
+                variant={qf.active ? 'primary-light' : 'secondary'}
+                size="md"
                 className={`${styles.quickFilterBtn} ${qf.active ? styles.active : ''}`}
                 onClick={() => setStatusFilter(qf.label)}
               >
                 <span className={styles.quickFilterLabel}>{qf.label}</span>
                 <span className={styles.quickFilterCount}>{qf.count}</span>
-              </button>
+              </CommonButton>
             ))}
           </div>
           <div className={styles.viewToggle}>

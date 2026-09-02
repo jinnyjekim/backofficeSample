@@ -15,6 +15,7 @@ import {
   type PurchaseOrderStatus,
 } from './purchaseOrdersData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '78px 1fr 1fr 88px 52px 62px 54px 64px 46px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -134,16 +135,16 @@ export function PurchaseOrdersPage() {
             {STATUSES.map((st) => {
               const active = filter === st;
               return (
-                <button
+                <CommonButton
                   key={st}
-                  type="button"
-                  className={styles.qfBtn}
-                  style={{ borderColor: active ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: active ? 'var(--accent)' : '#fff' }}
+                  variant={active ? 'primary-light' : 'secondary'}
+                  size="md"
+                  className={`${styles.qfBtn} ${active ? styles.active : ''}`}
                   onClick={() => setFilter(st)}
                 >
-                  <span className={styles.qfLabel} style={{ color: active ? '#fff' : '#3f3f46' }}>{st}</span>
-                  <span className={styles.qfCount} style={{ color: active ? '#fff' : '#3f3f46' }}>{counts[st] || 0}</span>
-                </button>
+                  <span className={styles.qfLabel}>{st}</span>
+                  <span className={styles.qfCount}>{counts[st] || 0}</span>
+                </CommonButton>
               );
             })}
           </div>

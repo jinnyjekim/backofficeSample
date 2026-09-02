@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import styles from '../ops/opsShared.module.css';
+import shared from './shared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
 import { CouponIssueDetailDrawer } from './CouponIssueDetailDrawer';
@@ -22,6 +22,7 @@ import {
   type RevokeReason,
 } from './couponIssuesData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton, showToast } from '../../components/common';
 
 const GRID_TEMPLATE = '128px 60px 1.3fr 50px 50px 72px 50px 78px 46px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -54,7 +55,6 @@ export function CouponIssuesPage() {
   const [confirm, setConfirm] = useState<ConfirmState>(null);
   const [revokeReason, setRevokeReason] = useState<RevokeReason>('오발급');
   const [revokeDetail, setRevokeDetail] = useState('');
-  const [toast, setToast] = useState('');
 
   useEffect(() => {
     const code = searchParams.get('code');
@@ -87,10 +87,7 @@ export function CouponIssuesPage() {
     [issues, quickFilter, search, couponFilter, statusFilter],
   );
 
-  const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
-  };
+  const toastBriefly = (message: string) => showToast({ message, type: 'success' });
   const resetFilters = () => {
     setKeyword('');
     setSearch('');
@@ -200,64 +197,73 @@ export function CouponIssuesPage() {
   });
 
   return (
-    <div className={styles.page} onClick={() => menuId && setMenuId(null)}>
-      <div className={styles.headTop}>
-        <div className={styles.headRow}>
+    <div className={shared.page} onClick={() => menuId && setMenuId(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <div className={styles.title}>쿠폰 발급 관리</div>
-            <div className={styles.subtitle}>회원에게 발급된 쿠폰의 보유 및 사용 가능 상태를 관리합니다.</div>
+            <div className={shared.title}>쿠폰 발급 관리</div>
+            <div className={shared.subtitle}>회원에게 발급된 쿠폰의 보유 및 사용 가능 상태를 관리합니다.</div>
           </div>
-          <button type="button" className={styles.createBtn} onClick={() => { setShowIssueForm(true); setDrawerId(null); }}>+ 쿠폰 발급</button>
+          <button type="button" className={shared.primaryBtn} onClick={() => { setShowIssueForm(true); setDrawerId(null); }}>+ 쿠폰 발급</button>
         </div>
 
-        <div className={styles.quickFilters}>
-          {QUICK_FILTERS.map((f) => (
-            <button key={f} type="button" className={styles.qfBtn} style={{ borderColor: quickFilter === f ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: quickFilter === f ? 'var(--accent)' : '#fff' }} onClick={() => setQuickFilter(f)}>
-              <span className={styles.qfLabel} style={{ color: quickFilter === f ? '#fff' : '#3f3f46' }}>{f}</span>
-              <span className={styles.qfCount} style={{ color: quickFilter === f ? '#fff' : '#3f3f46' }}>{counts[f] ?? 0}</span>
-            </button>
-          ))}
+        <div className={shared.quickFilters}>
+          {QUICK_FILTERS.map((f) => {
+            const active = quickFilter === f;
+            return (
+              <CommonButton
+                key={f}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.quickFilterBtn} ${active ? shared.active : ''}`}
+                onClick={() => setQuickFilter(f)}
+              >
+                <span className={shared.quickFilterLabel}>{f}</span>
+                <span className={shared.quickFilterCount}>{counts[f] ?? 0}</span>
+              </CommonButton>
+            );
+          })}
         </div>
 
-        <div className={styles.filterBox}>
-          <form className={styles.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
-            <input className={styles.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="회원, 쿠폰명, 쿠폰코드 또는 발급번호 검색" />
-            <button type="submit" className={styles.searchBtn}>검색</button>
+        <div className={shared.filterCard}>
+          <form className={shared.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
+            <input className={shared.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="회원, 쿠폰명, 쿠폰코드 또는 발급번호 검색" />
+            <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
-          <div className={styles.filterRow2}>
-            <label className="globalFilterField"><span>쿠폰</span><select aria-label="쿠폰" className={styles.selectSm} value={couponFilter} onChange={(e) => setCouponFilter(e.target.value)}>
+          <div className={shared.filterRow2}>
+            <label className="globalFilterField"><span>쿠폰</span><select aria-label="쿠폰" className={shared.selectSm} value={couponFilter} onChange={(e) => setCouponFilter(e.target.value)}>
               <option value="">쿠폰 전체</option>
               {COUPONS.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
             </select></label>
-            <label className="globalFilterField"><span>보유 상태</span><select aria-label="보유 상태" className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as HolderStatus | '')}>
+            <label className="globalFilterField"><span>보유 상태</span><select aria-label="보유 상태" className={shared.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as HolderStatus | '')}>
               <option value="">보유 상태 전체</option>
               <option value="사용 가능">사용 가능</option>
               <option value="사용 완료">사용 완료</option>
               <option value="만료">만료</option>
               <option value="회수">회수</option>
             </select></label>
-            <span className={styles.rowSpacer} />
-            <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
+            <span className={shared.spacer} />
+            <button type="button" className={shared.clearBtn} onClick={resetFilters}>초기화</button>
           </div>
         </div>
 
-        <div className={styles.resultRow}>
-          <span className={styles.resultLabel}>총 {filtered.length}건</span>
-          <div className={styles.resultActions}>
+        {selectedIds.length > 0 && (
+          <div className={shared.bulkBar}>
+            <span className={shared.bulkLabel}>{selectedIds.length}건 선택됨</span>
+            <button type="button" className={shared.bulkBtn} onClick={() => setConfirm({ kind: 'bulkRevoke' })}>쿠폰 회수</button>
+            <button type="button" className={shared.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
+          </div>
+        )}
+
+        <div className={shared.resultBar}>
+          <span className={shared.resultLabel}>총 {filtered.length}건</span>
+          <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')} />
           </div>
         </div>
-      </div>
+      </header>
 
-      {selectedIds.length > 0 && (
-        <div className={styles.bulkBar}>
-          <span className={styles.bulkLabel}>{selectedIds.length}건 선택됨</span>
-          <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'bulkRevoke' })}>쿠폰 회수</button>
-          <button type="button" className={styles.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly(`${selectedIds.length}건을 다운로드했습니다.`)}>다운로드</button>
-        </div>
-      )}
-
-      <div className={styles.gridWrap}>
+      <div className={shared.tableWrap}>
         <DataGrid
           columns={GRID_COLUMNS}
           rows={rows}
@@ -289,30 +295,30 @@ export function CouponIssuesPage() {
       )}
 
       {(confirm?.kind === 'revoke' || confirm?.kind === 'bulkRevoke') && (
-        <div className={styles.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
-          <div className={styles.dialogBox}>
-            <div className={styles.dialogTitle}>{confirm.kind === 'revoke' ? '쿠폰을 회수하시겠습니까?' : `${selectedIds.length}건 쿠폰 회수`}</div>
+        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
+          <div className={shared.dialogBox}>
+            <div className={shared.dialogTitle}>{confirm.kind === 'revoke' ? '쿠폰을 회수하시겠습니까?' : `${selectedIds.length}건 쿠폰 회수`}</div>
             {confirm.kind === 'revoke' ? (
-              <div className={styles.dialogSummary}>
-                <div className={styles.dialogSummaryRow}><span>회원</span><span>{confirm.item.member}</span></div>
-                <div className={styles.dialogSummaryRow}><span>쿠폰</span><span>{confirm.item.couponNameSnapshot}</span></div>
-                <div className={styles.dialogSummaryRow}><span>만료일</span><span>{confirm.item.expiresAt.slice(0, 10)}</span></div>
+              <div className={shared.dialogSummary}>
+                <div className={shared.dialogSummaryRow}><span>회원</span><span>{confirm.item.member}</span></div>
+                <div className={shared.dialogSummaryRow}><span>쿠폰</span><span>{confirm.item.couponNameSnapshot}</span></div>
+                <div className={shared.dialogSummaryRow}><span>만료일</span><span>{confirm.item.expiresAt.slice(0, 10)}</span></div>
               </div>
             ) : (
-              <div className={styles.dialogSummary}>
-                <div className={styles.dialogSummaryRow}><span>회수 가능</span><span>{bulkRevokeEligible.length}건</span></div>
-                <div className={styles.dialogSummaryRow}><span>제외 (사용완료/만료/회수됨)</span><span>{selectedIds.length - bulkRevokeEligible.length}건</span></div>
+              <div className={shared.dialogSummary}>
+                <div className={shared.dialogSummaryRow}><span>회수 가능</span><span>{bulkRevokeEligible.length}건</span></div>
+                <div className={shared.dialogSummaryRow}><span>제외 (사용완료/만료/회수됨)</span><span>{selectedIds.length - bulkRevokeEligible.length}건</span></div>
               </div>
             )}
-            <select className={styles.selectSm} style={{ width: '100%', marginBottom: 10 }} value={revokeReason} onChange={(e) => setRevokeReason(e.target.value as RevokeReason)}>
+            <select className={shared.selectSm} style={{ width: '100%', marginBottom: 10 }} value={revokeReason} onChange={(e) => setRevokeReason(e.target.value as RevokeReason)}>
               {REVOKE_REASONS.map((r) => <option key={r}>{r}</option>)}
             </select>
-            <input className={styles.searchInput} style={{ width: '100%', maxWidth: 'none', marginBottom: 16 }} placeholder="상세 사유 (선택)" value={revokeDetail} onChange={(e) => setRevokeDetail(e.target.value)} />
-            <div className={styles.dialogActions}>
-              <button type="button" className={styles.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
+            <input className={shared.searchInput} style={{ width: '100%', maxWidth: 'none', marginBottom: 16 }} placeholder="상세 사유 (선택)" value={revokeDetail} onChange={(e) => setRevokeDetail(e.target.value)} />
+            <div className={shared.dialogActions}>
+              <button type="button" className={shared.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirm(null)}>취소</button>
               <button
                 type="button"
-                className={styles.dialogBtn}
+                className={shared.dialogBtn}
                 style={{ border: 0, background: '#dc2626', color: '#fff' }}
                 disabled={confirm.kind === 'bulkRevoke' && bulkRevokeEligible.length === 0}
                 onClick={confirmAction}
@@ -324,7 +330,6 @@ export function CouponIssuesPage() {
         </div>
       )}
 
-      {toast && <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#18181b', color: '#fff', padding: '10px 18px', borderRadius: 9, fontSize: 12.5, zIndex: 40 }}>{toast}</div>}
     </div>
   );
 }

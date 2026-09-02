@@ -8,6 +8,7 @@ import { SanctionModal, type SanctionSubmit } from './SanctionModal';
 import { SANCTION_LEVEL, type SanctionMode } from './sanctionOptions';
 import { formatNumber } from '../../lib/theme';
 import { SearchField } from '../../components/SearchField';
+import { CommonButton } from '../../components/common';
 
 const PAGE_LABELS = ['‹', '1', '2', '3', '4', '5', '›'];
 const BUSINESS_MODES: MemberBusinessType[] = ['B2C', 'C2C', 'B2B'];
@@ -206,15 +207,16 @@ export function RecordsPage({ kind }: Props) {
               placeholder={rec.placeholder}
             />
             {rec.filters.map((f) => (
-              <button
+              <CommonButton
                 key={f.label}
-                type="button"
+                variant={f.active ? 'primary-light' : 'secondary'}
+                size="md"
                 className={`${styles.filterBtn} ${f.active ? styles.active : ''}`}
                 onClick={() => setFilter(f.label)}
               >
                 {f.label}
                 <span className={styles.filterCount}>{f.count}</span>
-              </button>
+              </CommonButton>
             ))}
           </div>
 

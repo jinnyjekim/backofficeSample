@@ -15,6 +15,7 @@ import {
 } from './companiesData';
 import { CompanyDetailDrawer } from './CompanyDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '68px minmax(160px,1.3fr) 76px 70px 76px 40px 60px 52px 96px 84px 60px';
 const COLUMN_LABELS = ['회사코드', '회사명', '사업자번호', '회사유형', '거래상태', '등급', '담당자', '최근거래일', '미수금', '등록일', '관리'];
@@ -120,15 +121,16 @@ export function CompaniesPage() {
 
         <div className={styles.quickFilters}>
           {quickFilters.map((qf) => (
-            <button
+            <CommonButton
               key={qf.label}
-              type="button"
+              variant={qf.active ? 'primary-light' : 'secondary'}
+              size="md"
               className={`${styles.quickFilterBtn} ${qf.active ? styles.active : ''}`}
               onClick={() => setStatusFilter(qf.label)}
             >
               <span className={styles.quickFilterLabel}>{qf.label}</span>
               <span className={styles.quickFilterCount}>{qf.count}</span>
-            </button>
+            </CommonButton>
           ))}
         </div>
 

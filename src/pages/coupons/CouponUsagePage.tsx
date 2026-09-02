@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import styles from '../ops/opsShared.module.css';
+import shared from './shared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
 import { CouponUsageDetailDrawer } from './CouponUsageDetailDrawer';
@@ -17,6 +17,7 @@ import {
   type UsageStatus,
 } from './couponUsageData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton, showToast } from '../../components/common';
 
 const GRID_TEMPLATE = '132px 1.3fr 60px 72px 80px 80px 52px 100px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -42,7 +43,6 @@ export function CouponUsagePage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [drawerId, setDrawerId] = useState<string | null>(null);
-  const [toast, setToast] = useState('');
 
   useEffect(() => {
     const code = searchParams.get('code');
@@ -75,10 +75,7 @@ export function CouponUsagePage() {
     [usages, quickFilter, search, couponFilter, statusFilter, startDate, endDate],
   );
 
-  const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
-  };
+  const toastBriefly = (message: string) => showToast({ message, type: 'success' });
   const resetFilters = () => {
     setKeyword('');
     setSearch('');
@@ -112,35 +109,44 @@ export function CouponUsagePage() {
   });
 
   return (
-    <div className={styles.page}>
-      <div className={styles.headTop}>
-        <div className={styles.headRow}>
+    <div className={shared.page}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <div className={styles.title}>쿠폰 사용 내역</div>
-            <div className={styles.subtitle}>주문에서 실제 사용된 쿠폰과 할인 처리 결과를 조회합니다.</div>
+            <div className={shared.title}>쿠폰 사용 내역</div>
+            <div className={shared.subtitle}>주문에서 실제 사용된 쿠폰과 할인 처리 결과를 조회합니다.</div>
           </div>
         </div>
 
-        <div className={styles.quickFilters}>
-          {QUICK_FILTERS.map((f) => (
-            <button key={f} type="button" className={styles.qfBtn} style={{ borderColor: quickFilter === f ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: quickFilter === f ? 'var(--accent)' : '#fff' }} onClick={() => setQuickFilter(f)}>
-              <span className={styles.qfLabel} style={{ color: quickFilter === f ? '#fff' : '#3f3f46' }}>{f}</span>
-              <span className={styles.qfCount} style={{ color: quickFilter === f ? '#fff' : '#3f3f46' }}>{counts[f] ?? 0}</span>
-            </button>
-          ))}
+        <div className={shared.quickFilters}>
+          {QUICK_FILTERS.map((f) => {
+            const active = quickFilter === f;
+            return (
+              <CommonButton
+                key={f}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.quickFilterBtn} ${active ? shared.active : ''}`}
+                onClick={() => setQuickFilter(f)}
+              >
+                <span className={shared.quickFilterLabel}>{f}</span>
+                <span className={shared.quickFilterCount}>{counts[f] ?? 0}</span>
+              </CommonButton>
+            );
+          })}
         </div>
 
-        <div className={styles.filterBox}>
-          <form className={styles.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
-            <input className={styles.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="주문번호, 회원, 쿠폰명 또는 사용번호 검색" />
-            <button type="submit" className={styles.searchBtn}>검색</button>
+        <div className={shared.filterCard}>
+          <form className={shared.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
+            <input className={shared.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="주문번호, 회원, 쿠폰명 또는 사용번호 검색" />
+            <button type="submit" className={shared.searchBtn}>검색</button>
           </form>
-          <div className={styles.filterRow2}>
-            <label className="globalFilterField"><span>쿠폰</span><select aria-label="쿠폰" className={styles.selectSm} value={couponFilter} onChange={(e) => setCouponFilter(e.target.value)}>
+          <div className={shared.filterRow2}>
+            <label className="globalFilterField"><span>쿠폰</span><select aria-label="쿠폰" className={shared.selectSm} value={couponFilter} onChange={(e) => setCouponFilter(e.target.value)}>
               <option value="">쿠폰 전체</option>
               {COUPONS.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
             </select></label>
-            <label className="globalFilterField"><span>사용 상태</span><select aria-label="사용 상태" className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as UsageStatus | '')}>
+            <label className="globalFilterField"><span>사용 상태</span><select aria-label="사용 상태" className={shared.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as UsageStatus | '')}>
               <option value="">사용 상태 전체</option>
               <option value="정상 사용">정상 사용</option>
               <option value="부분 취소 반영">부분 취소 반영</option>
@@ -148,23 +154,23 @@ export function CouponUsagePage() {
               <option value="부분 환불 반영">부분 환불 반영</option>
               <option value="전체 환불 반영">전체 환불 반영</option>
             </select></label>
-            <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            <input type="date" className={shared.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
-            <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-            <span className={styles.rowSpacer} />
-            <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
+            <input type="date" className={shared.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <span className={shared.spacer} />
+            <button type="button" className={shared.clearBtn} onClick={resetFilters}>초기화</button>
           </div>
         </div>
 
-        <div className={styles.resultRow}>
-          <span className={styles.resultLabel}>총 {filtered.length}건</span>
-          <div className={styles.resultActions}>
+        <div className={shared.resultBar}>
+          <span className={shared.resultLabel}>총 {filtered.length}건</span>
+          <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')} />
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className={styles.gridWrap}>
+      <div className={shared.tableWrap}>
         <DataGrid
           columns={GRID_COLUMNS}
           rows={rows}
@@ -182,7 +188,6 @@ export function CouponUsagePage() {
         <CouponUsageDetailDrawer key={selected.id} usage={selected} onClose={() => setDrawerId(null)} onAddMemo={(text) => addMemo(selected.id, text)} />
       )}
 
-      {toast && <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#18181b', color: '#fff', padding: '10px 18px', borderRadius: 9, fontSize: 12.5, zIndex: 40 }}>{toast}</div>}
     </div>
   );
 }

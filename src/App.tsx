@@ -140,6 +140,7 @@ export default function App() {
         <Route index element={<Navigate to="/members" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="components" element={<ComponentsPage />} />
+        <Route path="component" element={<Navigate to="/components" replace />} />
         <Route path="b2c/product-inquiries/list" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="b2c/product-inquiries/waiting" element={<Navigate to="/cs/product-inquiries?status=waiting" replace />} />
         <Route path="b2c/product-inquiries/answered" element={<Navigate to="/cs/product-inquiries?status=answered" replace />} />

@@ -21,6 +21,7 @@ import {
   type FreeShippingPolicy,
   type QuickFilter,
 } from './freeShippingConditionData';
+import { CommonButton } from '../../components/common';
 
 const TODAY = '2026-08-25';
 
@@ -199,17 +200,21 @@ export function FreeShippingConditionPage() {
         {view === 'list' && (
           <>
             <div className={shared.quickFilters}>
-              {QUICK_FILTERS.map((filter) => (
-                <button
-                  key={filter}
-                  type="button"
-                  className={`${shared.qfBtn} ${quickFilter === filter ? styles.quickActive : ''}`}
-                  onClick={() => setQuickFilter(filter)}
-                >
-                  <span className={shared.qfLabel}>{filter}</span>
-                  <span className={shared.qfCount}>{policies.filter((p) => matchesQuickFilter(p, filter, warnings)).length}</span>
-                </button>
-              ))}
+              {QUICK_FILTERS.map((filter) => {
+                const active = quickFilter === filter;
+                return (
+                  <CommonButton
+                    key={filter}
+                    variant={active ? 'primary-light' : 'secondary'}
+                    size="md"
+                    className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
+                    onClick={() => setQuickFilter(filter)}
+                  >
+                    <span className={shared.qfLabel}>{filter}</span>
+                    <span className={shared.qfCount}>{policies.filter((p) => matchesQuickFilter(p, filter, warnings)).length}</span>
+                  </CommonButton>
+                );
+              })}
             </div>
             <div className={shared.filterBox}>
               <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>

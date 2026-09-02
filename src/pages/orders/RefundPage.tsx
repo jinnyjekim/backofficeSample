@@ -22,6 +22,7 @@ import {
   type RefundStatus,
   type RefundType,
 } from './refundData';
+import { CommonButton } from '../../components/common';
 
 const TODAY = '2026-08-25';
 const NOW = `${TODAY} 15:00`;
@@ -254,17 +255,21 @@ export function RefundPage() {
         </div>
 
         <div className={shared.quickFilters}>
-          {QUICK_FILTERS.map((filter) => (
-            <button
-              key={filter}
-              type="button"
-              className={`${shared.qfBtn} ${quickFilter === filter ? styles.quickActive : ''}`}
-              onClick={() => setQuickFilter(filter)}
-            >
-              <span className={shared.qfLabel}>{filter}</span>
-              <span className={shared.qfCount}>{refunds.filter((r) => matchesQuickFilter(r, filter)).length}</span>
-            </button>
-          ))}
+          {QUICK_FILTERS.map((filter) => {
+            const active = quickFilter === filter;
+            return (
+              <CommonButton
+                key={filter}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.qfBtn} ${active ? shared.active : ''}`}
+                onClick={() => setQuickFilter(filter)}
+              >
+                <span className={shared.qfLabel}>{filter}</span>
+                <span className={shared.qfCount}>{refunds.filter((r) => matchesQuickFilter(r, filter)).length}</span>
+              </CommonButton>
+            );
+          })}
         </div>
 
         <div className={shared.filterBox}>

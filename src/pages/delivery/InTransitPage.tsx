@@ -3,7 +3,6 @@ import styles from './deliveryShared.module.css';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { InTransitDetailDrawer } from './InTransitDetailDrawer';
-import { quickFilterStyle } from './deliverySharedData';
 import {
   buildTransitCounts,
   calcTransit,
@@ -15,6 +14,7 @@ import {
   type TransitShipment,
 } from './inTransitData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '82px 66px 72px 62px 92px 88px 100px 52px 170px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -74,12 +74,17 @@ export function InTransitPage() {
         <div className={styles.quickFilters}>
           {TRANSIT_FILTER_KEYS.map((k) => {
             const active = filter === k;
-            const st = quickFilterStyle(active);
             return (
-              <button key={k} type="button" className={styles.qfBtn} style={{ borderColor: st.border, background: st.bg }} onClick={() => setFilter(k)}>
-                <span className={styles.qfLabel} style={{ color: st.fg }}>{TRANSIT_FILTER_LABEL[k]}</span>
-                <span className={styles.qfCount} style={{ color: st.fg }}>{counts[k] || 0}</span>
-              </button>
+              <CommonButton
+                key={k}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                onClick={() => setFilter(k)}
+              >
+                <span className={styles.qfLabel}>{TRANSIT_FILTER_LABEL[k]}</span>
+                <span className={styles.qfCount}>{counts[k] || 0}</span>
+              </CommonButton>
             );
           })}
         </div>

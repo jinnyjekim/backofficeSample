@@ -4,6 +4,7 @@ import type { GridRow } from '../../components/DataGrid/types';
 import shared from '../ops/opsShared.module.css';
 import styles from './CsHistoryPage.module.css';
 import { CsHistoryDetailDrawer } from './CsHistoryDetailDrawer';
+import { CommonButton } from '../../components/common';
 import {
   ACTION_LABELS,
   AUDIT_ADMINS,
@@ -144,20 +145,24 @@ export function CsHistoryPage() {
         </div>
 
         <div className={shared.quickFilters}>
-          {QUICK_FILTERS.map((filter) => (
-            <button
-              key={filter}
-              type="button"
-              className={`${shared.qfBtn} ${quickFilter === filter ? styles.quickActive : ''}`}
-              onClick={() => {
-                setQuickFilter(filter);
-                setSelected([]);
-              }}
-            >
-              <span className={shared.qfLabel}>{filter}</span>
-              <span className={shared.qfCount}>{CS_AUDIT_LOGS.filter((log) => matchesQuickFilter(log, filter)).length}</span>
-            </button>
-          ))}
+          {QUICK_FILTERS.map((filter) => {
+            const active = quickFilter === filter;
+            return (
+              <CommonButton
+                key={filter}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
+                onClick={() => {
+                  setQuickFilter(filter);
+                  setSelected([]);
+                }}
+              >
+                <span className={shared.qfLabel}>{filter}</span>
+                <span className={shared.qfCount}>{CS_AUDIT_LOGS.filter((log) => matchesQuickFilter(log, filter)).length}</span>
+              </CommonButton>
+            );
+          })}
         </div>
 
         <div className={shared.filterBox}>
