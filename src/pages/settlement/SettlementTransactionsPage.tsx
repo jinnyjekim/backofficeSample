@@ -7,16 +7,7 @@ import { useSettlementDrawer } from './useSettlementDrawer';
 import { flattenTx } from './settlementData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = [
-  'minmax(96px, 1.05fr)',
-  'minmax(64px, .7fr)',
-  'minmax(96px, 1fr)',
-  'minmax(140px, 1.55fr)',
-  'minmax(80px, .85fr)',
-  'minmax(112px, 1.15fr)',
-  'minmax(128px, 1.3fr)',
-  'minmax(64px, .7fr)',
-].join(' ');
+const GRID_TEMPLATE = '74px 52px 70px 1fr 46px 86px 86px 34px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '거래번호' },
   { label: '유형' },

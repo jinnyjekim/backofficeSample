@@ -389,11 +389,11 @@ export function DataGrid({
           )}
           {displayColumns.map((col, i) =>
             col.onClick ? (
-              <button key={i} type="button" className={styles.headBtn} style={{ textAlign: 'center' }} onClick={col.onClick}>
+              <button key={i} type="button" className={styles.headBtn} style={{ textAlign: col.align }} onClick={col.onClick}>
                 <span data-datagrid-column>{col.label}</span>
               </button>
             ) : (
-              <span key={i} style={{ textAlign: 'center' }} data-datagrid-column>
+              <span key={i} style={{ textAlign: col.align }} data-datagrid-column>
                 {col.label}
               </span>
             ),

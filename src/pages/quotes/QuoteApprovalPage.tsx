@@ -8,7 +8,7 @@ import { buildApprovalDetail } from './quoteApprovalDetail';
 import { QuoteApprovalDetailDrawer } from './QuoteApprovalDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '73px 1fr 92px 52px 55px 63px 66px 100px 56px 60px';
+const GRID_TEMPLATE = '73px 1fr 92px 52px 55px 63px 66px 100px 56px';
 const GRID_MIN_WIDTH = '1020px';
 
 const GRID_COLUMNS: GridColumn[] = [
@@ -21,7 +21,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '요청자' },
   { label: '승인 필요 사유' },
   { label: '상태' },
-  { label: '관리' },
 ];
 
 export function QuoteApprovalPage() {
@@ -77,7 +76,6 @@ export function QuoteApprovalPage() {
       { kind: 'text', text: a.requester, color: '#52525b', size: '12px', weight: 500 },
       { kind: 'text', text: a.reasons.length ? `승인 사유 ${a.reasons.length}건` : '-', color: '#d97706', size: '11.5px', weight: 500 },
       { kind: 'badge', text: a.status, bg: sm.bg, fg: sm.fg },
-      { kind: 'link', text: '검토', size: '12px' },
     ];
     return { id: a.id, cells, onClick: () => openDetail(a.id) };
   });

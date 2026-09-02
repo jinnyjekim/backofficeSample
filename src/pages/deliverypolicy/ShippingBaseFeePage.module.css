@@ -13,10 +13,10 @@
 
 .body { padding: 0 24px 28px; }
 
-.warningBanner { display: flex; gap: 11px; padding: 13px 15px; border: 1px solid #f0d9ae; background: #fffaf0; border-radius: 12px; margin-bottom: 14px; }
+.warningBanner { display: flex; gap: 11px; padding: 10px 14px; border: 1px solid #f0d9ae; background: #fffaf0; border-radius: 12px; margin-bottom: 14px; }
 .warningIcon { flex: none; width: 18px; height: 18px; border-radius: 50%; background: #e0a53a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-top: 1px; }
 .warningBody { flex: 1; min-width: 0; }
-.warningTitle { font-size: 12.5px; font-weight: 700; color: #8a5a12; margin-bottom: 6px; }
+.warningTitle { font-size: 12.5px; font-weight: 700; color: #8a5a12; margin-bottom: 2px; }
 .warningList { display: flex; flex-direction: column; gap: 4px; }
 .warningItem { font-size: 12px; color: #9a6a22; line-height: 1.5; }
 
@@ -64,10 +64,10 @@
 .formField input, .formField select { width: 100%; box-sizing: border-box; height: 34px; padding: 0 10px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 7px; background: #fff; color: #18181b; font: inherit; font-size: 12.5px; }
 .formField input:disabled, .formField select:disabled { background: #fafafa; color: #71717a; opacity: 1; }
 
-.switch { position: relative; width: 38px; height: 21px; padding: 0; border: 0; border-radius: 999px; background: #d4d4d8; cursor: pointer; transition: 0.15s; flex: none; }
-.switch i { position: absolute; top: 3px; left: 3px; width: 15px; height: 15px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: 0.15s; }
+.switch { position: relative; width: 34px; height: 19px; padding: 0; border: 0; border-radius: 999px; background: #d4d4d8; cursor: pointer; transition: 0.15s; flex: none; }
+.switch i { position: absolute; top: 3px; left: 3px; width: 13px; height: 13px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: 0.15s; }
 .switchOn { background: var(--accent); }
-.switchOn i { left: 20px; }
+.switchOn i { left: 18px; }
 .switch:disabled { opacity: 0.55; cursor: default; }
 .infoNote { padding: 10px 12px; margin-bottom: 14px; border-radius: 8px; background: #f8fafc; color: #64748b; font-size: 11.5px; line-height: 1.5; }
 .infoNote a, .linkBtn { color: var(--accent); background: none; border: 0; padding: 0; font: inherit; cursor: pointer; text-decoration: underline; }
@@ -116,4 +116,83 @@
 }
 @media (max-width: 900px) {
   .summaryGrid, .cardGrid { grid-template-columns: 1fr; }
+}
+
+.warningAction { align-self: center; flex: none; height: 30px; padding: 0 12px; border: 1px solid #e0a53a; border-radius: 8px; background: #fff; color: #8a5a12; font-size: 11.5px; font-weight: 700; cursor: pointer; }
+.warningAction:hover { background: #fff4de; }
+
+.cardHeadRow { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 15px 17px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.badgeActive { flex: none; padding: 3px 10px; border-radius: 999px; background: #ecfdf5; color: #047857; font-size: 11px; font-weight: 700; white-space: nowrap; }
+
+.chipsBar { margin-bottom: 14px; }
+.chipsBody { display: flex; gap: 8px; flex-wrap: wrap; }
+.chipItem { display: flex; align-items: center; gap: 8px; min-height: 32px; box-sizing: border-box; padding: 6px 12px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; background: #fff; }
+.chipLabel { font-size: 11px; color: #8b8b93; }
+.chipValue { font-size: 13px; font-weight: 700; color: #18181b; }
+
+.basicGrid { display: grid; grid-template-columns: minmax(0, 1fr) 370px; gap: 14px; align-items: start; }
+.basicGrid > .card, .basicGrid > .infoNote { margin-bottom: 0; }
+.basicGrid .cardHead, .basicGrid .cardHeadRow { padding: 14px 17px; }
+.basicGrid .cardBody { padding: 14px 17px; gap: 12px; }
+.basicAmount .cardBody { padding-top: 12px; padding-bottom: 12px; }
+.basicUsage { grid-column: 1; grid-row: 1; }
+.basicPreview { grid-column: 2; grid-row: 1 / span 3; }
+.basicAmount { grid-column: 1; grid-row: 2; }
+.basicTax { grid-column: 1; grid-row: 3; }
+@media (max-width: 1080px) {
+  .basicGrid { grid-template-columns: 1fr; }
+  .basicUsage, .basicPreview, .basicAmount, .basicTax { grid-column: 1; grid-row: auto; }
+}
+
+.radioGrid { display: grid; gap: 10px; }
+.radioCard { display: flex; flex-direction: column; gap: 4px; padding: 10px 14px; border: 1.5px solid rgba(0, 0, 0, 0.1); border-radius: 10px; background: #fff; text-align: left; cursor: pointer; }
+.radioCard:hover { border-color: rgba(0, 0, 0, 0.25); }
+.radioCardActive { border-color: var(--accent); background: #f4f8ff; }
+.radioCardTitle { font-size: 13px; font-weight: 700; color: #18181b; }
+.radioCardActive .radioCardTitle { color: var(--accent); }
+.radioCardDesc { font-size: 11px; color: #8b8b93; line-height: 1.4; }
+
+.inlineThreshold { display: flex; align-items: center; gap: 8px; flex: none; }
+.inlineThreshold .inputWithUnit { width: 130px; }
+.inlineThreshold span { font-size: 12px; color: #52525b; white-space: nowrap; }
+.basicUsage .thresholdRow { align-items: center; padding: 14px; border: 1px dashed rgba(0, 0, 0, 0.1); border-radius: 10px; background: #fafafa; }
+
+.inputWithUnit { position: relative; min-width: 0; }
+.inputWithUnit .textField { padding-right: 32px; text-align: right; font-variant-numeric: tabular-nums; }
+.inputUnit { position: absolute; top: 50%; right: 11px; transform: translateY(-50%); color: #a1a1aa; font-size: 11px; pointer-events: none; }
+
+.amountGrid { display: grid; grid-template-columns: minmax(160px, 1fr) minmax(320px, 2fr) minmax(160px, 1fr) minmax(160px, 1fr); gap: 20px 24px; align-items: start; }
+.dateFieldRow { display: flex; align-items: center; gap: 10px; }
+.policyDatePicker { width: 158px; flex: none; }
+.basicFooter { margin-top: 18px; }
+.previewFieldRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.previewFieldRow .fieldLabel { margin-bottom: 0; }
+.previewFieldRow .inputWithUnit { width: 130px; flex: none; }
+
+.presetRow { display: flex; gap: 6px; margin-top: 7px; }
+.presetChip { height: 26px; padding: 0 10px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 7px; background: #fff; color: #52525b; font-size: 11px; cursor: pointer; }
+.presetChip:hover { border-color: rgba(0, 0, 0, 0.25); }
+.presetChipOn { background: #18181b; border-color: #18181b; color: #fff; font-weight: 600; }
+
+.calcStepper { display: flex; align-items: center; gap: 10px; }
+.stepperBtn { width: 30px; height: 30px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 8px; background: #fff; color: #3f3f46; font-size: 15px; line-height: 1; cursor: pointer; }
+.stepperBtn:hover { background: #fafafa; }
+.stepperValue { min-width: 24px; text-align: center; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.scenarioTable { margin-top: 4px; padding-top: 12px; border-top: 1px solid rgba(0, 0, 0, 0.06); }
+.scenarioTitle { font-size: 11px; font-weight: 600; color: #8b8b93; margin-bottom: 6px; }
+.scenarioRow { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12px; color: #3f3f46; }
+.scenarioRow strong { font-weight: 700; font-variant-numeric: tabular-nums; }
+.basicPreview .breakdownRowTotal span:last-child { font-size: 20px; line-height: 1.15; }
+.basicPreview .cardBody { padding: 12px 17px; gap: 8px; }
+.basicPreview .breakdownTable { margin-bottom: 0; }
+.basicPreview .scenarioTable { margin-top: 0; padding-top: 8px; }
+.basicPreview .scenarioRow { padding: 3px 0; }
+
+@media (max-width: 1400px) {
+  .amountGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .amountGrid { grid-template-columns: 1fr; }
+  .dateFieldRow { align-items: flex-start; flex-direction: column; }
 }
