@@ -152,15 +152,24 @@ export function ComponentsPage() {
               <span className={styles.sectionHint}>CommonButton · CommonButtonGroup</span>
             </div>
             <div className={styles.card}>
-              <Demo name="Variant" desc="primary / secondary / ghost / emphasis / outlined / inactive / none">
+              <Demo name="Variant" desc="기본 업무 버튼">
                 <CommonButton variant="primary">Primary</CommonButton>
+                <CommonButton variant="primary-light">Primary Light</CommonButton>
                 <CommonButton variant="secondary">Secondary</CommonButton>
                 <CommonButton variant="ghost">Ghost</CommonButton>
                 <CommonButton variant="emphasis">Emphasis</CommonButton>
                 <CommonButton variant="outlined">Outlined</CommonButton>
+                <CommonButton variant="none">Text</CommonButton>
                 <CommonButton variant="inactive">Inactive</CommonButton>
               </Demo>
-              <Demo name="Size · Round · Icon · Loading">
+              <Demo name="Status Variant" desc="실제 승인·경고·삭제 업무에 사용하는 색상">
+                <CommonButton variant="success">승인</CommonButton>
+                <CommonButton variant="success-light">승인 선택</CommonButton>
+                <CommonButton variant="warning">확인 필요</CommonButton>
+                <CommonButton variant="danger-light">반려</CommonButton>
+                <CommonButton variant="danger">삭제</CommonButton>
+              </Demo>
+              <Demo name="Size · Round · Icon · Loading" desc="sm 30 / md 34 / lg 36px">
                 <CommonButton size="sm">Small</CommonButton>
                 <CommonButton size="md">Medium</CommonButton>
                 <CommonButton size="lg">Large</CommonButton>
@@ -253,13 +262,13 @@ export function ComponentsPage() {
               <span className={styles.sectionHint}>Badge · Divider · Form/FormField · Header</span>
             </div>
             <div className={styles.card}>
-              <Demo name="Badge">
-                <CommonBadge type="primary">Primary</CommonBadge>
-                <CommonBadge type="success">성공</CommonBadge>
-                <CommonBadge type="error">오류</CommonBadge>
-                <CommonBadge type="warning">경고</CommonBadge>
-                <CommonBadge type="info-light">정보</CommonBadge>
-                <CommonBadge type="ghost" dot>대기</CommonBadge>
+              <Demo name="Badge" desc="운영 화면에서 사용하는 상태 색상">
+                <CommonBadge type="success-light">정상</CommonBadge>
+                <CommonBadge type="info-light">진행중</CommonBadge>
+                <CommonBadge type="primary-light">예약</CommonBadge>
+                <CommonBadge type="warning-light">주의</CommonBadge>
+                <CommonBadge type="error-light">실패</CommonBadge>
+                <CommonBadge type="ghost">중지</CommonBadge>
               </Demo>
               <Demo name="Divider" col>
                 <CommonDivider label="섹션 구분" />

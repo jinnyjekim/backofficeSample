@@ -25,6 +25,65 @@
   --common-font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --common-input-font-size: 12.5px;
   --common-input-line-height: 1.45;
+
+  /* m2m-uiux-react: keep the public token names and inherit this app's palette. */
+  --m2m-pg-brand: var(--accent);
+  --m2m-pg-brand-hover: var(--accent-hover);
+  --m2m-pg-brand-active: oklch(0.42 0.16 258);
+  --m2m-pg-brand-light: var(--common-primary-light);
+  --m2m-pg-brand-sub: #e0e7ff;
+  --m2m-pg-brand-border: var(--common-primary-border);
+
+  --m2m-pg-bg-page: #f6f6f7;
+  --m2m-pg-bg-card: var(--common-bg);
+  --m2m-pg-bg-subtle: var(--common-bg-subtle);
+  --m2m-pg-bg-header: var(--common-bg);
+  --m2m-pg-bg-code: #f4f4f5;
+  --m2m-pg-border: var(--common-border);
+  --m2m-pg-border-sub: var(--common-border-strong);
+  --m2m-pg-text-primary: var(--common-text);
+  --m2m-pg-text-sub: var(--common-text-sub);
+  --m2m-pg-text-muted: var(--common-text-muted);
+  --m2m-pg-text-placeholder: var(--common-text-disabled);
+  --m2m-pg-text-code: #4338ca;
+  --m2m-pg-sidebar-shadow: 2px 0 12px rgba(24, 24, 27, 0.04);
+
+  --m2m-pg-badge-bg: var(--common-primary-light);
+  --m2m-pg-badge-color: #4338ca;
+  --m2m-pg-badge-border: var(--common-primary-border);
+
+  --m2m-pg-success: var(--common-success);
+  --m2m-pg-success-dark: #047857;
+  --m2m-pg-success-bg: #ecfdf5;
+  --m2m-pg-success-border: #a7f3d0;
+  --m2m-pg-error: var(--common-error);
+  --m2m-pg-error-dark: #b91c1c;
+  --m2m-pg-error-bg: #fef2f2;
+  --m2m-pg-error-border: #fecaca;
+  --m2m-pg-warning: var(--common-warning);
+  --m2m-pg-warning-dark: #b45309;
+  --m2m-pg-warning-bg: #fffbeb;
+  --m2m-pg-warning-border: #fde68a;
+  --m2m-pg-info: var(--common-info);
+  --m2m-pg-info-dark: #1d4ed8;
+  --m2m-pg-info-bg: #eff6ff;
+  --m2m-pg-info-border: #bfdbfe;
+
+  --m2m-pg-comp-bg: var(--common-bg);
+  --m2m-pg-comp-bg-subtle: #fafafa;
+  --m2m-pg-comp-bg-hover: #f4f4f5;
+  --m2m-pg-comp-bg-disabled: var(--common-bg-disabled);
+  --m2m-pg-comp-border: var(--common-border);
+  --m2m-pg-comp-border-sub: var(--common-border-strong);
+  --m2m-pg-comp-text: var(--common-text);
+  --m2m-pg-comp-text-sub: var(--common-text-sub);
+  --m2m-pg-comp-text-muted: var(--common-text-muted);
+  --m2m-pg-comp-text-disabled: var(--common-text-disabled);
+
+  --m2m-pg-secondary-bg: var(--common-text);
+  --m2m-pg-secondary-text: var(--common-bg);
+  --m2m-pg-skeleton-base: #f4f4f5;
+  --m2m-pg-skeleton-shine: #e4e4e7;
 }
 
 * {

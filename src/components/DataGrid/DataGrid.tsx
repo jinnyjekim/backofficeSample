@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { CommonBadge } from '../common/CommonControls';
 import styles from './DataGrid.module.css';
 import type { Cell, DataGridProps } from './types';
 
@@ -135,9 +136,9 @@ function CellView({ cell }: { cell: Cell }) {
       );
     case 'badge':
       return (
-        <span className={styles.badge} style={{ background: cell.bg, color: cell.fg }}>
+        <CommonBadge type="ghost" style={{ background: cell.bg, color: cell.fg }}>
           {cell.text}
-        </span>
+        </CommonBadge>
       );
     case 'badgeSub':
       return (

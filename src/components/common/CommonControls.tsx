@@ -9,6 +9,7 @@ import {
   useState,
   type ButtonHTMLAttributes,
   type ChangeEvent,
+  type HTMLAttributes,
   type InputHTMLAttributes,
   type ReactNode,
   type SelectHTMLAttributes,
@@ -25,7 +26,7 @@ const classNameOf = (value: CommonClassNames | undefined, key: 'root' | 'control
   typeof value === 'string' ? (key === 'root' ? value : '') : value?.[key] ?? '';
 
 export interface CommonButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'emphasis' | 'inactive' | 'none' | 'outlined';
+  variant?: 'primary' | 'primary-light' | 'secondary' | 'ghost' | 'emphasis' | 'inactive' | 'none' | 'outlined' | 'success' | 'success-light' | 'warning' | 'danger' | 'danger-light';
   size?: CommonSize;
   round?: boolean;
   disabled?: boolean;
@@ -231,9 +232,9 @@ export function CommonDivider({ direction = 'horizontal', color = 'default', thi
   return <div role="separator" aria-orientation={direction} className={cx(styles.divider, styles[`divider_${direction}`], Boolean(label) && styles[`label_${labelAlign}`], classNameOf(classNames), className)} style={{ '--divider-color': lineColor, '--divider-size': `${thickness}px`, '--divider-style': dashed ? 'dashed' : 'solid' } as React.CSSProperties}>{label && <span>{label}</span>}</div>;
 }
 
-export interface CommonBadgeProps { type?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info' | 'ghost' | 'primary-light' | 'success-light' | 'error-light' | 'warning-light' | 'info-light'; size?: CommonSize; round?: boolean; dot?: boolean; children: ReactNode; className?: string; classNames?: CommonClassNames; }
-export function CommonBadge({ type = 'primary', size = 'md', round = true, dot = false, children, className, classNames }: CommonBadgeProps) {
-  return <span className={cx(styles.badge, styles[`badge_${type}`], styles[`badge_${size}`], round && styles.round, classNameOf(classNames), className)}>{dot && <i />}{children}</span>;
+export interface CommonBadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> { type?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info' | 'ghost' | 'primary-light' | 'success-light' | 'error-light' | 'warning-light' | 'info-light'; size?: CommonSize; round?: boolean; dot?: boolean; children: ReactNode; classNames?: CommonClassNames; }
+export function CommonBadge({ type = 'primary', size = 'md', round = true, dot = false, children, className, classNames, ...props }: CommonBadgeProps) {
+  return <span {...props} className={cx(styles.badge, styles[`badge_${type}`], styles[`badge_${size}`], round && styles.round, classNameOf(classNames), className)}>{dot && <i />}{children}</span>;
 }
 
 export interface CommonHeaderProps { type?: 'default' | 'primary'; title: ReactNode; back?: boolean | (() => void); actions?: ReactNode; logo?: ReactNode; sticky?: boolean; className?: string; classNames?: CommonClassNames; }
