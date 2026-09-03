@@ -13,6 +13,10 @@
 .filterCard{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:12px;padding:14px 16px;margin-bottom:16px}
 .filterRow1{display:flex;gap:8px;margin-bottom:12px}
 .filterRow2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.dateFilterField{display:inline-flex;flex:0 0 auto;flex-direction:column;gap:6px;color:var(--common-text-muted);font-size:10.5px;font-weight:600;line-height:1.2}
+.dateFilterField>span:first-child{padding-left:1px}
+.dateRange{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent}
+.dateSeparator{display:inline-flex;align-items:center;justify-content:center;height:34px;color:var(--common-text-muted);font-family:var(--common-font-family);font-size:13px;font-weight:400;line-height:1;user-select:none}
 .selectSm{height:34px;border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:0 9px;font-size:12.5px;color:#3f3f46;background:#fff}
 .searchInput{flex:1;max-width:340px;height:34px;border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:0 11px;font-size:13px;outline:0;box-sizing:border-box}
 .searchInput:focus{border-color:oklch(.6 .14 258)}

@@ -77,8 +77,8 @@ export function ReviewAnalyticsPage() {
 
   return (
     <div className={shared.page}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
             <div className={shared.title}>리뷰 분석</div>
             <div className={shared.subtitle}>리뷰 품질, 고객 반응과 운영 대응 현황을 상품별로 분석합니다.</div>
@@ -137,7 +137,7 @@ export function ReviewAnalyticsPage() {
         <div className={shared.resultRow}>
           <span className={shared.resultLabel}>상품별 리뷰 성과</span>
         </div>
-      </div>
+      </header>
 
       <div className={shared.gridWrap}>
         <DataGrid columns={COLUMNS} rows={rows} gridTemplate="1.5fr 90px 90px 90px 110px 90px" minWidth="760px" empty={rows.length === 0} emptyText="분석할 리뷰 데이터가 없습니다." />

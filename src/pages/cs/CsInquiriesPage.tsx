@@ -6,7 +6,7 @@ import { InquiryDetailDrawer } from './InquiryDetailDrawer';
 import shared from '../ops/opsShared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './CsInquiriesPage.module.css';
-import { CommonButton, ExcelDownloadButton } from '../../components/common';
+import { CommonButton, ExcelDownloadButton, showToast } from '../../components/common';
 import {
   fmtDateTime,
   getSlaInfo,
@@ -69,7 +69,6 @@ export function CsInquiriesPage() {
   const [assignMemo, setAssignMemo] = useState('');
   const [completeReason, setCompleteReason] = useState('안내 완료');
   const [completeMemo, setCompleteMemo] = useState('');
-  const [toast, setToast] = useState('');
 
   const scopeItems = useMemo(() => inquiries.filter((inquiry) => businessScope === '통합' || inquiry.businessType === businessScope), [inquiries, businessScope]);
   const filtered = useMemo(() => scopeItems.filter((inquiry) => {
@@ -92,8 +91,7 @@ export function CsInquiriesPage() {
   };
 
   const setToastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
 
   const assign = () => {
@@ -171,10 +169,10 @@ export function CsInquiriesPage() {
   });
 
   return (
-    <section className={shared.page}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
-          <div><h1 className={shared.title}>1:1 문의</h1><p className={shared.subtitle}>접수부터 답변, 완료까지 문의 처리 흐름과 SLA를 한 화면에서 관리합니다.</p></div>
+    <div className={shared.page}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
+          <div><div className={shared.title}>1:1 문의</div><div className={shared.subtitle}>접수부터 답변, 완료까지 문의 처리 흐름과 SLA를 한 화면에서 관리합니다.</div></div>
           <div className={styles.headerStats}>
             <div><span>답변 필요</span><strong>{scopeItems.filter((item) => matchesQuickFilter(item, '답변 대기')).length}</strong></div>
             <div><span>SLA 임박·초과</span><strong>{scopeItems.filter((item) => ['imminent', 'overdue'].includes(getSlaInfo(item).state)).length}</strong></div>
@@ -221,7 +219,7 @@ export function CsInquiriesPage() {
             <label>답변 기한까지<input type="date" value={dueTo} onChange={(event) => setDueTo(event.target.value)} /></label>
           </div>}
         </div>
-      </div>
+      </header>
 
       {selected.length > 0 && <div className={shared.bulkBar}>
         <span className={shared.bulkLabel}>{selected.length}건 선택</span>
@@ -261,7 +259,6 @@ export function CsInquiriesPage() {
           <div className={shared.dialogActions}><button type="button" className={styles.dialogCancel} onClick={() => setDialog(null)}>취소</button><button type="button" className={styles.primaryButton} onClick={dialog.kind === 'assign' ? assign : complete}>{dialog.kind === 'assign' ? '지정' : '처리 완료'}</button></div>
         </div>
       </div>}
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

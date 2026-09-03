@@ -22,7 +22,7 @@ import {
   type QuickFilter,
   type RegionType,
 } from './regionalShippingFeeData';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 
 const TODAY = '2026-08-25';
 
@@ -69,7 +69,6 @@ export function RegionalShippingFeePage() {
   const [drawerItem, setDrawerItem] = useState<RegionalFeePolicy | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [confirm, setConfirm] = useState<ConfirmState>(null);
-  const [toast, setToast] = useState('');
 
   const [previewAddrId, setPreviewAddrId] = useState(TEST_ADDRESSES[0].id);
 
@@ -88,8 +87,7 @@ export function RegionalShippingFeePage() {
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
   const reset = () => {
     setKeyword('');
@@ -170,12 +168,12 @@ export function RegionalShippingFeePage() {
   const previewResult = computeAddressShippingPreview(previewAddr, policies);
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>지역별 추가 배송비</h1>
-            <p className={shared.subtitle}>배송지에 따라 기본 배송비 위에 추가로 부과되는 지역 할증 배송비를 관리합니다.</p>
+            <div className={shared.title}>지역별 추가 배송비</div>
+            <div className={shared.subtitle}>배송지에 따라 기본 배송비 위에 추가로 부과되는 지역 할증 배송비를 관리합니다.</div>
           </div>
           {view === 'list' && <button type="button" className={shared.createBtn} onClick={openCreate}>+ 지역 배송비 등록</button>}
         </div>
@@ -241,7 +239,7 @@ export function RegionalShippingFeePage() {
             </div>
           </>
         )}
-      </div>
+      </header>
 
       {view === 'list' && (
         <div className={shared.gridWrap}>
@@ -334,7 +332,6 @@ export function RegionalShippingFeePage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

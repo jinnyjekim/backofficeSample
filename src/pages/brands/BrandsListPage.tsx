@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
+import { DatePicker } from '../../components/forms/DatePicker';
 import { BrandDetailDrawer } from './BrandDetailDrawer';
 import { BrandEditorDrawer, type BrandFormData } from './BrandEditorDrawer';
 import { BrandExposureOrderDrawer } from './BrandExposureOrderDrawer';
@@ -19,7 +20,7 @@ import {
   type QuickFilter,
 } from './brandsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 
 const GRID_TEMPLATE = '1.4fr 67px 67px 67px 50px 44px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -49,6 +50,8 @@ export function BrandsListPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<BrandStatus | ''>('');
   const [ownerFilter, setOwnerFilter] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [menuId, setMenuId] = useState<string | null>(null);
@@ -56,7 +59,6 @@ export function BrandsListPage() {
   const [editTarget, setEditTarget] = useState<'new' | Brand | null>(null);
   const [showOrder, setShowOrder] = useState(false);
   const [confirm, setConfirm] = useState<ConfirmState>(null);
-  const [toast, setToast] = useState('');
 
   const issuesMap = useMemo(() => {
     const map: Record<string, string[]> = {};
@@ -77,20 +79,23 @@ export function BrandsListPage() {
         if (search && !`${b.name} ${b.code}`.toLowerCase().includes(search.toLowerCase())) return false;
         if (statusFilter && b.status !== statusFilter) return false;
         if (ownerFilter && b.owner !== ownerFilter) return false;
+        if (startDate && b.createdAt < startDate) return false;
+        if (endDate && b.createdAt > endDate) return false;
         return true;
       }),
-    [brands, quickFilter, search, statusFilter, ownerFilter],
+    [brands, quickFilter, search, statusFilter, ownerFilter, startDate, endDate],
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
   const resetFilters = () => {
     setKeyword('');
     setSearch('');
     setStatusFilter('');
     setOwnerFilter('');
+    setStartDate('');
+    setEndDate('');
   };
 
   function toggleSel(id: string) {
@@ -207,8 +212,8 @@ export function BrandsListPage() {
 
   return (
     <div className={styles.page} onClick={() => menuId && setMenuId(null)}>
-      <div className={styles.headTop}>
-        <div className={styles.headRow}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
           <div>
             <div className={styles.title}>브랜드 목록</div>
             <div className={styles.subtitle}>상품에 연결되는 브랜드 정보를 관리합니다.</div>
@@ -252,6 +257,14 @@ export function BrandsListPage() {
               <option value="">담당자 전체</option>
               {OWNERS.map((o) => <option key={o}>{o}</option>)}
             </select></label>
+            <label className={styles.dateFilterField}>
+              <span>등록일</span>
+              <div className={styles.dateRange}>
+                <DatePicker value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <span className={styles.dateSeparator}>~</span>
+                <DatePicker value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              </div>
+            </label>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>
@@ -263,7 +276,7 @@ export function BrandsListPage() {
             <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')} />
           </div>
         </div>
-      </div>
+      </header>
 
       {selectedIds.length > 0 && (
         <div className={styles.bulkBar}>
@@ -357,7 +370,6 @@ export function BrandsListPage() {
         </div>
       )}
 
-      {toast && <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#18181b', color: '#fff', padding: '10px 18px', borderRadius: 9, fontSize: 12.5, zIndex: 40 }}>{toast}</div>}
     </div>
   );
 }

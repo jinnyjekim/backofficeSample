@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './ReturnExchangeFeePage.module.css';
+import { showToast } from '../../components/common';
 import {
   INITIAL_HISTORY,
   INITIAL_LAST_MODIFIED,
@@ -47,7 +48,6 @@ export function ReturnExchangeFeePage() {
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
   const [reason, setReason] = useState('');
   const [saveError, setSaveError] = useState('');
-  const [toast, setToast] = useState('');
 
   const [scenarioId, setScenarioId] = useState(TEST_SCENARIOS[0].id);
 
@@ -55,8 +55,7 @@ export function ReturnExchangeFeePage() {
   const exceptions = useMemo(() => productReturnExceptions(), []);
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
 
   const set = <K extends keyof ReturnExchangeBasePolicy>(key: K, value: ReturnExchangeBasePolicy[K]) => setDraftPolicy((current) => ({ ...current, [key]: value }));
@@ -100,13 +99,13 @@ export function ReturnExchangeFeePage() {
   const preview = computeReturnExchangeFee(scenario, policy);
 
   return (
-    <section className={shared.page}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
             <div className={styles.eyebrow}>배송 정책</div>
-            <h1 className={shared.title}>반품 / 교환 배송비</h1>
-            <p className={shared.subtitle}>반품 및 교환 시 적용되는 배송비 기준을 관리합니다.</p>
+            <div className={shared.title}>반품 / 교환 배송비</div>
+            <div className={shared.subtitle}>반품 및 교환 시 적용되는 배송비 기준을 관리합니다.</div>
           </div>
           <div className={styles.headMeta}>
             {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
@@ -128,7 +127,7 @@ export function ReturnExchangeFeePage() {
             <button key={key} type="button" className={`${styles.viewTabBtn} ${tab === key ? styles.viewTabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
           ))}
         </div>
-      </div>
+      </header>
 
       <div className={styles.body}>
         {warnings.length > 0 && (
@@ -416,7 +415,6 @@ export function ReturnExchangeFeePage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

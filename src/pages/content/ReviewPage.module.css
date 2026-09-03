@@ -227,3 +227,23 @@
   color: #71717a;
   margin-top: 3px;
 }
+
+.dateRange {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+}
+.dateSeparator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  color: var(--common-text-muted);
+  font-family: var(--common-font-family);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  user-select: none;
+}

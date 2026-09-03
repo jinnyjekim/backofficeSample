@@ -6,6 +6,7 @@ import { AdminHistoryDetailDrawer } from './AdminHistoryDetailDrawer';
 import { ADMINS } from './adminData';
 import { ACTION_TYPES, ACTION_LOGS, LOGIN_LOGS, MENUS, type ActionLogEntry, type LoginLogEntry } from './adminHistoryData';
 import { CommonButton, ExcelDownloadButton } from '../../components/common';
+import { DatePicker } from '../../components/forms/DatePicker';
 
 type Tab = '로그인 이력' | '작업 이력';
 const TABS: Tab[] = ['로그인 이력', '작업 이력'];
@@ -173,9 +174,14 @@ export function AdminHistoryPage() {
                 </select></label>
               </>
             )}
-            <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-            <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
-            <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <label className={styles.dateFilterField}>
+              <span>조회 기간</span>
+              <span className={styles.dateRange}>
+                <DatePicker controlSize="sm" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <span className={styles.dateSeparator} aria-hidden="true">~</span>
+                <DatePicker controlSize="sm" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              </span>
+            </label>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>

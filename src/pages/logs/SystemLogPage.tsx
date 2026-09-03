@@ -29,14 +29,14 @@ type Tab = 'api' | 'error';
 const TABS: [Tab, string][] = [['api', 'API 로그'], ['error', '오류 로그']];
 const QUICK_RANGES: QuickRange[] = ['오늘', '어제', '최근 7일', '최근 30일'];
 
-const API_TEMPLATE = '130px 50px minmax(160px,1.6fr) 40px 54px 80px 68px 60px';
+const API_TEMPLATE = '130px 50px minmax(160px,1.6fr) 40px 54px 80px 68px';
 const API_COLUMNS: GridColumn[] = [
-  { label: '요청 일시' }, { label: 'Method' }, { label: 'Endpoint' }, { label: 'Status' }, { label: '결과' }, { label: '처리시간' }, { label: '요청자' }, { label: '상세' },
+  { label: '요청 일시' }, { label: 'Method' }, { label: 'Endpoint' }, { label: 'Status' }, { label: '결과' }, { label: '처리시간' }, { label: '요청자' },
 ];
 
-const ERROR_TEMPLATE = '118px 80px 40px minmax(180px,1.6fr) 38px 114px 60px';
+const ERROR_TEMPLATE = '118px 80px 40px minmax(180px,1.6fr) 38px 114px';
 const ERROR_COLUMNS: GridColumn[] = [
-  { label: '오류 코드' }, { label: '수준' }, { label: '모듈' }, { label: '메시지' }, { label: '발생횟수' }, { label: '마지막 발생' }, { label: '상세' },
+  { label: '오류 코드' }, { label: '수준' }, { label: '모듈' }, { label: '메시지' }, { label: '발생횟수' }, { label: '마지막 발생' },
 ];
 
 export function SystemLogPage() {
@@ -106,7 +106,6 @@ export function SystemLogPage() {
       { kind: 'badge', text: e.result, bg: e.result === '성공' ? '#ecfdf5' : '#fef2f2', fg: e.result === '성공' ? '#059669' : '#b91c1c' },
       { kind: 'text', text: `${e.durationMs}ms${isSlow ? ' 느림' : ''}`, color: isSlow ? '#b45309' : '#71717a', size: '11.5px', weight: isSlow ? 700 : 500, numeric: true },
       { kind: 'text', text: e.requester, color: '#52525b', size: '12px', weight: 500 },
-      { kind: 'link', text: '보기', size: '12px' },
     ];
     return { id: e.id, cells, onClick: () => setApiDrawer(e) };
   });
@@ -120,7 +119,6 @@ export function SystemLogPage() {
       { kind: 'text', text: g.message, color: '#52525b', size: '12px', weight: 500 },
       { kind: 'text', text: `${g.occurrences.length}회`, color: g.occurrences.length >= 10 ? '#dc2626' : '#3f3f46', size: '12px', weight: 700, align: 'right', numeric: true },
       { kind: 'text', text: errorLastAt(g).slice(0, 16), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-      { kind: 'link', text: '보기', size: '12px' },
     ];
     return { id: g.errorCode, cells, onClick: () => setErrorDrawer(g) };
   });
@@ -205,7 +203,7 @@ export function SystemLogPage() {
             columns={API_COLUMNS}
             rows={apiRows}
             gridTemplate={API_TEMPLATE}
-            minWidth="860px"
+            minWidth="800px"
             empty={apiRows.length === 0}
             emptyText="조회된 로그가 없습니다."
             emptySubtext="기간 또는 검색 조건을 변경해 주세요."
@@ -217,7 +215,7 @@ export function SystemLogPage() {
             columns={ERROR_COLUMNS}
             rows={errorRows}
             gridTemplate={ERROR_TEMPLATE}
-            minWidth="810px"
+            minWidth="750px"
             empty={errorRows.length === 0}
             emptyText="조회 기간에 발생한 오류가 없습니다."
             emptySubtext="기간 또는 검색 조건을 변경해 주세요."

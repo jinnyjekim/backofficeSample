@@ -6,7 +6,7 @@ import { DatePicker } from '../../components/forms/DatePicker';
 import shared from '../ops/opsShared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './NotificationTemplatesPage.module.css';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 import {
   MESSAGE_TEMPLATES,
   TEMPLATE_BUSINESSES,
@@ -95,7 +95,6 @@ export function NotificationTemplatesPage() {
   const [testRecipient, setTestRecipient] = useState('admin01');
   const [deactivateId, setDeactivateId] = useState<string | null>(null);
   const [memoText, setMemoText] = useState('');
-  const [toast, setToast] = useState('');
 
   const selected = templates.find((template) => template.id === detailId) ?? null;
   const deactivateTarget = templates.find((template) => template.id === deactivateId) ?? null;
@@ -116,8 +115,7 @@ export function NotificationTemplatesPage() {
   }), [businessFilter, dateFrom, dateTo, moduleFilter, purposeFilter, quick, search, sendTypeFilter, statusFilter, templates]);
 
   function notify(message: string) {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   }
 
   function resetFilters() {
@@ -275,10 +273,10 @@ export function NotificationTemplatesPage() {
   );
 
   return (
-    <section className={shared.page} onClick={() => menuId && setMenuId(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
-          <div><h1 className={shared.title}>템플릿 관리</h1><p className={shared.subtitle}>서비스 알림·이메일·SMS·Push 콘텐츠와 변수를 업무 템플릿 단위로 통합 관리합니다.</p></div>
+    <div className={shared.page} onClick={() => menuId && setMenuId(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
+          <div><div className={shared.title}>템플릿 관리</div><div className={shared.subtitle}>서비스 알림·이메일·SMS·Push 콘텐츠와 변수를 업무 템플릿 단위로 통합 관리합니다.</div></div>
           <button type="button" className={shared.createBtn} onClick={startCreate}>+ 템플릿 등록</button>
         </div>
         <div className={shared.quickFilters}>
@@ -321,7 +319,7 @@ export function NotificationTemplatesPage() {
           </div>
         </div>
         <div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}건</span><div className={shared.resultActions}><ExcelDownloadButton type="button" onClick={download} /><select className={shared.pageSizeSelect}><option>20개씩 보기</option><option>50개씩 보기</option></select></div></div>
-      </div>
+      </header>
       <div className={shared.gridWrap}>
         <DataGrid columns={COLUMNS} rows={rows} gridTemplate="minmax(200px,1.5fr) 70px minmax(160px,1.2fr) 86px 56px 66px 78px 84px" minWidth="975px" empty={rows.length === 0} emptyText={templates.length === 0 ? '등록된 메시지 템플릿이 없습니다.' : '해당 조건의 템플릿이 없습니다.'} emptySubtext={templates.length === 0 ? '반복해서 사용하는 알림·이메일·SMS·Push 내용을 템플릿으로 등록해 주세요.' : '검색어나 필터 조건을 변경해 주세요.'} emptyActionLabel={templates.length === 0 ? '+ 템플릿 등록' : '필터 초기화'} emptyActionClick={templates.length === 0 ? startCreate : resetFilters} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
       </div>
@@ -330,8 +328,7 @@ export function NotificationTemplatesPage() {
       {preview && <PreviewDialog state={preview} onChannel={(channel) => setPreview({ ...preview, channel })} onClose={() => setPreview(null)} />}
       {testSend && <TestSendDialog state={testSend} recipient={testRecipient} onRecipient={setTestRecipient} onChannel={(channel) => setTestSend({ ...testSend, channel })} onClose={() => setTestSend(null)} onSend={() => { setTestSend(null); notify(`${testRecipient}에게 테스트 발송을 요청했습니다.`); }} />}
       {deactivateTarget && <DeactivateDialog template={deactivateTarget} onClose={() => setDeactivateId(null)} onConfirm={confirmDeactivate} />}
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }
 

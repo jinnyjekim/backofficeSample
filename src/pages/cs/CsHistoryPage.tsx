@@ -4,7 +4,7 @@ import type { GridRow } from '../../components/DataGrid/types';
 import shared from '../ops/opsShared.module.css';
 import styles from './CsHistoryPage.module.css';
 import { CsHistoryDetailDrawer } from './CsHistoryDetailDrawer';
-import { CommonButton, ExcelDownloadButton } from '../../components/common';
+import { CommonButton, ExcelDownloadButton, showToast } from '../../components/common';
 import {
   ACTION_LABELS,
   AUDIT_ADMINS,
@@ -55,7 +55,6 @@ export function CsHistoryPage() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [selectedLogId, setSelectedLogId] = useState<string | null>(null);
   const [downloadOpen, setDownloadOpen] = useState(false);
-  const [toast, setToast] = useState('');
 
   const filtered = useMemo(
     () =>
@@ -79,8 +78,7 @@ export function CsHistoryPage() {
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
 
   const reset = () => {
@@ -135,12 +133,12 @@ export function CsHistoryPage() {
   });
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>CS 처리 이력</h1>
-            <p className={shared.subtitle}>고객센터에서 발생한 관리자 및 시스템 처리 내역을 조회합니다.</p>
+            <div className={shared.title}>CS 처리 이력</div>
+            <div className={shared.subtitle}>고객센터에서 발생한 관리자 및 시스템 처리 내역을 조회합니다.</div>
           </div>
         </div>
 
@@ -214,7 +212,7 @@ export function CsHistoryPage() {
             </div>
           )}
         </div>
-      </div>
+      </header>
 
       {selected.length > 0 && (
         <div className={shared.bulkBar}>
@@ -298,7 +296,6 @@ export function CsHistoryPage() {
           </div>
         </div>
       )}
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

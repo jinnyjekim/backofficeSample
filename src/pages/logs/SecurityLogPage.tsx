@@ -191,14 +191,14 @@ export function SecurityLogPage() {
     };
   });
   return (
-    <section className={shared.page}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>보안 로그</h1>
-            <p className={shared.subtitle}>
+            <div className={shared.title}>보안 로그</div>
+            <div className={shared.subtitle}>
               인증, 접근 제어와 권한 관련 보안 이벤트를 조회하고 추적합니다.
-            </p>
+            </div>
           </div>
         </div>
         <div className={styles.readonlyStrip}>
@@ -364,7 +364,7 @@ export function SecurityLogPage() {
             </select>
           </div>
         </div>
-      </div>
+      </header>
       <div className={shared.gridWrap}>
         <DataGrid
           columns={COLUMNS}
@@ -395,6 +395,6 @@ export function SecurityLogPage() {
           onClose={() => setSelectedId(null)}
         />
       )}
-    </section>
+    </div>
   );
 }

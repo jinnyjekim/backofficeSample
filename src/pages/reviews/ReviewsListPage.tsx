@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
+import { DatePicker } from '../../components/forms/DatePicker';
 import { ReviewDetailDrawer } from './ReviewDetailDrawer';
 import {
   DELETE_REASONS,
@@ -19,7 +20,7 @@ import {
   type Review,
 } from './reviewsData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 
 const GRID_TEMPLATE = '68px 58px 1.5fr 36px 67px 50px 44px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -52,6 +53,8 @@ export function ReviewsListPage() {
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
   const [ratingFilter, setRatingFilter] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [menuId, setMenuId] = useState<string | null>(null);
@@ -60,7 +63,6 @@ export function ReviewsListPage() {
   const [hideReason, setHideReason] = useState<HideReason>('욕설 / 비방');
   const [hideDetail, setHideDetail] = useState('');
   const [deleteReason, setDeleteReason] = useState(DELETE_REASONS[0]);
-  const [toast, setToast] = useState('');
 
   const issuesMap = useMemo(() => {
     const map: Record<string, string[]> = {};
@@ -80,19 +82,22 @@ export function ReviewsListPage() {
         if (!matchesQuickFilter(r, quickFilter)) return false;
         if (search && !`${r.id} ${r.member} ${productName(r.productCode)} ${r.productCode}`.toLowerCase().includes(search.toLowerCase())) return false;
         if (ratingFilter && String(r.rating) !== ratingFilter) return false;
+        if (startDate && r.createdAt < startDate) return false;
+        if (endDate && r.createdAt > endDate) return false;
         return true;
       }),
-    [reviews, quickFilter, search, ratingFilter],
+    [reviews, quickFilter, search, ratingFilter, startDate, endDate],
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
   const resetFilters = () => {
     setKeyword('');
     setSearch('');
     setRatingFilter('');
+    setStartDate('');
+    setEndDate('');
   };
 
   function toggleSel(id: string) {
@@ -195,8 +200,8 @@ export function ReviewsListPage() {
 
   return (
     <div className={styles.page} onClick={() => menuId && setMenuId(null)}>
-      <div className={styles.headTop}>
-        <div className={styles.headRow}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
           <div>
             <div className={styles.title}>리뷰 목록</div>
             <div className={styles.subtitle}>상품 리뷰 등록 및 노출 상태를 관리합니다.</div>
@@ -231,6 +236,14 @@ export function ReviewsListPage() {
               <option value="">평점 전체</option>
               {[5, 4, 3, 2, 1].map((n) => <option key={n} value={n}>{'★'.repeat(n)}</option>)}
             </select></label>
+            <label className={styles.dateFilterField}>
+              <span>작성일</span>
+              <div className={styles.dateRange}>
+                <DatePicker value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <span className={styles.dateSeparator}>~</span>
+                <DatePicker value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              </div>
+            </label>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>
@@ -242,7 +255,7 @@ export function ReviewsListPage() {
             <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('데이터 다운로드를 준비했습니다.')} />
           </div>
         </div>
-      </div>
+      </header>
 
       {selectedIds.length > 0 && (
         <div className={styles.bulkBar}>
@@ -333,7 +346,6 @@ export function ReviewsListPage() {
         </div>
       )}
 
-      {toast && <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#18181b', color: '#fff', padding: '10px 18px', borderRadius: 9, fontSize: 12.5, zIndex: 40 }}>{toast}</div>}
     </div>
   );
 }

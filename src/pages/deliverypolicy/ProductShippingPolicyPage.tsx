@@ -16,7 +16,7 @@ import {
   type ProductShippingOverride,
   type QuickFilter,
 } from './productShippingOverrideData';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 
 const TODAY = '2026-08-25';
 
@@ -42,7 +42,6 @@ export function ProductShippingPolicyPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkModal, setBulkModal] = useState<'apply' | 'reset' | null>(null);
   const [bulkSource, setBulkSource] = useState('');
-  const [toast, setToast] = useState('');
 
   const warnings = useMemo(() => computeWarnings(overrides), [overrides]);
 
@@ -59,8 +58,7 @@ export function ProductShippingPolicyPage() {
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
   const reset = () => {
     setKeyword('');
@@ -143,12 +141,12 @@ export function ProductShippingPolicyPage() {
   const drawerProduct = drawerCode ? PRODUCTS.find((p) => p.code === drawerCode) ?? null : null;
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>상품별 배송 정책</h1>
-            <p className={shared.subtitle}>기본 배송 정책과 다르게 적용해야 하는 상품의 배송비·배송 조건을 개별적으로 설정합니다.</p>
+            <div className={shared.title}>상품별 배송 정책</div>
+            <div className={shared.subtitle}>기본 배송 정책과 다르게 적용해야 하는 상품의 배송비·배송 조건을 개별적으로 설정합니다.</div>
           </div>
         </div>
 
@@ -189,7 +187,7 @@ export function ProductShippingPolicyPage() {
             <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
           </div>
         </div>
-      </div>
+      </header>
 
       <div className={shared.gridWrap}>
         <div className={shared.resultRow}>
@@ -259,7 +257,6 @@ export function ProductShippingPolicyPage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

@@ -23,6 +23,7 @@ import {
   type SearchScope,
 } from './adminData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { DatePicker } from '../../components/forms/DatePicker';
 
 const GRID_TEMPLATE = '72px minmax(90px,1fr) minmax(130px,1.2fr) minmax(120px,1.3fr) 66px 124px 86px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -219,9 +220,14 @@ export function AdminsListPage() {
               <option value="">역할 전체</option>
               {ROLES.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
             </select></label>
-            <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-            <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
-            <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <label className={styles.dateFilterField}>
+              <span>등록일</span>
+              <span className={styles.dateRange}>
+                <DatePicker controlSize="sm" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <span className={styles.dateSeparator} aria-hidden="true">~</span>
+                <DatePicker controlSize="sm" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              </span>
+            </label>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>

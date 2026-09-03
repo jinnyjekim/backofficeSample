@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
+import { DatePicker } from '../../components/forms/DatePicker';
 import { PointLedgerDetailDrawer } from './PointLedgerDetailDrawer';
 import {
   POINT_LEDGER,
@@ -135,9 +136,14 @@ export function PointLedgerPage() {
               <option value="">변동 유형 전체</option>
               {LEDGER_TYPES.map((t) => <option key={t}>{t}</option>)}
             </select></label>
-            <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-            <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
-            <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <label className={styles.dateFilterField}>
+              <span>발생일</span>
+              <div className={styles.dateRange}>
+                <DatePicker value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <span className={styles.dateSeparator}>~</span>
+                <DatePicker value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              </div>
+            </label>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>

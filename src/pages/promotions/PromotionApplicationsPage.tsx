@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
+import { DatePicker } from '../../components/forms/DatePicker';
 import { ApplicationDetailDrawer } from './ApplicationDetailDrawer';
 import { PROMOTIONS, fmtWon } from './promotionsData';
 import {
@@ -160,9 +161,14 @@ export function PromotionApplicationsPage() {
               <option value="환불 반영">환불 반영</option>
               <option value="부분 환불 반영">부분 환불 반영</option>
             </select></label>
-            <input type="date" className={styles.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-            <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
-            <input type="date" className={styles.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <label className={styles.dateFilterField}>
+              <span>적용일</span>
+              <div className={styles.dateRange}>
+                <DatePicker value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <span className={styles.dateSeparator}>~</span>
+                <DatePicker value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              </div>
+            </label>
             <span className={styles.rowSpacer} />
             <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>

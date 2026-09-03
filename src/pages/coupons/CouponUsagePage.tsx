@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import shared from './shared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
+import { DatePicker } from '../../components/forms/DatePicker';
 import { CouponUsageDetailDrawer } from './CouponUsageDetailDrawer';
 import { COUPONS, fmtWon } from './couponsData';
 import {
@@ -154,9 +155,14 @@ export function CouponUsagePage() {
               <option value="부분 환불 반영">부분 환불 반영</option>
               <option value="전체 환불 반영">전체 환불 반영</option>
             </select></label>
-            <input type="date" className={shared.selectSm} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-            <span style={{ color: '#a1a1aa', fontSize: 12 }}>~</span>
-            <input type="date" className={shared.selectSm} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            <label className={shared.dateFilterField}>
+              <span>사용일</span>
+              <div className={shared.dateRange}>
+                <DatePicker value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <span className={shared.dateSeparator}>~</span>
+                <DatePicker value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              </div>
+            </label>
             <span className={shared.spacer} />
             <button type="button" className={shared.clearBtn} onClick={resetFilters}>초기화</button>
           </div>

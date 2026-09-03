@@ -361,6 +361,12 @@ export function DataGrid({
   const statusColumnIndexes = new Set(displayColumns.flatMap((column, columnIndex) =>
     isStatusColumnLabel(column.label) ? [columnIndex] : [],
   ));
+  const centeredColumnIndexes = new Set(displayColumns.flatMap((column, columnIndex) => {
+    if (column.align === 'center' || temporalColumnIndexes.has(columnIndex) || serialColumnIndexes.has(columnIndex) || statusColumnIndexes.has(columnIndex)) return [columnIndex];
+    if (!displayRows.length) return [];
+    const cells = displayRows.map((row) => row.cells[columnIndex]).filter((cell): cell is Cell => Boolean(cell));
+    return cells.length === displayRows.length && cells.every((cell) => cell.align === 'center' || isBadgeCell(cell)) ? [columnIndex] : [];
+  }));
   const displayGridTemplate = withoutGridTracks(gridTemplate, removedManagement, columns.length);
   const template = (effectiveSelectable ? '30px ' : '') + displayGridTemplate;
 
@@ -388,17 +394,18 @@ export function DataGrid({
           {effectiveSelectable && (
             <input type="checkbox" className={styles.checkbox} checked={effectiveAllSelected} onChange={toggleAllRows} aria-label="현재 목록 전체 선택" />
           )}
-          {displayColumns.map((col, i) =>
-            col.onClick ? (
-              <button key={i} type="button" className={styles.headBtn} style={{ textAlign: col.align }} onClick={col.onClick}>
+          {displayColumns.map((col, i) => {
+            const headerAlign = centeredColumnIndexes.has(i) ? 'center' : col.align;
+            return col.onClick ? (
+              <button key={i} type="button" className={styles.headBtn} style={{ textAlign: headerAlign }} onClick={col.onClick}>
                 <span data-datagrid-column>{col.label}</span>
               </button>
             ) : (
-              <span key={i} style={{ textAlign: col.align }} data-datagrid-column>
+              <span key={i} style={{ textAlign: headerAlign }} data-datagrid-column>
                 {col.label}
               </span>
-            ),
-          )}
+            );
+          })}
         </div>
 
         {displayRows.map((row) => (

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './CancelPolicyPage.module.css';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 import { CancelReasonEditDialog } from './CancelReasonEditDialog';
 import {
   CANCEL_QUICK_STAGES,
@@ -64,7 +64,6 @@ export function CancelPolicyPage() {
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
   const [reason, setReason] = useState('');
   const [saveError, setSaveError] = useState('');
-  const [toast, setToast] = useState('');
 
   const [previewOrderId, setPreviewOrderId] = useState(TEST_ORDERS[0].id);
   const [previewActor, setPreviewActor] = useState<'고객' | '관리자'>('고객');
@@ -75,8 +74,7 @@ export function CancelPolicyPage() {
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
 
   const set = <K extends keyof CancelPolicy>(key: K, value: CancelPolicy[K]) => {
@@ -239,13 +237,13 @@ export function CancelPolicyPage() {
   const editingReasonDraft = reasonEditId ? (editing ? draftReasons : reasons).find((r) => r.id === reasonEditId) : null;
 
   return (
-    <section className={shared.page}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
             <div className={styles.eyebrow}>거래 정책</div>
-            <h1 className={shared.title}>취소 정책</h1>
-            <p className={shared.subtitle}>주문 취소 가능 조건과 취소 처리 규칙을 설정합니다.</p>
+            <div className={shared.title}>취소 정책</div>
+            <div className={shared.subtitle}>주문 취소 가능 조건과 취소 처리 규칙을 설정합니다.</div>
           </div>
           <div className={styles.headMeta}>
             {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
@@ -298,7 +296,7 @@ export function CancelPolicyPage() {
             );
           })}
         </div>
-      </div>
+      </header>
 
       <div className={styles.body}>
         {warnings.length > 0 && (
@@ -729,7 +727,6 @@ export function CancelPolicyPage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

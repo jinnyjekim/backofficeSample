@@ -25,7 +25,7 @@ import {
   type NoGroupHandling,
   type QuickFilter,
 } from './bundleShippingData';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 
 const TODAY = '2026-08-25';
 
@@ -56,7 +56,6 @@ export function BundleShippingPage() {
   const [drawerId, setDrawerId] = useState<string | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [confirm, setConfirm] = useState<ConfirmState>(null);
-  const [toast, setToast] = useState('');
 
   const [showTest, setShowTest] = useState(false);
   const [scenarioId, setScenarioId] = useState(TEST_SCENARIOS[0].id);
@@ -79,8 +78,7 @@ export function BundleShippingPage() {
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
   const reset = () => {
     setKeyword('');
@@ -176,12 +174,12 @@ export function BundleShippingPage() {
   const result = computeOrderShippingPreview(scenario, groups, baseSettings);
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>묶음 배송</h1>
-            <p className={shared.subtitle}>여러 상품을 함께 주문했을 때 묶음배송과 배송비 계산 기준을 관리합니다.</p>
+            <div className={shared.title}>묶음 배송</div>
+            <div className={shared.subtitle}>여러 상품을 함께 주문했을 때 묶음배송과 배송비 계산 기준을 관리합니다.</div>
           </div>
           <div className={styles.topActions}>
             <button type="button" className={styles.testBtn} onClick={() => setShowTest(true)}>배송비 계산 테스트</button>
@@ -206,7 +204,7 @@ export function BundleShippingPage() {
             );
           })}
         </div>
-      </div>
+      </header>
 
       <div className={styles.settingsCard}>
         <div className={styles.settingsHead}>
@@ -384,7 +382,6 @@ export function BundleShippingPage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

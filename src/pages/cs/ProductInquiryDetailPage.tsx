@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import pageStyles from '../ops/opsShared.module.css';
 import styles from '../ops/opsDrawerShared.module.css';
+import { showToast } from '../../components/common';
 import {
   PRODUCT_INQUIRIES,
   STATUS_META,
@@ -29,21 +30,19 @@ export function ProductInquiryDetailPage() {
   const [editingAnswer, setEditingAnswer] = useState(!found?.answer);
   const [memoText, setMemoText] = useState('');
   const [confirmSend, setConfirmSend] = useState(false);
-  const [toast, setToast] = useState('');
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
 
   if (!found) {
     return (
       <div className={pageStyles.page}>
-        <div className={pageStyles.headTop}>
+        <header className={pageStyles.header}>
           <div className={pageStyles.title}>상품 문의 상세</div>
           <div className={pageStyles.subtitle}>존재하지 않는 문의입니다.</div>
           <button type="button" className={styles.actionLink} style={{ marginTop: 12 }} onClick={() => navigate('/cs/product-inquiries')}>목록으로</button>
-        </div>
+        </header>
       </div>
     );
   }
@@ -228,8 +227,6 @@ export function ProductInquiryDetailPage() {
           </div>
         </div>
       )}
-
-      {toast && <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#18181b', color: '#fff', padding: '10px 18px', borderRadius: 9, fontSize: 12.5, zIndex: 40 }}>{toast}</div>}
     </div>
   );
 }

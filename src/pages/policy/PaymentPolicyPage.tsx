@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './PaymentPolicyPage.module.css';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 import { PaymentMethodEditDialog } from './PaymentMethodEditDialog';
 import {
   INITIAL_HISTORY,
@@ -55,7 +55,6 @@ export function PaymentPolicyPage() {
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
   const [reason, setReason] = useState('');
   const [saveError, setSaveError] = useState('');
-  const [toast, setToast] = useState('');
 
   const warnings = useMemo(
     () => computeWarnings(editing ? draftPolicy : policy, editing ? draftMethods : methods),
@@ -64,8 +63,7 @@ export function PaymentPolicyPage() {
   const sortedMethods = useMemo(() => [...(editing ? draftMethods : methods)].sort((a, b) => a.order - b.order), [editing, draftMethods, methods]);
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
 
   const set = <K extends keyof PaymentPolicy>(key: K, value: PaymentPolicy[K]) => {
@@ -174,13 +172,13 @@ export function PaymentPolicyPage() {
   const defaultMethod = (editing ? draftMethods : methods).find((m) => m.isDefault);
 
   return (
-    <section className={shared.page}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
             <div className={styles.eyebrow}>거래 정책</div>
-            <h1 className={shared.title}>결제 정책</h1>
-            <p className={shared.subtitle}>서비스의 결제 방식과 처리 규칙을 설정합니다.</p>
+            <div className={shared.title}>결제 정책</div>
+            <div className={shared.subtitle}>서비스의 결제 방식과 처리 규칙을 설정합니다.</div>
           </div>
           <div className={styles.headMeta}>
             {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
@@ -233,7 +231,7 @@ export function PaymentPolicyPage() {
             );
           })}
         </div>
-      </div>
+      </header>
 
       <div className={styles.body}>
         {warnings.length > 0 && (
@@ -663,7 +661,6 @@ export function PaymentPolicyPage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

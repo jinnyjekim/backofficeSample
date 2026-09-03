@@ -3,6 +3,7 @@ import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
 import shared from '../ops/opsShared.module.css';
 import styles from './FeePolicyPage.module.css';
+import { showToast } from '../../components/common';
 import { FeePolicyDrawer } from './FeePolicyDrawer';
 import {
   FEE_TYPES,
@@ -76,7 +77,6 @@ export function FeePolicyPage() {
   const [drawerItem, setDrawerItem] = useState<FeePolicy | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [confirm, setConfirm] = useState<ConfirmState>(null);
-  const [toast, setToast] = useState('');
 
   const warnings = useMemo(() => computeWarnings(policies), [policies]);
 
@@ -94,8 +94,7 @@ export function FeePolicyPage() {
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
   const reset = () => {
     setKeyword('');
@@ -177,12 +176,12 @@ export function FeePolicyPage() {
   });
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>수수료 정책</h1>
-            <p className={shared.subtitle}>거래에 적용되는 수수료와 계산 기준을 관리합니다.</p>
+            <div className={shared.title}>수수료 정책</div>
+            <div className={shared.subtitle}>거래에 적용되는 수수료와 계산 기준을 관리합니다.</div>
           </div>
           <button type="button" className={shared.createBtn} onClick={openCreate}>+ 수수료 정책 등록</button>
         </div>
@@ -225,7 +224,7 @@ export function FeePolicyPage() {
             <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
           </div>
         </div>
-      </div>
+      </header>
 
       <div className={shared.gridWrap}>
         <div className={shared.resultRow}>
@@ -278,7 +277,6 @@ export function FeePolicyPage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

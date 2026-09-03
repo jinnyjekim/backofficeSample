@@ -5,12 +5,6 @@
 }
 .headerDateInput {
   height: 32px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  padding: 0 8px;
-  font-size: 12px;
-  color: #3f3f46;
-  background: #fff;
 }
 
 .body {

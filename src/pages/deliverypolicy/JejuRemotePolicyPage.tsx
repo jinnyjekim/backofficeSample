@@ -24,7 +24,7 @@ import {
   type RemoteDeliverable,
   type SpecialRegion,
 } from './jejuRemotePolicyData';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 
 const TODAY = '2026-08-25';
 
@@ -50,7 +50,6 @@ export function JejuRemotePolicyPage() {
 
   const [drawerId, setDrawerId] = useState<string | null>(null);
   const [isNew, setIsNew] = useState(false);
-  const [toast, setToast] = useState('');
   const [showTest, setShowTest] = useState(false);
   const [scenarioId, setScenarioId] = useState(TEST_SCENARIOS[0].id);
 
@@ -70,8 +69,7 @@ export function JejuRemotePolicyPage() {
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
   const reset = () => {
     setKeyword('');
@@ -145,12 +143,12 @@ export function JejuRemotePolicyPage() {
   const preview = computeJejuShippingPreview(scenario, basePolicy, regions);
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>제주 / 도서산간 정책</h1>
-            <p className={shared.subtitle}>특수 배송지역의 배송 가능 여부와 추가 배송비 기준을 관리합니다.</p>
+            <div className={shared.title}>제주 / 도서산간 정책</div>
+            <div className={shared.subtitle}>특수 배송지역의 배송 가능 여부와 추가 배송비 기준을 관리합니다.</div>
           </div>
           <div className={styles.topActions}>
             <button type="button" className={styles.testBtn} onClick={() => setShowTest(true)}>배송비 계산 테스트</button>
@@ -175,7 +173,7 @@ export function JejuRemotePolicyPage() {
             );
           })}
         </div>
-      </div>
+      </header>
 
       <div className={styles.settingsCard}>
         <div className={styles.settingsHead}>
@@ -335,7 +333,6 @@ export function JejuRemotePolicyPage() {
         </aside>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

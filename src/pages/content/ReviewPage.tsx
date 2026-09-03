@@ -469,14 +469,14 @@ export function ReviewPage() {
                   </label>
                   <label className={`${filterStyles.filterControl} ${filterStyles.dateControl} ${filterStyles.wideDateControl}`}>
                     <span>요청일</span>
-                    <div className={filterStyles.dateRange}>
+                    <div className={styles.dateRange}>
                       <DatePicker controlSize="sm" value={from} onChange={(e) => {
                         const value = e.target.value;
                         setFrom(value);
                         if (value && to && value > to) setTo(value);
                         setSel([]);
                       }} />
-                      <span>~</span>
+                      <span className={styles.dateSeparator}>~</span>
                       <DatePicker controlSize="sm" value={to} onChange={(e) => {
                         const value = e.target.value;
                         setTo(value);

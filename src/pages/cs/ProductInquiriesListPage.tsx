@@ -15,7 +15,7 @@ import {
   type QuickFilter,
 } from './productInquiriesData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 
 const GRID_TEMPLATE = '64px 72px minmax(220px,2fr) 60px 76px 54px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -49,11 +49,9 @@ export function ProductInquiriesListPage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [menuId, setMenuId] = useState<string | null>(null);
-  const [toast, setToast] = useState('');
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
 
   const counts = useMemo(() => {
@@ -111,8 +109,8 @@ export function ProductInquiriesListPage() {
 
   return (
     <div className={styles.page} onClick={() => menuId && setMenuId(null)}>
-      <div className={styles.headTop}>
-        <div className={styles.headRow}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
           <div>
             <div className={styles.title}>상품 문의 관리</div>
             <div className={styles.subtitle}>상품 문의를 하나의 업무 큐에서 조회하고 답변·노출 상태와 처리 기록을 관리합니다.</div>
@@ -169,7 +167,7 @@ export function ProductInquiriesListPage() {
             <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly('상품 문의 목록을 다운로드했습니다.')} />
           </div>
         </div>
-      </div>
+      </header>
 
       <div className={styles.gridWrap}>
         <DataGrid
@@ -184,8 +182,6 @@ export function ProductInquiriesListPage() {
           emptyActionClick={resetFilters}
         />
       </div>
-
-      {toast && <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#18181b', color: '#fff', padding: '10px 18px', borderRadius: 9, fontSize: 12.5, zIndex: 40 }}>{toast}</div>}
     </div>
   );
 }

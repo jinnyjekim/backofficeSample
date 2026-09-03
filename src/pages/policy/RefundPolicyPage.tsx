@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CommonButton, CommonSwitch } from '../../components/common';
+import { CommonButton, CommonSwitch, showToast } from '../../components/common';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './RefundPolicyPage.module.css';
@@ -68,7 +68,6 @@ export function RefundPolicyPage() {
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
   const [reason, setReason] = useState('');
   const [saveError, setSaveError] = useState('');
-  const [toast, setToast] = useState('');
 
   const [previewOrderId, setPreviewOrderId] = useState(TEST_ORDERS[0].id);
   const [previewScope, setPreviewScope] = useState<RefundScope>('full');
@@ -79,8 +78,7 @@ export function RefundPolicyPage() {
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
 
   const set = <K extends keyof RefundPolicy>(key: K, value: RefundPolicy[K]) => {
@@ -230,13 +228,13 @@ export function RefundPolicyPage() {
   const previewBreakdown = computeRefundBreakdown(previewOrder, previewScope, policy, methodRules);
 
   return (
-    <section className={shared.page}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
             <div className={styles.eyebrow}>거래 정책</div>
-            <h1 className={shared.title}>환불 정책</h1>
-            <p className={shared.subtitle}>취소·반품 등으로 환불이 발생했을 때 환불 대상금액 계산 기준과 처리 방식을 설정합니다.</p>
+            <div className={shared.title}>환불 정책</div>
+            <div className={shared.subtitle}>취소·반품 등으로 환불이 발생했을 때 환불 대상금액 계산 기준과 처리 방식을 설정합니다.</div>
           </div>
           <div className={styles.headMeta}>
             {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
@@ -289,7 +287,7 @@ export function RefundPolicyPage() {
             );
           })}
         </div>
-      </div>
+      </header>
 
       <div className={styles.body}>
         {warnings.length > 0 && (
@@ -751,7 +749,6 @@ export function RefundPolicyPage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

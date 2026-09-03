@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './SettlementPolicyPage.module.css';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 import {
   INITIAL_HISTORY,
   INITIAL_LAST_MODIFIED,
@@ -52,15 +52,13 @@ export function SettlementPolicyPage() {
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
   const [reason, setReason] = useState('');
   const [saveError, setSaveError] = useState('');
-  const [toast, setToast] = useState('');
 
   const [previewTargetId, setPreviewTargetId] = useState(TEST_TARGETS[0].id);
 
   const warnings = useMemo(() => computeWarnings(editing ? draftPolicy : policy), [editing, draftPolicy, policy]);
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
 
   const set = <K extends keyof SettlementPolicy>(key: K, value: SettlementPolicy[K]) => {
@@ -124,13 +122,13 @@ export function SettlementPolicyPage() {
       : `${styles.resultHero} ${styles.resultHeroWarn}`;
 
   return (
-    <section className={shared.page}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
             <div className={styles.eyebrow}>거래 정책</div>
-            <h1 className={shared.title}>정산 정책</h1>
-            <p className={shared.subtitle}>어떤 거래를 언제 정산 대상으로 잡고, 어떤 기준으로 확정·지급할지 설정합니다.</p>
+            <div className={shared.title}>정산 정책</div>
+            <div className={shared.subtitle}>어떤 거래를 언제 정산 대상으로 잡고, 어떤 기준으로 확정·지급할지 설정합니다.</div>
           </div>
           <div className={styles.headMeta}>
             {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
@@ -183,7 +181,7 @@ export function SettlementPolicyPage() {
             );
           })}
         </div>
-      </div>
+      </header>
 
       <div className={styles.body}>
         {warnings.length > 0 && (
@@ -697,7 +695,6 @@ export function SettlementPolicyPage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }
