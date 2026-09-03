@@ -11,7 +11,7 @@ import { TAGS, type Tag } from './tagsData';
 import { ACCENT } from '../../lib/theme';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_TAXONOMY_SCOPES, type ContentTaxonomyScope } from './contentBusiness';
-import { CommonButton } from '../../components/common';
+import { CommonButton, ExcelDownloadButton } from '../../components/common';
 
 type SortKey = 'name' | 'count' | 'created' | 'updated';
 const STATUS_LABELS = ['사용', '미사용', '전체'] as const;
@@ -567,7 +567,7 @@ export function TagsPage() {
               <div className={sh.noSelBar}>
                 <span className={sh.totalLabel}>{`총 ${list.length.toLocaleString('ko-KR')}개`}</span>
                 <div className={sh.rowSpacer} />
-                <button type="button" className={sh.resetBtn} data-grid-download>다운로드</button>
+                <ExcelDownloadButton data-grid-download />
                 <select className={sh.pageSizeSelect} defaultValue="20개씩 보기">
                   <option>20개씩 보기</option>
                   <option>50개씩 보기</option>

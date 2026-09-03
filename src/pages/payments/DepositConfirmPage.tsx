@@ -8,12 +8,12 @@ import { DepositDetailDrawer } from './DepositDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { CommonButton } from '../../components/common';
 
-const GRID_TEMPLATE = '116px minmax(150px,1fr) 94px 74px 76px 76px 76px 66px 50px';
-const GRID_MIN_WIDTH = '890px';
+const GRID_TEMPLATE = '116px minmax(150px,1fr) 94px 74px 76px 76px 76px 66px';
+const GRID_MIN_WIDTH = '840px';
 
 const GRID_COLUMNS: GridColumn[] = [
   { label: '입금일시' }, { label: '입금자' }, { label: '입금금액' }, { label: '예상거래처' }, { label: '매칭대상' },
-  { label: '매칭상태' }, { label: '확인상태' }, { label: '담당자' }, { label: '관리' },
+  { label: '매칭상태' }, { label: '확인상태' }, { label: '담당자' },
 ];
 
 export function DepositConfirmPage() {
@@ -71,7 +71,6 @@ export function DepositConfirmPage() {
       { kind: 'badge', text: d.matchStatus, bg: mm.bg, fg: mm.fg },
       { kind: 'badge', text: d.confirmStatus, bg: cm.bg, fg: cm.fg },
       { kind: 'text', text: d.owner, color: '#52525b', size: '12px', weight: 500 },
-      { kind: 'link', text: '확인', size: '12px' },
     ];
     return { id: d.id, cells, onClick: () => openDetail(d.id) };
   });

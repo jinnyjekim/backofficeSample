@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import shared from './shared.module.css';
 import styles from './PaymentListPage.module.css';
 import { CommonButton, ExcelDownloadButton, showToast } from '../../components/common';
@@ -37,7 +37,6 @@ const COLUMNS = [
   { label: '환불 / 잔여' },
   { label: '상태' },
   { label: '외부거래' },
-  { label: '관리', align: 'right' as const },
 ];
 
 const STATUS_DOT: Record<PaymentStatus, { dot: string; fg: string }> = {
@@ -67,7 +66,6 @@ const MATCH_COLOR: Record<ExternalMatchStatus, { bg: string; fg: string }> = {
 };
 
 export function PaymentListPage() {
-  const navigate = useNavigate();
   const location = useLocation();
   const [payments, setPayments] = useState(INITIAL_PAYMENTS);
 
@@ -164,16 +162,6 @@ export function PaymentListPage() {
         { kind: 'stack', title: fmtWon(remainingAmount(p)), subtitle: p.refundedAmount > 0 ? `환불 ${fmtWon(p.refundedAmount)}` : '환불 없음' },
         { kind: 'statusDot', text: p.status, dot: statusColor.dot, fg: statusColor.fg },
         { kind: 'badge', text: match, bg: matchColor.bg, fg: matchColor.fg },
-        {
-          kind: 'rowMenu',
-          align: 'right',
-          open: openMenu === p.id,
-          onToggle: () => setOpenMenu(openMenu === p.id ? null : p.id),
-          items: [
-            { label: '주문 보기', click: () => navigate('/orders/processing') },
-            ...(p.status === '처리중' || match !== '정상' ? [{ label: '상태 재조회', click: () => setRecheckTarget(p) }] : []),
-          ],
-        },
       ],
     };
   });
@@ -268,8 +256,8 @@ export function PaymentListPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="102px 60px 68px 68px 88px 86px 90px 94px 74px 100px 46px"
-          minWidth="1010px"
+          gridTemplate="102px 60px 68px 68px 88px 86px 90px 94px 74px 100px"
+          minWidth="960px"
           selectable
           allSelected={filtered.length > 0 && filtered.every((p) => selected.includes(p.id))}
           onToggleAll={() => setSelected(filtered.every((p) => selected.includes(p.id)) ? [] : filtered.map((p) => p.id))}

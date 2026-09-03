@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CommonCheckbox } from '../../components/common';
+import { CommonButton, CommonCheckbox } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
@@ -182,9 +182,9 @@ export function TransactionStatsPage() {
 
       <div className={styles.filterBar}>
         <div className={styles.filterRow}>
-          <DatePicker controlSize="sm" className={styles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
+          <DatePicker controlSize="sm" value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
           <span className={styles.tilde}>~</span>
-          <DatePicker controlSize="sm" className={styles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
+          <DatePicker controlSize="sm" value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
           <button type="button" className={styles.applyBtn} onClick={applyCustom}>조회</button>
           <CommonCheckbox className={styles.compareCheck} size="sm" checked={compare} onChange={setCompare}>이전 기간과 비교</CommonCheckbox>
         </div>
@@ -201,9 +201,21 @@ export function TransactionStatsPage() {
       </div>
 
       <div className={styles.viewTabs}>
-        {TABS.map(([key, label]) => (
-          <button key={key} type="button" className={`${styles.viewTabBtn} ${tab === key ? styles.viewTabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
-        ))}
+        {TABS.map(([key, label]) => {
+          const active = tab === key;
+          return (
+            <CommonButton
+              key={key}
+              type="button"
+              variant={active ? 'primary-light' : 'secondary'}
+              size="md"
+              className={`${styles.viewTabBtn} ${active ? styles.viewTabActive : ''}`}
+              onClick={() => setTab(key)}
+            >
+              {label}
+            </CommonButton>
+          );
+        })}
       </div>
 
       <div className={styles.body}>

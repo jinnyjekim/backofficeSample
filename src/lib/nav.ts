@@ -261,7 +261,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'c2c_proceeds_ledger', sub: true, label: '판매대금 원장', to: '/c2c/proceeds/ledger', business: 'C' },
 
       { key: 'c2c_chat', icon: BellRing, label: '거래 채팅 관리', to: '/c2c/chat/list', business: 'C' },
-      { key: 'c2c_chat_list', sub: true, label: '채팅 조회', to: '/c2c/chat/list', business: 'C' },
+      { key: 'c2c_chat_list', sub: true, label: '거래 채팅 관리', to: '/c2c/chat/list', business: 'C' },
       { key: 'c2c_chat_policies', sub: true, label: '메시지 정책', to: '/c2c/chat/policies', business: 'C' },
       { key: 'c2c_chat_audit', sub: true, label: '운영 조회 이력', to: '/c2c/chat/audit', business: 'C' },
 

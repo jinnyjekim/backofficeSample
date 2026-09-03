@@ -137,18 +137,6 @@ export function JejuRemotePolicyPage() {
         { kind: 'badge', text: r.deliverable, bg: r.deliverable === '가능' ? '#eff6ff' : '#fef2f2', fg: r.deliverable === '가능' ? '#2563eb' : '#dc2626' },
         { kind: 'badge', text: r.policySource === '지역 예외' ? '예외' : '기본', bg: r.policySource === '지역 예외' ? '#fffbeb' : '#f4f4f5', fg: r.policySource === '지역 예외' ? '#b45309' : '#71717a' },
         { kind: 'statusDot', text: r.status, dot: r.status === '사용' ? '#10b981' : '#a1a1aa', fg: r.status === '사용' ? '#047857' : '#71717a' },
-        {
-          kind: 'rowMenu',
-          align: 'right',
-          detailLabel: '상세',
-          onDetail: () => openDetail(r.id),
-          open: openMenu === r.id,
-          onToggle: () => setOpenMenu(openMenu === r.id ? null : r.id),
-          items: [
-            { label: '수정', click: () => openDetail(r.id) },
-            r.status === '사용' ? { label: '비활성화', click: () => toggleStatus(r) } : { label: '활성화', click: () => toggleStatus(r) },
-          ],
-        },
       ],
     };
   });
@@ -268,11 +256,11 @@ export function JejuRemotePolicyPage() {
         <DataGrid
           columns={[
             { label: '지역' }, { label: '유형' }, { label: '우편번호' }, { label: '추가비', align: 'right' as const },
-            { label: '배송여부' }, { label: '정책' }, { label: '상태' }, { label: '관리', align: 'right' as const },
+            { label: '배송여부' }, { label: '정책' }, { label: '상태' },
           ]}
           rows={rows}
-          gridTemplate="1.3fr 72px 76px 68px 52px 52px 58px 40px"
-          minWidth="890px"
+          gridTemplate="1.3fr 72px 76px 68px 52px 52px 58px"
+          minWidth="850px"
           empty={filtered.length === 0}
           emptyText={regions.length === 0 ? '등록된 제주/도서산간 지역이 없습니다.' : quickFilter === '확인 필요' ? '현재 확인이 필요한 제주/도서산간 정책이 없습니다.' : '검색 결과가 없습니다.'}
           emptySubtext={regions.length === 0 ? undefined : '검색어나 필터 조건을 변경해 주세요.'}

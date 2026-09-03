@@ -62,9 +62,13 @@ export const CommonDatePicker = forwardRef<HTMLInputElement, CommonDatePickerPro
   const parsedRange = [parseDate(rangeValue[0]), parseDate(rangeValue[1])] as [Date | null, Date | null];
   // m2m-uiux-react DatePicker는 value=null 시 내부에서 .getFullYear()를 호출해 에러 발생.
   // null이면 undefined로 변환해 비제어 모드로 처리한다.
-  const controlled = value !== undefined && (mode === 'range' ? (parsedRange[0] !== null || parsedRange[1] !== null) : parsedSingle !== null);
+  // range 모드는 패키지 내부에서 range 배열을 단일 Date로 오인해 항상 .getFullYear()에서 터지므로
+  // (value가 배열이면 항상 truthy라 controlled 분기를 못 피함), range는 절대 controlled로 넘기지 않고
+  // key로 강제 리마운트해 defaultRange만으로 외부 값 변경(예: 필터 초기화)까지 반영한다.
+  const controlled = mode === 'single' && value !== undefined && parsedSingle !== null;
   const packageValue = mode === 'range' ? parsedRange : parsedSingle;
   const hiddenValue = mode === 'range' ? rangeValue.filter(Boolean).join(' – ') : singleValue ?? '';
+  const rangeRemountKey = mode === 'range' ? `${rangeValue[0] ?? ''}|${rangeValue[1] ?? ''}` : undefined;
 
   const handleChange = (next: DatePickerValue) => {
     if (mode === 'range') {
@@ -77,10 +81,11 @@ export const CommonDatePicker = forwardRef<HTMLInputElement, CommonDatePickerPro
     <span className={cx(styles.datePickerWrap, mode === 'range' && styles.dateRangeAdapter, styles[`datePicker_${size}`], classNameOf(classNames), className)} aria-label={ariaLabel}>
       <input ref={forwardedRef} type="hidden" name={name} value={hiddenValue} required={required} disabled={disabled} readOnly />
       <M2MDatePicker
+        key={rangeRemountKey}
         mode={mode}
-        value={controlled ? packageValue : undefined}
-        defaultValue={!controlled && mode === 'single' ? packageValue as Date | null : undefined}
-        defaultRange={!controlled && mode === 'range' ? packageValue as [Date | null, Date | null] : undefined}
+        value={controlled ? (packageValue as Date) : undefined}
+        defaultValue={!controlled && mode === 'single' ? (parsedSingle ?? undefined) : undefined}
+        defaultRange={mode === 'range' ? parsedRange : undefined}
         onChange={handleChange}
         format={showTime ? 'YYYY-MM-DD HH:mm' : format}
         placeholder={placeholder}

@@ -3,11 +3,11 @@ import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DataGrid } from '../../../components/DataGrid';
 import type { GridRow } from '../../../components/DataGrid/types';
-import shared from '../../ops/opsShared.module.css';
+import shared from '../shared.module.css';
 import drawer from '../../ops/opsDrawerShared.module.css';
 import base from '../sales/SalesActivity.module.css';
 import styles from './TradeSafety.module.css';
-import { CommonButton } from '../../../components/common';
+import { CommonButton, showToast } from '../../../components/common';
 import { ControlArea, DetailDrawer, FilterBox, GridArea, Metrics, PageHeading, ResultBar } from '../sales/SalesActivityShared';
 import { downloadCsv, pages } from '../sales/salesActivityUtils';
 import { formatWon } from '../sales/salesActivityData';
@@ -63,7 +63,6 @@ export function TradeRiskMonitoringPage() {
   const [level, setLevel] = useState<RiskLevel | ''>('');
   const [assignee, setAssignee] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [toast, setToast] = useState('');
 
   const signalType = SIGNAL_BY_PARAM[searchParams.get('signal') ?? ''] ?? '';
   const selected = cases.find((item) => item.id === selectedId) ?? null;
@@ -78,10 +77,7 @@ export function TradeRiskMonitoringPage() {
     return true;
   }), [assignee, cases, level, quick, search, signalType]);
 
-  const notify = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2200);
-  };
+  const notify = (message: string) => showToast({ message, type: 'success' });
 
   const selectSignal = (value: RiskSignalType | '') => {
     const next = new URLSearchParams(searchParams);
@@ -125,11 +121,10 @@ export function TradeRiskMonitoringPage() {
       { kind: 'text', text: `${item.score}점`, align: 'right', numeric: true, weight: 800, color: item.score >= 85 ? '#dc2626' : item.score >= 70 ? '#c2410c' : '#1d4ed8' },
       { kind: 'badge', text: item.status, ...RISK_STATUS_META[item.status] },
       { kind: 'text', text: item.assignee, color: item.assignee === '미배정' ? '#dc2626' : '#52525b' },
-      { kind: 'link', text: '검토' },
     ],
   }));
 
-  return <section className={shared.page}>
+  return <div className={shared.page}>
     <PageHeading title="위험 모니터링" subtitle="취소·신고·거래·계정 신호를 하나의 위험 건으로 묶어 우선순위에 따라 검토하고 조치합니다." />
     <Metrics items={[
       { label: '검토 필요', value: `${cases.filter((item) => item.status === '탐지').length}건`, note: '담당자 배정 필요', tone: 'down', dot: '#ef4444' },
@@ -171,7 +166,7 @@ export function TradeRiskMonitoringPage() {
     </ControlArea>
     <GridArea>
       <ResultBar count={filtered.length} unit="건"><button type="button" className={shared.downloadBtn} onClick={() => downloadCsv('c2c-risk-monitoring.csv', ['위험 건', '탐지 유형', '대상', '위험도', '점수', '상태'], filtered.map((item) => [item.id, item.signalType, item.targetId, item.level, item.score, item.status]))}>다운로드</button></ResultBar>
-      <DataGrid columns={[{ label: '위험 건 / 탐지일' }, { label: '탐지 유형' }, { label: '대상' }, { label: '탐지 요약' }, { label: '위험도' }, { label: '점수', align: 'right' }, { label: '검토 상태' }, { label: '담당자' }, { label: '관리' }]} rows={rows} gridTemplate="128px 82px 130px minmax(230px,1.5fr) 56px 44px 80px 64px 55px" minWidth="1005px" empty={!filtered.length} emptyText="조건에 맞는 위험 건이 없습니다." emptySubtext="탐지 유형이나 위험도 필터를 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={pages} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
+      <DataGrid columns={[{ label: '위험 건 / 탐지일' }, { label: '탐지 유형' }, { label: '대상' }, { label: '탐지 요약' }, { label: '위험도' }, { label: '점수', align: 'right' }, { label: '검토 상태' }, { label: '담당자' }]} rows={rows} gridTemplate="128px 82px 130px minmax(230px,1.5fr) 56px 44px 80px 64px" minWidth="950px" empty={!filtered.length} emptyText="조건에 맞는 위험 건이 없습니다." emptySubtext="탐지 유형이나 위험도 필터를 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={pages} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
     </GridArea>
     {selected && <DetailDrawer eyebrow={`거래 안전 위험 건 · ${selected.id}`} title={selected.summary} status={selected.status} statusMeta={RISK_STATUS_META[selected.status]} subtitle={`${selected.signalType} · ${selected.detectedAt}`} onClose={() => setSelectedId(null)} actions={<>
       {selected.status === '탐지' && <button type="button" className={drawer.primaryBtn} onClick={() => patchSelected('검토중', '검토 시작', '담당자 배정 및 연관 거래 확인')}>검토 시작</button>}
@@ -184,8 +179,7 @@ export function TradeRiskMonitoringPage() {
       <div className={drawer.sectionTitleLoose}>위험 지표</div><div className={styles.indicatorList}>{selected.indicators.map((item) => <div key={item} className={styles.indicatorItem}>{item}</div>)}</div>
       <div className={drawer.sectionTitleLoose}>검토 / 조치 이력</div><div className={base.timeline}>{selected.history.map((item, index) => <div className={base.timelineItem} key={`${item.at}-${index}`}><strong>{item.action}</strong><p>{item.detail} · {item.actor}</p><time>{item.at}</time></div>)}</div>
     </DetailDrawer>}
-    {toast && <div className={base.toast}>{toast}</div>}
-  </section>;
+  </div>;
 }
 
 type HoldQuick = '전체' | HoldStatus;
@@ -197,7 +191,6 @@ export function TradeHoldManagementPage() {
   const [search, setSearch] = useState('');
   const [scope, setScope] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [toast, setToast] = useState('');
   const selected = holds.find((item) => item.id === selectedId) ?? null;
   const quicks: HoldQuick[] = ['전체', '보류중', '해제 승인 대기', '해제', '만료'];
 
@@ -208,10 +201,7 @@ export function TradeHoldManagementPage() {
     return true;
   }), [holds, quick, scope, search]);
 
-  const notify = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2200);
-  };
+  const notify = (message: string) => showToast({ message, type: 'success' });
 
   const patchSelected = (status: HoldStatus, action: string, detail: string) => {
     if (!selected) return;
@@ -245,13 +235,12 @@ export function TradeHoldManagementPage() {
       { kind: 'pillText', text: item.scopes.join(' + '), bg: '#fef2f2', fg: '#b91c1c' },
       { kind: 'badge', text: item.status, ...HOLD_STATUS_META[item.status] },
       { kind: 'stack', title: item.releaseDueAt.slice(0, 10), subtitle: item.handler },
-      { kind: 'link', text: '상세' },
     ],
   }));
 
   const heldAmount = holds.filter((item) => item.status === '보류중' || item.status === '해제 승인 대기').reduce((sum, item) => sum + item.amount, 0);
 
-  return <section className={shared.page}>
+  return <div className={shared.page}>
     <PageHeading title="거래 보류 관리" subtitle="위험 검토로 중단된 거래와 판매대금의 해제 기한·승인 상태를 관리합니다." />
     <Metrics items={[
       { label: '현재 보류', value: `${holds.filter((item) => item.status === '보류중').length}건`, note: '조사 및 소명 진행중', tone: 'down', dot: '#ef4444' },
@@ -283,7 +272,7 @@ export function TradeHoldManagementPage() {
     </ControlArea>
     <GridArea>
       <ResultBar count={filtered.length} unit="건"><button type="button" className={shared.downloadBtn} onClick={() => downloadCsv('c2c-trade-holds.csv', ['보류번호', '거래번호', '대상', '금액', '범위', '상태', '해제기한'], filtered.map((item) => [item.id, item.tradeId, item.accountName, item.amount, item.scopes.join(' + '), item.status, item.releaseDueAt]))}>다운로드</button></ResultBar>
-      <DataGrid columns={[{ label: '보류번호 / 보류일' }, { label: '거래 / 위험 건' }, { label: '대상 계정' }, { label: '보류 사유' }, { label: '금액', align: 'right' }, { label: '보류 범위' }, { label: '상태' }, { label: '해제 기한 / 담당자' }, { label: '관리' }]} rows={rows} gridTemplate="136px 132px 176px minmax(220px,1.4fr) 95px 144px 100px 125px 55px" minWidth="1185px" empty={!filtered.length} emptyText="조건에 맞는 거래 보류 건이 없습니다." emptySubtext="상태나 보류 범위 필터를 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={pages} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
+      <DataGrid columns={[{ label: '보류번호 / 보류일' }, { label: '거래 / 위험 건' }, { label: '대상 계정' }, { label: '보류 사유' }, { label: '금액', align: 'right' }, { label: '보류 범위' }, { label: '상태' }, { label: '해제 기한 / 담당자' }]} rows={rows} gridTemplate="136px 132px 176px minmax(220px,1.4fr) 95px 144px 100px 125px" minWidth="1130px" empty={!filtered.length} emptyText="조건에 맞는 거래 보류 건이 없습니다." emptySubtext="상태나 보류 범위 필터를 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={pages} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
     </GridArea>
     {selected && <DetailDrawer eyebrow={`거래 보류 · ${selected.id}`} title={selected.reason} status={selected.status} statusMeta={HOLD_STATUS_META[selected.status]} subtitle={`${selected.tradeId} · ${selected.heldAt}`} onClose={() => setSelectedId(null)} actions={<>
       {selected.status === '보류중' && <button type="button" className={drawer.primaryBtn} onClick={() => patchSelected('해제 승인 대기', '보류 해제 요청', '위험 검토 완료에 따른 해제 승인 요청')}>해제 요청</button>}
@@ -294,6 +283,5 @@ export function TradeHoldManagementPage() {
       <div className={drawer.sectionTitleLoose}>보류 범위</div><div className={styles.scopeList}>{selected.scopes.map((item) => <span key={item} className={styles.scopeChip}>{item}</span>)}</div>
       <div className={drawer.sectionTitleLoose}>처리 이력</div><div className={base.timeline}>{selected.history.map((item, index) => <div className={base.timelineItem} key={`${item.at}-${index}`}><strong>{item.action}</strong><p>{item.detail} · {item.actor}</p><time>{item.at}</time></div>)}</div>
     </DetailDrawer>}
-    {toast && <div className={base.toast}>{toast}</div>}
-  </section>;
+  </div>;
 }

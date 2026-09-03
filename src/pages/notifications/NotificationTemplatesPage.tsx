@@ -38,7 +38,7 @@ type PreviewState = { template: MessageTemplate; channel: TemplateChannel } | nu
 const QUICK_FILTERS: Quick[] = ['전체', ...TEMPLATE_CHANNELS, '비활성', '변수 오류'];
 const COLUMNS: GridColumn[] = [
   { label: '템플릿' }, { label: '사용 모듈' }, { label: '채널' }, { label: '목적 / 연결 업무' },
-  { label: '발송 유형' }, { label: '상태' }, { label: '최근 수정' }, { label: '수정자' }, { label: '관리', align: 'right' },
+  { label: '발송 유형' }, { label: '상태' }, { label: '최근 수정' }, { label: '수정자' },
 ];
 const SAMPLE_VALUES = Object.fromEntries(VARIABLE_REGISTRY.map((item) => [item.key, item.sample]));
 
@@ -252,9 +252,6 @@ export function NotificationTemplatesPage() {
         { kind: 'badge', text: template.status, bg: meta.bg, fg: meta.fg },
         { kind: 'text', text: template.updatedAt.slice(0, 10).replaceAll('-', '.'), color: '#71717a', size: '11px', numeric: true },
         { kind: 'text', text: template.updatedBy, color: '#52525b', size: '11px' },
-        { kind: 'rowMenu', align: 'right', detailLabel: '상세', onDetail: () => openDetail(template.id), open: menuId === template.id, onToggle: () => setMenuId(menuId === template.id ? null : template.id), items: [
-          { label: '상세 보기', click: () => openDetail(template.id) }, { label: '수정', click: () => startEdit(template) }, { label: '미리보기', click: () => setPreview({ template, channel: template.channels[0] }) }, { label: '테스트 발송', click: () => setTestSend({ template, channel: template.channels[0] }) }, { label: '복제', click: () => startClone(template) }, { label: '발송 이력', click: () => navigate(`/notifications/dispatch?template=${encodeURIComponent(template.code)}`) }, { sep: true }, { label: template.status === '사용중' ? '비활성 처리' : '사용 재개', fg: template.status === '사용중' ? '#dc2626' : undefined, click: () => requestStatusChange(template) }, ...(template.status === '작성중' && totalUsage(template) === 0 ? [{ label: '삭제', fg: '#dc2626', click: () => deleteDraft(template) }] : []),
-        ] },
       ],
     };
   });
@@ -312,14 +309,21 @@ export function NotificationTemplatesPage() {
             <label className="globalFilterField"><span>연결 업무</span><select aria-label="연결 업무" className={shared.selectSm} value={businessFilter} onChange={(event) => setBusinessFilter(event.target.value)}><option value="">연결 업무 전체</option>{TEMPLATE_BUSINESSES.map((item) => <option key={item}>{item}</option>)}</select></label>
             <label className="globalFilterField"><span>발송 유형</span><select aria-label="발송 유형" className={shared.selectSm} value={sendTypeFilter} onChange={(event) => setSendTypeFilter(event.target.value)}><option value="">발송 유형 전체</option>{TEMPLATE_SEND_TYPES.map((item) => <option key={item}>{item}</option>)}</select></label>
             <label className="globalFilterField"><span>사용 상태</span><select aria-label="사용 상태" className={shared.selectSm} value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}><option value="">사용 상태 전체</option>{TEMPLATE_STATUSES.map((item) => <option key={item}>{item}</option>)}</select></label>
-            <span className={styles.dateLabel}>수정일</span><DatePicker value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} /><span className={styles.dateDash}>–</span><DatePicker value={dateTo} onChange={(event) => setDateTo(event.target.value)} />
+            <label className={styles.dateFilterField}>
+              <span>수정일</span>
+              <span className={styles.dateRange}>
+                <DatePicker value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} />
+                <span className={styles.dateSeparator} aria-hidden="true">~</span>
+                <DatePicker value={dateTo} onChange={(event) => setDateTo(event.target.value)} />
+              </span>
+            </label>
             <span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={resetFilters}>초기화</button>
           </div>
         </div>
         <div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}건</span><div className={shared.resultActions}><ExcelDownloadButton type="button" onClick={download} /><select className={shared.pageSizeSelect}><option>20개씩 보기</option><option>50개씩 보기</option></select></div></div>
       </div>
       <div className={shared.gridWrap}>
-        <DataGrid columns={COLUMNS} rows={rows} gridTemplate="minmax(200px,1.5fr) 70px minmax(160px,1.2fr) 86px 56px 66px 78px 84px 46px" minWidth="1020px" empty={rows.length === 0} emptyText={templates.length === 0 ? '등록된 메시지 템플릿이 없습니다.' : '해당 조건의 템플릿이 없습니다.'} emptySubtext={templates.length === 0 ? '반복해서 사용하는 알림·이메일·SMS·Push 내용을 템플릿으로 등록해 주세요.' : '검색어나 필터 조건을 변경해 주세요.'} emptyActionLabel={templates.length === 0 ? '+ 템플릿 등록' : '필터 초기화'} emptyActionClick={templates.length === 0 ? startCreate : resetFilters} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
+        <DataGrid columns={COLUMNS} rows={rows} gridTemplate="minmax(200px,1.5fr) 70px minmax(160px,1.2fr) 86px 56px 66px 78px 84px" minWidth="975px" empty={rows.length === 0} emptyText={templates.length === 0 ? '등록된 메시지 템플릿이 없습니다.' : '해당 조건의 템플릿이 없습니다.'} emptySubtext={templates.length === 0 ? '반복해서 사용하는 알림·이메일·SMS·Push 내용을 템플릿으로 등록해 주세요.' : '검색어나 필터 조건을 변경해 주세요.'} emptyActionLabel={templates.length === 0 ? '+ 템플릿 등록' : '필터 초기화'} emptyActionClick={templates.length === 0 ? startCreate : resetFilters} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
       </div>
 
       {selected && <TemplateDetail template={selected} tab={detailTab} onTab={setDetailTab} memoText={memoText} onMemoText={setMemoText} onAddMemo={() => addMemo(selected)} onClose={() => setDetailId(null)} onEdit={() => startEdit(selected)} onClone={() => startClone(selected)} onPreview={(channel) => setPreview({ template: selected, channel })} onTest={(channel) => setTestSend({ template: selected, channel })} onHistory={() => navigate(`/notifications/dispatch?template=${encodeURIComponent(selected.code)}`)} onStatus={() => requestStatusChange(selected)} onDelete={() => deleteDraft(selected)} />}

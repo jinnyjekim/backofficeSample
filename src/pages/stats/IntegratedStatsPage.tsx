@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CommonCheckbox } from '../../components/common';
+import { CommonButton, CommonCheckbox } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
@@ -139,18 +139,30 @@ export function IntegratedStatsPage() {
       </div>
 
       <div className={styles.domainTabs}>
-        {DOMAIN_TABS.map(([key, label]) => (
-          <button key={key} type="button" className={`${styles.domainTabBtn} ${domain === key ? styles.domainTabActive : ''}`} onClick={() => setDomain(key)}>{label}</button>
-        ))}
+        {DOMAIN_TABS.map(([key, label]) => {
+          const active = domain === key;
+          return (
+            <CommonButton
+              key={key}
+              type="button"
+              variant={active ? 'primary-light' : 'secondary'}
+              size="md"
+              className={`${styles.domainTabBtn} ${active ? styles.domainTabActive : ''}`}
+              onClick={() => setDomain(key)}
+            >
+              {label}
+            </CommonButton>
+          );
+        })}
       </div>
 
       {domain === 'overview' && (
         <>
           <div className={txStyles.filterBar} style={{ margin: '0 24px 18px' }}>
             <div className={txStyles.filterRow}>
-              <DatePicker controlSize="sm" className={txStyles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
+              <DatePicker controlSize="sm" value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
               <span className={txStyles.tilde}>~</span>
-              <DatePicker controlSize="sm" className={txStyles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
+              <DatePicker controlSize="sm" value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
               <button type="button" className={txStyles.applyBtn} onClick={applyCustom}>조회</button>
               <CommonCheckbox className={txStyles.compareCheck} size="sm" checked={compare} onChange={setCompare}>이전 기간과 비교</CommonCheckbox>
             </div>

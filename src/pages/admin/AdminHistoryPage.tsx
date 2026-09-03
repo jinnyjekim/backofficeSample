@@ -5,7 +5,7 @@ import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types'
 import { AdminHistoryDetailDrawer } from './AdminHistoryDetailDrawer';
 import { ADMINS } from './adminData';
 import { ACTION_TYPES, ACTION_LOGS, LOGIN_LOGS, MENUS, type ActionLogEntry, type LoginLogEntry } from './adminHistoryData';
-import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton, ExcelDownloadButton } from '../../components/common';
 
 type Tab = '로그인 이력' | '작업 이력';
 const TABS: Tab[] = ['로그인 이력', '작업 이력'];
@@ -129,17 +129,21 @@ export function AdminHistoryPage() {
         </div>
 
         <div className={styles.quickFilters}>
-          {TABS.map((t) => (
-            <button
-              key={t}
-              type="button"
-              className={styles.qfBtn}
-              style={{ borderColor: tab === t ? 'var(--accent)' : 'rgba(0,0,0,.1)', background: tab === t ? 'var(--accent)' : '#fff' }}
-              onClick={() => { setTab(t); resetFilters(); }}
-            >
-              <span className={styles.qfLabel} style={{ color: tab === t ? '#fff' : '#3f3f46' }}>{t}</span>
-            </button>
-          ))}
+          {TABS.map((t) => {
+            const active = tab === t;
+            return (
+              <CommonButton
+                key={t}
+                type="button"
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.qfBtn} ${active ? styles.quickActive : ''}`}
+                onClick={() => { setTab(t); resetFilters(); }}
+              >
+                <span className={styles.qfLabel}>{t}</span>
+              </CommonButton>
+            );
+          })}
         </div>
 
         <div className={styles.filterBox}>

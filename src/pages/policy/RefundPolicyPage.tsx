@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CommonSwitch } from '../../components/common';
+import { CommonButton, CommonSwitch } from '../../components/common';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './RefundPolicyPage.module.css';
@@ -272,10 +272,22 @@ export function RefundPolicyPage() {
           )}
         </div>
 
-        <div className={styles.viewTabs}>
-          {TABS.map(([key, label]) => (
-            <button key={key} type="button" className={`${styles.viewTabBtn} ${tab === key ? styles.viewTabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
-          ))}
+        <div className={shared.quickFilters}>
+          {TABS.map(([key, label]) => {
+            const active = tab === key;
+            return (
+              <CommonButton
+                key={key}
+                type="button"
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.qfBtn} ${active ? shared.quickActive : ''}`}
+                onClick={() => setTab(key)}
+              >
+                <span className={shared.qfLabel}>{label}</span>
+              </CommonButton>
+            );
+          })}
         </div>
       </div>
 

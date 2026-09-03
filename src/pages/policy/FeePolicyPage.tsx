@@ -33,7 +33,6 @@ const COLUMNS = [
   { label: '계산방식' },
   { label: '적용기간' },
   { label: '상태' },
-  { label: '관리', align: 'right' as const },
 ];
 
 const TYPE_COLOR: Record<FeeType, { bg: string; fg: string }> = {
@@ -173,21 +172,6 @@ export function FeePolicyPage() {
         { kind: 'text', text: fmtCalc(p), size: '12px', weight: 600, color: '#18181b' },
         { kind: 'text', text: fmtPeriod(p), size: '11px', color: '#71717a' },
         { kind: 'statusDot', text: status, dot: dotColor.dot, fg: dotColor.fg },
-        {
-          kind: 'rowMenu',
-          align: 'right',
-          detailLabel: '상세',
-          onDetail: () => openDetail(p),
-          open: openMenu === p.id,
-          onToggle: () => setOpenMenu(openMenu === p.id ? null : p.id),
-          items: [
-            { label: '수정', click: () => openDetail(p) },
-            ...(status === '적용중' ? [{ label: '정책 종료', click: () => setConfirm({ kind: 'end', item: p }) }] : []),
-            { sep: true },
-            p.active ? { label: '비활성화', fg: '#dc2626', click: () => toggleActive(p) } : { label: '활성화', click: () => toggleActive(p) },
-            ...(p.usageCount === 0 ? [{ label: '삭제', fg: '#dc2626', click: () => setConfirm({ kind: 'delete', item: p }) }] : []),
-          ],
-        },
       ],
     };
   });
@@ -250,8 +234,8 @@ export function FeePolicyPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="minmax(180px,1fr) 98px 98px 90px 122px 154px 74px 46px"
-          minWidth="960px"
+          gridTemplate="minmax(180px,1fr) 98px 98px 90px 122px 154px 74px"
+          minWidth="915px"
           empty={filtered.length === 0}
           emptyText={quickFilter === '확인 필요' ? '현재 확인이 필요한 수수료 정책이 없습니다.' : '검색 결과가 없습니다.'}
           emptySubtext="검색어나 필터 조건을 변경해 주세요."

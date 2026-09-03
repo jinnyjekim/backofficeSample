@@ -7,12 +7,10 @@
   overflow-y: auto;
 }
 
-.headTop,
 .header {
   padding: 22px 24px 0;
   flex: none;
 }
-.headRow,
 .headerTop {
   display: flex;
   align-items: flex-start;
@@ -72,10 +70,7 @@
   background: #eef2ff !important;
   color: #4338ca !important;
 }
-.quickActive span,
-.qfBtn.active span,
-.qfBtn.active .qfLabel,
-.qfBtn.active .qfCount {
+.quickActive span {
   color: #4338ca !important;
 }
 .qfLabel {

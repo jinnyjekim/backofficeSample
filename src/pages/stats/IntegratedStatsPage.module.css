@@ -1,7 +1,7 @@
 .domainTabs { display: flex; gap: 6px; margin: 0 24px 16px; flex-wrap: wrap; }
 .domainTabBtn { height: 38px; padding: 0 18px; border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; border-radius: 10px; font-size: 13px; font-weight: 700; color: #52525b; cursor: pointer; }
 .domainTabBtn:hover { background: #fafafa; }
-.domainTabActive { border-color: #18181b; background: #18181b; color: #fff; }
+.domainTabActive { border-color: rgba(79, 70, 229, 0.25) !important; background: #eef2ff !important; color: #4338ca !important; }
 
 .headerActions { display: flex; gap: 8px; align-items: center; }
 .reportBtn { height: 36px; padding: 0 16px; border: 0; background: var(--accent); color: #fff; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; }

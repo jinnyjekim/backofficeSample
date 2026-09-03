@@ -1,7 +1,7 @@
 .viewTabs { display: flex; gap: 6px; margin: 0 24px 16px; padding-top: 4px; flex-wrap: wrap; }
 .viewTabBtn { height: 34px; padding: 0 16px; border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; border-radius: 9px; font-size: 12.5px; font-weight: 600; color: #52525b; cursor: pointer; }
 .viewTabBtn:hover { background: #fafafa; }
-.viewTabActive { border-color: #18181b; background: #18181b; color: #fff; }
+.viewTabActive { border-color: rgba(79, 70, 229, 0.25) !important; background: #eef2ff !important; color: #4338ca !important; }
 
 .body { padding: 0 24px 32px; }
 

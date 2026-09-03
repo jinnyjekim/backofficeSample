@@ -1,6 +1,9 @@
 .quickActive { border-color: rgba(79, 70, 229, 0.25) !important; background: #eef2ff !important; color: #4338ca !important; }
 .quickActive span { color: #4338ca !important; }
-.dateLabel, .dateDash { color: #8b8b93; font-size: 11px; }
+.dateFilterField { display: inline-flex; flex: 0 0 auto; flex-direction: column; gap: 6px; color: var(--common-text-muted); font-size: 10.5px; font-weight: 600; line-height: 1.2; }
+.dateFilterField > span:first-child { padding-left: 1px; }
+.dateRange { display: inline-flex; align-items: center; gap: 7px; border: 0; background: transparent; }
+.dateSeparator { color: var(--common-text-muted); font-size: 11px; font-weight: 400; }
 .toast { position: fixed; right: 24px; bottom: 24px; z-index: 90; padding: 11px 16px; border-radius: 9px; background: #18181b; color: #fff; box-shadow: 0 12px 34px rgba(0,0,0,.2); font-size: 12px; }
 
 .editorPage { flex: 1; min-height: 0; overflow-y: auto; padding: 22px 24px 40px; background: #f8f8f9; }

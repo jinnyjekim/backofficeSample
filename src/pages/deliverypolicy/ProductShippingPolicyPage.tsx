@@ -80,11 +80,6 @@ export function ProductShippingPolicyPage() {
     toastBriefly('배송 정책을 저장했습니다.');
   };
 
-  const resetToDefault = (code: string) => {
-    setOverrides((current) => ({ ...current, [code]: history({ ...current[code], usesOverride: false }, '기본 정책으로 변경') }));
-    toastBriefly('기본 정책으로 변경했습니다.');
-  };
-
   const toggleSelect = (code: string) => {
     setSelected((current) => {
       const next = new Set(current);
@@ -141,18 +136,6 @@ export function ProductShippingPolicyPage() {
         { kind: 'text', text: fmtFee(override), size: '12px', weight: 600, color: '#18181b' },
         { kind: 'text', text: override.usesOverride ? override.deliveryMethod : '-', size: '12px', color: '#3f3f46' },
         { kind: 'statusDot', text: !override.usesOverride ? '기본' : override.active ? '적용중' : '비활성', dot: !override.usesOverride ? '#a1a1aa' : override.active ? '#10b981' : '#d4d4d8', fg: !override.usesOverride ? '#71717a' : override.active ? '#047857' : '#a1a1aa' },
-        {
-          kind: 'rowMenu',
-          align: 'right',
-          detailLabel: '상세',
-          onDetail: () => setDrawerCode(product.code),
-          open: openMenu === product.code,
-          onToggle: () => setOpenMenu(openMenu === product.code ? null : product.code),
-          items: [
-            { label: '수정', click: () => setDrawerCode(product.code) },
-            ...(override.usesOverride ? [{ label: '기본 정책으로 변경', click: () => resetToDefault(product.code) }] : []),
-          ],
-        },
       ],
     };
   });
@@ -220,11 +203,10 @@ export function ProductShippingPolicyPage() {
             { label: '배송비' },
             { label: '배송방법' },
             { label: '상태' },
-            { label: '관리', align: 'right' as const },
           ]}
           rows={rows}
-          gridTemplate="1.4fr 74px 76px 92px 52px 58px 40px"
-          minWidth="860px"
+          gridTemplate="1.4fr 74px 76px 92px 52px 58px"
+          minWidth="820px"
           selectable
           allSelected={filtered.length > 0 && selected.size === filtered.length}
           onToggleAll={toggleAll}

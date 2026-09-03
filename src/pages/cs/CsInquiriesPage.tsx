@@ -6,7 +6,7 @@ import { InquiryDetailDrawer } from './InquiryDetailDrawer';
 import shared from '../ops/opsShared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './CsInquiriesPage.module.css';
-import { CommonButton } from '../../components/common';
+import { CommonButton, ExcelDownloadButton } from '../../components/common';
 import {
   fmtDateTime,
   getSlaInfo,
@@ -31,7 +31,7 @@ type DialogState = { kind: 'assign'; ids: string[] } | { kind: 'complete'; ids: 
 
 const COLUMNS = [
   { label: '문의번호' }, { label: '서비스' }, { label: '유형' }, { label: '문의 제목' }, { label: '고객' }, { label: '관련 대상' },
-  { label: '접수일' }, { label: '1차 답변 기한' }, { label: '담당자' }, { label: '상태' }, { label: '우선순위' }, { label: '관리', align: 'right' as const },
+  { label: '접수일' }, { label: '1차 답변 기한' }, { label: '담당자' }, { label: '상태' }, { label: '우선순위' },
 ];
 
 const TEAM_BY_MANAGER: Record<string, string> = {
@@ -64,7 +64,6 @@ export function CsInquiriesPage() {
   const [dueTo, setDueTo] = useState('');
   const [selected, setSelected] = useState<string[]>([]);
   const [selectedInquiryId, setSelectedInquiryId] = useState<string | null>(null);
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [dialog, setDialog] = useState<DialogState>(null);
   const [assignManager, setAssignManager] = useState('admin01');
   const [assignMemo, setAssignMemo] = useState('');
@@ -140,13 +139,6 @@ export function CsInquiriesPage() {
     anchor.href = url; anchor.download = 'inquiries.csv'; anchor.click(); URL.revokeObjectURL(url);
   };
 
-  const menuItems = (inquiry: InquiryEntry) => {
-    if (inquiry.status === '접수') return [{ label: '담당자 지정', click: () => setDialog({ kind: 'assign', ids: [inquiry.id] }) }, { label: '처리 시작', click: () => start(inquiry.id) }];
-    if (inquiry.status === '답변 완료') return [{ label: '추가 답변', click: () => setSelectedInquiryId(inquiry.id) }, { sep: true }, { label: '처리 완료', click: () => setDialog({ kind: 'complete', ids: [inquiry.id] }) }];
-    if (inquiry.status === '처리 완료') return [{ label: '전체 이력 보기', click: () => setSelectedInquiryId(inquiry.id) }, { label: '재오픈', click: () => reopen(inquiry.id) }];
-    return [{ label: inquiry.status === '고객 답변 대기' ? '고객 메시지 확인' : '답변 작성', click: () => setSelectedInquiryId(inquiry.id) }, { label: '담당자 변경', click: () => setDialog({ kind: 'assign', ids: [inquiry.id] }) }, { sep: true }, { label: '보류', click: () => hold(inquiry.id) }];
-  };
-
   const rows: GridRow[] = filtered.map((inquiry) => {
     const statusMeta = STATUS_META[inquiry.status];
     const priorityMeta = PRIORITY_META[inquiry.priority];
@@ -174,13 +166,12 @@ export function CsInquiriesPage() {
         { kind: 'text', text: inquiry.assignee ?? '미배정', size: '12px', color: inquiry.assignee ? '#3f3f46' : '#dc2626', weight: inquiry.assignee ? 500 : 700 },
         { kind: 'badge', text: inquiry.status, bg: statusMeta.bg, fg: statusMeta.fg },
         { kind: 'pillText', text: inquiry.priority, bg: priorityMeta.bg, fg: priorityMeta.fg },
-        { kind: 'rowMenu', align: 'right', open: openMenu === inquiry.id, onToggle: () => setOpenMenu(openMenu === inquiry.id ? null : inquiry.id), items: menuItems(inquiry) },
       ],
     };
   });
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+    <section className={shared.page}>
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div><h1 className={shared.title}>1:1 문의</h1><p className={shared.subtitle}>접수부터 답변, 완료까지 문의 처리 흐름과 SLA를 한 화면에서 관리합니다.</p></div>
@@ -242,16 +233,16 @@ export function CsInquiriesPage() {
           event.target.value = '';
           setToastBriefly('우선순위를 일괄 변경했습니다.');
         }}><option value="">우선순위 변경</option>{INQUIRY_PRIORITIES.map((item) => <option key={item}>{item}</option>)}</select>
-        <button type="button" className={shared.bulkBtn} onClick={() => download(inquiries.filter((item) => selected.includes(item.id)))}>선택 다운로드</button>
+        <ExcelDownloadButton data-grid-download onClick={() => download(inquiries.filter((item) => selected.includes(item.id)))} />
         <span className={styles.bulkGuard}>답변·완료 처리는 개별 문의에서만 가능합니다.</span>
       </div>}
 
       <div className={shared.gridWrap}>
         <div className={shared.resultRow}>
           <span className={shared.resultLabel}>총 {filtered.length}건</span>
-          <div className={shared.resultActions}><button type="button" className={shared.downloadBtn} onClick={() => download(filtered)}>목록 다운로드</button><select className={shared.pageSizeSelect}><option>20개씩</option><option>50개씩</option></select></div>
+          <div className={shared.resultActions}><ExcelDownloadButton data-grid-download onClick={() => download(filtered)}/><select className={shared.pageSizeSelect}><option>20개씩</option><option>50개씩</option></select></div>
         </div>
-        <DataGrid columns={COLUMNS} rows={rows} gridTemplate="128px 56px 84px minmax(236px,1.7fr) 126px 96px 88px 122px 66px 88px 52px 46px" minWidth="1320px" selectable allSelected={filtered.length > 0 && filtered.every((item) => selected.includes(item.id))} onToggleAll={() => setSelected(filtered.every((item) => selected.includes(item.id)) ? [] : filtered.map((item) => item.id))} empty={filtered.length === 0} emptyText="조건에 맞는 문의가 없습니다." emptySubtext="빠른 필터나 검색 조건을 변경해 보세요." emptyActionLabel="필터 초기화" emptyActionClick={resetFilters} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
+        <DataGrid columns={COLUMNS} rows={rows} gridTemplate="128px 56px 84px minmax(236px,1.7fr) 126px 96px 88px 122px 66px 88px 52px" minWidth="1275px" selectable allSelected={filtered.length > 0 && filtered.every((item) => selected.includes(item.id))} onToggleAll={() => setSelected(filtered.every((item) => selected.includes(item.id)) ? [] : filtered.map((item) => item.id))} empty={filtered.length === 0} emptyText="조건에 맞는 문의가 없습니다." emptySubtext="빠른 필터나 검색 조건을 변경해 보세요." emptyActionLabel="필터 초기화" emptyActionClick={resetFilters} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
       </div>
 
       {currentInquiry && <InquiryDetailDrawer key={currentInquiry.id} inquiry={currentInquiry} onClose={() => setSelectedInquiryId(null)} onAssign={() => setDialog({ kind: 'assign', ids: [currentInquiry.id] })} onStart={() => start(currentInquiry.id)} onHold={() => hold(currentInquiry.id)} onComplete={() => setDialog({ kind: 'complete', ids: [currentInquiry.id] })} onReopen={() => reopen(currentInquiry.id)} onSaveDraft={(body) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, replyDraft: body, draftSavedAt: '2026-08-24 14:00' }, '답변 임시저장'))} onSendReply={(body, channels) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, status: '답변 완료', replyDraft: '', draftSavedAt: null, messages: [...item.messages, { id: nextMessageId(item), role: 'admin', author: item.assignee ?? 'admin01', sentAt: '2026-08-24 14:00', body, notificationResult: `${channels.join(' / ') || '서비스 내'} 발송 완료` }] }, '고객 답변 발송', channels.join(' / ')))} onAddMemo={(body) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, internalMemos: [...item.internalMemos, { id: `MEMO-${Date.now()}`, author: 'admin01', createdAt: '2026-08-24 14:00', body }] }, '내부 메모 등록'))} />}

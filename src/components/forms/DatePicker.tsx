@@ -69,7 +69,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(function
         value={controlled ? current : undefined}
         defaultValue={controlled ? undefined : current}
         onChange={handleChange}
-        format={mode === 'datetime-local' ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD'}
+        format="YYYY-MM-DD"
         placeholder={placeholder}
         minDate={parseDate(min) ?? undefined}
         maxDate={parseDate(max) ?? undefined}

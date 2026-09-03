@@ -1,6 +1,6 @@
 import { useRef, type ReactNode } from 'react';
 import { useOutsideClose } from '../../../lib/useOutsideClose';
-import shared from '../../ops/opsShared.module.css';
+import shared from '../shared.module.css';
 import drawer from '../../ops/opsDrawerShared.module.css';
 import styles from './SalesActivity.module.css';
 
@@ -9,7 +9,7 @@ export interface DrawerField { label: string; value: ReactNode }
 export interface DrawerStat { label: string; value: string }
 
 export function PageHeading({ title, subtitle, action }: { title: string; subtitle: string; action?: ReactNode }) {
-  return <div className={shared.headTop}><div className={shared.headRow}><div><h1 className={shared.title}>{title}</h1><p className={shared.subtitle}>{subtitle}</p></div>{action && <div className={styles.headerActions}>{action}</div>}</div></div>;
+  return <header className={shared.header}><div className={shared.headerTop}><div><div className={shared.title}>{title}</div><div className={shared.subtitle}>{subtitle}</div></div>{action && <div className={styles.headerActions}>{action}</div>}</div></header>;
 }
 
 export function Metrics({ items }: { items: Metric[] }) {

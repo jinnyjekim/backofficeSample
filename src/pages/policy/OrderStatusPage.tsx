@@ -3,6 +3,7 @@ import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
 import shared from '../ops/opsShared.module.css';
 import styles from './OrderStatusPage.module.css';
+import { showToast } from '../../components/common';
 import { OrderStatusDrawer } from './OrderStatusDrawer';
 import { TransitionEditDialog } from './TransitionEditDialog';
 import {
@@ -40,7 +41,6 @@ const COLUMNS = [
   { label: '사용자 노출' },
   { label: '사용' },
   { label: '주문수', align: 'right' as const },
-  { label: '관리', align: 'right' as const },
 ];
 
 function natureLabel(s: OrderStatusEntry): { text: string; bg: string; fg: string } {
@@ -77,7 +77,6 @@ export function OrderStatusPage() {
   const [isNew, setIsNew] = useState(false);
   const [confirm, setConfirm] = useState<ConfirmState>(null);
   const [orderOpen, setOrderOpen] = useState(false);
-  const [toast, setToast] = useState('');
   const [transitionEdit, setTransitionEdit] = useState<{ from: string; to: string } | null>(null);
 
   const warnings = useMemo(() => computeValidationWarnings(statuses, transitions), [statuses, transitions]);
@@ -97,8 +96,7 @@ export function OrderStatusPage() {
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
   const reset = () => {
     setKeyword('');
@@ -153,11 +151,6 @@ export function OrderStatusPage() {
     setConfirm(null);
   };
 
-  const activate = (item: OrderStatusEntry) => {
-    const updated = history({ ...item, active: true }, '상태 활성화');
-    setStatuses((current) => current.map((s) => (s.id === item.id ? updated : s)));
-  };
-
   const move = (item: OrderStatusEntry, direction: -1 | 1) => {
     const ordered = [...statuses].sort((a, b) => a.order - b.order);
     const index = ordered.findIndex((s) => s.id === item.id);
@@ -202,32 +195,17 @@ export function OrderStatusPage() {
         { kind: 'badge', text: s.userVisible ? '노출' : '비노출', bg: s.userVisible ? '#eff6ff' : '#f4f4f5', fg: s.userVisible ? '#2563eb' : '#71717a' },
         { kind: 'statusDot', text: s.active ? '사용' : '비활성', dot: s.active ? '#10b981' : '#a1a1aa', fg: s.active ? '#047857' : '#71717a' },
         { kind: 'text', text: `${s.orderCount.toLocaleString()}건`, size: '12px', align: 'right', numeric: true },
-        {
-          kind: 'rowMenu',
-          align: 'right',
-          detailLabel: '상세',
-          onDetail: () => openDetail(s),
-          open: openMenu === s.id,
-          onToggle: () => setOpenMenu(openMenu === s.id ? null : s.id),
-          items: [
-            { label: '수정', click: () => openDetail(s) },
-            { label: '전환 설정 바로가기', click: () => setView('transitions') },
-            { sep: true },
-            s.active ? { label: '비활성화', fg: '#dc2626', click: () => deactivate(s) } : { label: '활성화', click: () => activate(s) },
-            ...(s.orderCount === 0 ? [{ label: '삭제', fg: '#dc2626', click: () => setConfirm({ kind: 'delete', item: s }) }] : []),
-          ],
-        },
       ],
     };
   });
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>주문 상태 설정</h1>
-            <p className={shared.subtitle}>주문의 처리 상태와 상태 전환 정책을 관리합니다.</p>
+            <div className={shared.title}>주문 상태 설정</div>
+            <div className={shared.subtitle}>주문의 처리 상태와 상태 전환 정책을 관리합니다.</div>
           </div>
           {view === 'list' && <button type="button" className={shared.createBtn} onClick={openCreate}>+ 상태 추가</button>}
         </div>
@@ -275,7 +253,7 @@ export function OrderStatusPage() {
             </div>
           </>
         )}
-      </div>
+      </header>
 
       {view === 'list' && (
         <>
@@ -289,8 +267,8 @@ export function OrderStatusPage() {
             <DataGrid
               columns={COLUMNS}
               rows={rows}
-              gridTemplate="40px 84px 126px 56px 68px 56px 66px 50px 62px 46px"
-              minWidth="780px"
+              gridTemplate="40px 84px 126px 56px 68px 56px 66px 50px 62px"
+              minWidth="735px"
               selectable
               allSelected={filtered.length > 0 && filtered.every((s) => selected.includes(s.id))}
               onToggleAll={() => setSelected(filtered.every((s) => selected.includes(s.id)) ? [] : filtered.map((s) => s.id))}
@@ -464,8 +442,7 @@ export function OrderStatusPage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }
 

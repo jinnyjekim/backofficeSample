@@ -21,7 +21,7 @@ import {
   type FreeShippingPolicy,
   type QuickFilter,
 } from './freeShippingConditionData';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 
 const TODAY = '2026-08-25';
 
@@ -36,7 +36,6 @@ const COLUMNS = [
   { label: '우선순위' },
   { label: '적용기간' },
   { label: '상태' },
-  { label: '관리', align: 'right' as const },
 ];
 
 const STATUS_DOT: Record<string, { dot: string; fg: string }> = {
@@ -68,7 +67,6 @@ export function FreeShippingConditionPage() {
   const [drawerItem, setDrawerItem] = useState<FreeShippingPolicy | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [confirm, setConfirm] = useState<ConfirmState>(null);
-  const [toast, setToast] = useState('');
 
   const [previewOrderId, setPreviewOrderId] = useState(TEST_ORDERS[0].id);
 
@@ -86,8 +84,7 @@ export function FreeShippingConditionPage() {
   );
 
   const toastBriefly = (message: string) => {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2400);
+    showToast({ message, type: 'success' });
   };
   const reset = () => {
     setKeyword('');
@@ -159,21 +156,6 @@ export function FreeShippingConditionPage() {
         { kind: 'text', text: `${p.priority}`, size: '12px', color: '#71717a', align: 'right', numeric: true },
         { kind: 'text', text: fmtPeriod(p), size: '11px', color: '#71717a' },
         { kind: 'statusDot', text: status, dot: dotColor.dot, fg: dotColor.fg },
-        {
-          kind: 'rowMenu',
-          align: 'right',
-          detailLabel: '상세',
-          onDetail: () => openDetail(p),
-          open: openMenu === p.id,
-          onToggle: () => setOpenMenu(openMenu === p.id ? null : p.id),
-          items: [
-            { label: '수정', click: () => openDetail(p) },
-            ...(status === '적용중' ? [{ label: '정책 종료', click: () => setConfirm({ kind: 'end', item: p }) }] : []),
-            { sep: true },
-            p.active ? { label: '비활성화', fg: '#dc2626', click: () => toggleActive(p) } : { label: '활성화', click: () => toggleActive(p) },
-            ...(p.usageCount === 0 ? [{ label: '삭제', fg: '#dc2626', click: () => setConfirm({ kind: 'delete', item: p }) }] : []),
-          ],
-        },
       ],
     };
   });
@@ -182,19 +164,35 @@ export function FreeShippingConditionPage() {
   const previewResult = computeOrderShippingPreview(previewOrder, policies);
 
   return (
-    <section className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <h1 className={shared.title}>무료 배송 조건</h1>
-            <p className={shared.subtitle}>어떤 주문이 어떤 조건을 충족했을 때 배송비를 면제할지 관리합니다.</p>
+            <div className={shared.title}>무료 배송 조건</div>
+            <div className={shared.subtitle}>어떤 주문이 어떤 조건을 충족했을 때 배송비를 면제할지 관리합니다.</div>
           </div>
           {view === 'list' && <button type="button" className={shared.createBtn} onClick={openCreate}>+ 무료배송 조건 등록</button>}
         </div>
 
-        <div className={styles.viewTabs}>
-          <button type="button" className={`${styles.viewTabBtn} ${view === 'list' ? styles.viewTabActive : ''}`} onClick={() => setView('list')}>정책 목록</button>
-          <button type="button" className={`${styles.viewTabBtn} ${view === 'preview' ? styles.viewTabActive : ''}`} onClick={() => setView('preview')}>정책 Preview</button>
+        <div className={shared.quickFilters}>
+          <CommonButton
+            type="button"
+            variant={view === 'list' ? 'primary-light' : 'secondary'}
+            size="md"
+            className={`${shared.qfBtn} ${view === 'list' ? styles.quickActive : ''}`}
+            onClick={() => setView('list')}
+          >
+            <span className={shared.qfLabel}>정책 목록</span>
+          </CommonButton>
+          <CommonButton
+            type="button"
+            variant={view === 'preview' ? 'primary-light' : 'secondary'}
+            size="md"
+            className={`${shared.qfBtn} ${view === 'preview' ? styles.quickActive : ''}`}
+            onClick={() => setView('preview')}
+          >
+            <span className={shared.qfLabel}>정책 Preview</span>
+          </CommonButton>
         </div>
 
         {view === 'list' && (
@@ -232,7 +230,7 @@ export function FreeShippingConditionPage() {
             </div>
           </>
         )}
-      </div>
+      </header>
 
       {view === 'list' && (
         <div className={shared.gridWrap}>
@@ -242,8 +240,8 @@ export function FreeShippingConditionPage() {
           <DataGrid
             columns={COLUMNS}
             rows={rows}
-            gridTemplate="1fr 98px 56px 70px 52px 156px 70px 40px"
-            minWidth="940px"
+            gridTemplate="1fr 98px 56px 70px 52px 156px 70px"
+            minWidth="900px"
             empty={filtered.length === 0}
             emptyText={quickFilter === '확인 필요' ? '현재 확인이 필요한 무료배송 조건이 없습니다.' : '검색 결과가 없습니다.'}
             emptySubtext={filtered.length === 0 && policies.length === 0 ? '현재 모든 주문에는 기본 배송비 정책이 적용됩니다.' : '검색어나 필터 조건을 변경해 주세요.'}
@@ -331,7 +329,6 @@ export function FreeShippingConditionPage() {
         </div>
       )}
 
-      {toast && <div className={styles.toast}>{toast}</div>}
-    </section>
+    </div>
   );
 }

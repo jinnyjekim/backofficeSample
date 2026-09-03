@@ -7,7 +7,7 @@ import drawer from './opsDrawerShared.module.css';
 import shared from './opsShared.module.css';
 import styles from './TermsManagementPage.module.css';
 import { TermsDetailDrawer } from './TermsDetailDrawer';
-import { CommonButton } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 import { TERMS, currentVersion, termsScopes, type ConsentType, type TermsDefinition, type TermsStatus, type TermsVersion } from './termsData';
 
 type Quick = '전체' | '적용중' | '적용 예정' | '종료';
@@ -27,7 +27,7 @@ const STATUS_META: Record<TermsStatus, { bg: string; fg: string }> = {
 };
 const COLUMNS = [
   { label: '약관명 / 코드' }, { label: '적용 범위' }, { label: '유형' }, { label: '버전' }, { label: '동의 구분' }, { label: '상태' },
-  { label: '적용 시작일' }, { label: '적용 종료일' }, { label: '최종 수정' }, { label: '관리', align: 'right' as const },
+  { label: '적용 시작일' }, { label: '적용 종료일' }, { label: '최종 수정' },
 ];
 
 const emptyForm = (): FormState => ({
@@ -64,7 +64,6 @@ export function TermsManagementPage() {
   const [preview, setPreview] = useState<Preview>(null);
   const [endId, setEndId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [toast, setToast] = useState('');
 
   const filtered = useMemo(() => terms.filter((term) => {
     const version = currentVersion(term);
@@ -84,8 +83,7 @@ export function TermsManagementPage() {
   const deleting = terms.find((term) => term.id === deleteId) ?? null;
 
   function notify(message: string) {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2600);
+    showToast({ message, type: 'success' });
   }
 
   function resetFilters() {
@@ -211,8 +209,6 @@ export function TermsManagementPage() {
     const scopes = termsScopes(term);
     const scopeMeta = scopes.length === 1 ? CONFIG_SCOPE_BADGE_META[scopes[0]] : CONFIG_SCOPE_BADGE_META.공통;
     const meta = STATUS_META[version.status];
-    const hasActive = term.versions.some((item) => item.status === '적용중');
-    const draftOnly = term.versions.every((item) => item.status === '임시저장');
     return { id: term.id, onClick: () => setDetailId(term.id), cells: [
       { kind: 'stack', title: term.name, subtitle: term.code },
       { kind: 'pillText', text: scopes.join(' · '), bg: scopeMeta.bg, fg: scopeMeta.fg },
@@ -223,19 +219,12 @@ export function TermsManagementPage() {
       { kind: 'text', text: version.effectiveFrom || '-', numeric: true },
       { kind: 'text', text: version.effectiveTo ?? '-', numeric: true },
       { kind: 'stack', title: version.createdAt.slice(0, 10), subtitle: version.createdBy },
-      { kind: 'rowMenu', align: 'right', open: menuId === term.id, onToggle: () => setMenuId(menuId === term.id ? null : term.id), items: [
-        ...(version.status === '임시저장' ? [{ label: '수정', click: () => openEdit(term) }] : [{ label: '새 버전 등록', click: () => openNewVersion(term) }]),
-        { label: '복제', click: () => openCreate(term) },
-        { label: '현재 버전 미리보기', click: () => viewVersion(term, version.id) },
-        ...(hasActive ? [{ sep: true }, { label: '적용 종료', fg: '#dc2626', click: () => setEndId(term.id) }] : []),
-        ...(draftOnly ? [{ sep: true }, { label: '삭제', fg: '#dc2626', click: () => setDeleteId(term.id) }] : []),
-      ] },
     ] };
   });
 
-  return <section className={shared.page} onClick={() => menuId && setMenuId(null)}>
-    <div className={shared.headTop}>
-      <div className={shared.headRow}><div><h1 className={shared.title}>약관 관리</h1><p className={shared.subtitle}>서비스 약관과 동의 문서를 코드·버전 단위로 등록하고 적용 이력을 관리합니다.</p></div><button type="button" className={shared.createBtn} onClick={() => openCreate()}>+ 약관 등록</button></div>
+  return <div className={shared.page} onClick={() => menuId && setMenuId(null)}>
+    <header className={shared.header}>
+      <div className={shared.headerTop}><div><div className={shared.title}>약관 관리</div><div className={shared.subtitle}>서비스 약관과 동의 문서를 코드·버전 단위로 등록하고 적용 이력을 관리합니다.</div></div><button type="button" className={shared.createBtn} onClick={() => openCreate()}>+ 약관 등록</button></div>
       <div className={shared.quickFilters}>
         {QUICK.map((item) => {
           const active = quick === item;
@@ -258,7 +247,7 @@ export function TermsManagementPage() {
         <div className={shared.filterRow2}><label className="globalFilterField"><span>적용 범위</span><select className={shared.selectSm} value={scopeFilter} onChange={(event) => setScopeFilter(event.target.value as ConfigScopeFilter)} aria-label="적용 범위">{CONFIG_SCOPE_FILTERS.map((item) => <option key={item}>{item}</option>)}</select></label><label className="globalFilterField"><span>유형</span><select aria-label="유형" className={shared.selectSm} value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}><option value="">전체 유형</option>{TYPES.map((item) => <option key={item}>{item}</option>)}</select></label><label className="globalFilterField"><span>상태</span><select aria-label="상태" className={shared.selectSm} value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}><option value="">전체 상태</option>{Object.keys(STATUS_META).map((item) => <option key={item}>{item}</option>)}</select></label><label className="globalFilterField"><span>동의 구분</span><select aria-label="동의 구분" className={shared.selectSm} value={consentFilter} onChange={(event) => setConsentFilter(event.target.value)}><option value="">전체 동의 구분</option><option>필수</option><option>선택</option><option>동의 불필요</option></select></label><label className={styles.checkRow}>시행일 <DatePicker value={dateFrom} onChange={(event) => setDateFrom(event.target.value)}/><span>–</span><DatePicker value={dateTo} onChange={(event) => setDateTo(event.target.value)}/></label><span className={shared.rowSpacer}/><button type="button" className={shared.resetBtn} onClick={resetFilters}>초기화</button></div>
       </div>
     </div>
-    <div className={shared.gridWrap}><div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}개 약관 · 코드 단위</span><div className={shared.resultActions}><select className={shared.pageSizeSelect}><option>20개씩</option><option>50개씩</option></select></div></div><DataGrid columns={COLUMNS} rows={rows} gridTemplate="minmax(205px,1.7fr) 114px 56px 60px 84px 76px 88px 88px 94px 46px" minWidth="1040px" empty={filtered.length === 0} emptyText="검색 조건에 해당하는 약관이 없습니다." emptySubtext="검색어나 필터 조건을 변경하거나 새 약관을 등록해 주세요." emptyActionLabel="약관 등록" emptyActionClick={() => openCreate()} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'}/></div>
+    <div className={shared.gridWrap}><div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}개 약관 · 코드 단위</span><div className={shared.resultActions}><select className={shared.pageSizeSelect}><option>20개씩</option><option>50개씩</option></select></div></div><DataGrid columns={COLUMNS} rows={rows} gridTemplate="minmax(205px,1.7fr) 114px 56px 60px 84px 76px 88px 88px 94px" minWidth="995px" empty={filtered.length === 0} emptyText="검색 조건에 해당하는 약관이 없습니다." emptySubtext="검색어나 필터 조건을 변경하거나 새 약관을 등록해 주세요." emptyActionLabel="약관 등록" emptyActionClick={() => openCreate()} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'}/></div>
     {selected && <TermsDetailDrawer key={`${selected.id}-${selected.versions.length}-${currentVersion(selected).status}`} term={selected} onClose={() => setDetailId(null)} onNewVersion={() => openNewVersion(selected)} onEdit={() => openEdit(selected)} onEnd={() => setEndId(selected.id)} onViewVersion={(id) => viewVersion(selected, id)}/>}
     {editor && <Dialog title={editor.mode === 'newVersion' ? '새 버전 등록' : editor.mode === 'edit' ? '약관 수정' : editor.mode === 'clone' ? '약관 복제 등록' : '약관 등록'} wide onClose={() => setEditor(null)}>
       <p className={shared.dialogBody}>{editor.mode === 'newVersion' ? '현재 약관 내용을 복사해 새 버전으로 등록합니다. 적용 시작일 전날 기존 적용 버전이 자동 종료됩니다.' : '약관 코드와 버전별로 내용 및 적용 기간을 관리합니다.'}</p>

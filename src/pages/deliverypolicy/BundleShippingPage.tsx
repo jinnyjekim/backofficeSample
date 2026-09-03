@@ -168,19 +168,6 @@ export function BundleShippingPage() {
         { kind: 'text', text: calcSummary(g), size: '12px', weight: 600, color: '#18181b' },
         { kind: 'badge', text: g.regionalFeePolicy === '별도 정책 설정' ? '별도' : '기본', bg: g.regionalFeePolicy === '별도 정책 설정' ? '#eef2ff' : '#f4f4f5', fg: g.regionalFeePolicy === '별도 정책 설정' ? '#4338ca' : '#71717a' },
         { kind: 'statusDot', text: g.status, dot: g.status === '사용' ? '#10b981' : '#a1a1aa', fg: g.status === '사용' ? '#047857' : '#71717a' },
-        {
-          kind: 'rowMenu',
-          align: 'right',
-          detailLabel: '상세',
-          onDetail: () => openDetail(g.id),
-          open: openMenu === g.id,
-          onToggle: () => setOpenMenu(openMenu === g.id ? null : g.id),
-          items: [
-            { label: '수정', click: () => openDetail(g.id) },
-            g.status === '사용' ? { label: '비활성화', click: () => setConfirm({ kind: 'deactivate', item: g }) } : { label: '활성화', click: () => setConfirm({ kind: 'activate', item: g }) },
-            ...(g.orderUsageCount === 0 ? [{ label: '삭제', fg: '#dc2626', click: () => setConfirm({ kind: 'delete', item: g }) }] : []),
-          ],
-        },
       ],
     };
   });
@@ -292,11 +279,11 @@ export function BundleShippingPage() {
         <DataGrid
           columns={[
             { label: '그룹명' }, { label: '상품수' }, { label: '출고지' }, { label: '배송방식' },
-            { label: '배송비 계산' }, { label: '지역비' }, { label: '상태' }, { label: '관리', align: 'right' as const },
+            { label: '배송비 계산' }, { label: '지역비' }, { label: '상태' },
           ]}
           rows={rows}
-          gridTemplate="1.3fr 44px 56px 52px 92px 52px 58px 40px"
-          minWidth="890px"
+          gridTemplate="1.3fr 44px 56px 52px 92px 52px 58px"
+          minWidth="850px"
           empty={filtered.length === 0}
           emptyText={groups.length === 0 ? '등록된 묶음 배송 그룹이 없습니다.' : quickFilter === '설정 확인' ? '현재 확인이 필요한 묶음배송 설정이 없습니다.' : '검색 결과가 없습니다.'}
           emptySubtext={groups.length === 0 ? '상품별 배송비를 묶어서 계산하려면 배송 그룹을 등록해 주세요.' : '검색어나 필터 조건을 변경해 주세요.'}

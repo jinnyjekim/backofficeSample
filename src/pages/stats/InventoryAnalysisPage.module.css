@@ -3,7 +3,8 @@
 }
 
 .inventoryFilterGrid {
-  grid-template-columns: 138px 128px minmax(130px, 1fr) 126px 126px 126px 136px auto;
+  grid-template-columns: repeat(auto-fit, minmax(136px, 160px));
+  justify-content: start;
 }
 
 .statusComposition {
@@ -163,12 +164,6 @@
 .optionList i {
   text-align: right;
   font-weight: 700;
-}
-
-@media (max-width: 1500px) {
-  .inventoryFilterGrid {
-    grid-template-columns: repeat(4, minmax(130px, 1fr));
-  }
 }
 
 @media (max-width: 900px) {

@@ -17,9 +17,9 @@ import {
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { CommonButton } from '../../components/common';
 
-const GRID_TEMPLATE = '64px 72px minmax(220px,2fr) 60px 76px 54px 46px';
+const GRID_TEMPLATE = '64px 72px minmax(220px,2fr) 60px 76px 54px';
 const GRID_COLUMNS: GridColumn[] = [
-  { label: '문의번호' }, { label: '상품' }, { label: '문의 제목' }, { label: '작성자' }, { label: '답변 상태' }, { label: '등록일' }, { label: '관리' },
+  { label: '문의번호' }, { label: '상품' }, { label: '문의 제목' }, { label: '작성자' }, { label: '답변 상태' }, { label: '등록일' },
 ];
 
 const SEARCH_SCOPES = ['전체', '문의번호', '문의 제목', '작성자', '상품'] as const;
@@ -38,7 +38,7 @@ function matchesSearch(q: ProductInquiry, scope: SearchScope, keyword: string): 
 export function ProductInquiriesListPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [inquiries, setInquiries] = useState<ProductInquiry[]>(() => [...PRODUCT_INQUIRIES]);
+  const [inquiries] = useState<ProductInquiry[]>(() => [...PRODUCT_INQUIRIES]);
   const statusParam = searchParams.get('status');
   const quickFilter: QuickFilter = statusParam === 'waiting' ? '답변 대기' : statusParam === 'answered' ? '답변 완료' : '전체';
   const [scope, setScope] = useState<SearchScope>('전체');
@@ -95,12 +95,6 @@ export function ProductInquiriesListPage() {
     setSearchParams(next, { replace: true });
   };
 
-  function toggleHidden(q: ProductInquiry) {
-    setInquiries((prev) => prev.map((x) => (x.id === q.id ? { ...x, hidden: !x.hidden } : x)));
-    toastBriefly(q.hidden ? '문의를 복원했습니다.' : '문의를 숨김 처리했습니다.');
-    setMenuId(null);
-  }
-
   const rows: GridRow[] = filtered.map((q) => {
     const sm = STATUS_META[q.status];
     const issues = computeIssues(q);
@@ -111,19 +105,6 @@ export function ProductInquiriesListPage() {
       { kind: 'text', text: q.member, color: '#52525b', size: '12px', weight: 500 },
       { kind: 'badge', text: q.status, bg: sm.bg, fg: sm.fg },
       { kind: 'text', text: q.createdAt.slice(5, 10).replace('-', '.'), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-      {
-        kind: 'rowMenu',
-        align: 'right',
-        detailLabel: '상세',
-        onDetail: () => navigate(`/cs/product-inquiries/${q.id}`),
-        open: menuId === q.id,
-        onToggle: () => setMenuId(menuId === q.id ? null : q.id),
-        items: [
-          { label: '상세 보기', click: () => navigate(`/cs/product-inquiries/${q.id}`) },
-          { sep: true },
-          { label: '문의 숨김', fg: '#dc2626', click: () => toggleHidden(q) },
-        ],
-      },
     ];
     return { id: q.id, cells, onClick: () => navigate(`/cs/product-inquiries/${q.id}`) };
   });
@@ -195,7 +176,7 @@ export function ProductInquiriesListPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="800px"
+          minWidth="750px"
           empty={rows.length === 0}
           emptyText={quickFilter === '답변 대기' ? '답변 대기 중인 문의가 없습니다.' : '조회된 상품 문의가 없습니다.'}
           emptySubtext="검색어나 필터 조건을 변경해 주세요."

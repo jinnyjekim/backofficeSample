@@ -21,7 +21,7 @@ import {
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { CommonButton } from '../../components/common';
 
-const GRID_TEMPLATE = '120px 1.4fr 92px 54px 94px 44px 36px 74px 54px 46px';
+const GRID_TEMPLATE = '120px 1.4fr 92px 54px 94px 44px 36px 74px 54px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '미리보기' },
   { label: '배너명' },
@@ -32,7 +32,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '순서', align: 'right' },
   { label: '상태' },
   { label: '클릭', align: 'right' },
-  { label: '관리' },
 ];
 const PAGE_LABELS = ['1', '2'];
 
@@ -310,22 +309,6 @@ export function BannersPage() {
     }
   }
 
-  function rowMenuItems(b: Banner, status: ReturnType<typeof computeStatus>) {
-    const canDelete = (status === '작성중' || status === '비활성') && !b.startAt && b.impressions === 0;
-    const items: { label?: string; sep?: boolean; fg?: string; click?: () => void }[] = [
-      { label: '상세 보기', click: () => openDetail(b.id) },
-    ];
-    if (status !== '노출종료') items.push({ label: '수정', click: () => openEditor(b) });
-    items.push({ sep: true });
-    if (status === '작성중' || status === '비활성') items.push({ label: '노출', click: () => publishNow(b.id) });
-    if (status === '노출예정') items.push({ label: '예약 취소', click: () => cancelSchedule(b.id) });
-    if (status === '노출중') items.push({ label: '노출 중지', fg: '#dc2626', click: () => setConfirm({ kind: 'stop', id: b.id }) });
-    if (status === '노출종료') items.push({ label: '재노출', click: () => setConfirm({ kind: 'repost', id: b.id }) });
-    items.push({ label: '복제', click: () => duplicate(b.id) });
-    if (canDelete) items.push({ label: '삭제', fg: '#dc2626', click: () => setConfirm({ kind: 'delete', id: b.id }) });
-    return items.map((it) => (it.click ? { ...it, click: () => { it.click!(); setMenuId(null); } } : it));
-  }
-
   const rows: GridRow[] = filtered.map((b) => {
     const status = computeStatus(b);
     const sm = BANNER_STATUS_META[status];
@@ -341,7 +324,6 @@ export function BannersPage() {
       { kind: 'text', text: String(b.order), color: '#71717a', size: '12px', weight: 500, align: 'right', numeric: true },
       { kind: 'badge', text: status, bg: sm.bg, fg: sm.fg },
       { kind: 'text', text: b.clicks.toLocaleString('ko-KR'), color: '#3f3f46', size: '12px', weight: 600, align: 'right', numeric: true },
-      { kind: 'rowMenu', detailLabel: '상세', onDetail: () => openDetail(b.id), open: menuId === b.id, onToggle: () => setMenuId(menuId === b.id ? null : b.id), items: rowMenuItems(b, status) },
     ];
     return {
       id: b.id,
@@ -360,8 +342,8 @@ export function BannersPage() {
 
   return (
     <div className={styles.page} onClick={() => menuId && setMenuId(null)}>
-      <div className={styles.headTop}>
-        <div className={styles.headRow}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
           <div>
             <div className={styles.title}>배너</div>
             <div className={styles.subtitle}>서비스 화면의 노출 위치·기간·순서·디바이스별 배너를 관리합니다.</div>
@@ -428,7 +410,7 @@ export function BannersPage() {
             </select>
           </div>
         </div>
-      </div>
+      </header>
 
       {selectedIds.length > 0 && (
         <div className={styles.bulkBar}>
@@ -444,7 +426,7 @@ export function BannersPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="990px"
+          minWidth="940px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}

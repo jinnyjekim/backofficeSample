@@ -67,9 +67,13 @@ export function InTransitPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.headTop}>
-        <div className={styles.title}>배송중</div>
-        <div className={styles.subtitle}>출고된 상품의 현재 배송 위치와 진행 상태를 확인합니다.</div>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
+          <div>
+            <div className={styles.title}>배송중</div>
+            <div className={styles.subtitle}>출고된 상품의 현재 배송 위치와 진행 상태를 확인합니다.</div>
+          </div>
+        </div>
 
         <div className={styles.quickFilters}>
           {TRANSIT_FILTER_KEYS.map((k) => {
@@ -89,7 +93,7 @@ export function InTransitPage() {
           })}
         </div>
 
-        <div className={styles.filterBox}>
+        <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
             <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
               <option>전체</option>
@@ -123,7 +127,7 @@ export function InTransitPage() {
           </div>
         </div>
 
-        <div className={styles.resultRow}>
+        <div className={styles.resultBar}>
           <span className={styles.resultLabel}>{`총 ${filtered.length}건`}</span>
           <div className={styles.resultActions}>
             <button type="button" className={styles.actionBtn}>상태 재조회</button>
@@ -134,9 +138,9 @@ export function InTransitPage() {
             </select>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className={styles.gridWrap}>
+      <div className={styles.tableWrap}>
         <DataGrid
           columns={GRID_COLUMNS}
           rows={rows}

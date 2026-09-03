@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
-import { useNavigate } from 'react-router-dom';
 import shared from './shared.module.css';
 import styles from './ExternalTransactionPage.module.css';
 import { ExternalTxDetailDrawer } from './ExternalTxDetailDrawer';
@@ -33,7 +32,6 @@ const COLUMNS = [
   { label: '외부상태' },
   { label: '내부결제' },
   { label: '매칭' },
-  { label: '관리', align: 'right' as const },
 ];
 
 const MATCH_COLOR: Record<MatchStatus, { bg: string; fg: string }> = {
@@ -54,7 +52,6 @@ const STATUS_COLOR: Record<ExternalRawStatus, { bg: string; fg: string }> = {
 const PG_OPTIONS = ['PG 01', 'PG 02'];
 
 export function ExternalTransactionPage() {
-  const navigate = useNavigate();
   const [txList, setTxList] = useState(INITIAL_EXTERNAL_TX);
   const [payments] = useState(INITIAL_PAYMENTS);
 
@@ -130,19 +127,6 @@ export function ExternalTransactionPage() {
         { kind: 'badge', text: STATUS_LABEL[tx.externalStatus], bg: statusColor.bg, fg: statusColor.fg },
         { kind: 'text', text: tx.linkedPaymentId ?? '-', size: '12px', color: tx.linkedPaymentId ? '#3f3f46' : '#a1a1aa' },
         { kind: 'badge', text: match, bg: matchColor.bg, fg: matchColor.fg },
-        {
-          kind: 'rowMenu',
-          align: 'right',
-          detailLabel: '상세',
-          onDetail: () => setSelectedId(tx.id),
-          open: openMenu === tx.id,
-          onToggle: () => setOpenMenu(openMenu === tx.id ? null : tx.id),
-          items: [
-            { label: '상세 보기', click: () => setSelectedId(tx.id) },
-            ...(tx.linkedPaymentId ? [{ label: '내부 결제 보기', click: () => navigate('/payment-mgmt/list', { state: { openPaymentId: tx.linkedPaymentId } }) }] : []),
-            ...(match !== '정상' ? [{ label: '상태 재조회', click: () => setRecheckTarget(tx) }] : []),
-          ],
-        },
       ],
     };
   });
@@ -224,8 +208,8 @@ export function ExternalTransactionPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="120px 88px 52px 60px 90px 78px 78px 88px 46px"
-          minWidth="810px"
+          gridTemplate="120px 88px 52px 60px 90px 78px 78px 88px"
+          minWidth="760px"
           empty={filtered.length === 0}
           emptyText={quickFilter === '미매칭' ? '현재 미매칭 외부 거래가 없습니다.' : quickFilter === '확인 필요' ? '현재 확인이 필요한 외부 거래가 없습니다.' : '검색 결과가 없습니다.'}
           emptySubtext={quickFilter === '미매칭' ? '모든 외부 거래가 내부 결제와 정상적으로 연결되어 있습니다.' : '검색어나 필터 조건을 변경해 주세요.'}

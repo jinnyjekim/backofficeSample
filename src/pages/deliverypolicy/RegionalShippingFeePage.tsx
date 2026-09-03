@@ -37,7 +37,6 @@ const COLUMNS = [
   { label: '배송방법' },
   { label: '적용기간' },
   { label: '상태' },
-  { label: '관리', align: 'right' as const },
 ];
 
 const STATUS_DOT: Record<string, { dot: string; fg: string }> = {
@@ -163,21 +162,6 @@ export function RegionalShippingFeePage() {
         { kind: 'text', text: p.deliveryMethod, size: '12px', color: '#3f3f46' },
         { kind: 'text', text: fmtPeriod(p), size: '11px', color: '#71717a' },
         { kind: 'statusDot', text: status, dot: dotColor.dot, fg: dotColor.fg },
-        {
-          kind: 'rowMenu',
-          align: 'right',
-          detailLabel: '상세',
-          onDetail: () => openDetail(p),
-          open: openMenu === p.id,
-          onToggle: () => setOpenMenu(openMenu === p.id ? null : p.id),
-          items: [
-            { label: '수정', click: () => openDetail(p) },
-            ...(status === '적용중' ? [{ label: '정책 종료', click: () => setConfirm({ kind: 'end', item: p }) }] : []),
-            { sep: true },
-            p.active ? { label: '비활성화', fg: '#dc2626', click: () => toggleActive(p) } : { label: '활성화', click: () => toggleActive(p) },
-            ...(p.usageCount === 0 ? [{ label: '삭제', fg: '#dc2626', click: () => setConfirm({ kind: 'delete', item: p }) }] : []),
-          ],
-        },
       ],
     };
   });
@@ -196,9 +180,25 @@ export function RegionalShippingFeePage() {
           {view === 'list' && <button type="button" className={shared.createBtn} onClick={openCreate}>+ 지역 배송비 등록</button>}
         </div>
 
-        <div className={styles.viewTabs}>
-          <button type="button" className={`${styles.viewTabBtn} ${view === 'list' ? styles.viewTabActive : ''}`} onClick={() => setView('list')}>정책 목록</button>
-          <button type="button" className={`${styles.viewTabBtn} ${view === 'preview' ? styles.viewTabActive : ''}`} onClick={() => setView('preview')}>지역 판정 Preview</button>
+        <div className={shared.quickFilters}>
+          <CommonButton
+            type="button"
+            variant={view === 'list' ? 'primary-light' : 'secondary'}
+            size="md"
+            className={`${shared.qfBtn} ${view === 'list' ? styles.quickActive : ''}`}
+            onClick={() => setView('list')}
+          >
+            <span className={shared.qfLabel}>정책 목록</span>
+          </CommonButton>
+          <CommonButton
+            type="button"
+            variant={view === 'preview' ? 'primary-light' : 'secondary'}
+            size="md"
+            className={`${shared.qfBtn} ${view === 'preview' ? styles.quickActive : ''}`}
+            onClick={() => setView('preview')}
+          >
+            <span className={shared.qfLabel}>지역 판정 Preview</span>
+          </CommonButton>
         </div>
 
         {view === 'list' && (
@@ -251,8 +251,8 @@ export function RegionalShippingFeePage() {
           <DataGrid
             columns={COLUMNS}
             rows={rows}
-            gridTemplate="1fr 72px 122px 74px 56px 148px 70px 40px"
-            minWidth="990px"
+            gridTemplate="1fr 72px 122px 74px 56px 148px 70px"
+            minWidth="950px"
             empty={filtered.length === 0}
             emptyText={quickFilter === '확인 필요' ? '현재 확인이 필요한 지역 배송비 정책이 없습니다.' : '검색 결과가 없습니다.'}
             emptySubtext="검색어나 필터 조건을 변경해 주세요."

@@ -29,10 +29,10 @@ import {
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { CommonButton } from '../../components/common';
 
-const GRID_TEMPLATE = 'minmax(300px,2.2fr) 72px minmax(230px,1.25fr) minmax(105px,.65fr) 76px minmax(175px,1fr) 96px minmax(125px,.75fr) 96px 38px';
+const GRID_TEMPLATE = 'minmax(300px,2.2fr) 72px minmax(230px,1.25fr) minmax(105px,.65fr) 76px minmax(175px,1fr) 96px minmax(125px,.75fr) 96px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '이벤트명' }, { label: '유형' }, { label: '참여 / 노출기간' }, { label: '참여대상' },
-  { label: '참여', align: 'right' }, { label: '혜택' }, { label: '상태' }, { label: '연결노출' }, { label: '담당자' }, { label: '관리' },
+  { label: '참여', align: 'right' }, { label: '혜택' }, { label: '상태' }, { label: '연결노출' }, { label: '담당자' },
 ];
 const PAGE_LABELS = ['1', '2'];
 
@@ -256,24 +256,6 @@ export function EventsPage() {
     const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'events.csv'; anchor.click(); URL.revokeObjectURL(url);
   }
 
-  function rowMenuItems(event: EventEntry) {
-    const status = computeEventStatus(event);
-    const items: { label?: string; sep?: boolean; fg?: string; click?: () => void }[] = [
-      { label: '상세 보기', click: () => openDetail(event.id) },
-      { label: '수정', click: () => openEditor(event) },
-      { label: '미리보기', click: () => setPreviewId(event.id) },
-      { sep: true },
-    ];
-    if (status === '작성중') items.push({ label: '진행 설정', click: () => startEvent(event.id) });
-    if (status === '진행 예정') items.push({ label: '비활성', click: () => toggleActive(event.id) });
-    if (status === '진행중') items.push({ label: '참여자 보기', click: () => openDetail(event.id) }, { label: '연결 배너 / 팝업', click: () => openDetail(event.id) }, { label: '조기 종료', fg: '#dc2626', click: () => setConfirm({ kind: 'end', id: event.id }) });
-    if (status === '종료') items.push({ label: '참여 / 결과', click: () => openDetail(event.id) }, { label: '변경 이력', click: () => openDetail(event.id) });
-    if (status === '비활성') items.push({ label: '활성화', click: () => toggleActive(event.id) });
-    items.push({ label: '복제', click: () => duplicateEvent(event.id) });
-    if (status === '작성중' && event.participants === 0) items.push({ label: '삭제', fg: '#dc2626', click: () => setConfirm({ kind: 'delete', id: event.id }) });
-    return items.map((item) => item.click ? { ...item, click: () => { item.click?.(); setMenuId(null); } } : item);
-  }
-
   const gridRows: GridRow[] = filtered.map((event) => {
     const status = computeEventStatus(event);
     const meta = EVENT_STATUS_META[status];
@@ -288,7 +270,6 @@ export function EventsPage() {
       { kind: 'badgeSub', text: status, bg: meta.bg, fg: meta.fg, subText: issues.length ? `⚠ ${issues.length}건` : undefined },
       { kind: 'text', text: linkedExposureSummary(event), color: '#52525b', size: '11.5px', weight: 500 },
       { kind: 'stack', title: event.manager, subtitle: event.updatedAt === '방금' ? '방금' : event.updatedAt.slice(5, 10).replace('-', '.') },
-      { kind: 'rowMenu', detailLabel: '상세', onDetail: () => openDetail(event.id), open: menuId === event.id, onToggle: () => setMenuId(menuId === event.id ? null : event.id), items: rowMenuItems(event) },
     ];
     return { id: event.id, cells, onClick: () => openDetail(event.id), selected: selectedIds.includes(event.id), onToggleSelect: () => toggleSelect(event.id) };
   });
@@ -299,8 +280,8 @@ export function EventsPage() {
 
   return (
     <div className={shared.page} onClick={() => menuId && setMenuId(null)}>
-      <div className={shared.headTop}>
-        <div className={shared.headRow}>
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div><div className={shared.title}>이벤트 관리</div><div className={shared.subtitle}>서비스에서 진행하는 이벤트 콘텐츠와 참여·혜택·노출 현황을 관리합니다.</div></div>
           <button type="button" className={shared.createBtn} onClick={() => openEditor('new')}>＋ 이벤트 등록</button>
         </div>
@@ -345,12 +326,12 @@ export function EventsPage() {
         </div>
 
         <div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length}건</span><div className={shared.resultActions}><ExcelDownloadButton type="button" onClick={downloadCsv} /><select className={shared.pageSizeSelect} defaultValue="20개씩 보기"><option>20개씩 보기</option><option>50개씩 보기</option></select></div></div>
-      </div>
+      </header>
 
       {selectedIds.length > 0 && <div className={shared.bulkBar}><span className={shared.bulkLabel}>{selectedIds.length}건 선택됨</span><select className={styles.bulkManager} value={bulkManager} onChange={(e) => setBulkManager(e.target.value)}>{EVENT_MANAGERS.map((item) => <option key={item}>{item}</option>)}</select><button type="button" className={shared.bulkBtn} onClick={assignManager}>담당자 지정</button><button type="button" className={shared.bulkBtn} onClick={downloadCsv}>다운로드</button></div>}
 
       <div className={`${shared.gridWrap} ${styles.eventGrid}`}>
-        <DataGrid columns={GRID_COLUMNS} rows={gridRows} gridTemplate={GRID_TEMPLATE} minWidth="1480px" selectable allSelected={filtered.length > 0 && filtered.every((event) => selectedIds.includes(event.id))} onToggleAll={toggleAll} showPagination pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))} empty={gridRows.length === 0} emptyText={filter === '진행중' ? '현재 진행중인 이벤트가 없습니다.' : filter === '진행 예정' ? '예정된 이벤트가 없습니다.' : filter === '확인 필요' ? '현재 운영 확인이 필요한 이벤트가 없습니다.' : q || typeFilter !== '전체' || targetFilter !== '전체' ? '검색 결과가 없습니다.' : '등록된 이벤트가 없습니다.'} emptySubtext={gridRows.length === 0 ? '검색어나 필터 조건을 변경해 주세요.' : undefined} emptyActionLabel={gridRows.length === 0 ? '필터 초기화' : undefined} emptyActionClick={resetFilters} />
+        <DataGrid columns={GRID_COLUMNS} rows={gridRows} gridTemplate={GRID_TEMPLATE} minWidth="1440px" selectable allSelected={filtered.length > 0 && filtered.every((event) => selectedIds.includes(event.id))} onToggleAll={toggleAll} showPagination pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))} empty={gridRows.length === 0} emptyText={filter === '진행중' ? '현재 진행중인 이벤트가 없습니다.' : filter === '진행 예정' ? '예정된 이벤트가 없습니다.' : filter === '확인 필요' ? '현재 운영 확인이 필요한 이벤트가 없습니다.' : q || typeFilter !== '전체' || targetFilter !== '전체' ? '검색 결과가 없습니다.' : '등록된 이벤트가 없습니다.'} emptySubtext={gridRows.length === 0 ? '검색어나 필터 조건을 변경해 주세요.' : undefined} emptyActionLabel={gridRows.length === 0 ? '필터 초기화' : undefined} emptyActionClick={resetFilters} />
       </div>
 
       {selected && <EventDetailDrawer event={selected} onClose={() => setSelectedId(null)} onEdit={() => openEditor(selected)} onPreview={() => setPreviewId(selected.id)} onDuplicate={() => duplicateEvent(selected.id)} onStart={() => startEvent(selected.id)} onEnd={() => setConfirm({ kind: 'end', id: selected.id })} onToggleActive={() => toggleActive(selected.id)} onAddMemo={(text) => addMemo(selected.id, text)} />}

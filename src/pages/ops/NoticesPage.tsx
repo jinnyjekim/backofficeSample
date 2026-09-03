@@ -22,7 +22,7 @@ import {
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { CommonButton } from '../../components/common';
 
-const GRID_TEMPLATE = '1.7fr 78px 44px 96px 72px 56px 50px 64px 80px 46px';
+const GRID_TEMPLATE = '1.7fr 78px 44px 96px 72px 56px 50px 64px 80px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '제목' },
   { label: '카테고리' },
@@ -33,7 +33,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '조회수', align: 'right' },
   { label: '등록자' },
   { label: '등록일' },
-  { label: '관리' },
 ];
 const PAGE_LABELS = ['1', '2'];
 
@@ -281,21 +280,6 @@ export function NoticesPage() {
     }
   }
 
-  function rowMenuItems(n: Notice, status: ReturnType<typeof computeStatus>) {
-    const items: { label?: string; sep?: boolean; fg?: string; click?: () => void }[] = [
-      { label: '상세 보기', click: () => openDetail(n.id) },
-    ];
-    if (status !== '게시종료') items.push({ label: '수정', click: () => openEditor(n) });
-    items.push({ sep: true });
-    if (status === '작성중' || status === '비공개') items.push({ label: '공개', click: () => publishNow(n.id) });
-    if (status === '공개예정') items.push({ label: '예약 취소', click: () => cancelSchedule(n.id) });
-    if (status === '공개중') items.push({ label: '게시 종료', fg: '#dc2626', click: () => setConfirm({ kind: 'end', id: n.id }) });
-    if (status === '게시종료') items.push({ label: '재게시', click: () => setConfirm({ kind: 'repost', id: n.id }) });
-    items.push({ label: '복제', click: () => duplicate(n.id) });
-    if (status === '작성중') items.push({ label: '삭제', fg: '#dc2626', click: () => setConfirm({ kind: 'delete', id: n.id }) });
-    return items.map((it) => (it.click ? { ...it, click: () => { it.click!(); setMenuId(null); } } : it));
-  }
-
   const rows: GridRow[] = filtered.map((n) => {
     const status = computeStatus(n);
     const sm = PUBLICATION_STATUS_META[status];
@@ -311,7 +295,6 @@ export function NoticesPage() {
       { kind: 'text', text: n.views.toLocaleString('ko-KR'), color: '#3f3f46', size: '12px', weight: 600, align: 'right', numeric: true },
       { kind: 'text', text: n.author, color: '#52525b', size: '12px', weight: 500 },
       { kind: 'text', text: n.createdAt, color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-      { kind: 'rowMenu', detailLabel: '상세', onDetail: () => openDetail(n.id), open: menuId === n.id, onToggle: () => setMenuId(menuId === n.id ? null : n.id), items: rowMenuItems(n, status) },
     ];
     return {
       id: n.id,
@@ -330,8 +313,8 @@ export function NoticesPage() {
 
   return (
     <div className={styles.page} onClick={() => menuId && setMenuId(null)}>
-      <div className={styles.headTop}>
-        <div className={styles.headRow}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
           <div>
             <div className={styles.title}>공지사항</div>
             <div className={styles.subtitle}>서비스에 노출되는 공지사항을 등록·예약·종료하고 노출 대상과 기간을 관리합니다.</div>
@@ -398,7 +381,7 @@ export function NoticesPage() {
             </select>
           </div>
         </div>
-      </div>
+      </header>
 
       {selectedIds.length > 0 && (
         <div className={styles.bulkBar}>
@@ -414,7 +397,7 @@ export function NoticesPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1090px"
+          minWidth="1040px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}

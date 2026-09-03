@@ -1,57 +1,400 @@
-import { DatePicker } from '../../components/forms/DatePicker';
-import { useMemo, useState } from 'react';
-import { DataGrid } from '../../components/DataGrid';
-import type { GridColumn, GridRow } from '../../components/DataGrid/types';
-import shared from '../ops/opsShared.module.css';
-import styles from './SecurityLogPage.module.css';
-import { SecurityLogDetailDrawer } from './SecurityLogDetailDrawer';
-import { EVENT_TYPES, RISK_LEVELS, RISK_META, SECURITY_CATEGORIES, SECURITY_LOGS, SECURITY_RESULTS, TARGET_TYPES, type SecurityCategory } from './securityLogData';
-import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton } from '../../components/common';
+import { DatePicker } from "../../components/forms/DatePicker";
+import { useMemo, useState } from "react";
+import { DataGrid } from "../../components/DataGrid";
+import type { GridColumn, GridRow } from "../../components/DataGrid/types";
+import shared from "../ops/opsShared.module.css";
+import styles from "./SecurityLogPage.module.css";
+import { SecurityLogDetailDrawer } from "./SecurityLogDetailDrawer";
+import {
+  EVENT_TYPES,
+  RISK_LEVELS,
+  RISK_META,
+  SECURITY_CATEGORIES,
+  SECURITY_LOGS,
+  SECURITY_RESULTS,
+  TARGET_TYPES,
+  type SecurityCategory,
+} from "./securityLogData";
+import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
+import { CommonButton } from "../../components/common";
 
-type Quick = '전체' | SecurityCategory;
-const QUICK: Quick[] = ['전체', ...SECURITY_CATEGORIES];
-const COLUMNS: GridColumn[] = [{ label: '발생 일시' }, { label: '유형' }, { label: '이벤트' }, { label: '대상' }, { label: 'IP' }, { label: '결과' }, { label: '위험 수준' }, { label: '관련 메뉴' }, { label: '상세' }];
-const RESULT_META = { 성공: { bg: '#ecfdf5', fg: '#047857' }, 실패: { bg: '#fef2f2', fg: '#dc2626' }, 차단: { bg: '#fef2f2', fg: '#b91c1c' } };
+type Quick = "전체" | SecurityCategory;
+const QUICK: Quick[] = ["전체", ...SECURITY_CATEGORIES];
+const COLUMNS: GridColumn[] = [
+  { label: "발생 일시" },
+  { label: "유형" },
+  { label: "이벤트" },
+  { label: "대상" },
+  { label: "IP" },
+  { label: "결과" },
+  { label: "위험 수준" },
+  { label: "관련 메뉴" },
+];
+const RESULT_META = {
+  성공: { bg: "#ecfdf5", fg: "#047857" },
+  실패: { bg: "#fef2f2", fg: "#dc2626" },
+  차단: { bg: "#fef2f2", fg: "#b91c1c" },
+};
 
 export function SecurityLogPage() {
-  const [quick, setQuick] = useState<Quick>('전체'); const [searchField, setSearchField] = useState('전체'); const [keyword, setKeyword] = useState(''); const [search, setSearch] = useState('');
-  const [start, setStart] = useState('2026-08-23T00:00'); const [end, setEnd] = useState('2026-08-26T23:59'); const [eventFilter, setEventFilter] = useState(''); const [riskFilter, setRiskFilter] = useState(''); const [resultFilter, setResultFilter] = useState(''); const [targetFilter, setTargetFilter] = useState(''); const [ipFilter, setIpFilter] = useState(''); const [selectedId, setSelectedId] = useState<string | null>(null);
-  const filtered = useMemo(() => SECURITY_LOGS.filter((entry) => {
-    if (quick !== '전체' && entry.category !== quick) return false;
-    const from = start.replace('T', ' '); const to = end.replace('T', ' ');
-    if (from && entry.at < from) return false; if (to && entry.at > `${to}:59`) return false;
-    if (eventFilter && entry.event !== eventFilter) return false; if (riskFilter && entry.risk !== riskFilter) return false; if (resultFilter && entry.result !== resultFilter) return false; if (targetFilter && entry.targetType !== targetFilter) return false; if (ipFilter && !entry.ip.includes(ipFilter.trim())) return false;
-    if (!search) return true; const query = search.toLowerCase();
-    if (searchField === '이벤트 ID') return entry.id.toLowerCase().includes(query);
-    if (searchField === '관리자 ID') return entry.targetType === '관리자' && entry.targetId.toLowerCase().includes(query);
-    if (searchField === '회원 ID') return entry.targetType === '회원' && entry.targetId.toLowerCase().includes(query);
-    if (searchField === 'IP') return entry.ip.includes(query);
-    if (searchField === 'Request ID') return entry.requestId.toLowerCase().includes(query);
-    return `${entry.id} ${entry.targetId} ${entry.targetName} ${entry.ip} ${entry.requestId} ${entry.event}`.toLowerCase().includes(query);
-  }), [end, eventFilter, ipFilter, quick, resultFilter, riskFilter, search, searchField, start, targetFilter]);
-  const selected = SECURITY_LOGS.find((entry) => entry.id === selectedId) ?? null;
-  function reset() { setQuick('전체'); setSearchField('전체'); setKeyword(''); setSearch(''); setStart('2026-08-23T00:00'); setEnd('2026-08-26T23:59'); setEventFilter(''); setRiskFilter(''); setResultFilter(''); setTargetFilter(''); setIpFilter(''); }
-  function download() { const csv = [['발생 일시', '이벤트 ID', '유형', '이벤트', '대상 유형', '대상 ID', 'IP', '결과', '위험 수준', '관련 메뉴', 'Request ID'], ...filtered.map((entry) => [entry.at, entry.id, entry.category, entry.event, entry.targetType, entry.targetId, entry.ip, entry.result, entry.risk, entry.menu, entry.requestId])].map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(',')).join('\n'); const url = URL.createObjectURL(new Blob([`\ufeff${csv}`], { type: 'text/csv;charset=utf-8' })); const a = document.createElement('a'); a.href = url; a.download = 'security-logs.csv'; a.click(); URL.revokeObjectURL(url); }
-  const rows: GridRow[] = filtered.map((entry) => { const risk = RISK_META[entry.risk]; const result = RESULT_META[entry.result]; return { id: entry.id, onClick: () => setSelectedId(entry.id), bg: entry.risk === '위험' ? '#fffafa' : undefined, mark: entry.risk === '위험' ? `inset 3px 0 ${risk.mark}` : undefined, cells: [
-    { kind: 'text', text: entry.at, size: '11.5px', numeric: true, weight: 500 }, { kind: 'pillText', text: entry.category, bg: '#f4f4f5', fg: '#52525b' }, { kind: 'stack', title: `${entry.event}${entry.repeatCount ? ` · ${entry.repeatCount}회` : ''}`, subtitle: entry.eventCode }, { kind: 'stack', title: entry.targetName, subtitle: `${entry.targetType} · ${entry.targetId}` }, { kind: 'stack', title: entry.ip, subtitle: entry.region }, { kind: 'badge', text: entry.result, bg: result.bg, fg: result.fg }, { kind: 'badge', text: entry.risk, bg: risk.bg, fg: risk.fg }, { kind: 'text', text: entry.menu, size: '11px', tip: entry.requestUrl }, { kind: 'link', text: '보기', size: '12px' },
-  ] }; });
-  return <section className={shared.page}><div className={shared.headTop}><div className={shared.headRow}><div><h1 className={shared.title}>보안 로그</h1><p className={shared.subtitle}>인증, 접근 제어와 권한 관련 보안 이벤트를 조회하고 추적합니다.</p></div></div><div className={styles.readonlyStrip}>조회 전용 · 로그 등록/수정/삭제 불가 · 민감 인증정보는 저장 및 다운로드에서 제외</div><div className={shared.quickFilters}>
-  {QUICK.map((item) => {
-    const active = quick === item;
-    return (
-      <CommonButton
-        key={item}
-        type="button"
-        variant={active ? 'primary-light' : 'secondary'}
-        size="md"
-        className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
-        onClick={() => setQuick(item)}
-      >
-        <span className={shared.qfLabel}>{item}</span>
-        <span className={shared.qfCount}>{SECURITY_LOGS.filter((entry) => item === '전체' || entry.category === item).length}</span>
-      </CommonButton>
+  const [quick, setQuick] = useState<Quick>("전체");
+  const [searchField, setSearchField] = useState("전체");
+  const [keyword, setKeyword] = useState("");
+  const [search, setSearch] = useState("");
+  const [start, setStart] = useState("2026-08-23");
+  const [end, setEnd] = useState("2026-08-26");
+  const [eventFilter, setEventFilter] = useState("");
+  const [riskFilter, setRiskFilter] = useState("");
+  const [resultFilter, setResultFilter] = useState("");
+  const [targetFilter, setTargetFilter] = useState("");
+  const [ipFilter, setIpFilter] = useState("");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const filtered = useMemo(
+    () =>
+      SECURITY_LOGS.filter((entry) => {
+        if (quick !== "전체" && entry.category !== quick) return false;
+        if (eventFilter && entry.event !== eventFilter) return false;
+        if (riskFilter && entry.risk !== riskFilter) return false;
+        if (resultFilter && entry.result !== resultFilter) return false;
+        if (targetFilter && entry.targetType !== targetFilter) return false;
+        if (ipFilter && !entry.ip.includes(ipFilter.trim())) return false;
+        if (!search) return true;
+        const query = search.toLowerCase();
+        if (searchField === "이벤트 ID")
+          return entry.id.toLowerCase().includes(query);
+        if (searchField === "관리자 ID")
+          return (
+            entry.targetType === "관리자" &&
+            entry.targetId.toLowerCase().includes(query)
+          );
+        if (searchField === "회원 ID")
+          return (
+            entry.targetType === "회원" &&
+            entry.targetId.toLowerCase().includes(query)
+          );
+        if (searchField === "IP") return entry.ip.includes(query);
+        if (searchField === "Request ID")
+          return entry.requestId.toLowerCase().includes(query);
+        return `${entry.id} ${entry.targetId} ${entry.targetName} ${entry.ip} ${entry.requestId} ${entry.event}`
+          .toLowerCase()
+          .includes(query);
+      }),
+    [
+      end,
+      eventFilter,
+      ipFilter,
+      quick,
+      resultFilter,
+      riskFilter,
+      search,
+      searchField,
+      start,
+      targetFilter,
+    ],
+  );
+  const selected =
+    SECURITY_LOGS.find((entry) => entry.id === selectedId) ?? null;
+  function reset() {
+    setQuick("전체");
+    setSearchField("전체");
+    setKeyword("");
+    setSearch("");
+    setStart("2026-08-23");
+    setEnd("2026-08-26");
+    setEventFilter("");
+    setRiskFilter("");
+    setResultFilter("");
+    setTargetFilter("");
+    setIpFilter("");
+  }
+  function download() {
+    const csv = [
+      [
+        "발생 일시",
+        "이벤트 ID",
+        "유형",
+        "이벤트",
+        "대상 유형",
+        "대상 ID",
+        "IP",
+        "결과",
+        "위험 수준",
+        "관련 메뉴",
+        "Request ID",
+      ],
+      ...filtered.map((entry) => [
+        entry.at,
+        entry.id,
+        entry.category,
+        entry.event,
+        entry.targetType,
+        entry.targetId,
+        entry.ip,
+        entry.result,
+        entry.risk,
+        entry.menu,
+        entry.requestId,
+      ]),
+    ]
+      .map((row) =>
+        row
+          .map((value) => `"${String(value).replaceAll('"', '""')}"`)
+          .join(","),
+      )
+      .join("\n");
+    const url = URL.createObjectURL(
+      new Blob([`\ufeff${csv}`], { type: "text/csv;charset=utf-8" }),
     );
-  })}
-</div><div className={shared.filterBox}><form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}><label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={shared.selectSm} value={searchField} onChange={(event) => setSearchField(event.target.value)}><option>전체</option><option>이벤트 ID</option><option>관리자 ID</option><option>회원 ID</option><option>IP</option><option>Request ID</option></select></label><input className={shared.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="이벤트 ID / 대상 ID / IP / Request ID"/><button type="submit" className={shared.searchBtn}>검색</button></form><div className={shared.filterRow2}><label className={styles.filterLabel}>발생 기간<DatePicker mode="datetime-local" value={start} onChange={(event) => setStart(event.target.value)}/><span>~</span><DatePicker mode="datetime-local" value={end} onChange={(event) => setEnd(event.target.value)}/></label><label className="globalFilterField"><span>이벤트 유형</span><select aria-label="이벤트 유형" className={shared.selectSm} value={eventFilter} onChange={(event) => setEventFilter(event.target.value)}><option value="">이벤트 유형 전체</option>{EVENT_TYPES.map((item) => <option key={item}>{item}</option>)}</select></label><label className="globalFilterField"><span>위험 수준</span><select aria-label="위험 수준" className={shared.selectSm} value={riskFilter} onChange={(event) => setRiskFilter(event.target.value)}><option value="">위험 수준 전체</option>{RISK_LEVELS.map((item) => <option key={item}>{item}</option>)}</select></label><label className="globalFilterField"><span>결과</span><select aria-label="결과" className={shared.selectSm} value={resultFilter} onChange={(event) => setResultFilter(event.target.value)}><option value="">결과 전체</option>{SECURITY_RESULTS.map((item) => <option key={item}>{item}</option>)}</select></label><label className="globalFilterField"><span>대상 유형</span><select aria-label="대상 유형" className={shared.selectSm} value={targetFilter} onChange={(event) => setTargetFilter(event.target.value)}><option value="">대상 유형 전체</option>{TARGET_TYPES.map((item) => <option key={item}>{item}</option>)}</select></label><input className={shared.selectSm} value={ipFilter} onChange={(event) => setIpFilter(event.target.value)} placeholder="IP 필터"/><span className={shared.rowSpacer}/><button type="button" className={shared.resetBtn} onClick={reset}>초기화</button></div></div><div className={shared.resultRow}><span className={shared.resultLabel}>총 {filtered.length.toLocaleString()}건 · 위험 {filtered.filter((entry) => entry.risk === '위험').length}건 · 경고 {filtered.filter((entry) => entry.risk === '경고').length}건</span><div className={shared.resultActions}><ExcelDownloadButton type="button" onClick={download} /><select className={shared.pageSizeSelect}><option>100개씩</option><option>200개씩</option></select></div></div></div><div className={shared.gridWrap}><DataGrid columns={COLUMNS} rows={rows} gridTemplate="135px 66px minmax(180px,1.4fr) 108px 128px 54px 54px 128px 54px" minWidth="1050px" empty={filtered.length === 0} emptyText={riskFilter === '위험' ? '조회 기간에 위험 수준의 보안 이벤트가 없습니다.' : '조회된 보안 로그가 없습니다.'} emptySubtext="기간이나 검색 조건을 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'}/></div>{selected && <SecurityLogDetailDrawer entry={selected} onClose={() => setSelectedId(null)}/>}</section>;
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "security-logs.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  const rows: GridRow[] = filtered.map((entry) => {
+    const risk = RISK_META[entry.risk];
+    const result = RESULT_META[entry.result];
+    return {
+      id: entry.id,
+      onClick: () => setSelectedId(entry.id),
+      bg: entry.risk === "위험" ? "#fffafa" : undefined,
+      mark: entry.risk === "위험" ? `inset 3px 0 ${risk.mark}` : undefined,
+      cells: [
+        {
+          kind: "text",
+          text: entry.at,
+          size: "11.5px",
+          numeric: true,
+          weight: 500,
+        },
+        {
+          kind: "pillText",
+          text: entry.category,
+          bg: "#f4f4f5",
+          fg: "#52525b",
+        },
+        {
+          kind: "stack",
+          title: `${entry.event}${entry.repeatCount ? ` · ${entry.repeatCount}회` : ""}`,
+          subtitle: entry.eventCode,
+        },
+        {
+          kind: "stack",
+          title: entry.targetName,
+          subtitle: `${entry.targetType} · ${entry.targetId}`,
+        },
+        { kind: "stack", title: entry.ip, subtitle: entry.region },
+        { kind: "badge", text: entry.result, bg: result.bg, fg: result.fg },
+        { kind: "badge", text: entry.risk, bg: risk.bg, fg: risk.fg },
+        { kind: "text", text: entry.menu, size: "11px", tip: entry.requestUrl },
+      ],
+    };
+  });
+  return (
+    <section className={shared.page}>
+      <div className={shared.headTop}>
+        <div className={shared.headRow}>
+          <div>
+            <h1 className={shared.title}>보안 로그</h1>
+            <p className={shared.subtitle}>
+              인증, 접근 제어와 권한 관련 보안 이벤트를 조회하고 추적합니다.
+            </p>
+          </div>
+        </div>
+        <div className={styles.readonlyStrip}>
+          조회 전용 · 로그 등록/수정/삭제 불가 · 민감 인증정보는 저장 및
+          다운로드에서 제외
+        </div>
+        <div className={shared.quickFilters}>
+          {QUICK.map((item) => {
+            const active = quick === item;
+            return (
+              <CommonButton
+                key={item}
+                type="button"
+                variant={active ? "primary-light" : "secondary"}
+                size="md"
+                className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
+                onClick={() => setQuick(item)}
+              >
+                <span className={shared.qfLabel}>{item}</span>
+                <span className={shared.qfCount}>
+                  {
+                    SECURITY_LOGS.filter(
+                      (entry) => item === "전체" || entry.category === item,
+                    ).length
+                  }
+                </span>
+              </CommonButton>
+            );
+          })}
+        </div>
+        <div className={shared.filterBox}>
+          <form
+            className={shared.filterRow1}
+            onSubmit={(event) => {
+              event.preventDefault();
+              setSearch(keyword.trim());
+            }}
+          >
+            <label className="globalFilterField">
+              <span>검색 범위</span>
+              <select
+                aria-label="검색 범위"
+                className={shared.selectSm}
+                value={searchField}
+                onChange={(event) => setSearchField(event.target.value)}
+              >
+                <option>전체</option>
+                <option>이벤트 ID</option>
+                <option>관리자 ID</option>
+                <option>회원 ID</option>
+                <option>IP</option>
+                <option>Request ID</option>
+              </select>
+            </label>
+            <input
+              className={shared.searchInput}
+              value={keyword}
+              onChange={(event) => setKeyword(event.target.value)}
+              placeholder="이벤트 ID / 대상 ID / IP / Request ID"
+            />
+            <button type="submit" className={shared.searchBtn}>
+              검색
+            </button>
+          </form>
+          <div className={shared.filterRow2}>
+            <label className={styles.dateFilterField}>
+              <span>발생 기간</span>
+              <span className={styles.dateRange}>
+                <DatePicker
+                  mode="date"
+                  value={start}
+                  onChange={(event) => setStart(event.target.value)}
+                />
+                <span className={styles.dateSeparator} aria-hidden="true">
+                  ~
+                </span>
+                <DatePicker
+                  mode="date"
+                  value={end}
+                  onChange={(event) => setEnd(event.target.value)}
+                />
+              </span>
+            </label>
+            <label className="globalFilterField">
+              <span>이벤트 유형</span>
+              <select
+                aria-label="이벤트 유형"
+                className={shared.selectSm}
+                value={eventFilter}
+                onChange={(event) => setEventFilter(event.target.value)}
+              >
+                <option value="">이벤트 유형 전체</option>
+                {EVENT_TYPES.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            </label>
+            <label className="globalFilterField">
+              <span>위험 수준</span>
+              <select
+                aria-label="위험 수준"
+                className={shared.selectSm}
+                value={riskFilter}
+                onChange={(event) => setRiskFilter(event.target.value)}
+              >
+                <option value="">위험 수준 전체</option>
+                {RISK_LEVELS.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            </label>
+            <label className="globalFilterField">
+              <span>결과</span>
+              <select
+                aria-label="결과"
+                className={shared.selectSm}
+                value={resultFilter}
+                onChange={(event) => setResultFilter(event.target.value)}
+              >
+                <option value="">결과 전체</option>
+                {SECURITY_RESULTS.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            </label>
+            <label className="globalFilterField">
+              <span>대상 유형</span>
+              <select
+                aria-label="대상 유형"
+                className={shared.selectSm}
+                value={targetFilter}
+                onChange={(event) => setTargetFilter(event.target.value)}
+              >
+                <option value="">대상 유형 전체</option>
+                {TARGET_TYPES.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            </label>
+            <input
+              className={shared.selectSm}
+              value={ipFilter}
+              onChange={(event) => setIpFilter(event.target.value)}
+              placeholder="IP 필터"
+            />
+            <span className={shared.rowSpacer} />
+            <button type="button" className={shared.resetBtn} onClick={reset}>
+              초기화
+            </button>
+          </div>
+        </div>
+        <div className={shared.resultRow}>
+          <span className={shared.resultLabel}>
+            총 {filtered.length.toLocaleString()}건 · 위험{" "}
+            {filtered.filter((entry) => entry.risk === "위험").length}건 · 경고{" "}
+            {filtered.filter((entry) => entry.risk === "경고").length}건
+          </span>
+          <div className={shared.resultActions}>
+            <ExcelDownloadButton type="button" onClick={download} />
+            <select className={shared.pageSizeSelect}>
+              <option>100개씩</option>
+              <option>200개씩</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div className={shared.gridWrap}>
+        <DataGrid
+          columns={COLUMNS}
+          rows={rows}
+          gridTemplate="135px 66px minmax(180px,1.4fr) 108px 128px 54px 54px 128px"
+          minWidth="996px"
+          empty={filtered.length === 0}
+          emptyText={
+            riskFilter === "위험"
+              ? "조회 기간에 위험 수준의 보안 이벤트가 없습니다."
+              : "조회된 보안 로그가 없습니다."
+          }
+          emptySubtext="기간이나 검색 조건을 변경해 주세요."
+          emptyActionLabel="필터 초기화"
+          emptyActionClick={reset}
+          showPagination
+          pages={[{ label: "‹" }, { label: "1", active: true }, { label: "›" }]}
+          rangeLabel={
+            filtered.length
+              ? `1–${filtered.length} / ${filtered.length}`
+              : "0건"
+          }
+        />
+      </div>
+      {selected && (
+        <SecurityLogDetailDrawer
+          entry={selected}
+          onClose={() => setSelectedId(null)}
+        />
+      )}
+    </section>
+  );
 }

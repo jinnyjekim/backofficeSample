@@ -4,7 +4,7 @@ import type { GridRow } from '../../components/DataGrid/types';
 import shared from '../ops/opsShared.module.css';
 import styles from './CsHistoryPage.module.css';
 import { CsHistoryDetailDrawer } from './CsHistoryDetailDrawer';
-import { CommonButton } from '../../components/common';
+import { CommonButton, ExcelDownloadButton } from '../../components/common';
 import {
   ACTION_LABELS,
   AUDIT_ADMINS,
@@ -219,7 +219,7 @@ export function CsHistoryPage() {
       {selected.length > 0 && (
         <div className={shared.bulkBar}>
           <span className={shared.bulkLabel}>{selected.length}건 선택</span>
-          <button type="button" className={shared.bulkBtn} onClick={() => setDownloadOpen(true)}>다운로드</button>
+          <ExcelDownloadButton data-grid-download onClick={() => setDownloadOpen(true)} />
         </div>
       )}
 
@@ -227,7 +227,7 @@ export function CsHistoryPage() {
         <div className={shared.resultRow}>
           <span className={shared.resultLabel}>총 {filtered.length.toLocaleString()}건</span>
           <div className={shared.resultActions}>
-            <button type="button" className={shared.downloadBtn} onClick={() => setDownloadOpen(true)}>다운로드</button>
+            <ExcelDownloadButton data-grid-download onClick={() => setDownloadOpen(true)} />
           </div>
         </div>
         <DataGrid

@@ -1,9 +1,9 @@
-import { CommonDatePicker, CommonSelect } from '../../../components/common';
+import { CommonButton, CommonDatePicker, CommonSelect, ExcelDownloadButton, showToast } from '../../../components/common';
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DataGrid } from '../../../components/DataGrid';
 import type { GridRow } from '../../../components/DataGrid/types';
-import shared from '../../ops/opsShared.module.css';
+import shared from '../shared.module.css';
 import drawer from '../../ops/opsDrawerShared.module.css';
 import base from '../sales/SalesActivity.module.css';
 import styles from './VerificationManagement.module.css';
@@ -107,7 +107,7 @@ export function VerificationReviewPage() {
   const rows:GridRow[]=filtered.map((item)=>({id:item.id,onClick:()=>{setSelectedId(item.id);setDecision('');},cells:[{kind:'stack',title:item.id,subtitle:item.submittedAt},{kind:'avatarText',title:item.nickname,subtitle:item.memberId,avatarChar:item.nickname[0],avatarBg:'#f4f4f5',avatarFg:'#71717a'},{kind:'pillText',text:item.purpose,bg:'#f4f4f5',fg:'#52525b'},{kind:'stack',title:item.methods.join(' · '),subtitle:item.provider},{kind:'checkGroup',items:item.checks.map((check)=>({label:shortCheckLabel(check.label),tone:checkGridTone(check.result)}))},{kind:'badgeSub',text:item.risk,subText:`시도 ${item.attempt}회`,...VERIFICATION_RISK_META[item.risk]},{kind:'badge',text:item.status,...VERIFICATION_STATUS_META[item.status]},{kind:'stack',title:item.assignee,subtitle:item.dueAt.slice(5)}]}));
 
   return <section className={shared.page}>
-    <PageHeading title="인증 심사" subtitle="기본·판매자·고액 거래·재인증·계정 복구 인증을 하나의 심사 큐에서 자동 검증과 수동 판단으로 처리합니다." action={<><span className={styles.slaText}>SLA 초과 {slaExceeded}건</span><button type="button" className={shared.downloadBtn} onClick={downloadCases}>심사 목록 다운로드</button><button type="button" className={styles.reviewPrimaryBtn} onClick={autoAssign}>미배정 자동 배정</button></>}/>
+    <PageHeading title="인증 심사" subtitle="기본·판매자·고액 거래·재인증·계정 복구 인증을 하나의 심사 큐에서 자동 검증과 수동 판단으로 처리합니다." action={<><span className={styles.slaText}>SLA 초과 {slaExceeded}건</span><ExcelDownloadButton onClick={downloadCases}/><button type="button" className={styles.reviewPrimaryBtn} onClick={autoAssign}>미배정 자동 배정</button></>}/>
     <div className={styles.reviewAlert} role="status">
       <span className={styles.reviewAlertIcon} aria-hidden="true">!</span>
       <strong>고위험 {highRiskCount}건 · 즉시 판단 필요</strong>
@@ -115,8 +115,23 @@ export function VerificationReviewPage() {
       <button type="button" onClick={()=>setRisk('긴급')}>고위험만 보기</button>
     </div>
     <form className={styles.reviewToolbar} onSubmit={(event)=>{event.preventDefault();setSearch(keyword.trim());}}>
-      <div className={styles.reviewQuickFilters} aria-label="심사 처리 상태">
-        {QUICKS.map((item)=><button key={item} type="button" aria-pressed={quick===item} className={quick===item?styles.reviewQuickActive:styles.reviewQuickButton} onClick={()=>updateParams(purpose,item)}>{item} <span>{quickCount(item)}</span></button>)}
+      <div className={shared.quickFilters} aria-label="심사 처리 상태">
+        {QUICKS.map((item) => {
+          const active = quick === item;
+          return (
+            <CommonButton
+              key={item}
+              type="button"
+              variant={active ? 'primary-light' : 'secondary'}
+              size="md"
+              className={`${shared.qfBtn} ${active ? base.quickActive : ''}`}
+              onClick={() => updateParams(purpose, item)}
+            >
+              <span className={shared.qfLabel}>{item}</span>
+              <span className={shared.qfCount}>{quickCount(item)}</span>
+            </CommonButton>
+          );
+        })}
       </div>
       <div className={styles.reviewFilterControls}>
         <input aria-label="인증 심사 검색" className={styles.reviewSearch} value={keyword} onChange={(event)=>{setKeyword(event.target.value);setSearch(event.target.value.trim());}} placeholder={memberFilter?`${memberFilter} 회원의 인증만 표시 중`:'인증번호 / 회원 / 사업자 / 실패 사유'}/>
@@ -140,23 +155,22 @@ export function VerificationPolicyPage() {
   const [status,setStatus]=useState<PolicyQuick>('전체');
   const [updatedRange,setUpdatedRange]=useState<[string|null,string|null]>([null,null]);
   const [selectedId,setSelectedId]=useState<string|null>(null);
-  const [toast,setToast]=useState('');
   const selected=policies.find((item)=>item.id===selectedId)??null;
   const filtered=useMemo(()=>policies.filter((item)=>{
     const [from,to]=updatedRange;
     return (!purpose||item.purpose===purpose)&&(status==='전체'||item.status===status)&&(!from||item.updatedAt>=from)&&(!to||item.updatedAt<=to)&&(!search||`${item.id} ${item.name} ${item.purpose} ${item.provider} ${item.owner}`.toLowerCase().includes(search.toLowerCase()));
   }).sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt)),[policies,purpose,search,status,updatedRange]);
   const statusMeta:Record<VerificationPolicy['status'],{bg:string;fg:string}>={사용:{bg:'#ecfdf5',fg:'#047857'},'검토 필요':{bg:'#fff7ed',fg:'#c2410c'},중지:{bg:'#f4f4f5',fg:'#52525b'}};
-  const notify=(message:string)=>{setToast(message);window.setTimeout(()=>setToast(''),2200);};
+  const notify=(message:string)=>showToast({message,type:'success'});
   const reset=()=>{setKeyword('');setSearch('');setPurpose('');setStatus('전체');setUpdatedRange([null,null]);};
-  const toggle=()=>{if(!selected)return;const next=selected.status==='중지'?'사용':'중지';setPolicies((items)=>items.map((item)=>item.id===selected.id?{...item,status:next,updatedAt:'2026-08-27'}:item));setToast(`${selected.id} 정책을 ${next} 상태로 변경했습니다.`);window.setTimeout(()=>setToast(''),2200);};
+  const toggle=()=>{if(!selected)return;const next=selected.status==='중지'?'사용':'중지';setPolicies((items)=>items.map((item)=>item.id===selected.id?{...item,status:next,updatedAt:'2026-08-27'}:item));showToast({message:`${selected.id} 정책을 ${next} 상태로 변경했습니다.`,type:'success'});};
   const createDraft=()=>{const nextNumber=Math.max(...policies.map((item)=>Number(item.id.replace('KYP-',''))||0))+1;const draft:VerificationPolicy={id:`KYP-${String(nextNumber).padStart(3,'0')}`,name:'신규 인증 정책 초안',purpose:'기본 회원',requiredSteps:['휴대폰 명의 확인'],provider:'사업자 미지정',validity:'1년',retryLimit:'일 3회',manualReview:'기준 설정 필요',retention:'검토 필요',status:'검토 필요',owner:'정책 관리',updatedAt:'2026-08-27'};setPolicies((items)=>[draft,...items]);setSelectedId(draft.id);notify(`${draft.id} 정책 초안을 생성했습니다.`);};
   const quickCount=(value:PolicyQuick)=>policies.filter((item)=>value==='전체'||item.status===value).length;
   const reviewCount=quickCount('검토 필요');
   const downloadPolicies=()=>downloadCsv('c2c-verification-policies.csv',['정책 ID','정책명','인증 목적','필수 단계','사업자','유효기간','재시도','수동 심사 기준','보관','담당','상태','수정일'],filtered.map((item)=>[item.id,item.name,item.purpose,item.requiredSteps.join('/'),item.provider,item.validity,item.retryLimit,item.manualReview,item.retention,item.owner,item.status,item.updatedAt]));
   const rows:GridRow[]=filtered.map((item)=>({id:item.id,onClick:()=>setSelectedId(item.id),cells:[{kind:'stack',title:item.id,subtitle:item.updatedAt},{kind:'stack',title:item.name,subtitle:item.purpose},{kind:'stack',title:item.requiredSteps.join(' · '),subtitle:item.provider},{kind:'text',text:item.validity},{kind:'text',text:item.retryLimit},{kind:'text',text:item.manualReview},{kind:'stack',title:item.retention,subtitle:item.owner},{kind:'badge',text:item.status,...statusMeta[item.status]}]}));
-  return <section className={shared.page}>
-    <PageHeading title="인증 정책" subtitle="인증 목적별 필수 단계, 인증 사업자, 유효기간, 재시도 제한, 수동 심사와 개인정보 보관 기준을 관리합니다." action={<><button type="button" className={shared.downloadBtn} onClick={downloadPolicies}>정책 목록 다운로드</button><button type="button" className={styles.reviewPrimaryBtn} onClick={createDraft}>정책 초안 등록</button></>}/>
+  return <div className={shared.page}>
+    <PageHeading title="인증 정책" subtitle="인증 목적별 필수 단계, 인증 사업자, 유효기간, 재시도 제한, 수동 심사와 개인정보 보관 기준을 관리합니다." action={<><ExcelDownloadButton onClick={downloadPolicies}/><button type="button" className={styles.reviewPrimaryBtn} onClick={createDraft}>정책 초안 등록</button></>}/>
     <div className={`${styles.reviewAlert} ${styles.reviewAlertWarning}`} role="status">
       <span className={styles.reviewAlertIcon} aria-hidden="true">!</span>
       <strong>검토 필요 {reviewCount}건 · 정책 기준 확인 필요</strong>
@@ -164,8 +178,23 @@ export function VerificationPolicyPage() {
       <button type="button" onClick={()=>setStatus('검토 필요')}>검토 정책 보기</button>
     </div>
     <form className={styles.reviewToolbar} onSubmit={(event)=>{event.preventDefault();setSearch(keyword.trim());}}>
-      <div className={styles.reviewQuickFilters} aria-label="인증 정책 상태">
-        {POLICY_QUICKS.map((item)=><button key={item} type="button" aria-pressed={status===item} className={status===item?styles.reviewQuickActive:styles.reviewQuickButton} onClick={()=>setStatus(item)}>{item} <span>{quickCount(item)}</span></button>)}
+      <div className={shared.quickFilters} aria-label="인증 정책 상태">
+        {POLICY_QUICKS.map((item) => {
+          const active = status === item;
+          return (
+            <CommonButton
+              key={item}
+              type="button"
+              variant={active ? 'primary-light' : 'secondary'}
+              size="md"
+              className={`${shared.qfBtn} ${active ? base.quickActive : ''}`}
+              onClick={() => setStatus(item)}
+            >
+              <span className={shared.qfLabel}>{item}</span>
+              <span className={shared.qfCount}>{quickCount(item)}</span>
+            </CommonButton>
+          );
+        })}
       </div>
       <div className={styles.reviewFilterControls}>
         <input aria-label="인증 정책 검색" className={styles.reviewSearch} value={keyword} onChange={(event)=>{setKeyword(event.target.value);setSearch(event.target.value.trim());}} placeholder="정책 ID / 정책명 / 사업자 / 담당 조직"/>
@@ -176,8 +205,7 @@ export function VerificationPolicyPage() {
     </form>
     <GridArea><div className={styles.queueCard}><div className={styles.queueHeader}><div><strong>인증 정책</strong><span>전체 {filtered.length}개</span></div><span>정렬 · 최근 수정순</span></div><DataGrid columns={[{label:'정책 ID / 수정일'},{label:'정책 / 인증 목적'},{label:'필수 단계 / 사업자'},{label:'유효기간'},{label:'재시도'},{label:'수동 심사 기준'},{label:'보관 / 담당'},{label:'상태'}]} rows={rows} gridTemplate="76px 124px minmax(220px,1.3fr) 60px 72px minmax(175px,1fr) 155px 75px" minWidth="1000px" empty={!filtered.length} emptyText="조건에 맞는 인증 정책이 없습니다." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={pages} rangeLabel={filtered.length?`1–${filtered.length} / ${filtered.length}`:'0개'}/></div></GridArea>
     {selected&&<DetailDrawer eyebrow={`인증 정책 · ${selected.id}`} title={selected.name} status={selected.status} statusMeta={statusMeta[selected.status]} subtitle={`${selected.purpose} · ${selected.owner}`} onClose={()=>setSelectedId(null)} actions={<button type="button" className={selected.status==='중지'?drawer.primaryBtn:drawer.dangerBtn} onClick={toggle}>{selected.status==='중지'?'정책 사용':'정책 중지'}</button>} stats={[{label:'유효기간',value:selected.validity},{label:'재시도',value:selected.retryLimit},{label:'담당 조직',value:selected.owner}]} fields={[{label:'인증 사업자',value:selected.provider},{label:'수동 심사 기준',value:selected.manualReview},{label:'개인정보 보관',value:selected.retention},{label:'최종 수정일',value:selected.updatedAt}]}><div className={drawer.sectionTitleLoose}>필수 인증 단계</div><div className={styles.policySteps}>{selected.requiredSteps.map((item)=><span key={item} className={styles.policyStep}>{item}</span>)}</div><div className={drawer.sectionTitleLoose}>정책 적용 원칙</div><div className={styles.boundaryNote}>인증 정책 변경은 신규 요청부터 적용합니다. 진행 중이거나 완료된 인증 결과는 기존 정책 버전을 보존하며, 보관기간 단축은 개인정보·법무 검토 후 시행합니다.</div></DetailDrawer>}
-    {toast&&<div className={base.toast}>{toast}</div>}
-  </section>;
+  </div>;
 }
 
 export function VerificationHistoryPage() {
@@ -200,8 +228,8 @@ export function VerificationHistoryPage() {
   const failureCount=quickCount('실패');
   const downloadHistory=()=>downloadCsv('c2c-verification-history.csv',['처리일','로그 ID','인증번호','회원','목적','처리','변경 전','변경 후','결과','처리자','사업자 거래번호','사유'],filtered.map((item)=>[item.occurredAt,item.id,item.verificationId,item.memberId,item.purpose,item.action,item.before,item.after,item.result,item.actor,item.providerTxnId,item.reason]));
   const rows:GridRow[]=filtered.map((item)=>({id:item.id,onClick:()=>setSelectedId(item.id),cells:[{kind:'stack',title:item.occurredAt,subtitle:item.id},{kind:'stack',title:item.verificationId,subtitle:item.providerTxnId},{kind:'avatarText',title:item.nickname,subtitle:item.memberId,avatarChar:item.nickname[0],avatarBg:'#f4f4f5',avatarFg:'#52525b'},{kind:'pillText',text:item.purpose,bg:'#f4f4f5',fg:'#52525b'},{kind:'text',text:item.action,weight:600},{kind:'text',text:item.before,color:'#71717a'},{kind:'text',text:item.after,weight:600},{kind:'badge',text:item.result,...resultMeta[item.result]},{kind:'stack',title:item.actor,subtitle:item.reason}]}));
-  return <section className={shared.page}>
-    <PageHeading title="인증 처리 이력" subtitle="본인 인증 접수·자동 검증·수동 심사·보완·승인·실패의 상태 변경과 근거를 마스킹된 감사 로그로 조회합니다." action={<button type="button" className={shared.downloadBtn} onClick={downloadHistory}>감사 로그 다운로드</button>}/>
+  return <div className={shared.page}>
+    <PageHeading title="인증 처리 이력" subtitle="본인 인증 접수·자동 검증·수동 심사·보완·승인·실패의 상태 변경과 근거를 마스킹된 감사 로그로 조회합니다." action={<ExcelDownloadButton onClick={downloadHistory}/>}/>
     <div className={styles.reviewAlert} role="status">
       <span className={styles.reviewAlertIcon} aria-hidden="true">!</span>
       <strong>실패 이력 {failureCount}건 · 처리 근거 확인 필요</strong>
@@ -209,8 +237,23 @@ export function VerificationHistoryPage() {
       <button type="button" onClick={()=>setResult('실패')}>실패 이력 보기</button>
     </div>
     <form className={styles.reviewToolbar} onSubmit={(event)=>{event.preventDefault();setSearch(keyword.trim());}}>
-      <div className={styles.reviewQuickFilters} aria-label="인증 처리 결과">
-        {HISTORY_QUICKS.map((item)=><button key={item} type="button" aria-pressed={result===item} className={result===item?styles.reviewQuickActive:styles.reviewQuickButton} onClick={()=>setResult(item)}>{item} <span>{quickCount(item)}</span></button>)}
+      <div className={shared.quickFilters} aria-label="인증 처리 결과">
+        {HISTORY_QUICKS.map((item) => {
+          const active = result === item;
+          return (
+            <CommonButton
+              key={item}
+              type="button"
+              variant={active ? 'primary-light' : 'secondary'}
+              size="md"
+              className={`${shared.qfBtn} ${active ? base.quickActive : ''}`}
+              onClick={() => setResult(item)}
+            >
+              <span className={shared.qfLabel}>{item}</span>
+              <span className={shared.qfCount}>{quickCount(item)}</span>
+            </CommonButton>
+          );
+        })}
       </div>
       <div className={styles.reviewFilterControls}>
         <input aria-label="인증 처리 이력 검색" className={styles.reviewSearch} value={keyword} onChange={(event)=>{setKeyword(event.target.value);setSearch(event.target.value.trim());}} placeholder="로그 ID / 인증번호 / 회원 / 사업자 거래번호"/>
@@ -222,5 +265,5 @@ export function VerificationHistoryPage() {
     </form>
     <GridArea><div className={styles.queueCard}><div className={styles.queueHeader}><div><strong>인증 처리 이력</strong><span>전체 {filtered.length}건</span></div><span>정렬 · 최신순</span></div><DataGrid columns={[{label:'처리일 / 로그 ID'},{label:'인증번호 / 사업자 거래'},{label:'대상 회원'},{label:'인증 목적'},{label:'처리'},{label:'변경 전'},{label:'변경 후'},{label:'결과'},{label:'처리자 / 사유'}]} rows={rows} gridTemplate="128px 124px 185px 78px 82px 68px 68px 54px minmax(210px,1.25fr)" minWidth="1040px" empty={!filtered.length} emptyText="조건에 맞는 인증 처리 이력이 없습니다." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={pages} rangeLabel={filtered.length?`1–${filtered.length} / ${filtered.length}`:'0건'}/></div></GridArea>
     {selected&&<DetailDrawer eyebrow={`인증 감사 로그 · ${selected.id}`} title={selected.action} status={selected.result} statusMeta={resultMeta[selected.result]} subtitle={`${selected.verificationId} · ${selected.occurredAt}`} onClose={()=>setSelectedId(null)} stats={[{label:'회원',value:selected.nickname},{label:'인증 목적',value:selected.purpose},{label:'처리자',value:selected.actor}]} fields={[{label:'회원 ID',value:selected.memberId},{label:'사업자 거래번호',value:selected.providerTxnId},{label:'처리 사유',value:selected.reason}]}><div className={drawer.sectionTitleLoose}>상태 변경</div><div className={styles.auditResult}><div><span>변경 전</span><strong>{selected.before}</strong></div><div><span>변경 후</span><strong>{selected.after}</strong></div></div><div className={drawer.sectionTitleLoose}>감사 원칙</div><div className={styles.boundaryNote}>인증 처리 이력에는 마스킹 식별자와 결과만 저장합니다. 원본 신분증·얼굴 이미지와 주민등록번호는 감사 로그 및 다운로드에 포함하지 않으며 기존 로그는 수정·삭제하지 않습니다.</div></DetailDrawer>}
-  </section>;
+  </div>;
 }

@@ -24,7 +24,7 @@ import {
 } from './adminData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 
-const GRID_TEMPLATE = '72px minmax(90px,1fr) minmax(130px,1.2fr) minmax(120px,1.3fr) 66px 124px 86px 44px';
+const GRID_TEMPLATE = '72px minmax(90px,1fr) minmax(130px,1.2fr) minmax(120px,1.3fr) 66px 124px 86px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '관리자 ID' },
   { label: '관리자명' },
@@ -33,7 +33,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '상태' },
   { label: '최근 로그인' },
   { label: '등록일' },
-  { label: '관리' },
 ];
 
 type EditorState = { mode: 'create' } | { mode: 'edit'; admin: AdminAccount } | null;
@@ -172,22 +171,6 @@ export function AdminsListPage() {
     setConfirm(null);
   }
 
-  function rowMenuItems(a: AdminAccount) {
-    const items: { label?: string; sep?: boolean; fg?: string; click?: () => void }[] = [
-      { label: '상세 보기', click: () => openDetail(a.id) },
-      { label: '정보 수정', click: () => setEditor({ mode: 'edit', admin: a }) },
-      { sep: true },
-      { label: '비밀번호 초기화', click: () => setConfirm({ kind: 'resetPassword', admin: a }) },
-    ];
-    if (a.status === '잠금') items.push({ label: '로그인 잠금 해제', click: () => unlock(a) });
-    if (a.status === '비활성') {
-      items.push({ sep: true }, { label: '계정 활성화', click: () => toggleActive(a) });
-    } else if (!a.isSuperAdmin) {
-      items.push({ sep: true }, { label: '계정 비활성화', fg: '#dc2626', click: () => toggleActive(a) });
-    }
-    return items;
-  }
-
   const rows: GridRow[] = filtered.map((a) => {
     const sm = STATUS_META[a.status];
     const issueList = issuesMap[a.id] ?? [];
@@ -200,15 +183,6 @@ export function AdminsListPage() {
       { kind: 'badge', text: a.status, bg: sm.bg, fg: sm.fg },
       { kind: 'text', text: a.lastLoginAt ?? '이력 없음', color: a.lastLoginAt ? '#52525b' : '#a1a1aa', size: '11.5px', weight: 500, numeric: true },
       { kind: 'text', text: a.createdAt, color: '#8b8b93', size: '11.5px', weight: 500, numeric: true },
-      {
-        kind: 'rowMenu',
-        align: 'right',
-        detailLabel: '상세',
-        onDetail: () => openDetail(a.id),
-        open: menuId === a.id,
-        onToggle: () => setMenuId(menuId === a.id ? null : a.id),
-        items: rowMenuItems(a),
-      },
     ];
     return { id: a.id, cells, onClick: () => openDetail(a.id) };
   });
@@ -266,7 +240,7 @@ export function AdminsListPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="900px"
+          minWidth="855px"
           showPagination
           pages={pages}
           empty={rows.length === 0}

@@ -20,7 +20,7 @@ import {
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { CommonButton } from '../../components/common';
 
-const GRID_TEMPLATE = '118px 1.3fr 74px 48px 94px 72px 36px 72px 46px';
+const GRID_TEMPLATE = '118px 1.3fr 74px 48px 94px 72px 36px 72px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '미리보기' },
   { label: '팝업명' },
@@ -30,7 +30,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '빈도' },
   { label: '우선순위', align: 'right' },
   { label: '상태' },
-  { label: '관리' },
 ];
 const PAGE_LABELS = ['1', '2'];
 
@@ -312,22 +311,6 @@ export function PopupsPage() {
     }
   }
 
-  function rowMenuItems(p: Popup, status: ReturnType<typeof computeStatus>) {
-    const canDelete = (status === '작성중' || status === '비활성') && !p.startAt && p.impressions === 0;
-    const items: { label?: string; sep?: boolean; fg?: string; click?: () => void }[] = [
-      { label: '상세 보기', click: () => openDetail(p.id) },
-    ];
-    if (status !== '노출종료') items.push({ label: '수정', click: () => openEditor(p) });
-    items.push({ sep: true });
-    if (status === '작성중' || status === '비활성') items.push({ label: '노출', click: () => publishNow(p.id) });
-    if (status === '노출예정') items.push({ label: '예약 취소', click: () => cancelSchedule(p.id) });
-    if (status === '노출중') items.push({ label: '노출 중지', fg: '#dc2626', click: () => setConfirm({ kind: 'stop', id: p.id }) });
-    if (status === '노출종료') items.push({ label: '재노출', click: () => setConfirm({ kind: 'repost', id: p.id }) });
-    items.push({ label: '복제', click: () => duplicate(p.id) });
-    if (canDelete) items.push({ label: '삭제', fg: '#dc2626', click: () => setConfirm({ kind: 'delete', id: p.id }) });
-    return items.map((it) => (it.click ? { ...it, click: () => { it.click!(); setMenuId(null); } } : it));
-  }
-
   const rows: GridRow[] = filtered.map((p) => {
     const status = computeStatus(p);
     const sm = POPUP_STATUS_META[status];
@@ -341,7 +324,6 @@ export function PopupsPage() {
       { kind: 'text', text: p.frequency, color: '#52525b', size: '11.5px', weight: 500 },
       { kind: 'text', text: String(p.priority), color: '#71717a', size: '12px', weight: 500, align: 'right', numeric: true },
       { kind: 'badge', text: status, bg: sm.bg, fg: sm.fg },
-      { kind: 'rowMenu', detailLabel: '상세', onDetail: () => openDetail(p.id), open: menuId === p.id, onToggle: () => setMenuId(menuId === p.id ? null : p.id), items: rowMenuItems(p, status) },
     ];
     return {
       id: p.id,
@@ -360,8 +342,8 @@ export function PopupsPage() {
 
   return (
     <div className={styles.page} onClick={() => menuId && setMenuId(null)}>
-      <div className={styles.headTop}>
-        <div className={styles.headRow}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
           <div>
             <div className={styles.title}>팝업</div>
             <div className={styles.subtitle}>서비스 화면에 노출되는 팝업의 노출 조건·빈도·우선순위를 관리합니다.</div>
@@ -422,7 +404,7 @@ export function PopupsPage() {
             </select>
           </div>
         </div>
-      </div>
+      </header>
 
       {selectedIds.length > 0 && (
         <div className={styles.bulkBar}>
@@ -437,7 +419,7 @@ export function PopupsPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="940px"
+          minWidth="895px"
           selectable
           allSelected={filtered.length > 0 && selectedIds.length === filtered.length}
           onToggleAll={toggleSelAll}
