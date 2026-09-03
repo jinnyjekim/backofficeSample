@@ -1,7 +1,6 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './CsInquiriesPage.module.css';
-import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   getSlaInfo,
   inquiryIssues,
@@ -41,9 +40,6 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
   const sla = getSlaInfo(inquiry);
   const meta = STATUS_META[inquiry.status];
 
-  const asideRef = useRef<HTMLElement>(null);
-  useOutsideClose(asideRef, onClose);
-
   const toggleChannel = (channel: string) => {
     setChannels((current) => current.includes(channel) ? current.filter((item) => item !== channel) : [...current, channel]);
   };
@@ -61,7 +57,7 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
   };
 
   return (
-    <aside ref={asideRef} className={`${drawer.aside} ${styles.detailDrawer}`} aria-label={`${inquiry.id} 문의 상세`}>
+    <div className={drawer.panelRoot} aria-label={`${inquiry.id} 문의 상세`}>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>
@@ -237,6 +233,6 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
           </div>
         </div>
       )}
-    </aside>
+    </div>
   );
 }

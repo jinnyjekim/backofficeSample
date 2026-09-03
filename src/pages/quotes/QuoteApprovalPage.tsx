@@ -120,8 +120,7 @@ export function QuoteApprovalPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.scrollArea}>
-        <div className={styles.headTop}>
+      <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
               <div className={styles.title}>견적 승인</div>
@@ -194,22 +193,31 @@ export function QuoteApprovalPage() {
               </select>
             </div>
           </div>
+      </div>
+
+      <div className={styles.splitRow}>
+        <div className={styles.splitListCol}>
+          <div className={styles.gridWrap}>
+            <DataGrid
+              columns={GRID_COLUMNS}
+              rows={rows}
+              gridTemplate={GRID_TEMPLATE}
+              minWidth={GRID_MIN_WIDTH}
+              showPagination
+              pages={pages}
+              empty={rows.length === 0}
+              emptyText="현재 처리해야 할 승인 요청이 없습니다."
+            />
+          </div>
         </div>
 
-        <div className={styles.gridWrap}>
-          <DataGrid
-            columns={GRID_COLUMNS}
-            rows={rows}
-            gridTemplate={GRID_TEMPLATE}
-            minWidth={GRID_MIN_WIDTH}
-            showPagination
-            pages={pages}
-            empty={rows.length === 0}
-            emptyText="현재 처리해야 할 승인 요청이 없습니다."
-          />
+        <div className={styles.splitDetailCol}>
+          {detail ? (
+            <QuoteApprovalDetailDrawer detail={detail} onTabChange={setActiveTab} />
+          ) : (
+            <div className={styles.splitEmpty}>왼쪽 목록에서 견적을 선택하면<br />승인 검토 상세가 여기에 표시됩니다.</div>
+          )}
         </div>
-
-        {detail && <QuoteApprovalDetailDrawer detail={detail} onTabChange={setActiveTab} />}
       </div>
     </div>
   );

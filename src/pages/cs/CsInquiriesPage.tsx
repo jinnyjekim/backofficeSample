@@ -235,15 +235,25 @@ export function CsInquiriesPage() {
         <span className={styles.bulkGuard}>답변·완료 처리는 개별 문의에서만 가능합니다.</span>
       </div>}
 
-      <div className={shared.gridWrap}>
-        <div className={shared.resultRow}>
-          <span className={shared.resultLabel}>총 {filtered.length}건</span>
-          <div className={shared.resultActions}><ExcelDownloadButton data-grid-download onClick={() => download(filtered)}/><select className={shared.pageSizeSelect}><option>20개씩</option><option>50개씩</option></select></div>
+      <div className={shared.splitRow}>
+        <div className={shared.splitListCol}>
+          <div className={shared.gridWrap}>
+            <div className={shared.resultRow}>
+              <span className={shared.resultLabel}>총 {filtered.length}건</span>
+              <div className={shared.resultActions}><ExcelDownloadButton data-grid-download onClick={() => download(filtered)}/><select className={shared.pageSizeSelect}><option>20개씩</option><option>50개씩</option></select></div>
+            </div>
+            <DataGrid columns={COLUMNS} rows={rows} gridTemplate="128px 56px 84px minmax(236px,1.7fr) 126px 96px 88px 122px 66px 88px 52px" minWidth="1275px" selectable allSelected={filtered.length > 0 && filtered.every((item) => selected.includes(item.id))} onToggleAll={() => setSelected(filtered.every((item) => selected.includes(item.id)) ? [] : filtered.map((item) => item.id))} empty={filtered.length === 0} emptyText="조건에 맞는 문의가 없습니다." emptySubtext="빠른 필터나 검색 조건을 변경해 보세요." emptyActionLabel="필터 초기화" emptyActionClick={resetFilters} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
+          </div>
         </div>
-        <DataGrid columns={COLUMNS} rows={rows} gridTemplate="128px 56px 84px minmax(236px,1.7fr) 126px 96px 88px 122px 66px 88px 52px" minWidth="1275px" selectable allSelected={filtered.length > 0 && filtered.every((item) => selected.includes(item.id))} onToggleAll={() => setSelected(filtered.every((item) => selected.includes(item.id)) ? [] : filtered.map((item) => item.id))} empty={filtered.length === 0} emptyText="조건에 맞는 문의가 없습니다." emptySubtext="빠른 필터나 검색 조건을 변경해 보세요." emptyActionLabel="필터 초기화" emptyActionClick={resetFilters} showPagination pages={[{ label: '‹' }, { label: '1', active: true }, { label: '›' }]} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
-      </div>
 
-      {currentInquiry && <InquiryDetailDrawer key={currentInquiry.id} inquiry={currentInquiry} onClose={() => setSelectedInquiryId(null)} onAssign={() => setDialog({ kind: 'assign', ids: [currentInquiry.id] })} onStart={() => start(currentInquiry.id)} onHold={() => hold(currentInquiry.id)} onComplete={() => setDialog({ kind: 'complete', ids: [currentInquiry.id] })} onReopen={() => reopen(currentInquiry.id)} onSaveDraft={(body) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, replyDraft: body, draftSavedAt: '2026-08-24 14:00' }, '답변 임시저장'))} onSendReply={(body, channels) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, status: '답변 완료', replyDraft: '', draftSavedAt: null, messages: [...item.messages, { id: nextMessageId(item), role: 'admin', author: item.assignee ?? 'admin01', sentAt: '2026-08-24 14:00', body, notificationResult: `${channels.join(' / ') || '서비스 내'} 발송 완료` }] }, '고객 답변 발송', channels.join(' / ')))} onAddMemo={(body) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, internalMemos: [...item.internalMemos, { id: `MEMO-${Date.now()}`, author: 'admin01', createdAt: '2026-08-24 14:00', body }] }, '내부 메모 등록'))} />}
+        <div className={shared.splitDetailCol}>
+          {currentInquiry ? (
+            <InquiryDetailDrawer key={currentInquiry.id} inquiry={currentInquiry} onClose={() => setSelectedInquiryId(null)} onAssign={() => setDialog({ kind: 'assign', ids: [currentInquiry.id] })} onStart={() => start(currentInquiry.id)} onHold={() => hold(currentInquiry.id)} onComplete={() => setDialog({ kind: 'complete', ids: [currentInquiry.id] })} onReopen={() => reopen(currentInquiry.id)} onSaveDraft={(body) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, replyDraft: body, draftSavedAt: '2026-08-24 14:00' }, '답변 임시저장'))} onSendReply={(body, channels) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, status: '답변 완료', replyDraft: '', draftSavedAt: null, messages: [...item.messages, { id: nextMessageId(item), role: 'admin', author: item.assignee ?? 'admin01', sentAt: '2026-08-24 14:00', body, notificationResult: `${channels.join(' / ') || '서비스 내'} 발송 완료` }] }, '고객 답변 발송', channels.join(' / ')))} onAddMemo={(body) => patchInquiry(currentInquiry.id, (item) => appendHistory({ ...item, internalMemos: [...item.internalMemos, { id: `MEMO-${Date.now()}`, author: 'admin01', createdAt: '2026-08-24 14:00', body }] }, '내부 메모 등록'))} />
+          ) : (
+            <div className={shared.splitEmpty}>왼쪽 목록에서 문의를 선택하면<br />문의 상세와 답변 작성이 여기에 표시됩니다.</div>
+          )}
+        </div>
+      </div>
 
       {dialog && <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setDialog(null); }}>
         <div className={shared.dialogBox}>

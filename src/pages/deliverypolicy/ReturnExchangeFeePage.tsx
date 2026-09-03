@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './ReturnExchangeFeePage.module.css';
-import { showToast } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 import {
   INITIAL_HISTORY,
   INITIAL_LAST_MODIFIED,
@@ -122,10 +122,22 @@ export function ReturnExchangeFeePage() {
             )}
           </div>
         </div>
-        <div className={styles.viewTabs}>
-          {TABS.map(([key, label]) => (
-            <button key={key} type="button" className={`${styles.viewTabBtn} ${tab === key ? styles.viewTabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
-          ))}
+        <div className={shared.quickFilters}>
+          {TABS.map(([key, label]) => {
+            const active = tab === key;
+            return (
+              <CommonButton
+                key={key}
+                type="button"
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.qfBtn} ${active ? shared.quickActive : ''}`}
+                onClick={() => setTab(key)}
+              >
+                <span className={shared.qfLabel}>{label}</span>
+              </CommonButton>
+            );
+          })}
         </div>
       </header>
 

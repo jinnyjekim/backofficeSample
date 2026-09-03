@@ -7,21 +7,14 @@ import styles from './ReviewPage.module.css';
 import filterStyles from './ContentListPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
-import { CHECK_LABELS_BY_BUSINESS, REJECT_REASONS, REVIEW_ITEMS, type ReviewItem, type ReviewItemStatus } from './reviewData';
+import { REJECT_REASONS, REVIEW_ITEMS, STATUS_PILL, type ReviewItem, type ReviewItemStatus } from './reviewData';
 import { CONTENT_ITEMS } from '../../data/content';
-import { ACCENT } from '../../lib/theme';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType } from './contentBusiness';
 import { CommonButton } from '../../components/common';
+import { ReviewDetailPanel } from './ReviewDetailPanel';
 
 const TABS: Array<ReviewItemStatus | '전체'> = ['대기', '검수중', '승인', '반려', '전체'];
-const STATUS_PILL: Record<ReviewItemStatus, { bg: string; fg: string }> = {
-  대기: { bg: '#fffbeb', fg: '#b45309' },
-  검수중: { bg: '#eef2ff', fg: '#4338ca' },
-  승인: { bg: '#ecfdf5', fg: '#059669' },
-  반려: { bg: '#fef2f2', fg: '#b91c1c' },
-  보류: { bg: '#f4f4f5', fg: '#71717a' },
-};
 
 interface ModalState {
   kind: 'approve' | 'reject' | 'hold';
@@ -205,171 +198,68 @@ export function ReviewPage() {
 
   const det = detailId ? byId(detailId) : null;
   const detCd = det ? CONTENT_ITEMS.find((c) => c.id === det.ctid) : null;
-  const decided = det ? det.status === '승인' || det.status === '반려' || det.status === '보류' : false;
-
-  if (det) {
-    const isModify = det.reqType === '수정' && det.diff;
-    const diffEntries = det.diff ? Object.entries(det.diff) : [];
-    const stp = STATUS_PILL[det.status];
-    return (
-      <div className={sh.page}>
-        {toast && <div className={sh.toast}>{toast}</div>}
-        {modal && (
-          <div className={sh.modalOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}>
-            <div className={sh.modalBox}>
-              <div className={sh.modalTitle}>{modal.kind === 'approve' ? '콘텐츠를 승인하시겠습니까?' : modal.kind === 'reject' ? '반려 처리' : '보류 처리'}</div>
-
-              {modal.kind === 'approve' && (
-                <>
-                  <div style={{ fontSize: 12.5, color: '#52525b', lineHeight: 1.6, marginTop: 9 }}>승인 후 설정된 정책에 따라 콘텐츠가 공개 가능 상태로 변경됩니다.</div>
-                  <div style={{ marginTop: 14 }}>
-                    <div className={sh.formFieldLabel} style={{ marginBottom: 6 }}>관리자 메모</div>
-                    <textarea className={sh.formTextarea} value={modal.memo} onChange={(e) => setModal({ ...modal, memo: e.target.value })} placeholder="내부 기록용 메모입니다." />
-                  </div>
-                  <div className={sh.dialogActions}>
-                    <button type="button" className={sh.ghostBtn} onClick={() => setModal(null)}>취소</button>
-                    <button type="button" className={sh.solidBtn} onClick={() => doApprove(det, modal.memo)}>승인</button>
-                  </div>
-                </>
-              )}
-
-              {modal.kind === 'reject' && (
-                <>
-                  <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
-                    <div className={sh.formField}>
-                      <span className={sh.formFieldLabel}>반려 사유 <span className={sh.required}>*</span></span>
-                      <select className={sh.formSelect} value={modal.reason} onChange={(e) => setModal({ ...modal, reason: e.target.value })}>
-                        <option value="">사유 선택</option>
-                        {REJECT_REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
-                      </select>
-                    </div>
-                    <div className={sh.formField}>
-                      <span className={sh.formFieldLabel}>상세 사유 <span className={sh.required}>*</span></span>
-                      <textarea className={sh.formTextarea} style={{ height: 70 }} value={modal.detail} onChange={(e) => setModal({ ...modal, detail: e.target.value })} placeholder="요청자에게 안내할 상세 사유를 입력하세요" />
-                    </div>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#52525b', cursor: 'pointer' }}>
-                      <input type="checkbox" checked={modal.show} onChange={() => setModal({ ...modal, show: !modal.show })} />요청자에게 사유 표시
-                    </label>
-                  </div>
-                  <div className={sh.dialogActions}>
-                    <button type="button" className={sh.ghostBtn} onClick={() => setModal(null)}>취소</button>
-                    <button type="button" className={sh.dialogBtn} disabled={!modal.reason || !modal.detail.trim()} style={{ border: 0, background: modal.reason && modal.detail.trim() ? 'oklch(0.58 0.19 25)' : '#e4e4e7', color: modal.reason && modal.detail.trim() ? '#fff' : '#a1a1aa' }} onClick={() => doReject(det, modal.reason, modal.detail)}>반려</button>
-                  </div>
-                </>
-              )}
-
-              {modal.kind === 'hold' && (
-                <>
-                  <div style={{ marginTop: 14 }}>
-                    <div className={sh.formFieldLabel} style={{ marginBottom: 6 }}>보류 사유 <span className={sh.required}>*</span></div>
-                    <textarea className={sh.formTextarea} style={{ height: 70 }} value={modal.detail} onChange={(e) => setModal({ ...modal, detail: e.target.value })} placeholder="추가 확인이 필요한 사유를 입력하세요" />
-                  </div>
-                  <div className={sh.dialogActions}>
-                    <button type="button" className={sh.ghostBtn} onClick={() => setModal(null)}>취소</button>
-                    <button type="button" className={sh.dialogBtn} disabled={!modal.detail.trim()} style={{ border: 0, background: '#18181b', color: '#fff' }} onClick={() => doHold(det, modal.detail)}>보류</button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-
-        <div className={styles.detailHeader}>
-          <button type="button" className={styles.backBtn} onClick={() => setDetailId(null)}>← 목록으로</button>
-          <div className={styles.detailTitle}>{`검수 상세 · ${det.ctid}`}</div>
-          <span className={styles.statusPill} style={{ background: '#eef2ff', color: '#4338ca' }}>{det.businessType}</span>
-          <div className={sh.headerSpacer} />
-          <span className={styles.assigneeLabel}>{`담당자 ${det.assignee}`}</span>
-          <span className={styles.statusPill} style={{ background: stp.bg, color: stp.fg }}>{det.status}</span>
-        </div>
-
-        <div className={styles.detailBody}>
-          <div className={styles.mainPane}>
-            <div className={styles.contentMeta}>{`${det.reqType} · ${det.cat}`}</div>
-            <div className={styles.contentTitle}>{det.title}</div>
-            <div className={styles.contentSub}>{`요청자 ${det.requester} (${det.reqUtype}) · ${det.reqAt}`}</div>
-
-            {isModify ? (
-              <>
-                <div className={styles.diffBanner}>{`변경 항목 ${diffEntries.length}개`}</div>
-                <div className={styles.diffList}>
-                  {diffEntries.map(([label, d]) => (
-                    <div key={label} className={styles.diffCard}>
-                      <div className={styles.diffCardLabel}>{label}</div>
-                      <div className={styles.diffBefore}>{d.before}</div>
-                      <div className={styles.diffAfter}>{d.after}</div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <div className={styles.descBox}>{detCd ? detCd.desc : '콘텐츠 본문 정보를 찾을 수 없습니다.'}</div>
-            )}
-          </div>
-
-          <div className={styles.sidePane}>
-            <div className={styles.sideBody}>
-              <div className={styles.sideTitle}>검수 처리</div>
-
-              {det.assignee === '미지정' && <button type="button" className={styles.startBtn} onClick={() => startReview(det)}>검수 시작</button>}
-
-              <div>
-                <div className={sh.formFieldLabel} style={{ marginBottom: 8 }}>검수 항목</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {det.checklist.map((checked, i) => (
-                    <label key={i} className={styles.checklistRow}>
-                      <input type="checkbox" checked={checked} onChange={() => setItem(det.id, { checklist: det.checklist.map((c, ci) => (ci === i ? !c : c)) })} style={{ marginTop: 2 }} />
-                      <span className={styles.checklistLabel}>{CHECK_LABELS_BY_BUSINESS[det.businessType][i]}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <div className={sh.formFieldLabel} style={{ marginBottom: 6 }}>관리자 메모</div>
-                <textarea className={sh.formTextarea} value={det.memo} onChange={(e) => setItem(det.id, { memo: e.target.value })} placeholder="내부 기록용 메모입니다." />
-              </div>
-
-              {det.rejectReason && <div className={styles.rejectNote}>{`반려 사유: ${det.rejectReason}`}</div>}
-
-              {!decided ? (
-                <div className={styles.decisionRow}>
-                  <button type="button" className={styles.decisionBtn} style={{ border: '1px solid rgba(185,28,28,.2)', background: '#fef2f2', color: '#b91c1c' }} onClick={() => setModal({ kind: 'reject', id: det.id, memo: '', reason: '', detail: '', show: true })}>반려</button>
-                  <button type="button" className={styles.decisionBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#3f3f46' }} onClick={() => setModal({ kind: 'hold', id: det.id, memo: '', reason: '', detail: '', show: true })}>보류</button>
-                  <button type="button" className={styles.decisionBtn} style={{ border: 0, background: ACCENT, color: '#fff' }} onClick={() => setModal({ kind: 'approve', id: det.id, memo: det.memo, reason: '', detail: '', show: true })}>승인</button>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <div className={styles.doneNote}>검수가 완료되었습니다.</div>
-                  <div className={styles.doneRow}>
-                    <button type="button" className={styles.doneBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#3f3f46' }} onClick={() => setDetailId(null)}>목록으로</button>
-                    {nextPending(det.id) && <button type="button" className={styles.doneBtn} style={{ border: 0, background: '#18181b', color: '#fff' }} onClick={() => { const n = nextPending(det.id); setDetailId(n ? n.id : null); }}>다음 검수 건</button>}
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <div className={sh.formFieldLabel} style={{ marginBottom: 8 }}>검수 이력</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {det.history.slice().reverse().map((h, i) => (
-                    <div key={i} className={styles.historyCard}>
-                      <div className={styles.historyTop}><span>{h.at}</span><span>{h.by}</span></div>
-                      <div className={styles.historyAct}>{h.act}</div>
-                      {h.note && <div className={styles.historyNote}>{h.note}</div>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={sh.page}>
       {toast && <div className={sh.toast}>{toast}</div>}
+      {modal && det && (
+        <div className={sh.modalOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}>
+          <div className={sh.modalBox}>
+            <div className={sh.modalTitle}>{modal.kind === 'approve' ? '콘텐츠를 승인하시겠습니까?' : modal.kind === 'reject' ? '반려 처리' : '보류 처리'}</div>
+
+            {modal.kind === 'approve' && (
+              <>
+                <div style={{ fontSize: 12.5, color: '#52525b', lineHeight: 1.6, marginTop: 9 }}>승인 후 설정된 정책에 따라 콘텐츠가 공개 가능 상태로 변경됩니다.</div>
+                <div style={{ marginTop: 14 }}>
+                  <div className={sh.formFieldLabel} style={{ marginBottom: 6 }}>관리자 메모</div>
+                  <textarea className={sh.formTextarea} value={modal.memo} onChange={(e) => setModal({ ...modal, memo: e.target.value })} placeholder="내부 기록용 메모입니다." />
+                </div>
+                <div className={sh.dialogActions}>
+                  <button type="button" className={sh.ghostBtn} onClick={() => setModal(null)}>취소</button>
+                  <button type="button" className={sh.solidBtn} onClick={() => doApprove(det, modal.memo)}>승인</button>
+                </div>
+              </>
+            )}
+
+            {modal.kind === 'reject' && (
+              <>
+                <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <div className={sh.formField}>
+                    <span className={sh.formFieldLabel}>반려 사유 <span className={sh.required}>*</span></span>
+                    <select className={sh.formSelect} value={modal.reason} onChange={(e) => setModal({ ...modal, reason: e.target.value })}>
+                      <option value="">사유 선택</option>
+                      {REJECT_REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
+                    </select>
+                  </div>
+                  <div className={sh.formField}>
+                    <span className={sh.formFieldLabel}>상세 사유 <span className={sh.required}>*</span></span>
+                    <textarea className={sh.formTextarea} style={{ height: 70 }} value={modal.detail} onChange={(e) => setModal({ ...modal, detail: e.target.value })} placeholder="요청자에게 안내할 상세 사유를 입력하세요" />
+                  </div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: '#52525b', cursor: 'pointer' }}>
+                    <input type="checkbox" checked={modal.show} onChange={() => setModal({ ...modal, show: !modal.show })} />요청자에게 사유 표시
+                  </label>
+                </div>
+                <div className={sh.dialogActions}>
+                  <button type="button" className={sh.ghostBtn} onClick={() => setModal(null)}>취소</button>
+                  <button type="button" className={sh.dialogBtn} disabled={!modal.reason || !modal.detail.trim()} style={{ border: 0, background: modal.reason && modal.detail.trim() ? 'oklch(0.58 0.19 25)' : '#e4e4e7', color: modal.reason && modal.detail.trim() ? '#fff' : '#a1a1aa' }} onClick={() => doReject(det, modal.reason, modal.detail)}>반려</button>
+                </div>
+              </>
+            )}
+
+            {modal.kind === 'hold' && (
+              <>
+                <div style={{ marginTop: 14 }}>
+                  <div className={sh.formFieldLabel} style={{ marginBottom: 6 }}>보류 사유 <span className={sh.required}>*</span></div>
+                  <textarea className={sh.formTextarea} style={{ height: 70 }} value={modal.detail} onChange={(e) => setModal({ ...modal, detail: e.target.value })} placeholder="추가 확인이 필요한 사유를 입력하세요" />
+                </div>
+                <div className={sh.dialogActions}>
+                  <button type="button" className={sh.ghostBtn} onClick={() => setModal(null)}>취소</button>
+                  <button type="button" className={sh.dialogBtn} disabled={!modal.detail.trim()} style={{ border: 0, background: '#18181b', color: '#fff' }} onClick={() => doHold(det, modal.detail)}>보류</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
       <header className={sh.header}>
         <div>
           <div className={sh.headerTitle}>검수 관리</div>
@@ -405,7 +295,6 @@ export function ReviewPage() {
           </div>
 
           <div className={filterStyles.stepLabel}>
-            <span className={filterStyles.stepNum}>1</span>
             <span className={filterStyles.stepTitle}>조건 설정</span>
             <span className={filterStyles.stepHint}>요청 유형과 담당자를 기준으로 검수 건을 찾아보세요.</span>
             {chips.length > 0 && <span className={filterStyles.appliedCount}>{chips.length}개 조건 적용</span>}
@@ -505,51 +394,74 @@ export function ReviewPage() {
           </div>
 
           <div className={`${filterStyles.stepLabel} ${filterStyles.resultStep}`}>
-            <span className={filterStyles.stepNum}>2</span>
             <span className={filterStyles.stepTitle}>조회 결과</span>
             <span className={filterStyles.stepHint}>검수 버튼을 선택하면 요청 내용과 변경 사항을 확인할 수 있습니다.</span>
           </div>
         </div>
 
-        <div className={`${sh.listArea} ${filterStyles.listArea}`}>
-          <div className={sh.toolbarRow}>
-            {sel_.length > 0 ? (
-              <div className={sh.selBar}>
-                <span className={sh.selCount}>✓ {sel_.length}건 선택됨</span>
-                <button type="button" className={sh.selBtn} onClick={assignSelected}>담당자 지정</button>
-                <button type="button" className={sh.selBtnGreen} onClick={approveSelected}>일괄 승인</button>
-                <div className={sh.rowSpacer} />
-                <button type="button" className={sh.clearSelBtn} onClick={() => setSel([])}>선택 해제</button>
+        <div className={styles.splitRow}>
+          <div className={styles.splitListCol}>
+            <div className={`${sh.listArea} ${filterStyles.listArea}`}>
+              <div className={sh.toolbarRow}>
+                {sel_.length > 0 ? (
+                  <div className={sh.selBar}>
+                    <span className={sh.selCount}>✓ {sel_.length}건 선택됨</span>
+                    <button type="button" className={sh.selBtn} onClick={assignSelected}>담당자 지정</button>
+                    <button type="button" className={sh.selBtnGreen} onClick={approveSelected}>일괄 승인</button>
+                    <div className={sh.rowSpacer} />
+                    <button type="button" className={sh.clearSelBtn} onClick={() => setSel([])}>선택 해제</button>
+                  </div>
+                ) : (
+                  <div className={sh.noSelBar}>
+                    <span className={sh.totalLabel}>{`총 ${list.length.toLocaleString('ko-KR')}건`}</span>
+                    <div className={sh.rowSpacer} />
+                    <select className={sh.pageSizeSelect} defaultValue="20개씩 보기">
+                      <option>20개씩 보기</option>
+                      <option>50개씩 보기</option>
+                    </select>
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className={sh.noSelBar}>
-                <span className={sh.totalLabel}>{`총 ${list.length.toLocaleString('ko-KR')}건`}</span>
-                <div className={sh.rowSpacer} />
-                <select className={sh.pageSizeSelect} defaultValue="20개씩 보기">
-                  <option>20개씩 보기</option>
-                  <option>50개씩 보기</option>
-                </select>
+
+              <div className={sh.gridArea}>
+                <DataGrid
+                  columns={columns}
+                  rows={rows}
+                  gridTemplate="minmax(220px,2fr) 67px 90px 100px 49px 56px 49px 76px"
+                  minWidth="850px"
+                  selectable
+                  allSelected={list.length > 0 && sel_.length === list.length}
+                  onToggleAll={() => setSel(sel_.length === list.length ? [] : list.map((it) => it.id))}
+                  empty={list.length === 0}
+                  emptyText={emptyAll ? '검수 요청이 없습니다.' : '검수 대기 중인 콘텐츠가 없습니다.'}
+                  emptySubtext={emptyAll ? undefined : '다른 검색어나 필터 조건을 사용해 주세요.'}
+                  emptyActionLabel={emptySearch ? '필터 초기화' : undefined}
+                  emptyActionClick={resetAll}
+                  fillHeight
+                  stickyHeader
+                />
               </div>
-            )}
+            </div>
           </div>
 
-          <div className={sh.gridArea}>
-            <DataGrid
-              columns={columns}
-              rows={rows}
-              gridTemplate="minmax(220px,2fr) 67px 90px 100px 49px 56px 49px 76px"
-              minWidth="850px"
-              selectable
-              allSelected={list.length > 0 && sel_.length === list.length}
-              onToggleAll={() => setSel(sel_.length === list.length ? [] : list.map((it) => it.id))}
-              empty={list.length === 0}
-              emptyText={emptyAll ? '검수 요청이 없습니다.' : '검수 대기 중인 콘텐츠가 없습니다.'}
-              emptySubtext={emptyAll ? undefined : '다른 검색어나 필터 조건을 사용해 주세요.'}
-              emptyActionLabel={emptySearch ? '필터 초기화' : undefined}
-              emptyActionClick={resetAll}
-              fillHeight
-              stickyHeader
-            />
+          <div className={styles.splitDetailCol}>
+            {det ? (
+              <ReviewDetailPanel
+                det={det}
+                detCd={detCd}
+                onClose={() => setDetailId(null)}
+                onStartReview={() => startReview(det)}
+                onToggleChecklist={(i) => setItem(det.id, { checklist: det.checklist.map((c, ci) => (ci === i ? !c : c)) })}
+                onMemoChange={(memo) => setItem(det.id, { memo })}
+                onOpenApprove={() => setModal({ kind: 'approve', id: det.id, memo: det.memo, reason: '', detail: '', show: true })}
+                onOpenReject={() => setModal({ kind: 'reject', id: det.id, memo: '', reason: '', detail: '', show: true })}
+                onOpenHold={() => setModal({ kind: 'hold', id: det.id, memo: '', reason: '', detail: '', show: true })}
+                hasNext={nextPending(det.id) !== null}
+                onGoNext={() => { const n = nextPending(det.id); setDetailId(n ? n.id : null); }}
+              />
+            ) : (
+              <div className={styles.splitEmpty}>왼쪽 목록에서 검수 건을 선택하면<br />상세 내용과 처리 화면이 여기에 표시됩니다.</div>
+            )}
           </div>
         </div>
       </div>

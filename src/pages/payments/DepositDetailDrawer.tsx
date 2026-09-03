@@ -1,6 +1,4 @@
-import { useRef } from 'react';
 import styles from './drawerShared.module.css';
-import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { DepositDetail } from './depositDetail';
 
 interface Props {
@@ -9,11 +7,8 @@ interface Props {
 }
 
 export function DepositDetailDrawer({ detail: d, onTabChange }: Props) {
-  const asideRef = useRef<HTMLElement>(null);
-  useOutsideClose(asideRef, d.close);
-
   return (
-    <aside ref={asideRef} className={styles.aside}>
+    <div className={styles.panelRoot}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>
@@ -202,6 +197,6 @@ export function DepositDetailDrawer({ detail: d, onTabChange }: Props) {
           </div>
         )}
       </div>
-    </aside>
+    </div>
   );
 }

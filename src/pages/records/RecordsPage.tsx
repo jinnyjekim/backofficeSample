@@ -195,7 +195,6 @@ export function RecordsPage({ kind }: Props) {
       <div className={styles.body}>
         <div className={styles.filterZone}>
           <div className={styles.stepLabel}>
-            <span className={styles.stepNum}>1</span>
             <span className={styles.stepTitle}>조건 설정</span>
             <span className={styles.stepHint}>{rec.filterHint}</span>
           </div>
@@ -221,7 +220,6 @@ export function RecordsPage({ kind }: Props) {
           </div>
 
           <div className={`${styles.stepLabel} ${styles.step2}`}>
-            <span className={styles.stepNum}>2</span>
             <span className={styles.stepTitle}>{rec.summaryTitle}</span>
             <span className={styles.stepHint}>{rec.summaryHint}</span>
           </div>
@@ -255,7 +253,6 @@ export function RecordsPage({ kind }: Props) {
 
         <div className={styles.tableCard}>
           <div className={styles.tableHead}>
-            <span className={styles.stepNum}>3</span>
             <span className={styles.stepTitle}>{rec.listTitle}</span>
             <span className={styles.tableHeadHint}>{rec.listHint}</span>
             <div className={styles.spacer} />

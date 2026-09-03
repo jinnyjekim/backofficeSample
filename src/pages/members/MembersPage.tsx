@@ -376,7 +376,6 @@ export function MembersPage() {
             </nav>
 
             <div className={styles.stepLabel} style={{ marginTop: 12 }}>
-              <span className={styles.stepNum}>1</span>
               <span className={styles.stepTitle}>조건 설정</span>
               <span className={styles.stepHint}>검색어와 조건 칩으로 대상을 좁힙니다 · {cfg.label} 조건 세트</span>
             </div>
@@ -427,7 +426,6 @@ export function MembersPage() {
             </div>
 
             <div className={`${styles.stepLabel} ${styles.step2}`}>
-              <span className={styles.stepNum}>2</span>
               <span className={styles.stepTitle}>조건 결과 확인 · 내보내기</span>
               <span className={styles.stepHint}>위 조건에 해당하는 {cfg.unit} 수와 구성을 확인하고 그대로 추출합니다</span>
             </div>
@@ -533,7 +531,6 @@ export function MembersPage() {
 
           <div className={styles.tableCard}>
             <div className={styles.tableHead}>
-              <span className={styles.stepNum}>3</span>
               <span className={styles.stepTitle}>{cfg.unit} 목록 · 개별 작업</span>
               <span className={styles.tableHeadHint}>행을 누르면 상세, 체크하면 일괄 작업</span>
               <div className={styles.spacer} />

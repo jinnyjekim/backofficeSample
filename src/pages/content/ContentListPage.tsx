@@ -696,7 +696,6 @@ export function ContentListPage() {
           </nav>
 
           <div className={styles.stepLabel}>
-            <span className={styles.stepNum}>1</span>
             <span className={styles.stepTitle}>조건 설정</span>
             <span className={styles.stepHint}>검색어와 자주 쓰는 조건을 먼저 선택하세요.</span>
             {chips.length > 0 && <span className={styles.appliedCount}>{chips.length}개 조건 적용</span>}
@@ -808,7 +807,6 @@ export function ContentListPage() {
           </div>
 
           <div className={`${styles.stepLabel} ${styles.resultStep}`}>
-            <span className={styles.stepNum}>2</span>
             <span className={styles.stepTitle}>조회 결과</span>
             <span className={styles.stepHint}>행을 클릭하면 상세 내용을 확인할 수 있습니다.</span>
           </div>

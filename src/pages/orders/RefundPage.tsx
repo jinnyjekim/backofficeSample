@@ -303,61 +303,69 @@ export function RefundPage() {
         </div>
       </div>
 
-      <div className={shared.gridWrap}>
-        <div className={shared.resultRow}>
-          <span className={shared.resultLabel}>총 {filtered.length}건</span>
+      <div className={shared.splitRow}>
+        <div className={shared.splitListCol}>
+          <div className={shared.gridWrap}>
+            <div className={shared.resultRow}>
+              <span className={shared.resultLabel}>총 {filtered.length}건</span>
+            </div>
+          </div>
+
+          {selected.size > 0 && (
+            <div className={shared.bulkBar}>
+              <span className={shared.bulkLabel}>{selected.size}건 선택됨</span>
+              <button type="button" className={shared.bulkBtn} onClick={() => setModal({ kind: 'assign', ids: [...selected] })}>담당자 지정</button>
+              <button type="button" className={shared.bulkBtn} onClick={runBulkReviewStart}>일괄 검토 시작</button>
+              <button type="button" className={shared.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly('다운로드를 준비했습니다.')}>다운로드</button>
+            </div>
+          )}
+
+          <div className={shared.gridWrap} style={{ marginTop: 0 }}>
+            <DataGrid
+              columns={[
+                { label: '환불번호' }, { label: '주문번호' }, { label: '고객' }, { label: '유형' },
+                { label: '요청금액', align: 'right' as const }, { label: '환불금액', align: 'right' as const },
+                { label: '상태' }, { label: '요청일' }, { label: '담당자' }, { label: '관리', align: 'right' as const },
+              ]}
+              rows={rows}
+              gridTemplate="80px 68px 56px 60px 68px 70px 58px 48px 64px 40px"
+              minWidth="960px"
+              selectable
+              allSelected={filtered.length > 0 && selected.size === filtered.length}
+              onToggleAll={toggleAll}
+              empty={filtered.length === 0}
+              emptyText={quickFilter === '처리 필요' ? '현재 처리해야 할 환불 요청이 없습니다.' : quickFilter === '실패' ? '현재 환불 실패 건이 없습니다.' : '검색 결과가 없습니다.'}
+              emptySubtext="검색어나 필터 조건을 변경해 주세요."
+              emptyActionLabel="필터 초기화"
+              emptyActionClick={reset}
+            />
+          </div>
+        </div>
+
+        <div className={shared.splitDetailCol}>
+          {drawerItem ? (
+            <RefundDrawer
+              key={drawerItem.id}
+              refund={drawerItem}
+              all={refunds}
+              onClose={() => setDrawerId(null)}
+              onAddAdjustment={(type, amount, reason) => addAdjustment(drawerItem.id, type, amount, reason)}
+              onRemoveAdjustment={(adjId) => removeAdjustment(drawerItem.id, adjId)}
+              onAddMemo={(text) => addMemo(drawerItem.id, text)}
+              onStartReview={() => startReview(drawerItem.id)}
+              onAssignClick={() => setModal({ kind: 'assign', ids: [drawerItem.id] })}
+              onApproveClick={() => setModal({ kind: 'approve', item: drawerItem })}
+              onRejectClick={() => setModal({ kind: 'reject', item: drawerItem })}
+              onExecute={() => execute(drawerItem.id)}
+              onPoll={() => poll(drawerItem.id)}
+              onRetryClick={() => setModal({ kind: 'retry', item: drawerItem })}
+              onReconsiderClick={() => setModal({ kind: 'reconsider', item: drawerItem })}
+            />
+          ) : (
+            <div className={shared.splitEmpty}>왼쪽 목록에서 환불 건을 선택하면<br />처리 상세가 여기에 표시됩니다.</div>
+          )}
         </div>
       </div>
-
-      {selected.size > 0 && (
-        <div className={shared.bulkBar}>
-          <span className={shared.bulkLabel}>{selected.size}건 선택됨</span>
-          <button type="button" className={shared.bulkBtn} onClick={() => setModal({ kind: 'assign', ids: [...selected] })}>담당자 지정</button>
-          <button type="button" className={shared.bulkBtn} onClick={runBulkReviewStart}>일괄 검토 시작</button>
-          <button type="button" className={shared.bulkBtn} data-grid-download="selected" onClick={() => toastBriefly('다운로드를 준비했습니다.')}>다운로드</button>
-        </div>
-      )}
-
-      <div className={shared.gridWrap} style={{ marginTop: 0 }}>
-        <DataGrid
-          columns={[
-            { label: '환불번호' }, { label: '주문번호' }, { label: '고객' }, { label: '유형' },
-            { label: '요청금액', align: 'right' as const }, { label: '환불금액', align: 'right' as const },
-            { label: '상태' }, { label: '요청일' }, { label: '담당자' }, { label: '관리', align: 'right' as const },
-          ]}
-          rows={rows}
-          gridTemplate="80px 68px 56px 60px 68px 70px 58px 48px 64px 40px"
-          minWidth="960px"
-          selectable
-          allSelected={filtered.length > 0 && selected.size === filtered.length}
-          onToggleAll={toggleAll}
-          empty={filtered.length === 0}
-          emptyText={quickFilter === '처리 필요' ? '현재 처리해야 할 환불 요청이 없습니다.' : quickFilter === '실패' ? '현재 환불 실패 건이 없습니다.' : '검색 결과가 없습니다.'}
-          emptySubtext="검색어나 필터 조건을 변경해 주세요."
-          emptyActionLabel="필터 초기화"
-          emptyActionClick={reset}
-        />
-      </div>
-
-      {drawerItem && (
-        <RefundDrawer
-          key={drawerItem.id}
-          refund={drawerItem}
-          all={refunds}
-          onClose={() => setDrawerId(null)}
-          onAddAdjustment={(type, amount, reason) => addAdjustment(drawerItem.id, type, amount, reason)}
-          onRemoveAdjustment={(adjId) => removeAdjustment(drawerItem.id, adjId)}
-          onAddMemo={(text) => addMemo(drawerItem.id, text)}
-          onStartReview={() => startReview(drawerItem.id)}
-          onAssignClick={() => setModal({ kind: 'assign', ids: [drawerItem.id] })}
-          onApproveClick={() => setModal({ kind: 'approve', item: drawerItem })}
-          onRejectClick={() => setModal({ kind: 'reject', item: drawerItem })}
-          onExecute={() => execute(drawerItem.id)}
-          onPoll={() => poll(drawerItem.id)}
-          onRetryClick={() => setModal({ kind: 'retry', item: drawerItem })}
-          onReconsiderClick={() => setModal({ kind: 'reconsider', item: drawerItem })}
-        />
-      )}
 
       {modal?.kind === 'assign' && (
         <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setModal(null); }}>

@@ -1,0 +1,511 @@
+================================================================================
+                    백오피스 시스템 사이트맵 (SITEMAP)
+================================================================================
+생성일시: 2026-09-03
+문서 버전: v1.0.0
+시스템 구분: 통합 커머스 백오피스 (B2C 자사몰 / C2C 중고거래 / B2B 공급·거래처)
+
+[비즈니스 구분 범례]
+- [ALL] : 공통 / 전사 운영 및 시스템
+- [B2C] : B2C 자사몰 및 일반 쇼핑몰 커머스 운영
+- [C2C] : C2C 사용자간 거래 및 안전/검수/제재 플랫폼 운영
+- [B2B] : B2B 거래처 공급/계약/견적/정산 운영
+
+
+--------------------------------------------------------------------------------
+1. 전체 사이트맵 계층 트리 (NAVIGATION TREE)
+--------------------------------------------------------------------------------
+
+■ 1. 일반 (General)
+   ├─ 대시보드 [ALL] ............................ /dashboard
+   └─ 컴포넌트 가이드 [ALL] ...................... /components
+
+■ 2. 서비스 관리 - 공통 및 회원 (Members & Content)
+   ├─ 회원 관리 [ALL]
+   │  ├─ 회원 목록 .............................. /members
+   │  ├─ 탈퇴 회원 .............................. /members/left
+   │  └─ 제재 회원 .............................. /members/ban
+   └─ 콘텐츠 관리 [ALL]
+      ├─ 콘텐츠 목록 ............................ /content
+      ├─ 카테고리 관리 .......................... /content/categories
+      ├─ 태그 관리 .............................. /content/tags
+      ├─ 노출 관리 .............................. /content/exposure
+      └─ 검수 관리 .............................. /content/review
+
+■ 3. 서비스 관리 - B2C 자사몰 커머스 (B2C Operations)
+   ├─ 배송 관리 [B2C]
+   │  ├─ 배송 준비 .............................. /delivery/prep
+   │  ├─ 출고 대기 .............................. /delivery/outbound-waiting
+   │  ├─ 출고 완료 .............................. /delivery/outbound-complete
+   │  ├─ 배송중 ................................ /delivery/in-transit
+   │  ├─ 배송 완료 .............................. /delivery/complete
+   │  ├─ 배송 실패 .............................. /b2c/delivery/failed
+   │  ├─ 배송 보류 .............................. /b2c/delivery/hold
+   │  ├─ 송장 관리 .............................. /b2c/delivery/invoices
+   │  ├─ 배송사 관리 ............................ /b2c/delivery/carriers
+   │  ├─ 배송 추적 .............................. /b2c/delivery/tracking
+   │  └─ 배송 이력 .............................. /b2c/delivery/history
+   ├─ 취소 관리 [B2C]
+   │  ├─ 취소 요청 .............................. /b2c/cancel/requests
+   │  ├─ 취소 승인 .............................. /b2c/cancel/approval
+   │  ├─ 취소 반려 .............................. /b2c/cancel/rejected
+   │  ├─ 부분 취소 .............................. /b2c/cancel/partial
+   │  ├─ 취소 완료 .............................. /b2c/cancel/completed
+   │  └─ 취소 이력 .............................. /b2c/cancel/history
+   ├─ 반품 관리 [B2C]
+   │  ├─ 반품 요청 .............................. /b2c/returns/requests
+   │  ├─ 반품 승인 .............................. /b2c/returns/approval
+   │  ├─ 반품 회수 .............................. /b2c/returns/collecting
+   │  ├─ 회수 완료 .............................. /b2c/returns/collected
+   │  ├─ 상품 확인 .............................. /b2c/returns/inspection
+   │  ├─ 반품 완료 .............................. /b2c/returns/completed
+   │  ├─ 반품 반려 .............................. /b2c/returns/rejected
+   │  └─ 반품 이력 .............................. /b2c/returns/history
+   ├─ 교환 관리 [B2C]
+   │  ├─ 교환 요청 .............................. /b2c/exchanges/requests
+   │  ├─ 교환 승인 .............................. /b2c/exchanges/approval
+   │  ├─ 상품 회수 .............................. /b2c/exchanges/collecting
+   │  ├─ 회수 완료 .............................. /b2c/exchanges/collected
+   │  ├─ 교환 상품 준비 ........................ /b2c/exchanges/preparing
+   │  ├─ 재출고 ................................ /b2c/exchanges/reship
+   │  ├─ 교환 완료 .............................. /b2c/exchanges/completed
+   │  ├─ 교환 반려 .............................. /b2c/exchanges/rejected
+   │  └─ 교환 이력 .............................. /b2c/exchanges/history
+   ├─ 프로모션 관리 [B2C]
+   │  ├─ 프로모션 목록 .......................... /promotions
+   │  ├─ 기간 할인 .............................. /b2c/promotions/period
+   │  ├─ 상품 할인 .............................. /b2c/promotions/product
+   │  ├─ 카테고리 할인 .......................... /b2c/promotions/category
+   │  ├─ 장바구니 할인 .......................... /b2c/promotions/cart
+   │  ├─ 회원 할인 .............................. /b2c/promotions/member
+   │  ├─ 프로모션 대상 관리 .................... /b2c/promotions/targets
+   │  └─ 프로모션 적용 이력 .................... /promotions/history
+   ├─ 쿠폰 관리 [B2C]
+   │  ├─ 쿠폰 목록 .............................. /coupons
+   │  ├─ 쿠폰 등록 .............................. /b2c/coupons/create
+   │  ├─ 쿠폰 발급 .............................. /coupons/issue
+   │  ├─ 자동 발급 .............................. /b2c/coupons/automatic
+   │  ├─ 쿠폰 사용 내역 ........................ /coupons/usage
+   │  ├─ 만료 쿠폰 .............................. /b2c/coupons/expired
+   │  └─ 쿠폰 정책 .............................. /coupons/policy
+   ├─ 포인트 / 적립금 관리 [B2C]
+   │  ├─ 보유 현황 .............................. /points
+   │  ├─ 지급 내역 .............................. /b2c/points/granted
+   │  ├─ 사용 내역 .............................. /b2c/points/used
+   │  ├─ 차감 내역 .............................. /b2c/points/deducted
+   │  ├─ 소멸 내역 .............................. /b2c/points/expired
+   │  ├─ 소멸 예정 .............................. /b2c/points/expiring
+   │  ├─ 수동 지급 .............................. /b2c/points/manual
+   │  ├─ 전체 포인트 내역 ...................... /points/history
+   │  └─ 적립 정책 .............................. /points/policy
+   ├─ 브랜드 관리 [B2C]
+   │  ├─ 브랜드 목록 ............................ /brands
+   │  ├─ 브랜드 등록 ............................ /b2c/brands/create
+   │  ├─ 브랜드 상세 ............................ /b2c/brands/detail
+   │  ├─ 브랜드별 상품 .......................... /b2c/brands/products
+   │  └─ 브랜드 노출 관리 ...................... /b2c/brands/exposure
+   ├─ 리뷰 관리 [B2C]
+   │  ├─ 리뷰 목록 .............................. /reviews
+   │  ├─ 리뷰 상세 .............................. /b2c/reviews/detail
+   │  ├─ 신고 리뷰 .............................. /b2c/reviews/reported
+   │  ├─ 숨김 리뷰 .............................. /b2c/reviews/hidden
+   │  ├─ 리뷰 답변 .............................. /b2c/reviews/replies
+   │  ├─ 리뷰 제재 .............................. /b2c/reviews/sanctions
+   │  └─ 리뷰 통계 .............................. /b2c/reviews/stats
+   └─ 장바구니 / 구매 전환 [B2C] ................. /cart-conversion
+
+■ 4. 서비스 관리 - C2C 중고거래 플랫폼 (C2C Operations)
+   ├─ 판매 활동 관리 [C2C]
+   │  ├─ 판매자 목록 ............................ /c2c/sales/sellers
+   │  ├─ 판매 상태 .............................. /c2c/sales/status
+   │  ├─ 판매 거래 .............................. /c2c/sales/trades
+   │  ├─ 판매 실적 .............................. /c2c/sales/performance
+   │  └─ 판매 활동 이력 ........................ /c2c/sales/history
+   ├─ 구매 활동 관리 [C2C]
+   │  ├─ 구매 내역 .............................. /c2c/purchases/history
+   │  ├─ 구매 취소 .............................. /c2c/purchases/cancel
+   │  └─ 구매 활동 이력 ........................ /c2c/purchases/activity
+   ├─ 사용자 상품 관리 [C2C]
+   │  ├─ 사용자 상품 목록 ...................... /c2c/products/list
+   │  ├─ 등록 / 검수 관리 ...................... /c2c/products/review
+   │  ├─ 노출 / 운영 조치 ...................... /c2c/products/moderation
+   │  └─ 처리 이력 .............................. /c2c/products/history
+   ├─ 상품 정책 / 탐지 [C2C]
+   │  ├─ 상품 정책 .............................. /c2c/product-policy/policies
+   │  ├─ 자동 탐지 규칙 ........................ /c2c/product-policy/detection-rules
+   │  └─ 탐지 이력 .............................. /c2c/product-policy/detection-history
+   ├─ 신고 관리 [C2C]
+   │  ├─ 신고 처리 .............................. /c2c/reports/processing
+   │  └─ 신고 처리 이력 ........................ /c2c/reports/history
+   ├─ 분쟁 관리 [C2C]
+   │  ├─ 분쟁 처리 .............................. /c2c/disputes/processing
+   │  └─ 분쟁 처리 이력 ........................ /c2c/disputes/history
+   ├─ 제재 관리 [C2C]
+   │  ├─ 제재 처리 .............................. /c2c/sanctions/processing
+   │  ├─ 제재 정책 .............................. /c2c/sanctions/policies
+   │  └─ 제재 처리 이력 ........................ /c2c/sanctions/history
+   ├─ 거래 안전 관리 [C2C]
+   │  ├─ 위험 모니터링 .......................... /c2c/safety/monitoring
+   │  └─ 거래 보류 관리 ........................ /c2c/safety/holds
+   ├─ 판매대금 / 정산 관리 [C2C]
+   │  ├─ 판매대금 현황 .......................... /c2c/proceeds/overview
+   │  ├─ C2C 정산 관리 .......................... /c2c/proceeds/settlements
+   │  ├─ 출금 관리 .............................. /c2c/proceeds/withdrawals
+   │  └─ 판매대금 원장 .......................... /c2c/proceeds/ledger
+   ├─ 거래 채팅 관리 [C2C]
+   │  ├─ 거래 채팅 목록 ........................ /c2c/chat/list
+   │  ├─ 메시지 정책 ............................ /c2c/chat/policies
+   │  └─ 운영 조회 이력 ........................ /c2c/chat/audit
+   └─ 본인 인증 관리 [C2C]
+      ├─ 인증 심사 .............................. /c2c/verification/review
+      ├─ 인증 정책 .............................. /c2c/verification/policies
+      └─ 인증 처리 이력 ........................ /c2c/verification/history
+
+■ 5. 서비스 관리 - B2B 거래처 및 계약/발주 (B2B Operations)
+   ├─ 거래처 관리 [B2B]
+   │  ├─ 회사 .................................. /partners/companies
+   │  ├─ 담당자 ................................ /partners/contacts
+   │  ├─ 거래 상태 .............................. /partners/trade-status
+   │  └─ 신용/거래 조건 ........................ /partners/credit-terms
+   ├─ 공급 상품 관리 [B2B]
+   │  ├─ 상품 목록 .............................. /products
+   │  ├─ 공급가 ................................ /products/supply-price
+   │  ├─ 거래처별 가격 .......................... /products/partner-pricing
+   │  └─ 최소 주문수량 .......................... /products/min-order-qty
+   ├─ 재고 관리 [B2B / B2C]
+   │  ├─ 재고 현황 .............................. /inventory/status
+   │  ├─ 옵션별 재고 ............................ /b2c/inventory/options
+   │  ├─ 입고 관리 .............................. /inventory/inbound
+   │  ├─ 출고 관리 .............................. /inventory/outbound
+   │  ├─ 재고 조정 .............................. /inventory/adjust
+   │  ├─ 재고 변동 이력 ........................ /inventory/history
+   │  ├─ 품절 상품 .............................. /b2c/inventory/sold-out
+   │  ├─ 안전 재고 .............................. /b2c/inventory/safety-stock
+   │  └─ 재고 알림 .............................. /b2c/inventory/alerts
+   ├─ 견적 관리 [B2B]
+   │  ├─ 견적 요청 .............................. /quotes/requests
+   │  ├─ 견적서 ................................ /quotes
+   │  ├─ 승인 .................................. /quotes/approval
+   │  └─ 견적 이력 .............................. /quotes/history
+   ├─ 주문 관리 [B2B]
+   │  ├─ 발주 .................................. /orders/purchase
+   │  ├─ 주문 승인 .............................. /orders/approval
+   │  ├─ 처리 .................................. /orders/processing
+   │  ├─ 완료 .................................. /orders/completed
+   │  └─ 환불 관리 .............................. /orders/refunds
+   ├─ 계약 관리 [B2B]
+   │  ├─ 계약 .................................. /contracts
+   │  ├─ 계약 기간 .............................. /contracts/period
+   │  ├─ 단가 .................................. /contracts/unit-price
+   │  └─ 거래 조건 .............................. /contracts/trade-terms
+   ├─ 결제 / 수금 [B2B]
+   │  ├─ 결제 .................................. /payments
+   │  ├─ 미수금 ................................ /payments/receivables
+   │  ├─ 입금 확인 .............................. /payments/deposit-confirm
+   │  └─ 세금계산서 ............................ /payments/tax-invoices
+   └─ 거래처 정산 관리 [B2B]
+      ├─ 정산 목록 .............................. /settlement
+      ├─ 정산 거래 내역 .......................... /settlement/transactions
+      └─ 조정 내역 .............................. /settlement/adjustments
+
+■ 6. 서비스 관리 - 결제운영 / 운영지원 / 알림 / 고객센터 / 정책
+   ├─ 결제 운영 [ALL]
+   │  ├─ 결제 건 조회 .......................... /payment-mgmt/list
+   │  ├─ PG / 외부 거래 ........................ /payment-mgmt/external
+   │  └─ 결제 처리 이력 ........................ /payment-mgmt/history
+   ├─ 운영 관리 [ALL]
+   │  ├─ 공지사항 .............................. /ops/notices
+   │  ├─ FAQ ................................... /ops/faq
+   │  ├─ 배너 .................................. /ops/banners
+   │  ├─ 팝업 .................................. /ops/popups
+   │  ├─ 이벤트 ................................ /ops/events
+   │  ├─ 약관 관리 .............................. /ops/terms
+   │  └─ 정책 관리 .............................. /ops/policies
+   ├─ 알림 / 메시지 관리 [ALL]
+   │  ├─ 발송 관리 .............................. /notifications/dispatch
+   │  └─ 템플릿 관리 ............................ /notifications/templates
+   ├─ 고객센터 (CS) [ALL]
+   │  ├─ 1:1 문의 .............................. /cs/inquiries
+   │  ├─ 상품 문의 관리 [B2C] ................... /cs/product-inquiries
+   │  ├─ 문의 유형 관리 ........................ /cs/inquiry-types
+   │  ├─ 상담 내역 .............................. /cs/consultations
+   │  ├─ 답변 템플릿 ............................ /cs/templates
+   │  ├─ 관리자 메모 ............................ /cs/memos
+   │  └─ CS 처리 이력 .......................... /cs/history
+   ├─ 거래 정책 [ALL]
+   │  ├─ 주문 상태 설정 ........................ /policy/order-status
+   │  ├─ 결제 정책 .............................. /policy/payment
+   │  ├─ 취소 정책 .............................. /policy/cancellation
+   │  ├─ 환불 정책 .............................. /policy/refund
+   │  ├─ 정산 정책 [B2B] ........................ /policy/settlement
+   │  └─ 수수료 정책 ............................ /policy/fee
+   └─ 배송 정책 [B2C]
+      ├─ 기본 배송비 ............................ /delivery-policy/base-fee
+      ├─ 무료배송 조건 .......................... /delivery-policy/free-shipping
+      ├─ 지역별 추가 배송비 ...................... /delivery-policy/region-fee
+      ├─ 상품별 배송 정책 ........................ /delivery-policy/product
+      ├─ 묶음 배송 .............................. /delivery-policy/bundle
+      ├─ 제주 / 도서산간 정책 .................... /delivery-policy/remote-area
+      └─ 반품 / 교환 배송비 ...................... /delivery-policy/return-exchange
+
+■ 7. 분석 · 시스템 (Analytics & System)
+   ├─ 통계 [ALL/B2C/C2C]
+   │  ├─ 통합 통계 .............................. /stats/overview
+   │  ├─ 매출 분석 .............................. /stats/sales
+   │  ├─ 재고 분석 .............................. /stats/inventory
+   │  ├─ 배송/클레임 분석 [B2C] ................. /stats/delivery-claims
+   │  ├─ 프로모션 분석 [B2C] .................... /stats/promotions
+   │  ├─ 고객 구매 분석 [B2C] .................... /stats/customers
+   │  ├─ 상품 등록 분석 [B2C] .................... /stats/products
+   │  ├─ 거래 전환 분석 [B2C] .................... /stats/conversion
+   │  ├─ 등록 상품 수 [C2C] ...................... /c2c/stats/products
+   │  ├─ 거래 성사율 [C2C] ...................... /c2c/stats/conversion
+   │  ├─ 판매자 활동 [C2C] ...................... /c2c/stats/sellers
+   │  ├─ 구매자 활동 [C2C] ...................... /c2c/stats/buyers
+   │  ├─ 신고율 [C2C] ............................ /c2c/stats/reports
+   │  ├─ 분쟁률 [C2C] ............................ /c2c/stats/disputes
+   │  ├─ 거래 취소율 [C2C] ...................... /c2c/stats/cancels
+   │  └─ 판매대금 통계 [C2C] .................... /c2c/stats/proceeds
+   ├─ 관리자 [ALL]
+   │  ├─ 관리자 목록 ............................ /admin
+   │  ├─ 역할 및 권한 관리 ...................... /admin/roles
+   │  └─ 관리자 이력 ............................ /admin/history
+   ├─ 시스템 관리 [ALL]
+   │  ├─ 서비스 설정 ............................ /system/service
+   │  ├─ 공통 코드 .............................. /system/codes
+   │  ├─ 외부 연동 .............................. /system/integration
+   │  └─ 작업 관리 .............................. /system/jobs
+   └─ 로그 / 감사 [ALL]
+      ├─ 시스템 로그 ............................ /logs/system
+      └─ 보안 로그 .............................. /logs/security
+
+
+--------------------------------------------------------------------------------
+2. URL 경로별 인덱스 (URL ALPHABETICAL INDEX)
+--------------------------------------------------------------------------------
+
+[기본 및 일반]
+/dashboard                             대시보드
+/components                            컴포넌트 쇼케이스
+
+[회원 관리]
+/members                               회원 목록
+/members/left                          탈퇴 회원 목록
+/members/ban                           제재 회원 목록
+
+[콘텐츠 관리]
+/content                               콘텐츠 목록
+/content/categories                    콘텐츠 카테고리 관리
+/content/tags                          콘텐츠 태그 관리
+/content/exposure                      콘텐츠 노출 관리
+/content/review                        콘텐츠 검수 관리
+
+[B2C - 배송/클레임/프로모션/회원혜택]
+/delivery/prep                         B2C 배송 준비
+/delivery/outbound-waiting             B2C 출고 대기
+/delivery/outbound-complete            B2C 출고 완료
+/delivery/in-transit                   B2C 배송중
+/delivery/complete                     B2C 배송 완료
+/b2c/delivery/failed                   B2C 배송 실패
+/b2c/delivery/hold                     B2C 배송 보류
+/b2c/delivery/invoices                 B2C 송장 관리
+/b2c/delivery/carriers                 B2C 배송사 관리
+/b2c/delivery/tracking                 B2C 배송 추적
+/b2c/delivery/history                  B2C 배송 이력
+/b2c/cancel/requests                   B2C 취소 요청
+/b2c/cancel/approval                   B2C 취소 승인
+/b2c/cancel/rejected                   B2C 취소 반려
+/b2c/cancel/partial                    B2C 부분 취소
+/b2c/cancel/completed                  B2C 취소 완료
+/b2c/cancel/history                    B2C 취소 이력
+/b2c/returns/requests                  B2C 반품 요청
+/b2c/returns/approval                  B2C 반품 승인
+/b2c/returns/collecting                B2C 반품 회수
+/b2c/returns/collected                 B2C 회수 완료
+/b2c/returns/inspection                B2C 상품 확인
+/b2c/returns/completed                 B2C 반품 완료
+/b2c/returns/rejected                  B2C 반품 반려
+/b2c/returns/history                   B2C 반품 이력
+/b2c/exchanges/requests                B2C 교환 요청
+/b2c/exchanges/approval                B2C 교환 승인
+/b2c/exchanges/collecting              B2C 상품 회수
+/b2c/exchanges/collected               B2C 회수 완료
+/b2c/exchanges/preparing               B2C 교환 상품 준비
+/b2c/exchanges/reship                  B2C 재출고
+/b2c/exchanges/completed               B2C 교환 완료
+/b2c/exchanges/rejected                B2C 교환 반려
+/b2c/exchanges/history                 B2C 교환 이력
+/promotions                            B2C 프로모션 목록
+/b2c/promotions/period                 B2C 기간 할인
+/b2c/promotions/product                B2C 상품 할인
+/b2c/promotions/category               B2C 카테고리 할인
+/b2c/promotions/cart                   B2C 장바구니 할인
+/b2c/promotions/member                 B2C 회원 할인
+/b2c/promotions/targets                B2C 프로모션 대상 관리
+/promotions/history                    B2C 프로모션 적용 이력
+/coupons                               B2C 쿠폰 목록
+/b2c/coupons/create                    B2C 쿠폰 등록
+/coupons/issue                         B2C 쿠폰 발급
+/b2c/coupons/automatic                 B2C 자동 발급
+/coupons/usage                         B2C 쿠폰 사용 내역
+/b2c/coupons/expired                   B2C 만료 쿠폰
+/coupons/policy                        B2C 쿠폰 정책
+/points                                B2C 포인트 보유 현황
+/b2c/points/granted                    B2C 포인트 지급 내역
+/b2c/points/used                       B2C 포인트 사용 내역
+/b2c/points/deducted                   B2C 포인트 차감 내역
+/b2c/points/expired                    B2C 포인트 소멸 내역
+/b2c/points/expiring                   B2C 포인트 소멸 예정
+/b2c/points/manual                     B2C 포인트 수동 지급
+/points/history                        B2C 전체 포인트 내역
+/points/policy                         B2C 적립 정책
+/brands                                B2C 브랜드 목록
+/b2c/brands/create                     B2C 브랜드 등록
+/b2c/brands/detail                     B2C 브랜드 상세
+/b2c/brands/products                   B2C 브랜드별 상품
+/b2c/brands/exposure                   B2C 브랜드 노출 관리
+/reviews                               B2C 리뷰 목록
+/b2c/reviews/detail                    B2C 리뷰 상세
+/b2c/reviews/reported                  B2C 신고 리뷰
+/b2c/reviews/hidden                    B2C 숨김 리뷰
+/b2c/reviews/replies                   B2C 리뷰 답변
+/b2c/reviews/sanctions                 B2C 리뷰 제재
+/b2c/reviews/stats                     B2C 리뷰 통계
+/cart-conversion                       B2C 장바구니 / 구매 전환
+
+[C2C - 개인간 거래 및 플랫폼 안전]
+/c2c/sales/sellers                     C2C 판매자 목록
+/c2c/sales/status                      C2C 판매 상태
+/c2c/sales/trades                      C2C 판매 거래
+/c2c/sales/performance                 C2C 판매 실적
+/c2c/sales/history                     C2C 판매 활동 이력
+/c2c/purchases/history                 C2C 구매 내역
+/c2c/purchases/cancel                  C2C 구매 취소
+/c2c/purchases/activity                C2C 구매 활동 이력
+/c2c/products/list                     C2C 사용자 상품 목록
+/c2c/products/review                   C2C 등록 / 검수 관리
+/c2c/products/moderation               C2C 노출 / 운영 조치
+/c2c/products/history                  C2C 사용자 상품 처리 이력
+/c2c/product-policy/policies           C2C 상품 정책
+/c2c/product-policy/detection-rules    C2C 자동 탐지 규칙
+/c2c/product-policy/detection-history  C2C 탐지 이력
+/c2c/reports/processing                C2C 신고 처리
+/c2c/reports/history                   C2C 신고 처리 이력
+/c2c/disputes/processing               C2C 분쟁 처리
+/c2c/disputes/history                  C2C 분쟁 처리 이력
+/c2c/sanctions/processing              C2C 제재 처리
+/c2c/sanctions/policies                C2C 제재 정책
+/c2c/sanctions/history                 C2C 제재 처리 이력
+/c2c/safety/monitoring                 C2C 위험 모니터링
+/c2c/safety/holds                      C2C 거래 보류 관리
+/c2c/proceeds/overview                 C2C 판매대금 현황
+/c2c/proceeds/settlements              C2C 정산 관리
+/c2c/proceeds/withdrawals              C2C 출금 관리
+/c2c/proceeds/ledger                   C2C 판매대금 원장
+/c2c/chat/list                         C2C 거래 채팅 관리
+/c2c/chat/policies                     C2C 메시지 정책
+/c2c/chat/audit                        C2C 운영 조회 이력
+/c2c/verification/review               C2C 인증 심사
+/c2c/verification/policies             C2C 인증 정책
+/c2c/verification/history              C2C 인증 처리 이력
+
+[B2B - 공급사/파트너 및 발주/계약/정산]
+/partners/companies                    B2B 거래처 회사
+/partners/contacts                     B2B 거래처 담당자
+/partners/trade-status                 B2B 거래 상태
+/partners/credit-terms                 B2B 신용/거래 조건
+/products                              B2B 공급 상품 목록
+/products/supply-price                 B2B 공급가 관리
+/products/partner-pricing              B2B 거래처별 가격
+/products/min-order-qty                B2B 최소 주문수량
+/inventory/status                      재고 현황
+/b2c/inventory/options                 옵션별 재고
+/inventory/inbound                     입고 관리
+/inventory/outbound                    출고 관리
+/inventory/adjust                      재고 조정
+/inventory/history                     재고 변동 이력
+/b2c/inventory/sold-out                품절 상품
+/b2c/inventory/safety-stock            안전 재고
+/b2c/inventory/alerts                  재고 알림
+/quotes/requests                       B2B 견적 요청
+/quotes                                B2B 견적서
+/quotes/approval                       B2B 견적 승인
+/quotes/history                        B2B 견적 이력
+/orders/purchase                       B2B 발주
+/orders/approval                       B2B 주문 승인
+/orders/processing                     B2B 주문 처리
+/orders/completed                      B2B 주문 완료
+/orders/refunds                        B2B 환불 관리
+/contracts                             B2B 계약
+/contracts/period                      B2B 계약 기간
+/contracts/unit-price                  B2B 단가
+/contracts/trade-terms                 B2B 거래 조건
+/payments                              B2B 결제
+/payments/receivables                  B2B 미수금
+/payments/deposit-confirm              B2B 입금 확인
+/payments/tax-invoices                 B2B 세금계산서
+/settlement                            B2B 정산 목록
+/settlement/transactions               B2B 정산 거래 내역
+/settlement/adjustments                B2B 정산 조정 내역
+
+[공통 운영 / 고객지원 / 정책]
+/payment-mgmt/list                     결제 건 조회
+/payment-mgmt/external                 PG / 외부 거래
+/payment-mgmt/history                  결제 처리 이력
+/ops/notices                           공지사항
+/ops/faq                               FAQ
+/ops/banners                           배너
+/ops/popups                            팝업
+/ops/events                            이벤트
+/ops/terms                             약관 관리
+/ops/policies                          정책 관리
+/notifications/dispatch                알림 / 메시지 발송 관리
+/notifications/templates               알림 / 메시지 템플릿 관리
+/cs/inquiries                          1:1 문의
+/cs/product-inquiries                  상품 문의 관리
+/cs/inquiry-types                      문의 유형 관리
+/cs/consultations                      상담 내역
+/cs/templates                          답변 템플릿
+/cs/memos                              관리자 메모
+/cs/history                            CS 처리 이력
+/policy/order-status                   주문 상태 설정
+/policy/payment                        결제 정책
+/policy/cancellation                   취소 정책
+/policy/refund                         환불 정책
+/policy/settlement                     정산 정책
+/policy/fee                            수수료 정책
+/delivery-policy/base-fee              기본 배송비
+/delivery-policy/free-shipping         무료배송 조건
+/delivery-policy/region-fee            지역별 추가 배송비
+/delivery-policy/product               상품별 배송 정책
+/delivery-policy/bundle                묶음 배송
+/delivery-policy/remote-area           제주 / 도서산간 정책
+/delivery-policy/return-exchange       반품 / 교환 배송비
+
+[분석 및 시스템]
+/stats/overview                        통합 통계
+/stats/sales                           매출 분석
+/stats/inventory                       재고 분석
+/stats/delivery-claims                 배송/클레임 분석
+/stats/promotions                      프로모션 분석
+/stats/customers                       고객 구매 분석
+/stats/products                        상품 등록 분석
+/stats/conversion                      거래 전환 분석
+/c2c/stats/products                    C2C 등록 상품 수
+/c2c/stats/conversion                  C2C 거래 성사율
+/c2c/stats/sellers                     C2C 판매자 활동
+/c2c/stats/buyers                      C2C 구매자 활동
+/c2c/stats/reports                     C2C 신고율
+/c2c/stats/disputes                    C2C 분쟁률
+/c2c/stats/cancels                     C2C 거래 취소율
+/c2c/stats/proceeds                    C2C 판매대금 통계
+/admin                                 관리자 목록
+/admin/roles                           역할 및 권한 관리
+/admin/history                         관리자 이력
+/system/service                        서비스 설정
+/system/codes                          공통 코드
+/system/integration                    외부 연동
+/system/jobs                           작업 관리
+/logs/system                           시스템 로그
+/logs/security                         보안 로그
+================================================================================

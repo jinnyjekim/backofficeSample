@@ -112,8 +112,7 @@ export function OrderApprovalPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.scrollArea}>
-        <div className={styles.headTop}>
+      <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
               <div className={styles.title}>주문 승인</div>
@@ -178,33 +177,40 @@ export function OrderApprovalPage() {
           </div>
         </div>
 
-        <div className={styles.gridWrap}>
-          <DataGrid
-            columns={GRID_COLUMNS}
-            rows={rows}
-            gridTemplate={GRID_TEMPLATE}
-            minWidth="1050px"
-            showPagination
-            pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
-            empty={rows.length === 0}
-            emptyText="현재 처리해야 할 주문 승인 요청이 없습니다"
-          />
+      <div className={styles.splitRow}>
+        <div className={styles.splitListCol}>
+          <div className={styles.gridWrap}>
+            <DataGrid
+              columns={GRID_COLUMNS}
+              rows={rows}
+              gridTemplate={GRID_TEMPLATE}
+              minWidth="1050px"
+              showPagination
+              pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
+              empty={rows.length === 0}
+              emptyText="현재 처리해야 할 주문 승인 요청이 없습니다"
+            />
+          </div>
         </div>
 
-        {selected && (
-          <OrderApprovalDetailDrawer
-            approval={selected}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            onClose={() => setSelectedId(null)}
-            showApprovePanel={showApprovePanel}
-            showRejectPanel={showRejectPanel}
-            onToggleApprove={() => { setShowApprovePanel((v) => !v); setShowRejectPanel(false); }}
-            onToggleReject={() => { setShowRejectPanel((v) => !v); setShowApprovePanel(false); }}
-            onApprove={approve}
-            onReject={reject}
-          />
-        )}
+        <div className={styles.splitDetailCol}>
+          {selected ? (
+            <OrderApprovalDetailDrawer
+              approval={selected}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              onClose={() => setSelectedId(null)}
+              showApprovePanel={showApprovePanel}
+              showRejectPanel={showRejectPanel}
+              onToggleApprove={() => { setShowApprovePanel((v) => !v); setShowRejectPanel(false); }}
+              onToggleReject={() => { setShowRejectPanel((v) => !v); setShowApprovePanel(false); }}
+              onApprove={approve}
+              onReject={reject}
+            />
+          ) : (
+            <div className={styles.splitEmpty}>왼쪽 목록에서 건을 선택하면<br />승인 검토 상세가 여기에 표시됩니다.</div>
+          )}
+        </div>
       </div>
     </div>
   );

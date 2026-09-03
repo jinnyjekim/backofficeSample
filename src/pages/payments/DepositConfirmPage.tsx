@@ -188,20 +188,30 @@ export function DepositConfirmPage() {
         </div>
       </header>
 
-      <div className={styles.tableWrap}>
-        <DataGrid
-          columns={GRID_COLUMNS}
-          rows={rows}
-          gridTemplate={GRID_TEMPLATE}
-          minWidth={GRID_MIN_WIDTH}
-          showPagination
-          pages={pages}
-          empty={rows.length === 0}
-          emptyText="현재 확인 대기 중인 입금이 없습니다."
-        />
-      </div>
+      <div className={styles.splitRow}>
+        <div className={styles.splitListCol}>
+          <div className={styles.tableWrap}>
+            <DataGrid
+              columns={GRID_COLUMNS}
+              rows={rows}
+              gridTemplate={GRID_TEMPLATE}
+              minWidth={GRID_MIN_WIDTH}
+              showPagination
+              pages={pages}
+              empty={rows.length === 0}
+              emptyText="현재 확인 대기 중인 입금이 없습니다."
+            />
+          </div>
+        </div>
 
-      {detail && <DepositDetailDrawer detail={detail} onTabChange={setActiveTab} />}
+        <div className={styles.splitDetailCol}>
+          {detail ? (
+            <DepositDetailDrawer detail={detail} onTabChange={setActiveTab} />
+          ) : (
+            <div className={styles.splitEmpty}>왼쪽 목록에서 입금 건을 선택하면<br />확인 상세가 여기에 표시됩니다.</div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

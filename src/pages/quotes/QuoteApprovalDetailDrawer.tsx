@@ -1,7 +1,5 @@
-import { useRef } from 'react';
 import styles from './quoteShared.module.css';
 import type { ApprovalDetail } from './quoteApprovalDetail';
-import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   detail: ApprovalDetail;
@@ -9,11 +7,8 @@ interface Props {
 }
 
 export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
-  const asideRef = useRef<HTMLElement>(null);
-  useOutsideClose(asideRef, d.close);
-
   return (
-    <aside ref={asideRef} className={styles.aside}>
+    <div className={styles.panelRoot}>
       <div className={styles.asideTop}>
         <div className={styles.headRowD}>
           <div className={styles.headMain}>
@@ -247,6 +242,6 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
           </div>
         )}
       </div>
-    </aside>
+    </div>
   );
 }

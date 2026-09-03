@@ -457,7 +457,6 @@ export function TagsPage() {
           </nav>
 
           <div className={filterStyles.stepLabel}>
-            <span className={filterStyles.stepNum}>1</span>
             <span className={filterStyles.stepTitle}>조건 설정</span>
             <span className={filterStyles.stepHint}>태그명과 연결 상태로 빠르게 찾아보세요.</span>
             {chips.length > 0 && <span className={filterStyles.appliedCount}>{chips.length}개 조건 적용</span>}
@@ -545,7 +544,6 @@ export function TagsPage() {
           </div>
 
           <div className={`${filterStyles.stepLabel} ${filterStyles.resultStep}`}>
-            <span className={filterStyles.stepNum}>2</span>
             <span className={filterStyles.stepTitle}>조회 결과</span>
             <span className={filterStyles.stepHint}>행을 클릭하면 태그 정보와 연결 현황을 수정할 수 있습니다.</span>
           </div>

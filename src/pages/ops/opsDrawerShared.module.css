@@ -163,6 +163,15 @@
   padding: 16px 20px 28px;
 }
 
+/* ---- D-type persistent split pane: detail panel root (replaces .aside overlay) ---- */
+.panelRoot {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .sectionTitle {
   font-size: 11.5px;
   color: #71717a;

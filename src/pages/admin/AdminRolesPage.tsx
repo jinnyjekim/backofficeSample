@@ -51,6 +51,7 @@ export function AdminRolesPage() {
   const navigate = useNavigate();
   const [roles, setRoles] = useState<Role[]>(ROLES_LIST);
   const [selId, setSelId] = useState(ROLES_LIST[0].id);
+  const [tab, setTab] = useState<'basic' | 'perm' | 'history'>('basic');
   const [q, setQ] = useState('');
   const [menuId, setMenuId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -99,6 +100,7 @@ export function AdminRolesPage() {
     setDraft(null);
     setMenuId(null);
     setErr('');
+    setTab('basic');
   }
 
   function groupState(groupId: string, perms: Record<string, MenuPermission>): 'all' | 'none' | 'partial' {
@@ -240,6 +242,7 @@ export function AdminRolesPage() {
     setSelId(id);
     setDraft(null);
     setMenuId(null);
+    setTab('basic');
     toastBriefly('역할을 복제했습니다.');
   }
 
@@ -250,6 +253,7 @@ export function AdminRolesPage() {
         setDraft(null);
         setPendingNav(null);
         setErr('');
+        setTab('basic');
       }
       setDialog(null);
       return;
@@ -306,6 +310,7 @@ export function AdminRolesPage() {
     setDraft(null);
     setCreateModal(null);
     setErr('');
+    setTab('basic');
     toastBriefly('역할을 추가했습니다.');
   }
 
@@ -440,94 +445,134 @@ export function AdminRolesPage() {
                 <div className={styles.panelHeadSub}>{cur.code}</div>
               </div>
 
+              <div className={styles.panelTabs}>
+                <div className={sh.quickFilters} style={{ marginBottom: 0 }}>
+                  {([['basic', '기본 정보'], ['perm', '권한 설정'], ['history', '변경 이력']] as const).map(([key, label]) => (
+                    <button key={key} type="button" className={`${sh.qfBtn} ${tab === key ? sh.active : ''}`} onClick={() => setTab(key)}>
+                      <span className={sh.qfLabel}>{label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className={styles.panelBody}>
-                <div className={sh.formField}>
-                  <span className={sh.formFieldLabel}>역할명 <span className={sh.required}>*</span></span>
-                  <input className={sh.formInput} value={effectiveDraft.name} disabled={cur.isSystem} onChange={(e) => setD({ name: e.target.value })} />
-                </div>
+                {cur.isSystem && (
+                  <div className={sh.warnBox}>
+                    <div className={sh.warnBoxTitle}>🔒 시스템 역할</div>
+                    <div className={sh.warnBoxBody}>이 역할은 시스템 기본 역할로 이름, 설명, 권한을 수정할 수 없습니다.</div>
+                  </div>
+                )}
 
-                <div className={sh.formField}>
-                  <span className={sh.formFieldLabel}>설명</span>
-                  <textarea className={sh.formTextarea} value={effectiveDraft.description} disabled={cur.isSystem} onChange={(e) => setD({ description: e.target.value })} placeholder="이 역할이 담당하는 업무를 간단히 설명하세요." />
-                </div>
-
-                <div className={sh.formField}>
-                  <span className={sh.formFieldLabel}>사용 여부</span>
-                  <div className={sh.useToggleRow}>
-                    <button type="button" className={sh.useToggleBtn} style={{ border: `1px solid ${effectiveDraft.active ? ACCENT : 'rgba(0,0,0,.12)'}`, background: effectiveDraft.active ? ACCENT : '#fff', color: effectiveDraft.active ? '#fff' : '#52525b' }} disabled={cur.isSystem} onClick={() => setD({ active: true })}>사용</button>
-                    <button type="button" className={sh.useToggleBtn} style={{ border: `1px solid ${!effectiveDraft.active ? '#18181b' : 'rgba(0,0,0,.12)'}`, background: !effectiveDraft.active ? '#18181b' : '#fff', color: !effectiveDraft.active ? '#fff' : '#52525b' }} disabled={cur.isSystem} onClick={() => { if (!cur.isSystem) askDeactivate(cur); }}>미사용</button>
+                <div className={sh.metaRow} style={{ flexShrink: 0 }}>
+                  <div className={sh.metaCell}>
+                    <div className={sh.metaCellLabel}>사용 여부</div>
+                    <div className={sh.metaCellValue}>{effectiveDraft.active ? '사용' : '미사용'}</div>
+                  </div>
+                  <div className={sh.metaCell}>
+                    <div className={sh.metaCellLabel}>배정 관리자</div>
+                    <div className={sh.metaCellValue}>{assignedCount(cur.id, ADMINS)}명</div>
+                  </div>
+                  <div className={sh.metaCell}>
+                    <div className={sh.metaCellLabel}>접근 가능 메뉴</div>
+                    <div className={sh.metaCellValue}>{Object.values(effectiveDraft.permissions).filter((p) => p.access).length} / {MENU_TREE.reduce((n, g) => n + g.children.length, 0)}개</div>
                   </div>
                 </div>
 
-                <div className={sh.linkedCard}>
-                  <div className={sh.linkedCardLabel}>배정 관리자</div>
-                  <span className={sh.linkedCardValue}>{assignedCount(cur.id, ADMINS)}명</span>
-                  <button type="button" className={sh.selBtn} onClick={() => navigate(`/admin?role=${cur.id}`)}>관리자 목록 보기</button>
-                </div>
+                {tab === 'basic' && (
+                  <>
+                    <div className={sh.formField}>
+                      <span className={sh.formFieldLabel}>역할명 <span className={sh.required}>*</span></span>
+                      <input className={sh.formInput} value={effectiveDraft.name} disabled={cur.isSystem} onChange={(e) => setD({ name: e.target.value })} />
+                    </div>
 
-                <div>
-                  <div className={styles.permHeadRow}>
-                    <span className={styles.permHeadTitle}>권한 설정</span>
-                    {cur.isSystem ? (
-                      <span className={styles.sysBadge}>모든 권한 🔒</span>
-                    ) : (
-                      <>
-                        <button type="button" className={styles.permMiniBtn} onClick={() => selectAllGlobal(true)}>전체 선택</button>
-                        <button type="button" className={styles.permMiniBtn} onClick={() => selectAllGlobal(false)}>전체 해제</button>
-                      </>
-                    )}
-                  </div>
+                    <div className={sh.formField}>
+                      <span className={sh.formFieldLabel}>설명</span>
+                      <textarea className={sh.formTextarea} value={effectiveDraft.description} disabled={cur.isSystem} onChange={(e) => setD({ description: e.target.value })} placeholder="이 역할이 담당하는 업무를 간단히 설명하세요." />
+                    </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 10 }}>
-                    {MENU_TREE.map((g) => {
-                      const gs = groupState(g.id, effectiveDraft.permissions);
-                      return (
-                        <div key={g.id} className={styles.permGroup}>
-                          <div className={styles.permGroupHead}>
-                            <label className={`${styles.permCheck} ${cur.isSystem ? styles.permCheckDisabled : ''}`}>
-                              <input type="checkbox" checked={gs === 'all'} ref={(el) => { if (el) el.indeterminate = gs === 'partial'; }} disabled={cur.isSystem} onChange={() => toggleGroup(g.id)} />
-                            </label>
-                            <span className={styles.permGroupLabel}>{g.label}</span>
-                            {!cur.isSystem && <button type="button" className={styles.permMiniBtn} onClick={() => groupSelectAll(g.id)}>모두 선택</button>}
-                          </div>
-                          {g.children.map((c) => {
-                            const p = effectiveDraft.permissions[c.id];
-                            return (
-                              <div key={c.id} className={styles.permLeafRow}>
-                                <label className={`${styles.permCheck} ${cur.isSystem ? styles.permCheckDisabled : ''}`}>
-                                  <input type="checkbox" checked={p.access} disabled={cur.isSystem} onChange={() => toggleLeafAccess(c.id)} />
-                                  메뉴 접근
-                                </label>
-                                <span className={styles.permLeafLabel}>{c.label}</span>
-                                {PERM_KEYS.map((key) => (
-                                  <label key={key} className={`${styles.permCheck} ${!p.access || cur.isSystem ? styles.permCheckDisabled : ''}`}>
-                                    <input type="checkbox" checked={p[key]} disabled={!p.access || cur.isSystem} onChange={() => togglePerm(c.id, key)} />
-                                    {PERM_LABELS[key]}
+                    <div className={sh.formField}>
+                      <span className={sh.formFieldLabel}>사용 여부</span>
+                      <div className={sh.useToggleRow}>
+                        <button type="button" className={sh.useToggleBtn} style={{ border: `1px solid ${effectiveDraft.active ? ACCENT : 'rgba(0,0,0,.12)'}`, background: effectiveDraft.active ? ACCENT : '#fff', color: effectiveDraft.active ? '#fff' : '#52525b' }} disabled={cur.isSystem} onClick={() => setD({ active: true })}>사용</button>
+                        <button type="button" className={sh.useToggleBtn} style={{ border: `1px solid ${!effectiveDraft.active ? '#18181b' : 'rgba(0,0,0,.12)'}`, background: !effectiveDraft.active ? '#18181b' : '#fff', color: !effectiveDraft.active ? '#fff' : '#52525b' }} disabled={cur.isSystem} onClick={() => { if (!cur.isSystem) askDeactivate(cur); }}>미사용</button>
+                      </div>
+                    </div>
+
+                    <div className={sh.linkedCard}>
+                      <div className={sh.linkedCardLabel}>배정 관리자</div>
+                      <span className={sh.linkedCardValue}>{assignedCount(cur.id, ADMINS)}명</span>
+                      <button type="button" className={sh.selBtn} onClick={() => navigate(`/admin?role=${cur.id}`)}>관리자 목록 보기</button>
+                    </div>
+                  </>
+                )}
+
+                {tab === 'perm' && (
+                  <div>
+                    <div className={styles.permHeadRow}>
+                      <span className={styles.permHeadTitle}>권한 설정</span>
+                      {cur.isSystem ? (
+                        <span className={styles.sysBadge}>모든 권한 🔒</span>
+                      ) : (
+                        <>
+                          <button type="button" className={styles.permMiniBtn} onClick={() => selectAllGlobal(true)}>전체 선택</button>
+                          <button type="button" className={styles.permMiniBtn} onClick={() => selectAllGlobal(false)}>전체 해제</button>
+                        </>
+                      )}
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 10 }}>
+                      {MENU_TREE.map((g) => {
+                        const gs = groupState(g.id, effectiveDraft.permissions);
+                        return (
+                          <div key={g.id} className={styles.permGroup}>
+                            <div className={styles.permGroupHead}>
+                              <label className={`${styles.permCheck} ${cur.isSystem ? styles.permCheckDisabled : ''}`}>
+                                <input type="checkbox" checked={gs === 'all'} ref={(el) => { if (el) el.indeterminate = gs === 'partial'; }} disabled={cur.isSystem} onChange={() => toggleGroup(g.id)} />
+                              </label>
+                              <span className={styles.permGroupLabel}>{g.label}</span>
+                              {!cur.isSystem && <button type="button" className={styles.permMiniBtn} onClick={() => groupSelectAll(g.id)}>모두 선택</button>}
+                            </div>
+                            {g.children.map((c) => {
+                              const p = effectiveDraft.permissions[c.id];
+                              return (
+                                <div key={c.id} className={styles.permLeafRow}>
+                                  <label className={`${styles.permCheck} ${cur.isSystem ? styles.permCheckDisabled : ''}`}>
+                                    <input type="checkbox" checked={p.access} disabled={cur.isSystem} onChange={() => toggleLeafAccess(c.id)} />
+                                    메뉴 접근
                                   </label>
-                                ))}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      );
-                    })}
+                                  <span className={styles.permLeafLabel}>{c.label}</span>
+                                  {PERM_KEYS.map((key) => (
+                                    <label key={key} className={`${styles.permCheck} ${!p.access || cur.isSystem ? styles.permCheckDisabled : ''}`}>
+                                      <input type="checkbox" checked={p[key]} disabled={!p.access || cur.isSystem} onChange={() => togglePerm(c.id, key)} />
+                                      {PERM_LABELS[key]}
+                                    </label>
+                                  ))}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {tab === 'history' && (
+                  <div>
+                    <div className={sh.formFieldLabel} style={{ marginBottom: 8 }}>최근 변경</div>
+                    <div className={styles.historyList}>
+                      {cur.history.slice().reverse().map((h) => (
+                        <div key={h.id} className={styles.historyItem}>
+                          <span className={styles.historyWhen}>{h.at}</span>
+                          <span className={styles.historyBy}>{h.by}</span>
+                          <div className={styles.historyAction}>{h.action}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {err && <div className={sh.errBox}>{err}</div>}
-
-                <div>
-                  <div className={sh.formFieldLabel} style={{ marginBottom: 8 }}>최근 변경</div>
-                  <div className={styles.historyList}>
-                    {cur.history.slice().reverse().slice(0, 5).map((h) => (
-                      <div key={h.id} className={styles.historyItem}>
-                        <span className={styles.historyWhen}>{h.at}</span>
-                        <span className={styles.historyBy}>{h.by}</span>
-                        <div className={styles.historyAction}>{h.action}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
 
               <div className={styles.panelFooter}>

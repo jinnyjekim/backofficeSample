@@ -270,18 +270,24 @@ export function TradeHoldManagementPage() {
         <div className={shared.filterRow2}><label className="globalFilterField"><span>보류 범위</span><select aria-label="보류 범위" className={shared.selectSm} value={scope} onChange={(event) => setScope(event.target.value)}><option value="">전체 보류 범위</option><option>거래 진행</option><option>판매대금 지급</option></select></label><span>보류일</span><DatePicker className={shared.selectSm} defaultValue="2026-08-20" /><span>~</span><DatePicker className={shared.selectSm} defaultValue="2026-08-27" /><span className={shared.rowSpacer} /><button type="button" className={shared.resetBtn} onClick={reset}>초기화</button></div>
       </FilterBox>
     </ControlArea>
-    <GridArea>
-      <ResultBar count={filtered.length} unit="건"><button type="button" className={shared.downloadBtn} onClick={() => downloadCsv('c2c-trade-holds.csv', ['보류번호', '거래번호', '대상', '금액', '범위', '상태', '해제기한'], filtered.map((item) => [item.id, item.tradeId, item.accountName, item.amount, item.scopes.join(' + '), item.status, item.releaseDueAt]))}>다운로드</button></ResultBar>
-      <DataGrid columns={[{ label: '보류번호 / 보류일' }, { label: '거래 / 위험 건' }, { label: '대상 계정' }, { label: '보류 사유' }, { label: '금액', align: 'right' }, { label: '보류 범위' }, { label: '상태' }, { label: '해제 기한 / 담당자' }]} rows={rows} gridTemplate="136px 132px 176px minmax(220px,1.4fr) 95px 144px 100px 125px" minWidth="1130px" empty={!filtered.length} emptyText="조건에 맞는 거래 보류 건이 없습니다." emptySubtext="상태나 보류 범위 필터를 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={pages} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
-    </GridArea>
-    {selected && <DetailDrawer eyebrow={`거래 보류 · ${selected.id}`} title={selected.reason} status={selected.status} statusMeta={HOLD_STATUS_META[selected.status]} subtitle={`${selected.tradeId} · ${selected.heldAt}`} onClose={() => setSelectedId(null)} actions={<>
-      {selected.status === '보류중' && <button type="button" className={drawer.primaryBtn} onClick={() => patchSelected('해제 승인 대기', '보류 해제 요청', '위험 검토 완료에 따른 해제 승인 요청')}>해제 요청</button>}
-      {selected.status === '해제 승인 대기' && <button type="button" className={drawer.primaryBtn} onClick={() => patchSelected('해제', '보류 해제 승인', '승인 완료 · 거래 및 지급 재개')}>해제 승인</button>}
-      {selected.status === '보류중' && <button type="button" className={drawer.actionLink} onClick={() => patchSelected('보류중', '보류 연장', '추가 소명 확인을 위해 해제 기한 연장')}>보류 연장</button>}
-    </>} stats={[{ label: '보류 금액', value: formatWon(selected.amount) }, { label: '보류 범위', value: `${selected.scopes.length}개` }, { label: '해제 기한', value: selected.releaseDueAt.slice(0, 10) }]} fields={[{ label: '거래번호', value: selected.tradeId }, { label: '위험 건', value: selected.riskCaseId }, { label: '대상 계정', value: `${selected.accountName} (${selected.accountId})` }, { label: '구매자', value: selected.buyer }, { label: '담당자', value: selected.handler }, { label: '해제 승인자', value: selected.approvalBy }]}>
-      <div className={drawer.sectionTitleLoose}>보류 사유</div><div className={styles.holdSummary}>{selected.reason}</div>
-      <div className={drawer.sectionTitleLoose}>보류 범위</div><div className={styles.scopeList}>{selected.scopes.map((item) => <span key={item} className={styles.scopeChip}>{item}</span>)}</div>
-      <div className={drawer.sectionTitleLoose}>처리 이력</div><div className={base.timeline}>{selected.history.map((item, index) => <div className={base.timelineItem} key={`${item.at}-${index}`}><strong>{item.action}</strong><p>{item.detail} · {item.actor}</p><time>{item.at}</time></div>)}</div>
-    </DetailDrawer>}
+    <div className={shared.splitRow}>
+      <div className={shared.splitListCol}>
+        <GridArea>
+          <ResultBar count={filtered.length} unit="건"><button type="button" className={shared.downloadBtn} onClick={() => downloadCsv('c2c-trade-holds.csv', ['보류번호', '거래번호', '대상', '금액', '범위', '상태', '해제기한'], filtered.map((item) => [item.id, item.tradeId, item.accountName, item.amount, item.scopes.join(' + '), item.status, item.releaseDueAt]))}>다운로드</button></ResultBar>
+          <DataGrid columns={[{ label: '보류번호 / 보류일' }, { label: '거래 / 위험 건' }, { label: '대상 계정' }, { label: '보류 사유' }, { label: '금액', align: 'right' }, { label: '보류 범위' }, { label: '상태' }, { label: '해제 기한 / 담당자' }]} rows={rows} gridTemplate="136px 132px 176px minmax(220px,1.4fr) 95px 144px 100px 125px" minWidth="1130px" empty={!filtered.length} emptyText="조건에 맞는 거래 보류 건이 없습니다." emptySubtext="상태나 보류 범위 필터를 변경해 주세요." emptyActionLabel="필터 초기화" emptyActionClick={reset} showPagination pages={pages} rangeLabel={filtered.length ? `1–${filtered.length} / ${filtered.length}` : '0건'} />
+        </GridArea>
+      </div>
+      <div className={shared.splitDetailCol}>
+        {selected ? <DetailDrawer variant="panel" eyebrow={`거래 보류 · ${selected.id}`} title={selected.reason} status={selected.status} statusMeta={HOLD_STATUS_META[selected.status]} subtitle={`${selected.tradeId} · ${selected.heldAt}`} onClose={() => setSelectedId(null)} actions={<>
+          {selected.status === '보류중' && <button type="button" className={drawer.primaryBtn} onClick={() => patchSelected('해제 승인 대기', '보류 해제 요청', '위험 검토 완료에 따른 해제 승인 요청')}>해제 요청</button>}
+          {selected.status === '해제 승인 대기' && <button type="button" className={drawer.primaryBtn} onClick={() => patchSelected('해제', '보류 해제 승인', '승인 완료 · 거래 및 지급 재개')}>해제 승인</button>}
+          {selected.status === '보류중' && <button type="button" className={drawer.actionLink} onClick={() => patchSelected('보류중', '보류 연장', '추가 소명 확인을 위해 해제 기한 연장')}>보류 연장</button>}
+        </>} stats={[{ label: '보류 금액', value: formatWon(selected.amount) }, { label: '보류 범위', value: `${selected.scopes.length}개` }, { label: '해제 기한', value: selected.releaseDueAt.slice(0, 10) }]} fields={[{ label: '거래번호', value: selected.tradeId }, { label: '위험 건', value: selected.riskCaseId }, { label: '대상 계정', value: `${selected.accountName} (${selected.accountId})` }, { label: '구매자', value: selected.buyer }, { label: '담당자', value: selected.handler }, { label: '해제 승인자', value: selected.approvalBy }]}>
+          <div className={drawer.sectionTitleLoose}>보류 사유</div><div className={styles.holdSummary}>{selected.reason}</div>
+          <div className={drawer.sectionTitleLoose}>보류 범위</div><div className={styles.scopeList}>{selected.scopes.map((item) => <span key={item} className={styles.scopeChip}>{item}</span>)}</div>
+          <div className={drawer.sectionTitleLoose}>처리 이력</div><div className={base.timeline}>{selected.history.map((item, index) => <div className={base.timelineItem} key={`${item.at}-${index}`}><strong>{item.action}</strong><p>{item.detail} · {item.actor}</p><time>{item.at}</time></div>)}</div>
+        </DetailDrawer> : <div className={shared.splitEmpty}>왼쪽 목록에서 보류 건을 선택하면<br/>처리 상세가 여기에 표시됩니다.</div>}
+      </div>
+    </div>
   </div>;
 }

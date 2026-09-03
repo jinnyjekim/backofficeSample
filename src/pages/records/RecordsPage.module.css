@@ -139,18 +139,6 @@
 .stepLabel.step2 {
   margin: 18px 2px 9px;
 }
-.stepNum {
-  width: 17px;
-  height: 17px;
-  border-radius: 5px;
-  background: #e4e4e7;
-  color: #52525b;
-  font-size: 10.5px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .stepTitle {
   font-size: 12.5px;
   font-weight: 700;
