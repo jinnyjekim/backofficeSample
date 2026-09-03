@@ -113,6 +113,20 @@ import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
 import { InTransitPage } from './pages/delivery/InTransitPage';
 import { DeliveryCompletePage } from './pages/delivery/DeliveryCompletePage';
+import { DeliveryFailedPage } from './pages/delivery/DeliveryFailedPage';
+import { DeliveryHoldPage } from './pages/delivery/DeliveryHoldPage';
+import { DeliveryInvoicesPage } from './pages/delivery/DeliveryInvoicesPage';
+import { DeliveryCarriersPage } from './pages/delivery/DeliveryCarriersPage';
+import { DeliveryTrackingPage } from './pages/delivery/DeliveryTrackingPage';
+import { DeliveryHistoryPage } from './pages/delivery/DeliveryHistoryPage';
+import {
+  CancelProcessingPage,
+  CancelHistoryPage,
+  ReturnProcessingPage,
+  ReturnHistoryPage,
+  ExchangeProcessingPage,
+  ExchangeHistoryPage,
+} from './pages/b2c/operations/CommerceOperationsPages';
 import { SellerListPage } from './pages/c2c/sales/SellerListPage';
 import { SalesStatusPage } from './pages/c2c/sales/SalesStatusPage';
 import { SellerProductsPage as UserProductListPage } from './pages/c2c/sales/SellerProductsPage';
@@ -147,7 +161,55 @@ export default function App() {
         <Route path="b2c/product-inquiries/detail" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="b2c/product-inquiries/history" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="b2c/product-inquiries/:id" element={<Navigate to="/cs/product-inquiries" replace />} />
-        <Route path="b2c/*" element={<BusinessModulePage />} />
+        {/* B2C 배송 관리 */}
+        <Route path="b2c/delivery/prep" element={<Navigate to="/delivery/prep" replace />} />
+        <Route path="b2c/delivery/outbound-waiting" element={<Navigate to="/delivery/outbound-waiting" replace />} />
+        <Route path="b2c/delivery/outbound-complete" element={<Navigate to="/delivery/outbound-complete" replace />} />
+        <Route path="b2c/delivery/in-transit" element={<Navigate to="/delivery/in-transit" replace />} />
+        <Route path="b2c/delivery/complete" element={<Navigate to="/delivery/complete" replace />} />
+        <Route path="b2c/delivery/failed" element={<DeliveryFailedPage />} />
+        <Route path="b2c/delivery/hold" element={<DeliveryHoldPage />} />
+        <Route path="b2c/delivery/invoices" element={<DeliveryInvoicesPage />} />
+        <Route path="b2c/delivery/carriers" element={<DeliveryCarriersPage />} />
+        <Route path="b2c/delivery/tracking" element={<DeliveryTrackingPage />} />
+        <Route path="b2c/delivery/history" element={<DeliveryHistoryPage />} />
+
+        {/* B2C 취소 관리 */}
+        <Route path="b2c/cancel/requests" element={<CancelProcessingPage />} />
+        <Route path="b2c/cancel/approval" element={<CancelProcessingPage />} />
+        <Route path="b2c/cancel/rejected" element={<CancelProcessingPage />} />
+        <Route path="b2c/cancel/partial" element={<CancelProcessingPage />} />
+        <Route path="b2c/cancel/completed" element={<CancelProcessingPage />} />
+        <Route path="b2c/cancel/history" element={<CancelHistoryPage />} />
+
+        {/* B2C 반품 관리 */}
+        <Route path="b2c/returns/requests" element={<ReturnProcessingPage />} />
+        <Route path="b2c/returns/approval" element={<ReturnProcessingPage />} />
+        <Route path="b2c/returns/collecting" element={<ReturnProcessingPage />} />
+        <Route path="b2c/returns/collected" element={<ReturnProcessingPage />} />
+        <Route path="b2c/returns/inspection" element={<ReturnProcessingPage />} />
+        <Route path="b2c/returns/completed" element={<ReturnProcessingPage />} />
+        <Route path="b2c/returns/rejected" element={<ReturnProcessingPage />} />
+        <Route path="b2c/returns/history" element={<ReturnHistoryPage />} />
+
+        {/* B2C 교환 관리 */}
+        <Route path="b2c/exchanges/requests" element={<ExchangeProcessingPage />} />
+        <Route path="b2c/exchanges/approval" element={<ExchangeProcessingPage />} />
+        <Route path="b2c/exchanges/collecting" element={<ExchangeProcessingPage />} />
+        <Route path="b2c/exchanges/collected" element={<ExchangeProcessingPage />} />
+        <Route path="b2c/exchanges/preparing" element={<ExchangeProcessingPage />} />
+        <Route path="b2c/exchanges/reship" element={<ExchangeProcessingPage />} />
+        <Route path="b2c/exchanges/completed" element={<ExchangeProcessingPage />} />
+        <Route path="b2c/exchanges/rejected" element={<ExchangeProcessingPage />} />
+        <Route path="b2c/exchanges/history" element={<ExchangeHistoryPage />} />
+
+        {/* B2C 프로모션/쿠폰/포인트/브랜드/리뷰/재고 서브메뉴 연결 */}
+        <Route path="b2c/promotions/*" element={<Navigate to="/promotions" replace />} />
+        <Route path="b2c/coupons/*" element={<Navigate to="/coupons" replace />} />
+        <Route path="b2c/points/*" element={<Navigate to="/points" replace />} />
+        <Route path="b2c/brands/*" element={<Navigate to="/brands" replace />} />
+        <Route path="b2c/reviews/*" element={<Navigate to="/reviews" replace />} />
+        <Route path="b2c/inventory/*" element={<Navigate to="/inventory/status" replace />} />
         <Route path="c2c/sales/sellers" element={<SellerListPage />} />
         <Route path="c2c/sales/status" element={<SalesStatusPage />} />
         <Route path="c2c/sales/products" element={<Navigate to="/c2c/products/list" replace />} />
@@ -369,6 +431,12 @@ export default function App() {
         <Route path="delivery/outbound-complete" element={<OutboundCompletePage />} />
         <Route path="delivery/in-transit" element={<InTransitPage />} />
         <Route path="delivery/complete" element={<DeliveryCompletePage />} />
+        <Route path="delivery/failed" element={<DeliveryFailedPage />} />
+        <Route path="delivery/hold" element={<DeliveryHoldPage />} />
+        <Route path="delivery/invoices" element={<DeliveryInvoicesPage />} />
+        <Route path="delivery/carriers" element={<DeliveryCarriersPage />} />
+        <Route path="delivery/tracking" element={<DeliveryTrackingPage />} />
+        <Route path="delivery/history" element={<DeliveryHistoryPage />} />
 
         <Route path="promotions" element={<PromotionsListPage />} />
         <Route path="promotions/history" element={<PromotionApplicationsPage />} />
