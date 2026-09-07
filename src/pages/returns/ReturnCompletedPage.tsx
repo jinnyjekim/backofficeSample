@@ -7,7 +7,7 @@ import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton
 import { DatePicker } from '../../components/forms/DatePicker';
 import { INITIAL_RETURNS, STAGE_META, type ReturnItem } from './returnsData';
 
-const GRID_TEMPLATE = '140px 140px 90px minmax(200px, 1fr) 90px 90px 90px 120px 60px';
+const GRID_TEMPLATE = '140px 140px 90px minmax(200px, 1fr) 90px 90px 90px 120px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '반품번호' },
   { label: '주문번호' },
@@ -17,7 +17,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '차감배송비', align: 'right' },
   { label: '환불완료금액', align: 'right' },
   { label: '완료일시' },
-  { label: '관리' },
 ];
 
 export function ReturnCompletedPage() {
@@ -53,7 +52,6 @@ export function ReturnCompletedPage() {
         { kind: 'text', text: item.deductFee > 0 ? `-${item.deductFee.toLocaleString()}원` : '0원', align: 'right', size: '12px', color: '#b45309', numeric: true },
         { kind: 'text', text: `${item.refundAmount.toLocaleString()}원`, align: 'right', size: '12px', numeric: true, weight: 700, color: '#059669' },
         { kind: 'text', text: item.completedAt ?? '-', color: '#18181b', size: '11.5px', numeric: true, weight: 500 },
-        { kind: 'link', text: '상세', size: '12px' },
       ],
     };
   });
@@ -121,7 +119,7 @@ export function ReturnCompletedPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1050px"
+          minWidth="990px"
           showPagination
           pages={[{ label: '1', active: true }]}
           empty={rows.length === 0}

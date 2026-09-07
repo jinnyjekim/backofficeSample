@@ -35,7 +35,6 @@ const COLUMNS = [
   { label: '담당팀' },
   { label: 'Source' },
   { label: '결과' },
-  { label: '상세', align: 'right' as const },
 ];
 
 export function CsHistoryPage() {
@@ -52,7 +51,6 @@ export function CsHistoryPage() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [selected, setSelected] = useState<string[]>([]);
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [selectedLogId, setSelectedLogId] = useState<string | null>(null);
   const [downloadOpen, setDownloadOpen] = useState(false);
 
@@ -115,25 +113,12 @@ export function CsHistoryPage() {
         { kind: 'text', text: log.team ?? '-', size: '12px', color: log.team ? '#52525b' : '#a1a1aa' },
         { kind: 'text', text: log.source, size: '11.5px', color: '#8b8b93' },
         { kind: 'statusDot', text: log.result, dot: rc.dot, fg: rc.fg },
-        {
-          kind: 'rowMenu',
-          align: 'right',
-          detailLabel: '상세',
-          onDetail: () => setSelectedLogId(log.id),
-          open: openMenu === log.id,
-          onToggle: () => setOpenMenu(openMenu === log.id ? null : log.id),
-          items: [
-            { label: '상세 보기', click: () => setSelectedLogId(log.id) },
-            ...(log.relatedInquiryId ? [{ label: '관련 문의 보기', click: () => window.location.assign('/cs/inquiries') }] : []),
-            ...(log.relatedConsultationId ? [{ label: '관련 상담 보기', click: () => window.location.assign('/cs/consultations') }] : []),
-          ],
-        },
       ],
     };
   });
 
   return (
-    <div className={shared.page} onClick={() => openMenu && setOpenMenu(null)}>
+    <div className={shared.page}>
       <header className={shared.header}>
         <div className={shared.headerTop}>
           <div>
@@ -231,8 +216,8 @@ export function CsHistoryPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="88px 110px 132px 1fr 80px 68px 96px 72px 84px"
-          minWidth="1150px"
+          gridTemplate="96px 122px 140px minmax(280px,1fr) 88px 76px 104px 80px"
+          minWidth="1060px"
           selectable
           allSelected={filtered.length > 0 && filtered.every((log) => selected.includes(log.id))}
           onToggleAll={() => setSelected(filtered.every((log) => selected.includes(log.id)) ? [] : filtered.map((log) => log.id))}

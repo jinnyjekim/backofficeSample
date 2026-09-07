@@ -8,7 +8,7 @@ import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton
 import { showToast } from '../../components/common';
 import { INITIAL_RETURNS, STAGE_META, type ReturnItem } from './returnsData';
 
-const GRID_TEMPLATE = '140px 140px 90px 100px minmax(200px, 1fr) 120px 100px 60px';
+const GRID_TEMPLATE = '140px 140px 90px 100px minmax(200px, 1fr) 120px 100px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '반품번호' },
   { label: '주문번호' },
@@ -17,7 +17,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '반품상품' },
   { label: '입고완료일시' },
   { label: '상태' },
-  { label: '관리' },
 ];
 
 export function ReturnCollectedPage() {
@@ -71,7 +70,6 @@ export function ReturnCollectedPage() {
         { kind: 'text', text: item.product, color: '#18181b', size: '12px' },
         { kind: 'text', text: item.collectedAt ?? '-', color: '#18181b', size: '11.5px', numeric: true },
         { kind: 'badge', text: '입고 완료', bg: '#ecfeff', fg: '#0e7490' },
-        { kind: 'link', text: '검수', size: '12px' },
       ],
     };
   });
@@ -129,7 +127,7 @@ export function ReturnCollectedPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="980px"
+          minWidth="920px"
           showPagination
           pages={[{ label: '1', active: true }]}
           empty={rows.length === 0}

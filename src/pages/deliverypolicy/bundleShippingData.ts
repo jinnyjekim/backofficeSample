@@ -83,7 +83,7 @@ export const INITIAL_BASE_SETTINGS: BaseBundleSettings = {
   requireSameMethod: true,
   noGroupHandling: '상품별 배송비 각각 계산',
   updatedAt: '2026-07-01',
-  updatedBy: 'admin01',
+  updatedBy: '운영 관리자',
 };
 
 export const REGIONAL_FEE_UNIT: RegionalFeeUnit = '배송 그룹당 1회';

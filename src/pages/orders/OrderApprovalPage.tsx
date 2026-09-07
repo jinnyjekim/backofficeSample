@@ -14,10 +14,10 @@ import {
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { CommonButton, SplitPaneLayout } from '../../components/common';
 
-const GRID_TEMPLATE = '70px 72px 1fr 100px 1fr 52px 64px 64px 52px 60px';
+const GRID_TEMPLATE = '70px 72px 1fr 100px 1fr 52px 64px 64px 52px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '주문번호' }, { label: '발주번호' }, { label: '거래처' }, { label: '주문금액', align: 'right' },
-  { label: '승인 필요 사유' }, { label: '승인단계' }, { label: '요청자' }, { label: '승인자' }, { label: '상태' }, { label: '관리' },
+  { label: '승인 필요 사유' }, { label: '승인단계' }, { label: '요청자' }, { label: '승인자' }, { label: '상태' },
 ];
 const PAGE_LABELS = ['1', '2'];
 
@@ -105,7 +105,6 @@ export function OrderApprovalPage() {
         { kind: 'text', text: a.requester, color: '#52525b', size: '12px', weight: 500 },
         { kind: 'text', text: a.approver, color: '#52525b', size: '12px', weight: 500 },
         { kind: 'badge', text: a.status, bg: sm.bg, fg: sm.fg },
-        { kind: 'link', text: '검토', size: '12px' },
       ],
     };
   });
@@ -184,7 +183,7 @@ export function OrderApprovalPage() {
               columns={GRID_COLUMNS}
               rows={rows}
               gridTemplate={GRID_TEMPLATE}
-              minWidth="1050px"
+              minWidth="990px"
               showPagination
               pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
               empty={rows.length === 0}

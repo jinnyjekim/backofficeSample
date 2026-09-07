@@ -9,7 +9,7 @@ import { showToast, SplitPaneLayout } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import { CANCEL_STAGE_META, INITIAL_CANCELS, type CancelItem } from './cancelData';
 
-const GRID_TEMPLATE = '140px 140px 90px 130px minmax(200px, 1fr) 90px 110px 120px 60px';
+const GRID_TEMPLATE = '140px 140px 90px 130px minmax(200px, 1fr) 90px 110px 120px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '취소번호' },
   { label: '주문번호' },
@@ -19,7 +19,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '환불예정액', align: 'right' },
   { label: '승인담당' },
   { label: '승인일시' },
-  { label: '관리' },
 ];
 
 export function CancelApprovalPage() {
@@ -75,7 +74,6 @@ export function CancelApprovalPage() {
         { kind: 'text', text: `${item.cancelAmount.toLocaleString()}원`, align: 'right', size: '12px', numeric: true, weight: 600, color: '#059669' },
         { kind: 'text', text: item.assignee, color: '#52525b', size: '12px' },
         { kind: 'text', text: item.approvedAt ?? '-', color: '#71717a', size: '11.5px', numeric: true },
-        { kind: 'link', text: '환불', size: '12px' },
       ],
     };
   });
@@ -145,7 +143,7 @@ export function CancelApprovalPage() {
               columns={GRID_COLUMNS}
               rows={rows}
               gridTemplate={GRID_TEMPLATE}
-              minWidth="1050px"
+              minWidth="990px"
               showPagination
               pages={[{ label: '1', active: true }]}
               empty={rows.length === 0}

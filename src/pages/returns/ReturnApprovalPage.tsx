@@ -9,7 +9,7 @@ import { showToast, SplitPaneLayout } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import { INITIAL_RETURNS, STAGE_META, type ReturnItem } from './returnsData';
 
-const GRID_TEMPLATE = '140px 140px 90px 100px minmax(200px, 1fr) 110px 120px 60px';
+const GRID_TEMPLATE = '140px 140px 90px 100px minmax(200px, 1fr) 110px 120px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '반품번호' },
   { label: '주문번호' },
@@ -18,7 +18,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '반품상품' },
   { label: '승인담당자' },
   { label: '승인일시' },
-  { label: '관리' },
 ];
 
 export function ReturnApprovalPage() {
@@ -74,7 +73,6 @@ export function ReturnApprovalPage() {
         { kind: 'text', text: item.product, color: '#18181b', size: '12px' },
         { kind: 'text', text: item.assignee, color: '#52525b', size: '12px' },
         { kind: 'text', text: item.approvedAt ?? '-', color: '#71717a', size: '11.5px', numeric: true },
-        { kind: 'link', text: '지시', size: '12px' },
       ],
     };
   });
@@ -162,7 +160,7 @@ export function ReturnApprovalPage() {
               columns={GRID_COLUMNS}
               rows={rows}
               gridTemplate={GRID_TEMPLATE}
-              minWidth="1020px"
+              minWidth="960px"
               showPagination
               pages={[{ label: '1', active: true }]}
               empty={rows.length === 0}

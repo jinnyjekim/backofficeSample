@@ -7,7 +7,7 @@ import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton
 import { DatePicker } from '../../components/forms/DatePicker';
 import { CANCEL_STAGE_META, INITIAL_CANCELS, type CancelItem } from './cancelData';
 
-const GRID_TEMPLATE = '140px 140px 90px minmax(200px, 1fr) 100px 90px 90px 100px 60px';
+const GRID_TEMPLATE = '140px 140px 90px minmax(200px, 1fr) 100px 90px 90px 100px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '취소번호' },
   { label: '주문번호' },
@@ -17,7 +17,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '쿠폰차감', align: 'right' },
   { label: '부분환불액', align: 'right' },
   { label: '진행상태' },
-  { label: '관리' },
 ];
 
 export function CancelPartialPage() {
@@ -54,7 +53,6 @@ export function CancelPartialPage() {
         { kind: 'text', text: item.deductCoupon ? `-${item.deductCoupon.toLocaleString()}원` : '0원', align: 'right', size: '12px', color: '#b45309', numeric: true },
         { kind: 'text', text: `${item.cancelAmount.toLocaleString()}원`, align: 'right', size: '12px', numeric: true, weight: 700, color: '#059669' },
         { kind: 'badge', text: item.stage, bg: sm.bg, fg: sm.fg },
-        { kind: 'link', text: '내역', size: '12px' },
       ],
     };
   });
@@ -122,7 +120,7 @@ export function CancelPartialPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1050px"
+          minWidth="990px"
           showPagination
           pages={[{ label: '1', active: true }]}
           empty={rows.length === 0}

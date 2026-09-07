@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import styles from '../ops/opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
@@ -16,6 +16,7 @@ import {
 } from './productInquiriesData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { CommonButton, showToast } from '../../components/common';
+import { ProductInquiryDetailDrawer } from './ProductInquiryDetailDrawer';
 
 const GRID_TEMPLATE = '64px 72px minmax(220px,2fr) 60px 76px 54px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -36,9 +37,8 @@ function matchesSearch(q: ProductInquiry, scope: SearchScope, keyword: string): 
 }
 
 export function ProductInquiriesListPage() {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [inquiries] = useState<ProductInquiry[]>(() => [...PRODUCT_INQUIRIES]);
+  const [inquiries, setInquiries] = useState<ProductInquiry[]>(() => [...PRODUCT_INQUIRIES]);
   const statusParam = searchParams.get('status');
   const quickFilter: QuickFilter = statusParam === 'waiting' ? '답변 대기' : statusParam === 'answered' ? '답변 완료' : '전체';
   const [scope, setScope] = useState<SearchScope>('전체');
@@ -49,6 +49,7 @@ export function ProductInquiriesListPage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [menuId, setMenuId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const toastBriefly = (message: string) => {
     showToast({ message, type: 'success' });
@@ -104,8 +105,10 @@ export function ProductInquiriesListPage() {
       { kind: 'badge', text: q.status, bg: sm.bg, fg: sm.fg },
       { kind: 'text', text: q.createdAt.slice(5, 10).replace('-', '.'), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
     ];
-    return { id: q.id, cells, onClick: () => navigate(`/cs/product-inquiries/${q.id}`) };
+    return { id: q.id, cells, onClick: () => setSelectedId(q.id) };
   });
+
+  const selectedInquiry = selectedId ? inquiries.find((inquiry) => inquiry.id === selectedId) ?? null : null;
 
   return (
     <div className={styles.page} onClick={() => menuId && setMenuId(null)}>
@@ -182,6 +185,7 @@ export function ProductInquiriesListPage() {
           emptyActionClick={resetFilters}
         />
       </div>
+      {selectedInquiry && <ProductInquiryDetailDrawer key={selectedInquiry.id} inquiry={selectedInquiry} onClose={() => setSelectedId(null)} onChange={() => setInquiries((current) => current.map((inquiry) => inquiry.id === selectedInquiry.id ? { ...selectedInquiry } : inquiry))} />}
     </div>
   );
 }

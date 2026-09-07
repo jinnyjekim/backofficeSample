@@ -9,7 +9,7 @@ import { CommonButton, showToast, SplitPaneLayout } from '../../components/commo
 import { DatePicker } from '../../components/forms/DatePicker';
 import { INITIAL_RETURNS, REASON_META, STAGE_META, type ReturnItem } from './returnsData';
 
-const GRID_TEMPLATE = '140px 140px 90px 110px minmax(200px, 1fr) 90px 90px 120px 60px';
+const GRID_TEMPLATE = '140px 140px 90px 110px minmax(200px, 1fr) 90px 90px 120px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '반품번호' },
   { label: '주문번호' },
@@ -19,7 +19,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '결제금액', align: 'right' },
   { label: '환불예정', align: 'right' },
   { label: '신청일시' },
-  { label: '관리' },
 ];
 
 const QUICK_FILTERS = ['전체', '단순 변심', '상품 불량', '오배송', '파손/오염', '사이즈/색상 불일치'] as const;
@@ -104,7 +103,6 @@ export function ReturnRequestsPage() {
         { kind: 'text', text: `${item.amount.toLocaleString()}원`, align: 'right', size: '12px', numeric: true },
         { kind: 'text', text: `${item.refundAmount.toLocaleString()}원`, align: 'right', size: '12px', numeric: true, weight: 600, color: '#059669' },
         { kind: 'text', text: item.requestedAt, color: '#71717a', size: '11.5px', numeric: true },
-        { kind: 'link', text: '심사', size: '12px' },
       ],
     };
   });
@@ -196,7 +194,7 @@ export function ReturnRequestsPage() {
               columns={GRID_COLUMNS}
               rows={rows}
               gridTemplate={GRID_TEMPLATE}
-              minWidth="1050px"
+              minWidth="990px"
               showPagination
               pages={[{ label: '1', active: true }]}
               empty={rows.length === 0}

@@ -91,6 +91,10 @@
 .row:hover {
   background: #fafafa;
 }
+.root.compact .row {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
 
 .checkbox {
   width: 14px;
@@ -425,10 +429,9 @@
   color: #18181b;
 }
 .rowMenuPopover {
-  position: absolute;
-  top: 30px;
-  right: 0;
-  z-index: 25;
+  position: fixed;
+  z-index: 1000;
+  box-sizing: border-box;
   width: 158px;
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -486,6 +489,7 @@
   align-items: center;
   padding: 0 14px;
   height: 42px;
+  border-top: 1px solid rgba(0, 0, 0, 0.045);
   background: #fbfbfc;
 }
 .pager.spaced {

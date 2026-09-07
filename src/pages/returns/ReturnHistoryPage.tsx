@@ -9,7 +9,7 @@ import { CommonButton } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import { INITIAL_RETURNS, STAGE_META, type ReturnItem } from './returnsData';
 
-const GRID_TEMPLATE = '140px 140px 90px minmax(180px, 1fr) 100px 110px 120px 60px';
+const GRID_TEMPLATE = '140px 140px 90px minmax(180px, 1fr) 100px 110px 120px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '반품번호' },
   { label: '주문번호' },
@@ -18,7 +18,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '진행단계' },
   { label: '담당자' },
   { label: '최근갱신' },
-  { label: '관리' },
 ];
 
 const QUICK_FILTERS = ['전체', '반품 요청', '반품 승인', '반품 회수', '회수 완료', '상품 확인', '반품 완료', '반품 반려'] as const;
@@ -57,7 +56,6 @@ export function ReturnHistoryPage() {
         { kind: 'badge', text: item.stage, bg: sm.bg, fg: sm.fg },
         { kind: 'text', text: item.assignee, color: '#52525b', size: '12px' },
         { kind: 'text', text: latestDate, color: '#71717a', size: '11.5px', numeric: true },
-        { kind: 'link', text: '이력', size: '12px' },
       ],
     };
   });
@@ -147,7 +145,7 @@ export function ReturnHistoryPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1050px"
+          minWidth="990px"
           showPagination
           pages={[{ label: '1', active: true }]}
           empty={rows.length === 0}

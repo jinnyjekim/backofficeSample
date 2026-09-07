@@ -289,6 +289,11 @@
   color: #8b8b93;
   font-variant-numeric: tabular-nums;
 }
+.tableCard > [data-datagrid] {
+  flex: 1;
+  border: 0;
+  border-radius: 0;
+}
 
 .tableScroll {
   flex: 1;

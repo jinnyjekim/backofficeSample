@@ -91,20 +91,34 @@ import { InventoryAdjustmentPage } from './pages/inventory/InventoryAdjustmentPa
 import { StockMovementHistoryPage } from './pages/inventory/StockMovementHistoryPage';
 import { PromotionsListPage } from './pages/promotions/PromotionsListPage';
 import { PromotionApplicationsPage } from './pages/promotions/PromotionApplicationsPage';
+import { PeriodPromotionsPage } from './pages/promotions/PeriodPromotionsPage';
+import { ProductPromotionsPage } from './pages/promotions/ProductPromotionsPage';
+import { CategoryPromotionsPage } from './pages/promotions/CategoryPromotionsPage';
+import { CartPromotionsPage } from './pages/promotions/CartPromotionsPage';
+import { MemberPromotionsPage } from './pages/promotions/MemberPromotionsPage';
+import { PromotionTargetsPage } from './pages/promotions/PromotionTargetsPage';
 import { CouponsListPage } from './pages/coupons/CouponsListPage';
 import { CouponIssuesPage } from './pages/coupons/CouponIssuesPage';
 import { CouponUsagePage } from './pages/coupons/CouponUsagePage';
 import { CouponPolicyPage } from './pages/coupons/CouponPolicyPage';
+import { CouponCreatePage } from './pages/coupons/CouponCreatePage';
+import { AutomaticCouponsPage } from './pages/coupons/AutomaticCouponsPage';
+import { ExpiredCouponsPage } from './pages/coupons/ExpiredCouponsPage';
 import { PointsBalancePage } from './pages/points/PointsBalancePage';
 import { PointLedgerPage } from './pages/points/PointLedgerPage';
 import { PointPolicyPage } from './pages/points/PointPolicyPage';
+import { PointGrantedPage } from './pages/points/PointGrantedPage';
+import { PointUsedPage } from './pages/points/PointUsedPage';
+import { PointDeductedPage } from './pages/points/PointDeductedPage';
+import { PointExpiredPage } from './pages/points/PointExpiredPage';
+import { PointExpiringPage } from './pages/points/PointExpiringPage';
+import { PointManualGrantPage } from './pages/points/PointManualGrantPage';
 import { BrandsListPage } from './pages/brands/BrandsListPage';
 import { ReviewsListPage } from './pages/reviews/ReviewsListPage';
 import { AdminsListPage } from './pages/admin/AdminsListPage';
 import { AdminRolesPage } from './pages/admin/AdminRolesPage';
 import { AdminHistoryPage } from './pages/admin/AdminHistoryPage';
 import { ProductInquiriesListPage } from './pages/cs/ProductInquiriesListPage';
-import { ProductInquiryDetailPage } from './pages/cs/ProductInquiryDetailPage';
 import { CartConversionPage } from './pages/cartconversion/CartConversionPage';
 import { SystemLogPage } from './pages/logs/SystemLogPage';
 import { SecurityLogPage } from './pages/logs/SecurityLogPage';
@@ -119,10 +133,15 @@ import { DeliveryInvoicesPage } from './pages/delivery/DeliveryInvoicesPage';
 import { DeliveryCarriersPage } from './pages/delivery/DeliveryCarriersPage';
 import { DeliveryTrackingPage } from './pages/delivery/DeliveryTrackingPage';
 import { DeliveryHistoryPage } from './pages/delivery/DeliveryHistoryPage';
-import {
-  ExchangeProcessingPage,
-  ExchangeHistoryPage,
-} from './pages/b2c/operations/CommerceOperationsPages';
+import { ExchangeRequestsPage } from './pages/exchanges/ExchangeRequestsPage';
+import { ExchangeApprovalPage } from './pages/exchanges/ExchangeApprovalPage';
+import { ExchangeCollectingPage } from './pages/exchanges/ExchangeCollectingPage';
+import { ExchangeCollectedPage } from './pages/exchanges/ExchangeCollectedPage';
+import { ExchangePreparingPage } from './pages/exchanges/ExchangePreparingPage';
+import { ExchangeReshipPage } from './pages/exchanges/ExchangeReshipPage';
+import { ExchangeCompletedPage } from './pages/exchanges/ExchangeCompletedPage';
+import { ExchangeRejectedPage } from './pages/exchanges/ExchangeRejectedPage';
+import { ExchangeHistoryPage } from './pages/exchanges/ExchangeHistoryPage';
 import { CancelRequestsPage } from './pages/cancel/CancelRequestsPage';
 import { CancelApprovalPage } from './pages/cancel/CancelApprovalPage';
 import { CancelRejectedPage } from './pages/cancel/CancelRejectedPage';
@@ -221,20 +240,36 @@ export default function App() {
         <Route path="b2c/returns/history" element={<ReturnHistoryPage />} />
 
         {/* B2C 교환 관리 */}
-        <Route path="b2c/exchanges/requests" element={<ExchangeProcessingPage />} />
-        <Route path="b2c/exchanges/approval" element={<ExchangeProcessingPage />} />
-        <Route path="b2c/exchanges/collecting" element={<ExchangeProcessingPage />} />
-        <Route path="b2c/exchanges/collected" element={<ExchangeProcessingPage />} />
-        <Route path="b2c/exchanges/preparing" element={<ExchangeProcessingPage />} />
-        <Route path="b2c/exchanges/reship" element={<ExchangeProcessingPage />} />
-        <Route path="b2c/exchanges/completed" element={<ExchangeProcessingPage />} />
-        <Route path="b2c/exchanges/rejected" element={<ExchangeProcessingPage />} />
+        <Route path="b2c/exchanges/requests" element={<ExchangeRequestsPage />} />
+        <Route path="b2c/exchanges/approval" element={<ExchangeApprovalPage />} />
+        <Route path="b2c/exchanges/collecting" element={<ExchangeCollectingPage />} />
+        <Route path="b2c/exchanges/collected" element={<ExchangeCollectedPage />} />
+        <Route path="b2c/exchanges/preparing" element={<ExchangePreparingPage />} />
+        <Route path="b2c/exchanges/reship" element={<ExchangeReshipPage />} />
+        <Route path="b2c/exchanges/completed" element={<ExchangeCompletedPage />} />
+        <Route path="b2c/exchanges/rejected" element={<ExchangeRejectedPage />} />
         <Route path="b2c/exchanges/history" element={<ExchangeHistoryPage />} />
 
         {/* B2C 프로모션/쿠폰/포인트/브랜드/리뷰/재고 서브메뉴 연결 */}
-        <Route path="b2c/promotions/*" element={<Navigate to="/promotions" replace />} />
-        <Route path="b2c/coupons/*" element={<Navigate to="/coupons" replace />} />
-        <Route path="b2c/points/*" element={<Navigate to="/points" replace />} />
+        <Route path="b2c/promotions/period" element={<PeriodPromotionsPage />} />
+        <Route path="b2c/promotions/product" element={<ProductPromotionsPage />} />
+        <Route path="b2c/promotions/category" element={<CategoryPromotionsPage />} />
+        <Route path="b2c/promotions/cart" element={<CartPromotionsPage />} />
+        <Route path="b2c/promotions/member" element={<MemberPromotionsPage />} />
+        <Route path="b2c/promotions/targets" element={<PromotionTargetsPage />} />
+        <Route path="b2c/promotions/history" element={<PromotionApplicationsPage />} />
+        <Route path="b2c/coupons/create" element={<CouponCreatePage />} />
+        <Route path="b2c/coupons/automatic" element={<AutomaticCouponsPage />} />
+        <Route path="b2c/coupons/expired" element={<ExpiredCouponsPage />} />
+        <Route path="b2c/coupons/issue" element={<CouponIssuesPage />} />
+        <Route path="b2c/coupons/usage" element={<CouponUsagePage />} />
+        <Route path="b2c/coupons/policy" element={<CouponPolicyPage />} />
+        <Route path="b2c/points/granted" element={<PointGrantedPage />} />
+        <Route path="b2c/points/used" element={<PointUsedPage />} />
+        <Route path="b2c/points/deducted" element={<PointDeductedPage />} />
+        <Route path="b2c/points/expired" element={<PointExpiredPage />} />
+        <Route path="b2c/points/expiring" element={<PointExpiringPage />} />
+        <Route path="b2c/points/manual" element={<PointManualGrantPage />} />
         <Route path="b2c/brands/*" element={<Navigate to="/brands" replace />} />
         <Route path="b2c/reviews/*" element={<Navigate to="/reviews" replace />} />
         <Route path="b2c/inventory/*" element={<Navigate to="/inventory/status" replace />} />
@@ -391,7 +426,7 @@ export default function App() {
 
         <Route path="cs/inquiries" element={<CsInquiriesPage />} />
         <Route path="cs/product-inquiries" element={<ProductInquiriesListPage />} />
-        <Route path="cs/product-inquiries/:id" element={<ProductInquiryDetailPage />} />
+        <Route path="cs/product-inquiries/:id" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="cs/inquiry-types" element={<InquiryTypesPage />} />
         <Route path="cs/consultations" element={<ConsultationsPage />} />
         <Route path="cs/templates" element={<ResponseTemplatesPage />} />

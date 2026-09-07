@@ -7,11 +7,13 @@
   overflow-y: auto;
 }
 
-.header {
+.header,
+.headTop {
   padding: 22px 24px 0;
   flex: none;
 }
-.headerTop {
+.headerTop,
+.headRow {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -87,7 +89,8 @@
   color: #4338ca;
 }
 
-.filterCard {
+.filterCard,
+.filterBox {
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
@@ -174,10 +177,12 @@
 .searchBtn:hover {
   background: #3f3f46;
 }
-.spacer {
+.spacer,
+.rowSpacer {
   flex: 1;
 }
-.clearBtn {
+.clearBtn,
+.resetBtn {
   height: 32px;
   padding: 0 10px;
   border: 0;
@@ -186,7 +191,8 @@
   font-size: 12px;
   cursor: pointer;
 }
-.clearBtn:hover {
+.clearBtn:hover,
+.resetBtn:hover {
   color: #52525b;
 }
 
@@ -216,7 +222,8 @@
   background: #fafafa;
 }
 
-.resultBar {
+.resultBar,
+.resultRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -235,7 +242,8 @@
   gap: 8px;
 }
 
-.tableWrap {
+.tableWrap,
+.gridWrap {
   margin: 0 24px 20px;
   flex: none;
 }

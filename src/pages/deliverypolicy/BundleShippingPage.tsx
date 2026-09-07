@@ -142,10 +142,22 @@ export function BundleShippingPage() {
   };
 
   const saveBaseSettings = () => {
-    setBaseSettings({ ...draftBase, updatedAt: TODAY, updatedBy: 'admin01' });
+    setBaseSettings({ ...draftBase, updatedAt: TODAY, updatedBy: '운영 관리자' });
     setEditingBase(false);
     toastBriefly('기본 묶음배송 설정을 저장했습니다.');
   };
+
+  const examples = useMemo(() => {
+    const pick = (id: string) => TEST_SCENARIOS.find((s) => s.id === id)!;
+    return ['BS-1', 'BS-3', 'BS-4'].map((id) => {
+      const s = pick(id);
+      const r = computeOrderShippingPreview(s, groups, baseSettings);
+      return `${s.label} → ${fmtWon(r.total)}`;
+    });
+  }, [groups, baseSettings]);
+
+  const warningEntries = useMemo(() => Object.entries(warnings).filter(([, msgs]) => msgs.length > 0), [warnings]);
+  const firstWarningGroup = warningEntries.length ? groups.find((g) => g.id === warningEntries[0][0]) : undefined;
 
   const calcSummary = (g: BundleGroup) => {
     if (g.calcMethod === '그룹당 고정 배송비') return `그룹당 ${fmtWon(g.groupFee)}`;
@@ -178,37 +190,27 @@ export function BundleShippingPage() {
       <header className={shared.header}>
         <div className={shared.headerTop}>
           <div>
+            <div className={styles.eyebrow}>배송 정책</div>
             <div className={shared.title}>묶음 배송</div>
             <div className={shared.subtitle}>여러 상품을 함께 주문했을 때 묶음배송과 배송비 계산 기준을 관리합니다.</div>
           </div>
-          <div className={styles.topActions}>
-            <button type="button" className={styles.testBtn} onClick={() => setShowTest(true)}>배송비 계산 테스트</button>
-            <button type="button" className={shared.createBtn} onClick={openCreate}>+ 그룹 등록</button>
+          <div className={styles.headMeta}>
+            <span className={styles.headMetaText}>최종 수정 {baseSettings.updatedAt} · {baseSettings.updatedBy}</span>
+            <button type="button" className={styles.outlineBtn} onClick={() => setShowTest(true)}>배송비 계산 테스트</button>
+            <button type="button" className={styles.darkBtn} onClick={openCreate}>+ 그룹 등록</button>
           </div>
-        </div>
-
-        <div className={shared.quickFilters}>
-          {QUICK_FILTERS.map((filter) => {
-            const active = quickFilter === filter;
-            return (
-              <CommonButton
-                key={filter}
-                variant={active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
-                onClick={() => setQuickFilter(filter)}
-              >
-                <span className={shared.qfLabel}>{filter}</span>
-                <span className={shared.qfCount}>{groups.filter((g) => matchesQuickFilter(g, filter, warnings)).length}</span>
-              </CommonButton>
-            );
-          })}
         </div>
       </header>
 
       <div className={styles.settingsCard}>
         <div className={styles.settingsHead}>
-          <span className={styles.settingsTitle}>기본 묶음배송 설정</span>
+          <div className={styles.settingsHeadLeft}>
+            <div className={styles.settingsTitleRow}>
+              <span className={styles.settingsTitle}>기본 묶음배송 설정</span>
+              {!editingBase && <span className={styles.appliedTag}>적용 중</span>}
+            </div>
+            {!editingBase && <span className={styles.settingsDesc}>배송 그룹 조건에 해당하지 않는 상품은 이 설정 기준으로 처리됩니다.</span>}
+          </div>
           {editingBase ? (
             <div style={{ display: 'flex', gap: 8 }}>
               <button type="button" className={styles.cancelButton} onClick={() => { setDraftBase(baseSettings); setEditingBase(false); }}>취소</button>
@@ -242,37 +244,85 @@ export function BundleShippingPage() {
             </label>
           </>
         ) : (
-          <div className={styles.settingsGrid}>
-            <div className={styles.settingsField}><span className={styles.settingsLabel}>묶음배송 사용</span><span className={styles.settingsValue}>{baseSettings.enabled ? '사용' : '사용 안 함'}</span></div>
-            <div className={styles.settingsField}><span className={styles.settingsLabel}>묶음배송 기본 조건</span><span className={styles.settingsValue}>{[baseSettings.requireSameWarehouse && '같은 출고지', baseSettings.requireSameMethod && '같은 배송 방식'].filter(Boolean).join(' · ') || '없음'}</span></div>
-            <div className={styles.settingsField}><span className={styles.settingsLabel}>배송 그룹이 없는 상품</span><span className={styles.settingsValue}>{baseSettings.noGroupHandling}</span></div>
-            <div className={styles.settingsField}><span className={styles.settingsLabel}>무료배송 상품 혼합 처리</span><span className={styles.settingsValue}>해당 상품만 무료</span></div>
-          </div>
+          <>
+            <div className={styles.kpiGrid}>
+              <div className={styles.kpiCard}>
+                <div className={styles.kpiLabel}>묶음배송 사용</div>
+                <strong className={styles.kpiText}>{baseSettings.enabled ? '사용' : '사용 안 함'}</strong>
+                <div className={styles.kpiSub}>{baseSettings.enabled ? '동일 조건의 상품을 하나의 배송비로 묶어 계산합니다' : '상품별로 배송비를 각각 계산합니다'}</div>
+              </div>
+              <div className={styles.kpiCard}>
+                <div className={styles.kpiLabel}>묶음배송 기본 조건</div>
+                <strong className={styles.kpiText}>{[baseSettings.requireSameWarehouse && '같은 출고지', baseSettings.requireSameMethod && '같은 배송 방식'].filter(Boolean).join(' · ') || '없음'}</strong>
+                <div className={styles.kpiSub}>이 조건을 만족하는 상품만 같은 그룹으로 묶입니다</div>
+              </div>
+              <div className={styles.kpiCard}>
+                <div className={styles.kpiLabel}>배송 그룹이 없는 상품</div>
+                <strong className={styles.kpiText}>{baseSettings.noGroupHandling}</strong>
+                <div className={styles.kpiSub}>연결된 배송 그룹이 없는 상품에 적용되는 기본 규칙입니다</div>
+              </div>
+              <div className={styles.kpiCard}>
+                <div className={styles.kpiLabel}>무료배송 상품 혼합 처리</div>
+                <strong className={styles.kpiText}>해당 상품만 무료</strong>
+                <div className={styles.kpiSub}>그룹 내 무료배송 대상 상품에만 개별 적용됩니다</div>
+              </div>
+            </div>
+            <div className={styles.exampleRow}>
+              <span className={styles.exampleLabel}>적용 예시</span>
+              {examples.map((ex) => <span key={ex} className={styles.exampleItem}>{ex}</span>)}
+            </div>
+          </>
         )}
       </div>
 
-      <div className={shared.filterBox} style={{ margin: '0 24px 16px' }}>
-        <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
-          <input className={shared.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="그룹명, 그룹코드 검색" />
-          <button type="submit" className={shared.searchBtn}>검색</button>
-        </form>
-        <div className={shared.filterRow2}>
-          <label className="globalFilterField"><span>출고지</span><select aria-label="출고지" className={shared.selectSm} value={warehouseFilter} onChange={(e) => setWarehouseFilter(e.target.value)}>
+      <div className={styles.filterHeadRow}>
+        <div className={shared.quickFilters} style={{ marginBottom: 0 }}>
+          {QUICK_FILTERS.map((filter) => {
+            const active = quickFilter === filter;
+            return (
+              <CommonButton
+                key={filter}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
+                onClick={() => setQuickFilter(filter)}
+              >
+                <span className={shared.qfLabel}>{filter}</span>
+                <span className={shared.qfCount}>{groups.filter((g) => matchesQuickFilter(g, filter, warnings)).length}</span>
+              </CommonButton>
+            );
+          })}
+        </div>
+        <form className={styles.filterInline} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
+          <select aria-label="출고지" className={shared.selectSm} value={warehouseFilter} onChange={(e) => setWarehouseFilter(e.target.value)}>
             <option value="">전체 출고지</option>
             {WAREHOUSES.map((w) => <option key={w}>{w}</option>)}
-          </select></label>
-          <label className="globalFilterField"><span>배송방식</span><select aria-label="배송방식" className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as BundleDeliveryMethod | '')}>
+          </select>
+          <select aria-label="배송방식" className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as BundleDeliveryMethod | '')}>
             <option value="">전체 배송방식</option>
             {DELIVERY_METHODS.map((m) => <option key={m}>{m}</option>)}
-          </select></label>
-          <span className={shared.rowSpacer} />
-          <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
-        </div>
+          </select>
+          <input className={shared.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="그룹명, 그룹코드 검색" />
+          <button type="submit" className={shared.searchBtn}>검색</button>
+          <button type="button" className={shared.resetBtn} onClick={reset}>초기화</button>
+        </form>
       </div>
+
+      {firstWarningGroup && (
+        <div className={styles.warnBanner}>
+          <span className={styles.warnIcon}>!</span>
+          <div className={styles.warnBody}>
+            <div className={styles.warnTitle}>확인이 필요한 그룹이 {warningEntries.length}건 있습니다</div>
+            <div className={styles.warnDesc}>{firstWarningGroup.name} · {warningEntries[0][1][0]}</div>
+          </div>
+          <button type="button" className={styles.warnBtn} onClick={() => { setQuickFilter('설정 확인'); openDetail(firstWarningGroup.id); }}>그룹 확인</button>
+        </div>
+      )}
 
       <div className={shared.gridWrap}>
         <div className={shared.resultRow}>
-          <span className={shared.resultLabel}>총 {filtered.length}개 그룹</span>
+          <span className={shared.resultLabel}>등록 그룹 총 {filtered.length}개</span>
+          <span className={styles.resultNote}>그룹 배송비는 연결된 상품에 우선 적용됩니다</span>
         </div>
         <DataGrid
           columns={[

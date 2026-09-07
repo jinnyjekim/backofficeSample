@@ -7,6 +7,7 @@ import styles from './JejuRemotePolicyPage.module.css';
 import { JejuRegionDrawer } from './JejuRegionDrawer';
 import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
+  BASE_SHIPPING_POLICY,
   INITIAL_BASE_POLICY,
   INITIAL_REGIONS,
   QUICK_FILTERS,
@@ -27,6 +28,11 @@ import {
 import { CommonButton, showToast } from '../../components/common';
 
 const TODAY = '2026-08-25';
+
+function shortRegionLabel(name: string): string {
+  const m = name.match(/\(([^)]+)\)/);
+  return m ? m[1] : name;
+}
 
 function history(item: SpecialRegion, action: string, before?: string, after?: string): SpecialRegion {
   return {
@@ -115,10 +121,23 @@ export function JejuRemotePolicyPage() {
   };
 
   const saveBasePolicy = () => {
-    setBasePolicy({ ...draftBase, updatedAt: TODAY, updatedBy: 'admin01' });
+    setBasePolicy({ ...draftBase, updatedAt: TODAY, updatedBy: '운영 관리자' });
     setEditingBase(false);
     toastBriefly('기본 정책을 저장했습니다.');
   };
+
+  const examples = useMemo(() => {
+    const list: string[] = [];
+    list.push(`제주 · ${fmtWon(BASE_SHIPPING_POLICY.baseFee)} 주문 → ${fmtWon(BASE_SHIPPING_POLICY.baseFee + basePolicy.jejuExtraFee)}`);
+    const remoteFee = basePolicy.freeShippingTreatment === '지역 추가비까지 모두 무료' ? 0 : basePolicy.remoteExtraFee;
+    list.push(`도서산간 · 무료배송 주문 → ${fmtWon(remoteFee)}`);
+    const blocked = regions.find((r) => r.deliverable === '불가');
+    if (blocked) list.push(`${shortRegionLabel(blocked.name)} → 배송 불가`);
+    return list;
+  }, [basePolicy, regions]);
+
+  const warningEntries = useMemo(() => Object.entries(warnings).filter(([, msgs]) => msgs.length > 0), [warnings]);
+  const firstWarningRegion = warningEntries.length ? regions.find((r) => r.id === warningEntries[0][0]) : undefined;
 
   const rows: GridRow[] = filtered.map((r) => {
     const issues = warnings[r.id] ?? [];
@@ -147,37 +166,27 @@ export function JejuRemotePolicyPage() {
       <header className={shared.header}>
         <div className={shared.headerTop}>
           <div>
+            <div className={styles.eyebrow}>배송 정책</div>
             <div className={shared.title}>제주 / 도서산간 정책</div>
             <div className={shared.subtitle}>특수 배송지역의 배송 가능 여부와 추가 배송비 기준을 관리합니다.</div>
           </div>
-          <div className={styles.topActions}>
-            <button type="button" className={styles.testBtn} onClick={() => setShowTest(true)}>배송비 계산 테스트</button>
-            <button type="button" className={shared.createBtn} onClick={openCreate}>+ 지역 등록</button>
+          <div className={styles.headMeta}>
+            <span className={styles.headMetaText}>최종 수정 {basePolicy.updatedAt} · {basePolicy.updatedBy}</span>
+            <button type="button" className={styles.outlineBtn} onClick={() => setShowTest(true)}>배송비 계산 테스트</button>
+            <button type="button" className={styles.darkBtn} onClick={openCreate}>+ 지역 등록</button>
           </div>
-        </div>
-
-        <div className={shared.quickFilters}>
-          {QUICK_FILTERS.map((filter) => {
-            const active = quickFilter === filter;
-            return (
-              <CommonButton
-                key={filter}
-                variant={active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
-                onClick={() => setQuickFilter(filter)}
-              >
-                <span className={shared.qfLabel}>{filter}</span>
-                <span className={shared.qfCount}>{regions.filter((r) => matchesQuickFilter(r, filter, warnings)).length}</span>
-              </CommonButton>
-            );
-          })}
         </div>
       </header>
 
       <div className={styles.settingsCard}>
         <div className={styles.settingsHead}>
-          <span className={styles.settingsTitle}>기본 정책</span>
+          <div className={styles.settingsHeadLeft}>
+            <div className={styles.settingsTitleRow}>
+              <span className={styles.settingsTitle}>기본 정책</span>
+              {!editingBase && <span className={styles.appliedTag}>적용 중</span>}
+            </div>
+            {!editingBase && <span className={styles.settingsDesc}>개별 지역에 예외가 설정되지 않은 경우 이 값이 적용됩니다.</span>}
+          </div>
           {editingBase ? (
             <div style={{ display: 'flex', gap: 8 }}>
               <button type="button" className={styles.cancelButton} onClick={() => { setDraftBase(basePolicy); setEditingBase(false); }}>취소</button>
@@ -227,29 +236,77 @@ export function JejuRemotePolicyPage() {
             </label>
           </>
         ) : (
-          <div className={styles.settingsGrid}>
-            <div className={styles.settingsField}><span className={styles.settingsLabel}>제주</span><span className={styles.settingsValue}>배송 {basePolicy.jejuDeliverable} · +{fmtWon(basePolicy.jejuExtraFee)}</span></div>
-            <div className={styles.settingsField}><span className={styles.settingsLabel}>도서산간</span><span className={styles.settingsValue}>배송 {basePolicy.remoteDeliverable} · +{fmtWon(basePolicy.remoteExtraFee)}</span></div>
-            <div className={styles.settingsField}><span className={styles.settingsLabel}>무료배송 주문</span><span className={styles.settingsValue}>{basePolicy.freeShippingTreatment}</span></div>
-            <div className={styles.settingsField}><span className={styles.settingsLabel}>묶음배송</span><span className={styles.settingsValue}>{basePolicy.bundleFeeUnit}</span></div>
-          </div>
+          <>
+            <div className={styles.kpiGrid}>
+              <div className={styles.kpiCard}>
+                <div className={styles.kpiLabel}>제주</div>
+                <strong>{basePolicy.jejuDeliverable === '가능' ? `+${fmtWon(basePolicy.jejuExtraFee)}` : '배송 불가'}</strong>
+                <div className={styles.kpiSub}>{basePolicy.jejuDeliverable === '가능' ? '전 지역 배송 가능' : '전 지역 배송 불가'}</div>
+              </div>
+              <div className={styles.kpiCard}>
+                <div className={styles.kpiLabel}>도서산간</div>
+                <strong>{basePolicy.remoteDeliverable === '불가' ? '배송 불가' : `+${fmtWon(basePolicy.remoteExtraFee)}`}</strong>
+                <div className={styles.kpiSub}>{basePolicy.remoteDeliverable}</div>
+              </div>
+              <div className={styles.kpiCard}>
+                <div className={styles.kpiLabel}>무료배송 주문</div>
+                <strong className={styles.kpiText}>{basePolicy.freeShippingTreatment}</strong>
+                <div className={styles.kpiSub}>추가 배송비는 무료배송 조건과 무관하게 별도 부과</div>
+              </div>
+              <div className={styles.kpiCard}>
+                <div className={styles.kpiLabel}>묶음배송</div>
+                <strong className={styles.kpiText}>{basePolicy.bundleFeeUnit}</strong>
+                <div className={styles.kpiSub}>같은 그룹으로 묶인 주문은 추가비를 중복 부과하지 않음</div>
+              </div>
+            </div>
+            <div className={styles.exampleRow}>
+              <span className={styles.exampleLabel}>적용 예시</span>
+              {examples.map((ex) => <span key={ex} className={styles.exampleItem}>{ex}</span>)}
+            </div>
+          </>
         )}
       </div>
 
-      <div className={shared.filterBox} style={{ margin: '0 24px 16px' }}>
-        <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
+      <div className={styles.filterHeadRow}>
+        <div className={shared.quickFilters} style={{ marginBottom: 0 }}>
+          {QUICK_FILTERS.map((filter) => {
+            const active = quickFilter === filter;
+            return (
+              <CommonButton
+                key={filter}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
+                onClick={() => setQuickFilter(filter)}
+              >
+                <span className={shared.qfLabel}>{filter}</span>
+                <span className={shared.qfCount}>{regions.filter((r) => matchesQuickFilter(r, filter, warnings)).length}</span>
+              </CommonButton>
+            );
+          })}
+        </div>
+        <form className={styles.searchInline} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
           <input className={shared.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="지역명, 우편번호 검색" />
           <button type="submit" className={shared.searchBtn}>검색</button>
+          <button type="button" className={shared.resetBtn} onClick={reset}>초기화</button>
         </form>
-        <div className={shared.filterRow2}>
-          <span className={shared.rowSpacer} />
-          <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
-        </div>
       </div>
+
+      {firstWarningRegion && (
+        <div className={styles.warnBanner}>
+          <span className={styles.warnIcon}>!</span>
+          <div className={styles.warnBody}>
+            <div className={styles.warnTitle}>확인이 필요한 지역이 {warningEntries.length}건 있습니다</div>
+            <div className={styles.warnDesc}>{firstWarningRegion.name} · {warningEntries[0][1][0]}</div>
+          </div>
+          <button type="button" className={styles.warnBtn} onClick={() => { setQuickFilter('확인 필요'); openDetail(firstWarningRegion.id); }}>지역 확인</button>
+        </div>
+      )}
 
       <div className={shared.gridWrap}>
         <div className={shared.resultRow}>
-          <span className={shared.resultLabel}>총 {filtered.length}개 지역</span>
+          <span className={shared.resultLabel}>등록 지역 총 {filtered.length}개</span>
+          <span className={styles.resultNote}>추가비는 기본 배송비에 합산되어 부과됩니다</span>
         </div>
         <DataGrid
           columns={[

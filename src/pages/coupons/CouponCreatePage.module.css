@@ -1,0 +1,11 @@
+.form { display: flex; flex-direction: column; gap: 14px; }
+.section { padding: 18px; border: 1px solid var(--common-border); border-radius: 12px; background: var(--common-surface); }
+.sectionTitle { margin-bottom: 14px; color: var(--common-text); font-size: 14px; font-weight: 700; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.field { display: flex; min-width: 0; flex-direction: column; gap: 6px; color: var(--common-text-muted); font-size: 11px; font-weight: 600; }
+.field input, .field select, .field textarea { width: 100%; min-width: 0; min-height: 36px; padding: 0 11px; border: 1px solid var(--common-border); border-radius: 8px; background: var(--common-surface); color: var(--common-text); font: inherit; font-weight: 400; }
+.field textarea { min-height: 82px; padding-block: 10px; resize: vertical; }
+.wide { grid-column: 1 / -1; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }

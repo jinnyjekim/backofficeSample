@@ -17,8 +17,9 @@ import {
 } from "../../c2c/sales/SalesActivityShared";
 import styles from "./CommerceOperations.module.css";
 import { CommonButton, SplitPaneLayout } from "../../../components/common";
+import { ExcelDownloadButton } from "../../../components/common/ExcelDownloadButton";
 
-type ClaimKind = "cancel" | "return" | "exchange";
+type ClaimKind = "cancel" | "return";
 
 interface ClaimRecord {
   id: string;
@@ -50,20 +51,6 @@ const CLAIM_CONFIG: Record<
     stages: ["접수", "승인", "회수중", "상품검수", "환불대기", "완료", "반려"],
     subtitle:
       "반품 승인부터 회수·상품 검수·환불 연계까지 전체 흐름을 관리합니다.",
-  },
-  exchange: {
-    label: "교환",
-    stages: [
-      "접수",
-      "승인",
-      "회수중",
-      "교환상품준비",
-      "재출고",
-      "완료",
-      "반려",
-    ],
-    subtitle:
-      "교환 승인, 회수, 대체 상품 준비와 재출고를 하나의 흐름으로 관리합니다.",
   },
 };
 
@@ -179,62 +166,6 @@ const CLAIMS: ClaimRecord[] = [
     amount: 54000,
     assignee: "정하늘",
     channel: "고객 신청",
-  },
-  {
-    id: "EXC-260827-0061",
-    kind: "exchange",
-    orderId: "ORD-20260824-5480",
-    member: "배수정",
-    product: "데님 팬츠 M",
-    reason: "L 사이즈로 교환",
-    stage: "교환상품준비",
-    requestedAt: "2026-08-27 12:01",
-    updatedAt: "2026-08-27 14:18",
-    amount: 79000,
-    assignee: "문서현",
-    channel: "고객 신청",
-  },
-  {
-    id: "EXC-260827-0058",
-    kind: "exchange",
-    orderId: "ORD-20260823-5274",
-    member: "서지우",
-    product: "스테인리스 텀블러",
-    reason: "색상 오배송",
-    stage: "재출고",
-    requestedAt: "2026-08-27 10:35",
-    updatedAt: "2026-08-27 13:58",
-    amount: 32000,
-    assignee: "문서현",
-    channel: "CS 접수",
-  },
-  {
-    id: "EXC-260826-0049",
-    kind: "exchange",
-    orderId: "ORD-20260821-4615",
-    member: "오세훈",
-    product: "USB-C 허브",
-    reason: "포트 인식 불량",
-    stage: "회수중",
-    requestedAt: "2026-08-26 14:22",
-    updatedAt: "2026-08-27 09:12",
-    amount: 61000,
-    assignee: "김민호",
-    channel: "고객 신청",
-  },
-  {
-    id: "EXC-260825-0038",
-    kind: "exchange",
-    orderId: "ORD-20260819-4021",
-    member: "임도현",
-    product: "기계식 키보드",
-    reason: "재고 소진",
-    stage: "반려",
-    requestedAt: "2026-08-25 11:02",
-    updatedAt: "2026-08-25 15:44",
-    amount: 138000,
-    assignee: "김민호",
-    channel: "CS 접수",
   },
 ];
 
@@ -478,15 +409,13 @@ function ClaimPage({
         const listNode = (
           <GridArea>
             <ResultBar count={filtered.length} unit="건">
-              <button
+              <ExcelDownloadButton
                 type="button"
-                className={shared.downloadBtn}
+                data-grid-download
                 onClick={() =>
                   notify(`${filtered.length}건의 목록을 다운로드합니다.`)
                 }
-              >
-                목록 다운로드
-              </button>
+              />
             </ResultBar>
             <DataGrid
               columns={[
@@ -613,9 +542,6 @@ export const CancelProcessingPage = () => <ClaimPage kind="cancel" />;
 export const CancelHistoryPage = () => <ClaimPage kind="cancel" history />;
 export const ReturnProcessingPage = () => <ClaimPage kind="return" />;
 export const ReturnHistoryPage = () => <ClaimPage kind="return" history />;
-export const ExchangeProcessingPage = () => <ClaimPage kind="exchange" splitLayout />;
-export const ExchangeHistoryPage = () => <ClaimPage kind="exchange" history />;
-
 interface DeliveryRecord {
   id: string;
   orderId: string;
@@ -860,13 +786,11 @@ function DeliveryTablePage({
       </ControlArea>
       <GridArea>
         <ResultBar count={filtered.length} unit="건">
-          <button
+          <ExcelDownloadButton
             type="button"
-            className={shared.downloadBtn}
+            data-grid-download
             onClick={() => notify(`${filtered.length}건을 다운로드합니다.`)}
-          >
-            목록 다운로드
-          </button>
+          />
         </ResultBar>
         <DataGrid
           columns={[

@@ -8,7 +8,7 @@ import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton
 import { CommonButton, showToast, SplitPaneLayout } from '../../components/common';
 import { INITIAL_RETURNS, type ReturnItem } from './returnsData';
 
-const GRID_TEMPLATE = '140px 140px 90px minmax(200px, 1fr) 110px 110px 120px 60px';
+const GRID_TEMPLATE = '140px 140px 90px minmax(200px, 1fr) 110px 110px 120px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '반품번호' },
   { label: '주문번호' },
@@ -17,7 +17,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '검수결과' },
   { label: '검수담당' },
   { label: '검수일시' },
-  { label: '관리' },
 ];
 
 const INSPECTION_META: Record<string, { bg: string; fg: string }> = {
@@ -105,7 +104,6 @@ export function ReturnInspectionPage() {
         { kind: 'badge', text: item.inspectionResult ?? '검수중', bg: im.bg, fg: im.fg },
         { kind: 'text', text: item.assignee, color: '#52525b', size: '12px' },
         { kind: 'text', text: item.inspectedAt ?? '-', color: '#71717a', size: '11.5px', numeric: true },
-        { kind: 'link', text: '판정', size: '12px' },
       ],
     };
   });
@@ -187,7 +185,7 @@ export function ReturnInspectionPage() {
               columns={GRID_COLUMNS}
               rows={rows}
               gridTemplate={GRID_TEMPLATE}
-              minWidth="1020px"
+              minWidth="960px"
               showPagination
               pages={[{ label: '1', active: true }]}
               empty={rows.length === 0}

@@ -9,7 +9,7 @@ import { CommonButton } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import { CANCEL_STAGE_META, INITIAL_CANCELS, type CancelItem } from './cancelData';
 
-const GRID_TEMPLATE = '140px 140px 90px minmax(180px, 1fr) 100px 110px 120px 60px';
+const GRID_TEMPLATE = '140px 140px 90px minmax(180px, 1fr) 100px 110px 120px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '취소번호' },
   { label: '주문번호' },
@@ -18,7 +18,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '진행상태' },
   { label: '담당자' },
   { label: '최근갱신' },
-  { label: '관리' },
 ];
 
 const QUICK_FILTERS = ['전체', '취소 요청', '취소 승인', '취소 반려', '취소 완료'] as const;
@@ -57,7 +56,6 @@ export function CancelHistoryPage() {
         { kind: 'badge', text: item.stage, bg: sm.bg, fg: sm.fg },
         { kind: 'text', text: item.assignee, color: '#52525b', size: '12px' },
         { kind: 'text', text: latestDate, color: '#71717a', size: '11.5px', numeric: true },
-        { kind: 'link', text: '이력', size: '12px' },
       ],
     };
   });
@@ -147,7 +145,7 @@ export function CancelHistoryPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1050px"
+          minWidth="990px"
           showPagination
           pages={[{ label: '1', active: true }]}
           empty={rows.length === 0}

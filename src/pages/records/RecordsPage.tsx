@@ -9,6 +9,8 @@ import { SANCTION_LEVEL, type SanctionMode } from './sanctionOptions';
 import { formatNumber } from '../../lib/theme';
 import { SearchField } from '../../components/SearchField';
 import { CommonButton } from '../../components/common';
+import { DataGrid } from '../../components/DataGrid';
+import type { GridRow } from '../../components/DataGrid/types';
 
 const PAGE_LABELS = ['‹', '1', '2', '3', '4', '5', '›'];
 const BUSINESS_MODES: MemberBusinessType[] = ['B2C', 'C2C', 'B2B'];
@@ -259,64 +261,25 @@ export function RecordsPage({ kind }: Props) {
             <span className={styles.tableHeadResult}>{rec.resultLabel}</span>
           </div>
 
-          <div className={styles.tableScroll}>
-            <div className={styles.colHead} style={{ minWidth: rec.minWidth, gridTemplateColumns: rec.grid }}>
-              {rec.cols.map((c) => (
-                <span key={c.label} style={{ textAlign: c.align }}>{c.label}</span>
-              ))}
-            </div>
-            <div>
-              {rec.rows.map((r) => (
-                <div
-                  key={r.raw.id}
-                  className={styles.row}
-                  style={{
-                    minWidth: rec.minWidth,
-                    gridTemplateColumns: rec.grid,
-                    background: openId === r.raw.id ? '#f8fafc' : 'transparent',
-                  }}
-                  onClick={() => setOpenId(openId === r.raw.id ? null : r.raw.id)}
-                >
-                  {r.cells.map((c, i) => (
-                    <div className={styles.cellWrap} style={{ textAlign: c.align }} key={i}>
-                      <span
-                        className={styles.cellText}
-                        style={{
-                          background: c.pill?.bg,
-                          color: c.pill?.fg ?? c.color,
-                          padding: c.pill ? '2px 8px' : 0,
-                          fontSize: c.pill ? '11px' : c.size,
-                          fontWeight: c.pill ? 600 : c.weight,
-                        }}
-                      >
-                        {c.text}
-                      </span>
-                      {c.sub && <span className={styles.cellSub}>{c.sub}</span>}
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.pager}>
-            <span className={styles.rangeLabel}>{rec.rangeLabel}</span>
-            <div className={styles.pageButtons}>
-              {PAGE_LABELS.map((label) => (
-                <button
-                  key={label}
-                  type="button"
-                  className={`${styles.pageBtn} ${String(page) === label ? styles.active : ''}`}
-                  onClick={() => {
-                    const p = parseInt(label, 10);
-                    if (p) setPage(p);
-                  }}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <DataGrid
+            columns={rec.cols.map((column) => ({ label: column.label, align: column.align }))}
+            rows={rec.rows.map((row): GridRow => ({
+              id: row.raw.id,
+              bg: openId === row.raw.id ? '#f8fafc' : undefined,
+              onClick: () => setOpenId(openId === row.raw.id ? null : row.raw.id),
+              cells: row.cells.map((cell) => cell.pill
+                ? { kind: 'pillText', text: cell.text, bg: cell.pill.bg, fg: cell.pill.fg, sub: cell.sub, align: cell.align }
+                : cell.sub
+                  ? { kind: 'stack', title: cell.text, subtitle: cell.sub, align: cell.align }
+                  : { kind: 'text', text: cell.text, color: cell.color, size: cell.size, weight: cell.weight, align: cell.align }),
+            }))}
+            gridTemplate={rec.grid}
+            minWidth={rec.minWidth}
+            pages={PAGE_LABELS.map((label) => ({ label, active: String(page) === label, onClick: () => { const nextPage = parseInt(label, 10); if (nextPage) setPage(nextPage); } }))}
+            rangeLabel={rec.rangeLabel}
+            empty={rec.rows.length === 0}
+            emptyText="조건에 맞는 기록이 없습니다."
+          />
         </div>
       </div>
     </div>
