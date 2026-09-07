@@ -11,7 +11,7 @@ import { REJECT_REASONS, REVIEW_ITEMS, STATUS_PILL, type ReviewItem, type Review
 import { CONTENT_ITEMS } from '../../data/content';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType } from './contentBusiness';
-import { CommonButton } from '../../components/common';
+import { CommonButton, SplitPaneLayout } from '../../components/common';
 import { ReviewDetailPanel } from './ReviewDetailPanel';
 
 const TABS: Array<ReviewItemStatus | '전체'> = ['대기', '검수중', '승인', '반려', '전체'];
@@ -190,7 +190,7 @@ export function ReviewPage() {
       { kind: 'text', text: it.doneAt ? it.doneAt.slice(2) : '—', color: '#a1a1aa', size: '11.5px', numeric: true },
       { kind: 'rowMenu', detailLabel: '검수', onDetail: () => openDetail(it.id), open: false, items: [], onToggle: () => {} },
     ];
-    return { id: it.id, cells, selected: isSel, onToggleSelect: () => setSel((prev) => (isSel ? prev.filter((x) => x !== it.id) : prev.concat([it.id]))), bg: isSel ? '#f7f8ff' : 'transparent' };
+    return { id: it.id, cells, selected: isSel, onToggleSelect: () => setSel((prev) => (isSel ? prev.filter((x) => x !== it.id) : prev.concat([it.id]))), bg: isSel ? '#f7f8ff' : 'transparent', onClick: () => openDetail(it.id) };
   });
 
   const emptySearch = list.length === 0 && chips.length > 0;
@@ -399,8 +399,9 @@ export function ReviewPage() {
           </div>
         </div>
 
-        <div className={styles.splitRow}>
-          <div className={styles.splitListCol}>
+        <SplitPaneLayout
+          detailWidth="min(860px, 58%)"
+          list={
             <div className={`${sh.listArea} ${filterStyles.listArea}`}>
               <div className={sh.toolbarRow}>
                 {sel_.length > 0 ? (
@@ -442,10 +443,9 @@ export function ReviewPage() {
                 />
               </div>
             </div>
-          </div>
-
-          <div className={styles.splitDetailCol}>
-            {det ? (
+          }
+          detail={
+            det ? (
               <ReviewDetailPanel
                 det={det}
                 detCd={detCd}
@@ -459,11 +459,10 @@ export function ReviewPage() {
                 hasNext={nextPending(det.id) !== null}
                 onGoNext={() => { const n = nextPending(det.id); setDetailId(n ? n.id : null); }}
               />
-            ) : (
-              <div className={styles.splitEmpty}>왼쪽 목록에서 검수 건을 선택하면<br />상세 내용과 처리 화면이 여기에 표시됩니다.</div>
-            )}
-          </div>
-        </div>
+            ) : null
+          }
+          emptyMessage={<>왼쪽 목록에서 검수 건을 선택하면<br />상세 내용과 처리 화면이 여기에 표시됩니다.</>}
+        />
       </div>
     </div>
   );

@@ -293,7 +293,10 @@
 .kpiGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-radius: 12px;
+  background: #fff;
 }
 
 .body .kpiGrid + * {
@@ -303,9 +306,11 @@
 .kpiCard {
   min-width: 0;
   padding: 16px;
-  border: 1px solid rgba(0, 0, 0, .08);
-  border-radius: 12px;
-  background: #fff;
+  border-right: 1px solid rgba(0, 0, 0, .08);
+}
+
+.kpiCard:last-child {
+  border-right: 0;
 }
 
 .kpiLabel {
@@ -1039,6 +1044,14 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .kpiGrid .kpiCard:nth-child(2) {
+    border-right: 0;
+  }
+
+  .kpiGrid .kpiCard:nth-child(-n + 2) {
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+  }
+
   .insightGrid .card {
     margin-bottom: 0;
   }
@@ -1062,6 +1075,15 @@
   .kpiGrid,
   .insightGrid {
     grid-template-columns: 1fr;
+  }
+
+  .kpiGrid .kpiCard {
+    border-right: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+  }
+
+  .kpiGrid .kpiCard:last-child {
+    border-bottom: 0;
   }
 
   .dateField,

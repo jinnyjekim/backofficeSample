@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './CsInquiriesPage.module.css';
+import { SplitPanePanel } from '../../components/common';
 import {
   getSlaInfo,
   inquiryIssues,
@@ -57,7 +58,7 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
   };
 
   return (
-    <div className={drawer.panelRoot} aria-label={`${inquiry.id} 문의 상세`}>
+    <SplitPanePanel>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>
@@ -233,6 +234,6 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
           </div>
         </div>
       )}
-    </div>
+    </SplitPanePanel>
   );
 }

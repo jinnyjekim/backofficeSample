@@ -5,7 +5,7 @@ import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { DetailDrawer } from '../c2c/sales/SalesActivityShared';
 import drawer from '../ops/opsDrawerShared.module.css';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton, showToast } from '../../components/common';
+import { CommonButton, showToast, SplitPaneLayout } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import { HOLD_DELIVERIES, type HoldDelivery } from './deliveryExtraData';
 
@@ -162,11 +162,11 @@ export function DeliveryHoldPage() {
                 <option>주문 취소 접수</option>
               </select>
             </label>
-            <label className="globalFilterField">
+            <label className={styles.dateFilterField}>
               <span>보류일</span>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <div className={styles.dateRange}>
                 <DatePicker defaultValue="2026-08-20" />
-                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '34px', fontFamily: 'var(--common-font-family)', fontSize: '13px', lineHeight: 1 }}>~</span>
+                <span className={styles.dateSeparator}>~</span>
                 <DatePicker defaultValue="2026-08-27" />
               </div>
             </label>
@@ -197,61 +197,68 @@ export function DeliveryHoldPage() {
         </div>
       </header>
 
-      <div className={styles.tableWrap}>
-        <DataGrid
-          columns={GRID_COLUMNS}
-          rows={rows}
-          gridTemplate={GRID_TEMPLATE}
-          minWidth="1160px"
-          showPagination
-          pages={[{ label: '1', active: true }]}
-          empty={rows.length === 0}
-          emptyText="조건에 해당하는 배송 보류 건이 없습니다."
-        />
-      </div>
-
-      {selected && (
-        <DetailDrawer
-          eyebrow={`배송 보류 상세 · ${selected.id}`}
-          title={`${selected.order} (${selected.receiver} 님)`}
-          status={selected.status}
-          statusMeta={selected.status === '출고 재개' ? { bg: '#ecfdf5', fg: '#059669' } : { bg: '#fffbeb', fg: '#b45309' }}
-          subtitle={`${selected.carrier} · ${selected.reasonType}`}
-          onClose={() => setSelectedId(null)}
-          actions={
-            selected.status !== '출고 재개' ? (
-              <button
-                type="button"
-                className={drawer.primaryBtn}
-                onClick={() => handleRelease(selected.id)}
-              >
-                보류 해제 (출고 재개)
-              </button>
-            ) : undefined
-          }
-          stats={[
-            { label: '보류 유형', value: selected.reasonType },
-            { label: '요청자', value: selected.requester },
-            { label: '해제 예정일', value: selected.targetReleaseDate },
-          ]}
-          fields={[
-            { label: '보류 일시', value: selected.holdAt },
-            { label: '수령인 연락처', value: selected.phone },
-            { label: '택배사', value: selected.carrier },
-            { label: '상세 사유', value: selected.details },
-          ]}
-        >
-          <div className={drawer.sectionTitleLoose}>보류 상세 내역</div>
-          <div style={{ fontSize: '13px', lineHeight: 1.6, color: '#3f3f46', background: '#fffbeb', padding: '12px 14px', borderRadius: '8px', border: '1px solid #fef3c7', marginBottom: '16px' }}>
-            {selected.details}
+      <SplitPaneLayout
+        list={
+          <div className={styles.tableWrap}>
+            <DataGrid
+              columns={GRID_COLUMNS}
+              rows={rows}
+              gridTemplate={GRID_TEMPLATE}
+              minWidth="1160px"
+              showPagination
+              pages={[{ label: '1', active: true }]}
+              empty={rows.length === 0}
+              emptyText="조건에 해당하는 배송 보류 건이 없습니다."
+            />
           </div>
+        }
+        detail={
+          selected ? (
+            <DetailDrawer
+              variant="panel"
+              eyebrow={`배송 보류 상세 · ${selected.id}`}
+              title={`${selected.order} (${selected.receiver} 님)`}
+              status={selected.status}
+              statusMeta={selected.status === '출고 재개' ? { bg: '#ecfdf5', fg: '#059669' } : { bg: '#fffbeb', fg: '#b45309' }}
+              subtitle={`${selected.carrier} · ${selected.reasonType}`}
+              onClose={() => setSelectedId(null)}
+              actions={
+                selected.status !== '출고 재개' ? (
+                  <button
+                    type="button"
+                    className={drawer.primaryBtn}
+                    onClick={() => handleRelease(selected.id)}
+                  >
+                    보류 해제 (출고 재개)
+                  </button>
+                ) : undefined
+              }
+              stats={[
+                { label: '보류 유형', value: selected.reasonType },
+                { label: '요청자', value: selected.requester },
+                { label: '해제 예정일', value: selected.targetReleaseDate },
+              ]}
+              fields={[
+                { label: '보류 일시', value: selected.holdAt },
+                { label: '수령인 연락처', value: selected.phone },
+                { label: '택배사', value: selected.carrier },
+                { label: '상세 사유', value: selected.details },
+              ]}
+            >
+              <div className={drawer.sectionTitleLoose}>보류 상세 내역</div>
+              <div style={{ fontSize: '13px', lineHeight: 1.6, color: '#3f3f46', background: '#fffbeb', padding: '12px 14px', borderRadius: '8px', border: '1px solid #fef3c7', marginBottom: '16px' }}>
+                {selected.details}
+              </div>
 
-          <div className={drawer.sectionTitleLoose}>운영 메모</div>
-          <div style={{ fontSize: '12.5px', color: '#3f3f46', background: '#f8fafc', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-            {selected.memos.length ? selected.memos.map((m, idx) => <p key={idx} style={{ margin: 0 }}>[{m.when} / {m.by}] {m.text}</p>) : '등록된 운영 메모가 없습니다.'}
-          </div>
-        </DetailDrawer>
-      )}
+              <div className={drawer.sectionTitleLoose}>운영 메모</div>
+              <div style={{ fontSize: '12.5px', color: '#3f3f46', background: '#f8fafc', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                {selected.memos.length ? selected.memos.map((m, idx) => <p key={idx} style={{ margin: 0 }}>[{m.when} / {m.by}] {m.text}</p>) : '등록된 운영 메모가 없습니다.'}
+              </div>
+            </DetailDrawer>
+          ) : null
+        }
+        emptyMessage={<>왼쪽 목록에서 건을 선택하면<br />보류 처리 상세가 여기에 표시됩니다.</>}
+      />
     </div>
   );
 }

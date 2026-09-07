@@ -12,7 +12,7 @@ import {
   type FilterKey,
 } from './orderApprovalData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton } from '../../components/common';
+import { CommonButton, SplitPaneLayout } from '../../components/common';
 
 const GRID_TEMPLATE = '70px 72px 1fr 100px 1fr 52px 64px 64px 52px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -177,8 +177,8 @@ export function OrderApprovalPage() {
           </div>
         </div>
 
-      <div className={styles.splitRow}>
-        <div className={styles.splitListCol}>
+      <SplitPaneLayout
+        list={
           <div className={styles.gridWrap}>
             <DataGrid
               columns={GRID_COLUMNS}
@@ -191,10 +191,9 @@ export function OrderApprovalPage() {
               emptyText="현재 처리해야 할 주문 승인 요청이 없습니다"
             />
           </div>
-        </div>
-
-        <div className={styles.splitDetailCol}>
-          {selected ? (
+        }
+        detail={
+          selected ? (
             <OrderApprovalDetailDrawer
               approval={selected}
               activeTab={activeTab}
@@ -207,11 +206,10 @@ export function OrderApprovalPage() {
               onApprove={approve}
               onReject={reject}
             />
-          ) : (
-            <div className={styles.splitEmpty}>왼쪽 목록에서 건을 선택하면<br />승인 검토 상세가 여기에 표시됩니다.</div>
-          )}
-        </div>
-      </div>
+          ) : null
+        }
+        emptyMessage={<>왼쪽 목록에서 건을 선택하면<br />승인 검토 상세가 여기에 표시됩니다.</>}
+      />
     </div>
   );
 }

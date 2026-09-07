@@ -44,6 +44,11 @@ export const STATUS_META: Record<BrandStatus, { bg: string; fg: string }> = {
   미사용: { bg: '#f4f4f5', fg: '#71717a' },
 };
 
+export const EXPOSURE_META: Record<'노출' | '비노출', { bg: string; fg: string }> = {
+  노출: { bg: '#eef2ff', fg: '#4338ca' },
+  비노출: { bg: '#f4f4f5', fg: '#a1a1aa' },
+};
+
 export function productName(code: string): string {
   return PRODUCTS.find((p) => p.code === code)?.name ?? code;
 }

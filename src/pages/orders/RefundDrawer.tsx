@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './RefundPage.module.css';
+import { SplitPanePanel } from '../../components/common';
 import {
   ADJUSTMENT_TYPES,
   STATUS_META,
@@ -78,7 +79,7 @@ export function RefundDrawer({
   };
 
   return (
-    <div className={drawer.panelRoot} aria-label="환불 상세">
+    <SplitPanePanel>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>
@@ -344,6 +345,6 @@ export function RefundDrawer({
           )
         )}
       </div>
-    </div>
+    </SplitPanePanel>
   );
 }

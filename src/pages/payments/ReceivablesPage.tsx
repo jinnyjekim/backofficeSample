@@ -12,13 +12,13 @@ const GRID_TEMPLATE = 'minmax(150px,1fr) 70px 92px 92px 94px 44px 82px 56px 66px
 const GRID_MIN_WIDTH = '870px';
 
 const PARTNER_COLUMNS: GridColumn[] = [
-  { label: '거래처' }, { label: '미수 청구건' }, { label: '총 청구' }, { label: '수금' }, { label: '미수금' },
-  { label: '최장연체' }, { label: '지급예정' }, { label: '상태' }, { label: '담당자' }, { label: '관리' },
+  { label: '거래처' }, { label: '미수 청구건' }, { label: '총 청구', align: 'right' }, { label: '수금', align: 'right' }, { label: '미수금', align: 'right' },
+  { label: '최장연체', align: 'right' }, { label: '지급예정' }, { label: '상태' }, { label: '담당자' }, { label: '관리' },
 ];
 
 const INVOICE_COLUMNS: GridColumn[] = [
-  { label: '청구번호' }, { label: '거래처' }, { label: '청구금액' }, { label: '수금액' }, { label: '미수금' },
-  { label: '연체일' }, { label: '지급예정일' }, { label: '상태' }, { label: '담당자' }, { label: '관리' },
+  { label: '청구번호' }, { label: '거래처' }, { label: '청구금액', align: 'right' }, { label: '수금액', align: 'right' }, { label: '미수금', align: 'right' },
+  { label: '연체일', align: 'right' }, { label: '지급예정일' }, { label: '상태' }, { label: '담당자' }, { label: '관리' },
 ];
 
 export function ReceivablesPage() {
@@ -93,10 +93,10 @@ export function ReceivablesPage() {
       const cells: Cell[] = [
         { kind: 'text', text: p.name, color: '#18181b', size: '13px', weight: 600 },
         { kind: 'text', text: p.openCount + '건', color: '#3f3f46', size: '12px', weight: 500 },
-        { kind: 'text', text: fmtWon(p.totalBilled), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-        { kind: 'text', text: fmtWon(p.totalCollected), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-        { kind: 'text', text: fmtWon(p.totalAr), color: '#18181b', size: '12.5px', weight: 700, numeric: true },
-        { kind: 'text', text: p.maxOverdueDays > 0 ? p.maxOverdueDays + '일' : '-', color: p.maxOverdueDays > 0 ? '#dc2626' : '#a1a1aa', size: '11.5px', weight: 600, numeric: true },
+        { kind: 'text', text: fmtWon(p.totalBilled), color: '#71717a', size: '11.5px', weight: 500, align: 'right', numeric: true },
+        { kind: 'text', text: fmtWon(p.totalCollected), color: '#71717a', size: '11.5px', weight: 500, align: 'right', numeric: true },
+        { kind: 'text', text: fmtWon(p.totalAr), color: '#18181b', size: '12.5px', weight: 700, align: 'right', numeric: true },
+        { kind: 'text', text: p.maxOverdueDays > 0 ? p.maxOverdueDays + '일' : '-', color: p.maxOverdueDays > 0 ? '#dc2626' : '#a1a1aa', size: '11.5px', weight: 600, align: 'right', numeric: true },
         { kind: 'text', text: p.promise ? p.promise.date : '-', color: '#71717a', size: '11.5px', weight: 500, numeric: true },
         { kind: 'badge', text: p.status, bg: sm.bg, fg: sm.fg },
         { kind: 'text', text: p.owner, color: '#52525b', size: '12px', weight: 500 },
@@ -114,10 +114,10 @@ export function ReceivablesPage() {
       const cells: Cell[] = [
         { kind: 'text', text: iv.no, color: '#18181b', size: '13px', weight: 600 },
         { kind: 'text', text: p.name, color: '#3f3f46', size: '12px', weight: 500 },
-        { kind: 'text', text: fmtWon(iv.billed), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-        { kind: 'text', text: fmtWon(iv.collected), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-        { kind: 'text', text: fmtWon(iv.remaining), color: '#18181b', size: '12.5px', weight: 700, numeric: true },
-        { kind: 'text', text: iv.overdueDays > 0 ? iv.overdueDays + '일' : '-', color: iv.overdueDays > 0 ? '#dc2626' : '#a1a1aa', size: '11.5px', weight: 600, numeric: true },
+        { kind: 'text', text: fmtWon(iv.billed), color: '#71717a', size: '11.5px', weight: 500, align: 'right', numeric: true },
+        { kind: 'text', text: fmtWon(iv.collected), color: '#71717a', size: '11.5px', weight: 500, align: 'right', numeric: true },
+        { kind: 'text', text: fmtWon(iv.remaining), color: '#18181b', size: '12.5px', weight: 700, align: 'right', numeric: true },
+        { kind: 'text', text: iv.overdueDays > 0 ? iv.overdueDays + '일' : '-', color: iv.overdueDays > 0 ? '#dc2626' : '#a1a1aa', size: '11.5px', weight: 600, align: 'right', numeric: true },
         { kind: 'text', text: iv.due, color: '#71717a', size: '11.5px', weight: 500, numeric: true },
         { kind: 'badge', text: st, bg: sm.bg, fg: sm.fg },
         { kind: 'text', text: p.owner, color: '#52525b', size: '12px', weight: 500 },

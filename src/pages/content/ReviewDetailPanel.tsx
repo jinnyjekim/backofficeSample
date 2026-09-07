@@ -3,6 +3,7 @@ import type { ContentItem } from '../../data/content';
 import { ACCENT } from '../../lib/theme';
 import sh from './contentShared.module.css';
 import styles from './ReviewPage.module.css';
+import { SplitPanePanel } from '../../components/common';
 
 interface Props {
   det: ReviewItem;
@@ -37,7 +38,7 @@ export function ReviewDetailPanel({
   const decided = det.status === '승인' || det.status === '반려' || det.status === '보류';
 
   return (
-    <div className={styles.panelRoot}>
+    <SplitPanePanel>
       <div className={styles.detailHeader}>
         <button type="button" className={styles.backBtn} onClick={onClose}>닫기</button>
         <div className={styles.detailTitle}>{`검수 상세 · ${det.ctid}`}</div>
@@ -127,6 +128,6 @@ export function ReviewDetailPanel({
           </div>
         </div>
       </div>
-    </div>
+    </SplitPanePanel>
   );
 }

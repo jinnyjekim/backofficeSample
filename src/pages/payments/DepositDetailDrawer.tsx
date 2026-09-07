@@ -1,4 +1,5 @@
 import styles from './drawerShared.module.css';
+import { SplitPanePanel } from '../../components/common';
 import type { DepositDetail } from './depositDetail';
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 
 export function DepositDetailDrawer({ detail: d, onTabChange }: Props) {
   return (
-    <div className={styles.panelRoot}>
+    <SplitPanePanel>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>
@@ -197,6 +198,6 @@ export function DepositDetailDrawer({ detail: d, onTabChange }: Props) {
           </div>
         )}
       </div>
-    </div>
+    </SplitPanePanel>
   );
 }

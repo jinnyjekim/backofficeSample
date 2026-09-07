@@ -141,11 +141,11 @@ export function DeliveryTrackingPage() {
                 <option>우체국택배</option>
               </select>
             </label>
-            <label className="globalFilterField">
+            <label className={styles.dateFilterField}>
               <span>출고일</span>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <div className={styles.dateRange}>
                 <DatePicker defaultValue="2026-08-20" />
-                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '34px', fontFamily: 'var(--common-font-family)', fontSize: '13px', lineHeight: 1 }}>~</span>
+                <span className={styles.dateSeparator}>~</span>
                 <DatePicker defaultValue="2026-08-27" />
               </div>
             </label>

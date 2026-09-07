@@ -3,3 +3,4 @@ export * from './CommonData';
 export * from './CommonDateTime';
 export * from './CommonFeedback';
 export * from './ExcelDownloadButton';
+export * from './SplitPaneLayout';

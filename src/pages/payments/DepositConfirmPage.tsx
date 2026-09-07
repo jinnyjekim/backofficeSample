@@ -6,7 +6,7 @@ import { CONFIRM_META, DEPOSITS, FILTER_KEYS, MATCH_META, fmtWon, type Deposit, 
 import { buildDepositDetail } from './depositDetail';
 import { DepositDetailDrawer } from './DepositDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton } from '../../components/common';
+import { CommonButton, SplitPaneLayout } from '../../components/common';
 
 const GRID_TEMPLATE = '116px minmax(150px,1fr) 94px 74px 76px 76px 76px 66px';
 const GRID_MIN_WIDTH = '840px';
@@ -188,8 +188,8 @@ export function DepositConfirmPage() {
         </div>
       </header>
 
-      <div className={styles.splitRow}>
-        <div className={styles.splitListCol}>
+      <SplitPaneLayout
+        list={
           <div className={styles.tableWrap}>
             <DataGrid
               columns={GRID_COLUMNS}
@@ -202,16 +202,10 @@ export function DepositConfirmPage() {
               emptyText="현재 확인 대기 중인 입금이 없습니다."
             />
           </div>
-        </div>
-
-        <div className={styles.splitDetailCol}>
-          {detail ? (
-            <DepositDetailDrawer detail={detail} onTabChange={setActiveTab} />
-          ) : (
-            <div className={styles.splitEmpty}>왼쪽 목록에서 입금 건을 선택하면<br />확인 상세가 여기에 표시됩니다.</div>
-          )}
-        </div>
-      </div>
+        }
+        detail={detail ? <DepositDetailDrawer detail={detail} onTabChange={setActiveTab} /> : null}
+        emptyMessage={<>왼쪽 목록에서 입금 건을 선택하면<br />확인 상세가 여기에 표시됩니다.</>}
+      />
     </div>
   );
 }

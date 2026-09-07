@@ -12,7 +12,7 @@ const GRID_TEMPLATE = '88px minmax(150px,1fr) 92px 84px 96px 50px 76px 96px 50px
 const GRID_MIN_WIDTH = '900px';
 
 const GRID_COLUMNS: GridColumn[] = [
-  { label: '청구번호' }, { label: '거래처' }, { label: '공급가액' }, { label: '세액' }, { label: '합계' },
+  { label: '청구번호' }, { label: '거래처' }, { label: '공급가액', align: 'right' }, { label: '세액', align: 'right' }, { label: '합계', align: 'right' },
   { label: '과세유형' }, { label: '계산상태' }, { label: '발행상태' }, { label: '거래일' }, { label: '관리' },
 ];
 
@@ -63,9 +63,9 @@ export function TaxInvoicesPage() {
     const cells: Cell[] = [
       { kind: 'text', text: r.invoice, color: '#18181b', size: '12.5px', weight: 600 },
       { kind: 'text', text: r.partner, color: '#18181b', size: '13px', weight: 600 },
-      { kind: 'text', text: fmtWon(r.supply), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-      { kind: 'text', text: fmtWon(r.vat), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-      { kind: 'text', text: fmtWon(total), color: '#18181b', size: '12.5px', weight: 700, numeric: true },
+      { kind: 'text', text: fmtWon(r.supply), color: '#71717a', size: '11.5px', weight: 500, align: 'right', numeric: true },
+      { kind: 'text', text: fmtWon(r.vat), color: '#71717a', size: '11.5px', weight: 500, align: 'right', numeric: true },
+      { kind: 'text', text: fmtWon(total), color: '#18181b', size: '12.5px', weight: 700, align: 'right', numeric: true },
       { kind: 'text', text: r.taxType, color: '#3f3f46', size: '12px', weight: 500 },
       { kind: 'badge', text: r.calcStatus, bg: cm.bg, fg: cm.fg },
       { kind: 'badge', text: r.issueStatus, bg: im.bg, fg: im.fg },

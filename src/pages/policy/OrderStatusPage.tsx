@@ -210,11 +210,11 @@ export function OrderStatusPage() {
           {view === 'list' && <button type="button" className={shared.createBtn} onClick={openCreate}>+ 상태 추가</button>}
         </div>
 
-        <div className={styles.viewTabs}>
-          <button type="button" className={`${styles.viewTabBtn} ${view === 'list' ? styles.viewTabActive : ''}`} onClick={() => setView('list')}>상태 목록</button>
-          <button type="button" className={`${styles.viewTabBtn} ${view === 'transitions' ? styles.viewTabActive : ''}`} onClick={() => setView('transitions')}>상태 전환 설정</button>
-          <button type="button" className={`${styles.viewTabBtn} ${view === 'preview' ? styles.viewTabActive : ''}`} onClick={() => setView('preview')}>
-            Workflow 미리보기{warnings.length > 0 ? ` (${warnings.length})` : ''}
+        <div className={shared.quickFilters}>
+          <button type="button" className={`${shared.qfBtn} ${view === 'list' ? shared.quickActive : ''}`} onClick={() => setView('list')}><span className={shared.qfLabel}>상태 목록</span></button>
+          <button type="button" className={`${shared.qfBtn} ${view === 'transitions' ? shared.quickActive : ''}`} onClick={() => setView('transitions')}><span className={shared.qfLabel}>상태 전환 설정</span></button>
+          <button type="button" className={`${shared.qfBtn} ${view === 'preview' ? shared.quickActive : ''}`} onClick={() => setView('preview')}>
+            <span className={shared.qfLabel}>Workflow 미리보기{warnings.length > 0 ? ` (${warnings.length})` : ''}</span>
           </button>
         </div>
 

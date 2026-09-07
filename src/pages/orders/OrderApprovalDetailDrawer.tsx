@@ -1,4 +1,5 @@
 import styles from './ordersShared.module.css';
+import { SplitPanePanel } from '../../components/common';
 import { fmt, STATUS_META, type Approval } from './orderApprovalData';
 
 const TABS: [string, string][] = [
@@ -81,7 +82,7 @@ export function OrderApprovalDetailDrawer({
   ];
 
   return (
-    <div className={styles.panelRoot}>
+    <SplitPanePanel>
       <div className={styles.asideTop}>
         <div className={styles.headRowD}>
           <div className={styles.headMain}>
@@ -315,6 +316,6 @@ export function OrderApprovalDetailDrawer({
           </div>
         )}
       </div>
-    </div>
+    </SplitPanePanel>
   );
 }

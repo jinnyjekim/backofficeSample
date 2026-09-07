@@ -20,15 +20,15 @@ import {
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { CommonButton } from '../../components/common';
 
-const GRID_TEMPLATE = '1fr 65px 70px 67px 66px 65px 65px 60px';
+const GRID_TEMPLATE = '1fr 70px 67px 66px 65px 65px 65px 60px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '회원' },
-  { label: '회원 상태' },
   { label: '총 보유', align: 'right' },
   { label: '사용 가능', align: 'right' },
   { label: '지급 예정', align: 'right' },
   { label: '소멸 예정', align: 'right' },
   { label: '최근 변동' },
+  { label: '회원 상태' },
   { label: '관리' },
 ];
 
@@ -106,12 +106,12 @@ export function PointsBalancePage() {
     const issueList = issuesMap[b.member] ?? [];
     const cells: Cell[] = [
       { kind: 'titleWarn', title: b.member, hasIssue: issueList.length > 0, issueTitle: issueList.join(' · ') },
-      { kind: 'badge', text: b.memberStatus, bg: sm.bg, fg: sm.fg },
       { kind: 'text', text: fmtPoint(b.totalHeld), color: b.totalHeld < 0 ? '#dc2626' : '#18181b', size: '12.5px', weight: 700, align: 'right', numeric: true },
       { kind: 'text', text: fmtPoint(b.available), color: b.available < 0 ? '#dc2626' : '#3f3f46', size: '12px', weight: 600, align: 'right', numeric: true },
       { kind: 'text', text: b.pending > 0 ? fmtPoint(b.pending) : '-', color: '#71717a', size: '12px', weight: 500, align: 'right', numeric: true },
       { kind: 'text', text: b.expiringSoon30 > 0 ? fmtPoint(b.expiringSoon30) : '-', color: b.expiringSoon30 > 0 ? '#c2410c' : '#71717a', size: '12px', weight: 500, align: 'right', numeric: true },
       { kind: 'text', text: b.lastActivityAt.slice(5).replace('-', '.'), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
+      { kind: 'badge', text: b.memberStatus, bg: sm.bg, fg: sm.fg },
       { kind: 'link', text: '상세', size: '12px' },
     ];
     return { id: b.member, cells, onClick: () => openDetail(b.member) };

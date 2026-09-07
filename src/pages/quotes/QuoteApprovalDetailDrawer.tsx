@@ -1,4 +1,5 @@
 import styles from './quoteShared.module.css';
+import { SplitPanePanel } from '../../components/common';
 import type { ApprovalDetail } from './quoteApprovalDetail';
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 
 export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
   return (
-    <div className={styles.panelRoot}>
+    <SplitPanePanel>
       <div className={styles.asideTop}>
         <div className={styles.headRowD}>
           <div className={styles.headMain}>
@@ -242,6 +243,6 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
           </div>
         )}
       </div>
-    </div>
+    </SplitPanePanel>
   );
 }

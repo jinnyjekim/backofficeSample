@@ -120,13 +120,23 @@ import { DeliveryCarriersPage } from './pages/delivery/DeliveryCarriersPage';
 import { DeliveryTrackingPage } from './pages/delivery/DeliveryTrackingPage';
 import { DeliveryHistoryPage } from './pages/delivery/DeliveryHistoryPage';
 import {
-  CancelProcessingPage,
-  CancelHistoryPage,
-  ReturnProcessingPage,
-  ReturnHistoryPage,
   ExchangeProcessingPage,
   ExchangeHistoryPage,
 } from './pages/b2c/operations/CommerceOperationsPages';
+import { CancelRequestsPage } from './pages/cancel/CancelRequestsPage';
+import { CancelApprovalPage } from './pages/cancel/CancelApprovalPage';
+import { CancelRejectedPage } from './pages/cancel/CancelRejectedPage';
+import { CancelPartialPage } from './pages/cancel/CancelPartialPage';
+import { CancelCompletedPage } from './pages/cancel/CancelCompletedPage';
+import { CancelHistoryPage } from './pages/cancel/CancelHistoryPage';
+import { ReturnRequestsPage } from './pages/returns/ReturnRequestsPage';
+import { ReturnApprovalPage } from './pages/returns/ReturnApprovalPage';
+import { ReturnCollectingPage } from './pages/returns/ReturnCollectingPage';
+import { ReturnCollectedPage } from './pages/returns/ReturnCollectedPage';
+import { ReturnInspectionPage } from './pages/returns/ReturnInspectionPage';
+import { ReturnCompletedPage } from './pages/returns/ReturnCompletedPage';
+import { ReturnRejectedPage } from './pages/returns/ReturnRejectedPage';
+import { ReturnHistoryPage } from './pages/returns/ReturnHistoryPage';
 import { SellerListPage } from './pages/c2c/sales/SellerListPage';
 import { SalesStatusPage } from './pages/c2c/sales/SalesStatusPage';
 import { SellerProductsPage as UserProductListPage } from './pages/c2c/sales/SellerProductsPage';
@@ -174,22 +184,40 @@ export default function App() {
         <Route path="b2c/delivery/tracking" element={<DeliveryTrackingPage />} />
         <Route path="b2c/delivery/history" element={<DeliveryHistoryPage />} />
 
-        {/* B2C 취소 관리 */}
-        <Route path="b2c/cancel/requests" element={<CancelProcessingPage />} />
-        <Route path="b2c/cancel/approval" element={<CancelProcessingPage />} />
-        <Route path="b2c/cancel/rejected" element={<CancelProcessingPage />} />
-        <Route path="b2c/cancel/partial" element={<CancelProcessingPage />} />
-        <Route path="b2c/cancel/completed" element={<CancelProcessingPage />} />
+        {/* 취소 관리 (Cancel Management) */}
+        <Route path="cancel/requests" element={<CancelRequestsPage />} />
+        <Route path="cancel/approval" element={<CancelApprovalPage />} />
+        <Route path="cancel/rejected" element={<CancelRejectedPage />} />
+        <Route path="cancel/partial" element={<CancelPartialPage />} />
+        <Route path="cancel/completed" element={<CancelCompletedPage />} />
+        <Route path="cancel/history" element={<CancelHistoryPage />} />
+
+        {/* B2C 취소 관리 호환 라우트 */}
+        <Route path="b2c/cancel/requests" element={<CancelRequestsPage />} />
+        <Route path="b2c/cancel/approval" element={<CancelApprovalPage />} />
+        <Route path="b2c/cancel/rejected" element={<CancelRejectedPage />} />
+        <Route path="b2c/cancel/partial" element={<CancelPartialPage />} />
+        <Route path="b2c/cancel/completed" element={<CancelCompletedPage />} />
         <Route path="b2c/cancel/history" element={<CancelHistoryPage />} />
 
-        {/* B2C 반품 관리 */}
-        <Route path="b2c/returns/requests" element={<ReturnProcessingPage />} />
-        <Route path="b2c/returns/approval" element={<ReturnProcessingPage />} />
-        <Route path="b2c/returns/collecting" element={<ReturnProcessingPage />} />
-        <Route path="b2c/returns/collected" element={<ReturnProcessingPage />} />
-        <Route path="b2c/returns/inspection" element={<ReturnProcessingPage />} />
-        <Route path="b2c/returns/completed" element={<ReturnProcessingPage />} />
-        <Route path="b2c/returns/rejected" element={<ReturnProcessingPage />} />
+        {/* 반품 관리 (Returns Management) */}
+        <Route path="returns/requests" element={<ReturnRequestsPage />} />
+        <Route path="returns/approval" element={<ReturnApprovalPage />} />
+        <Route path="returns/collecting" element={<ReturnCollectingPage />} />
+        <Route path="returns/collected" element={<ReturnCollectedPage />} />
+        <Route path="returns/inspection" element={<ReturnInspectionPage />} />
+        <Route path="returns/completed" element={<ReturnCompletedPage />} />
+        <Route path="returns/rejected" element={<ReturnRejectedPage />} />
+        <Route path="returns/history" element={<ReturnHistoryPage />} />
+
+        {/* B2C 반품 관리 호환 라우트 */}
+        <Route path="b2c/returns/requests" element={<ReturnRequestsPage />} />
+        <Route path="b2c/returns/approval" element={<ReturnApprovalPage />} />
+        <Route path="b2c/returns/collecting" element={<ReturnCollectingPage />} />
+        <Route path="b2c/returns/collected" element={<ReturnCollectedPage />} />
+        <Route path="b2c/returns/inspection" element={<ReturnInspectionPage />} />
+        <Route path="b2c/returns/completed" element={<ReturnCompletedPage />} />
+        <Route path="b2c/returns/rejected" element={<ReturnRejectedPage />} />
         <Route path="b2c/returns/history" element={<ReturnHistoryPage />} />
 
         {/* B2C 교환 관리 */}

@@ -23,7 +23,11 @@ import {
   type SearchScope,
 } from './adminData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { CommonButton } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
+
+type StatusQuick = '전체' | AdminStatus;
+const STATUS_QUICK_FILTERS: StatusQuick[] = ['전체', ...ADMIN_STATUSES];
 
 const GRID_TEMPLATE = '72px minmax(90px,1fr) minmax(130px,1.2fr) minmax(120px,1.3fr) 66px 124px 86px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -74,6 +78,12 @@ export function AdminsListPage() {
     const map: Record<string, string[]> = {};
     admins.forEach((a) => { map[a.id] = computeIssues(a, admins); });
     return map;
+  }, [admins]);
+
+  const statusCounts = useMemo(() => {
+    const c: Record<string, number> = { 전체: admins.length };
+    ADMIN_STATUSES.forEach((s) => { c[s] = admins.filter((a) => a.status === s).length; });
+    return c;
   }, [admins]);
 
   const filtered = useMemo(
@@ -203,6 +213,24 @@ export function AdminsListPage() {
           <button type="button" className={styles.registerBtn} onClick={() => setEditor({ mode: 'create' })}>＋ 관리자 등록</button>
         </div>
 
+        <div className={styles.quickFilters}>
+          {STATUS_QUICK_FILTERS.map((s) => {
+            const active = s === '전체' ? statusFilter === '' : statusFilter === s;
+            return (
+              <CommonButton
+                key={s}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                onClick={() => setStatusFilter(s === '전체' ? '' : s)}
+              >
+                <span className={styles.qfLabel}>{s}</span>
+                <span className={styles.qfCount}>{statusCounts[s] ?? 0}</span>
+              </CommonButton>
+            );
+          })}
+        </div>
+
         <div className={styles.filterBox}>
           <form className={styles.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
             <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} value={scope} onChange={(e) => setScope(e.target.value as SearchScope)}>
@@ -212,10 +240,6 @@ export function AdminsListPage() {
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
           <div className={styles.filterRow2}>
-            <label className="globalFilterField"><span>상태</span><select aria-label="상태" className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-              <option value="">상태 전체</option>
-              {ADMIN_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select></label>
             <label className="globalFilterField"><span>역할</span><select aria-label="역할" className={styles.selectSm} value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
               <option value="">역할 전체</option>
               {ROLES.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}

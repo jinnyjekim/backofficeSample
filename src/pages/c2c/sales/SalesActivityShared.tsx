@@ -3,6 +3,7 @@ import { useOutsideClose } from '../../../lib/useOutsideClose';
 import shared from '../shared.module.css';
 import drawer from '../../ops/opsDrawerShared.module.css';
 import styles from './SalesActivity.module.css';
+import { SplitPanePanel } from '../../../components/common';
 
 export interface Metric { label: string; value: string; note: string; tone?: 'up' | 'down'; dot?: string }
 export interface DrawerField { label: string; value: ReactNode }
@@ -25,7 +26,7 @@ export function DetailDrawer({ eyebrow, title, status, statusMeta, subtitle, sta
   const drawerRef = useRef<HTMLElement>(null);
   useOutsideClose(drawerRef, onClose, variant === 'overlay');
   const body = <><div className={drawer.head}><div className={drawer.headRow}><div className={drawer.headBody}><div className={drawer.eyebrow}>{eyebrow}</div><div className={drawer.titleRow}><h2 className={drawer.title}>{title}</h2><span className={drawer.badge} style={{ background: statusMeta.bg, color: statusMeta.fg }}>{status}</span></div><div className={drawer.sub}>{subtitle}</div></div><button type="button" className={drawer.closeBtn} aria-label="닫기" onClick={onClose}>×</button></div>{actions && <div className={drawer.actionRow}>{actions}</div>}</div><div className={drawer.scroll}>{stats && <div className={drawer.statGrid}>{stats.map((stat) => <div key={stat.label} className={drawer.statCell}><div className={drawer.statLabel}>{stat.label}</div><div className={drawer.statValue}>{stat.value}</div></div>)}</div>}<div className={drawer.sectionTitle}>상세 정보</div><div className={drawer.fieldBox}>{fields.map((field) => <div key={field.label} className={drawer.fieldRow}><span className={drawer.fieldLabel}>{field.label}</span><strong className={drawer.fieldValue}>{field.value}</strong></div>)}</div>{children}</div></>;
-  if (variant === 'panel') return <div className={drawer.panelRoot}>{body}</div>;
+  if (variant === 'panel') return <SplitPanePanel>{body}</SplitPanePanel>;
   return <aside ref={drawerRef} className={drawer.aside}>{body}</aside>;
 }
 

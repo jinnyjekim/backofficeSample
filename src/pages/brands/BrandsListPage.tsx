@@ -8,6 +8,7 @@ import { BrandEditorDrawer, type BrandFormData } from './BrandEditorDrawer';
 import { BrandExposureOrderDrawer } from './BrandExposureOrderDrawer';
 import {
   BRANDS,
+  EXPOSURE_META,
   OWNERS,
   QUICK_FILTERS,
   STATUS_META,
@@ -189,7 +190,7 @@ export function BrandsListPage() {
       { kind: 'titleWarn', title: `${b.name} · ${b.code}`, hasIssue: issueList.length > 0, issueTitle: issueList.join(' · ') },
       { kind: 'text', text: b.productCodes.length > 0 ? `${b.productCodes.length}개` : '-', color: '#3f3f46', size: '12px', weight: 600, align: 'right', numeric: true },
       { kind: 'badge', text: b.status, bg: sm.bg, fg: sm.fg },
-      { kind: 'text', text: b.exposure ? '노출' : '비노출', color: b.exposure ? '#4338ca' : '#a1a1aa', size: '11.5px', weight: 600 },
+      { kind: 'badge', text: b.exposure ? '노출' : '비노출', bg: EXPOSURE_META[b.exposure ? '노출' : '비노출'].bg, fg: EXPOSURE_META[b.exposure ? '노출' : '비노출'].fg },
       { kind: 'text', text: b.updatedAt.slice(5).replace('-', '.'), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
       {
         kind: 'rowMenu',

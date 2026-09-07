@@ -1,0 +1,215 @@
+import { useMemo, useState } from 'react';
+import styles from '../delivery/deliveryShared.module.css';
+import { DataGrid } from '../../components/DataGrid/DataGrid';
+import type { GridColumn, GridRow } from '../../components/DataGrid/types';
+import { DetailDrawer } from '../c2c/sales/SalesActivityShared';
+import drawer from '../ops/opsDrawerShared.module.css';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { showToast, SplitPaneLayout } from '../../components/common';
+import { DatePicker } from '../../components/forms/DatePicker';
+import { INITIAL_RETURNS, STAGE_META, type ReturnItem } from './returnsData';
+
+const GRID_TEMPLATE = '140px 140px 90px 100px minmax(200px, 1fr) 110px 120px 60px';
+const GRID_COLUMNS: GridColumn[] = [
+  { label: '반품번호' },
+  { label: '주문번호' },
+  { label: '고객명' },
+  { label: '회수택배사' },
+  { label: '반품상품' },
+  { label: '승인담당자' },
+  { label: '승인일시' },
+  { label: '관리' },
+];
+
+export function ReturnApprovalPage() {
+  const [items, setItems] = useState<ReturnItem[]>(INITIAL_RETURNS);
+  const [keyword, setKeyword] = useState('');
+  const [carrier, setCarrier] = useState('');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const approvalItems = useMemo(() => items.filter((it) => it.stage === '반품 승인'), [items]);
+
+  const filtered = useMemo(() => {
+    return approvalItems.filter((item) => {
+      const matchCarrier = !carrier || item.carrier === carrier;
+      const matchKey =
+        !keyword ||
+        `${item.id} ${item.orderId} ${item.member} ${item.product} ${item.pickupAddress}`
+          .toLowerCase()
+          .includes(keyword.toLowerCase());
+      return matchCarrier && matchKey;
+    });
+  }, [approvalItems, carrier, keyword]);
+
+  const selected = selectedId ? items.find((item) => item.id === selectedId) ?? null : null;
+
+  const handleStartCollecting = (id: string) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              stage: '반품 회수',
+              history: [
+                ...item.history,
+                { when: '08.27 15:52', title: '택배사 회수 지시 접수 및 기사 배정', by: 'admin01' },
+              ],
+            }
+          : item
+      )
+    );
+    showToast({ message: '택배사 회수 지시가 전송되었습니다. (반품 회수 메뉴로 이동)', type: 'success' });
+    setSelectedId(null);
+  };
+
+  const rows: GridRow[] = filtered.map((item) => {
+    return {
+      id: item.id,
+      onClick: () => setSelectedId(item.id),
+      cells: [
+        { kind: 'text', text: item.id, color: '#18181b', size: '12px', weight: 600 },
+        { kind: 'text', text: item.orderId, color: '#3f3f46', size: '12px', weight: 500 },
+        { kind: 'text', text: item.member, color: '#18181b', size: '12.5px', weight: 600 },
+        { kind: 'text', text: item.carrier, color: '#71717a', size: '12px' },
+        { kind: 'text', text: item.product, color: '#18181b', size: '12px' },
+        { kind: 'text', text: item.assignee, color: '#52525b', size: '12px' },
+        { kind: 'text', text: item.approvedAt ?? '-', color: '#71717a', size: '11.5px', numeric: true },
+        { kind: 'link', text: '지시', size: '12px' },
+      ],
+    };
+  });
+
+  return (
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
+          <div>
+            <div className={styles.title}>반품 승인</div>
+            <div className={styles.subtitle}>승인 완료된 반품 건에 대해 택배사 수거 연동 및 회수 송장을 발행합니다.</div>
+          </div>
+        </div>
+
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            <label className="globalFilterField">
+              <span>검색 범위</span>
+              <select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
+                <option>전체</option>
+                <option>반품번호</option>
+                <option>주문번호</option>
+                <option>고객명</option>
+                <option>상품명</option>
+              </select>
+            </label>
+            <input
+              className={styles.searchInput}
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="반품번호 / 주문번호 / 고객명 / 상품명 / 회수지"
+            />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          </div>
+          <div className={styles.filterRow2}>
+            <label className="globalFilterField">
+              <span>회수 택배사</span>
+              <select
+                aria-label="회수 택배사"
+                className={styles.selectXs}
+                value={carrier}
+                onChange={(e) => setCarrier(e.target.value)}
+              >
+                <option value="">전체 택배사</option>
+                <option>CJ대한통운</option>
+                <option>한진택배</option>
+                <option>롯데택배</option>
+                <option>우체국택배</option>
+              </select>
+            </label>
+            <label className={styles.dateFilterField}>
+              <span>승인일</span>
+              <div className={styles.dateRange}>
+                <DatePicker defaultValue="2026-08-20" />
+                <span className={styles.dateSeparator}>~</span>
+                <DatePicker defaultValue="2026-08-27" />
+              </div>
+            </label>
+            <div className={styles.rowSpacer} />
+            <button
+              type="button"
+              className={styles.resetBtn}
+              onClick={() => {
+                setKeyword('');
+                setCarrier('');
+              }}
+            >
+              초기화
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.resultBar}>
+          <span className={styles.resultLabel}>{`총 ${filtered.length}건 회수 대기`}</span>
+          <div className={styles.resultActions}>
+            <ExcelDownloadButton type="button" data-grid-download />
+          </div>
+        </div>
+      </header>
+
+      <SplitPaneLayout
+        list={
+          <div className={styles.tableWrap}>
+            <DataGrid
+              columns={GRID_COLUMNS}
+              rows={rows}
+              gridTemplate={GRID_TEMPLATE}
+              minWidth="1020px"
+              showPagination
+              pages={[{ label: '1', active: true }]}
+              empty={rows.length === 0}
+              emptyText="회수 지시 대기 중인 반품 건이 없습니다."
+            />
+          </div>
+        }
+        detail={
+          selected ? (
+            <DetailDrawer
+              variant="panel"
+              eyebrow={`반품 승인 상세 · ${selected.id}`}
+              title={`${selected.product}`}
+              status={selected.stage}
+              statusMeta={STAGE_META[selected.stage]}
+              subtitle={`${selected.orderId} · ${selected.member} 님`}
+              onClose={() => setSelectedId(null)}
+              actions={
+                <button
+                  type="button"
+                  className={drawer.primaryBtn}
+                  onClick={() => handleStartCollecting(selected.id)}
+                >
+                  택배사 회수 지시
+                </button>
+              }
+              stats={[
+                { label: '승인 일시', value: selected.approvedAt ?? '-' },
+                { label: '승인 담당자', value: selected.assignee },
+                { label: '환불 예정액', value: `${selected.refundAmount.toLocaleString()}원` },
+              ]}
+              fields={[
+                { label: '회수 택배사', value: selected.carrier },
+                { label: '회수지 주소', value: selected.pickupAddress },
+                { label: '고객 연락처', value: selected.phone },
+                { label: '반품 사유', value: `${selected.reasonCategory} - ${selected.reasonDetail}` },
+              ]}
+            >
+              <div className={drawer.sectionTitleLoose}>회수 지시 안내</div>
+              <div style={{ fontSize: '13px', lineHeight: 1.6, color: '#334155', background: '#f8fafc', padding: '12px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                [택배사 회수 지시] 버튼을 클릭하면 지정된 {selected.carrier} 시스템으로 방문 수거 지시가 자동 전송되며 회수 전용 송장이 채번됩니다.
+              </div>
+            </DetailDrawer>
+          ) : null
+        }
+        emptyMessage={<>왼쪽 목록에서 건을 선택하면<br />회수 지시 상세가 여기에 표시됩니다.</>}
+      />
+    </div>
+  );
+}
