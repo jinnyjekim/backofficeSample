@@ -6,7 +6,7 @@ import { APPROVALS, FILTER_KEYS, STATUS_META, fmt, type Approval, type FilterKey
 import { buildApprovalDetail } from './quoteApprovalDetail';
 import { QuoteApprovalDetailDrawer } from './QuoteApprovalDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton, SplitPaneLayout } from '../../components/common';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '73px 1fr 92px 52px 55px 63px 66px 100px 56px';
 const GRID_MIN_WIDTH = '1020px';
@@ -120,7 +120,8 @@ export function QuoteApprovalPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.headTop}>
+      <div className={styles.scrollArea}>
+        <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
               <div className={styles.title}>견적 승인</div>
@@ -193,26 +194,23 @@ export function QuoteApprovalPage() {
               </select>
             </div>
           </div>
-      </div>
+        </div>
 
-      <SplitPaneLayout
-        list={
-          <div className={styles.gridWrap}>
-            <DataGrid
-              columns={GRID_COLUMNS}
-              rows={rows}
-              gridTemplate={GRID_TEMPLATE}
-              minWidth={GRID_MIN_WIDTH}
-              showPagination
-              pages={pages}
-              empty={rows.length === 0}
-              emptyText="현재 처리해야 할 승인 요청이 없습니다."
-            />
-          </div>
-        }
-        detail={detail ? <QuoteApprovalDetailDrawer detail={detail} onTabChange={setActiveTab} /> : null}
-        emptyMessage={<>왼쪽 목록에서 견적을 선택하면<br />승인 검토 상세가 여기에 표시됩니다.</>}
-      />
+        <div className={styles.gridWrap}>
+          <DataGrid
+            columns={GRID_COLUMNS}
+            rows={rows}
+            gridTemplate={GRID_TEMPLATE}
+            minWidth={GRID_MIN_WIDTH}
+            showPagination
+            pages={pages}
+            empty={rows.length === 0}
+            emptyText="현재 처리해야 할 승인 요청이 없습니다."
+          />
+        </div>
+
+        {detail && <QuoteApprovalDetailDrawer detail={detail} onTabChange={setActiveTab} />}
+      </div>
     </div>
   );
 }

@@ -240,6 +240,7 @@
   top: 0;
   right: 0;
   bottom: 0;
+  width: min(560px, 92vw);
   z-index: 20;
   background: #fff;
   border-left: 1px solid rgba(0, 0, 0, 0.08);

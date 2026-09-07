@@ -272,6 +272,10 @@ export default function App() {
         <Route path="b2c/points/manual" element={<PointManualGrantPage />} />
         <Route path="b2c/brands/*" element={<Navigate to="/brands" replace />} />
         <Route path="b2c/reviews/*" element={<Navigate to="/reviews" replace />} />
+        <Route path="b2c/inventory/options" element={<InventoryStatusPage initialView="sku" pageTitle="옵션별 재고" pageSubtitle="상품 옵션과 SKU별 현재고·예약재고·판매 가능 재고를 확인합니다." />} />
+        <Route path="b2c/inventory/sold-out" element={<InventoryStatusPage initialQuickFilter="품절" pageTitle="품절 상품" pageSubtitle="판매 가능 재고가 없거나 품절 옵션이 포함된 상품을 확인합니다." />} />
+        <Route path="b2c/inventory/safety-stock" element={<InventoryStatusPage initialSafetyFilter="설정" pageTitle="안전 재고" pageSubtitle="안전재고가 설정된 상품과 현재 판매 가능 수량을 확인합니다." />} />
+        <Route path="b2c/inventory/alerts" element={<InventoryStatusPage alertOnly pageTitle="재고 알림" pageSubtitle="재고 부족 알림이 설정된 상품과 SKU의 현재 상태를 확인합니다." />} />
         <Route path="b2c/inventory/*" element={<Navigate to="/inventory/status" replace />} />
         <Route path="c2c/sales/sellers" element={<SellerListPage />} />
         <Route path="c2c/sales/status" element={<SalesStatusPage />} />

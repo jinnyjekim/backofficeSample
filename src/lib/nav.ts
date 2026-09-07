@@ -375,10 +375,14 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   products_moq: ['서비스 관리 · 상품 관리', '최소 주문수량'],
 
   inventory_status: ['서비스 관리 · 재고 관리', '재고 현황'],
+  inventory_options: ['서비스 관리 · 재고 관리', '옵션별 재고'],
   inventory_inbound: ['서비스 관리 · 재고 관리', '입고 관리'],
   inventory_outbound: ['서비스 관리 · 재고 관리', '재고 출고'],
   inventory_adjust: ['서비스 관리 · 재고 관리', '재고 조정'],
   inventory_history: ['서비스 관리 · 재고 관리', '재고 변동 이력'],
+  inventory_soldout: ['서비스 관리 · 재고 관리', '품절 상품'],
+  inventory_safety: ['서비스 관리 · 재고 관리', '안전 재고'],
+  inventory_alerts: ['서비스 관리 · 재고 관리', '재고 알림'],
 
   quotes_requests: ['서비스 관리 · 견적 관리', '견적 요청'],
   quotes_list: ['서비스 관리 · 견적 관리', '견적서'],
@@ -544,6 +548,10 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/products/min-order-qty')) return 'products_moq';
   if (pathname.startsWith('/products')) return 'products_list';
 
+  if (pathname.startsWith('/b2c/inventory/options')) return 'inventory_options';
+  if (pathname.startsWith('/b2c/inventory/sold-out')) return 'inventory_soldout';
+  if (pathname.startsWith('/b2c/inventory/safety-stock')) return 'inventory_safety';
+  if (pathname.startsWith('/b2c/inventory/alerts')) return 'inventory_alerts';
   if (pathname.startsWith('/inventory/inbound')) return 'inventory_inbound';
   if (pathname.startsWith('/inventory/outbound')) return 'inventory_outbound';
   if (pathname.startsWith('/inventory/adjust')) return 'inventory_adjust';

@@ -131,10 +131,530 @@
   align-items: flex-end !important;
 }
 
+/*
+ * Legacy two-row search filters
+ *
+ * Keep each page's existing fields and filtering behavior, while presenting
+ * the repeated search + secondary-filter structure like the current filter
+ * panel. Pages that already provide a detail-filter control are intentionally
+ * excluded from this compatibility styling.
+ */
+@supports selector(:has(*)) {
+  :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])) {
+    position: relative;
+    overflow: hidden;
+    padding: 10px 10px 0 !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    > :is([class*="searchRow"], [class*="filterRow1"]) {
+    display: flex !important;
+    min-width: 0;
+    align-items: flex-end !important;
+    gap: 8px !important;
+    margin: 0 0 10px !important;
+    /* fixed reset button (68px) + the same 8px gap used by the row */
+    padding-right: 76px;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    > :is([class*="searchRow"], [class*="filterRow1"])
+    > :is([class*="searchInput"], input[type="search"], input[type="text"]):not([class*="date"]) {
+    flex: 1 1 auto !important;
+    min-width: 160px;
+    width: auto !important;
+    max-width: none !important;
+    padding-right: 40px !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    > :is([class*="searchRow"], [class*="filterRow1"])
+    > [class*="searchBtn"] {
+    position: relative;
+    z-index: 1;
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    margin-left: -42px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: transparent !important;
+    font-size: 0 !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    > :is([class*="searchRow"], [class*="filterRow1"])
+    > [class*="searchBtn"]::before {
+    content: "";
+    display: block;
+    width: 14px;
+    height: 14px;
+    margin: auto;
+    background: var(--common-text-muted);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]) {
+    display: flex !important;
+    min-height: 62px;
+    margin: 0 -10px !important;
+    padding: 10px !important;
+    border-top: 1px solid var(--common-border) !important;
+    background: var(--common-bg-subtle);
+    align-items: flex-end !important;
+    gap: 8px !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])
+    > :is([class*="clearBtn"], [class*="resetBtn"]) {
+    position: absolute;
+    /* align with the search controls, not with the label above them */
+    top: 28px;
+    right: 10px;
+    display: inline-flex;
+    flex: 0 0 68px;
+    width: 68px !important;
+    min-width: 68px;
+    height: 34px !important;
+    padding: 0 6px !important;
+    border: 1px solid var(--common-border) !important;
+    border-radius: 8px !important;
+    background: var(--common-bg) !important;
+    color: var(--common-text-disabled) !important;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 11.5px !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    opacity: 1 !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])
+    > :is([class*="clearBtn"], [class*="resetBtn"]):hover {
+    border-color: var(--common-border-strong) !important;
+    color: var(--common-text-sub) !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])
+    > :is([class*="clearBtn"], [class*="resetBtn"])::before {
+    content: "";
+    display: block;
+    flex: 0 0 13px;
+    width: 13px;
+    height: 13px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+}
+
+/* Inventory status (product / option), inbound and outbound filters. */
+@supports selector(:has(*)) {
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"]) {
+    position: relative;
+    overflow: hidden;
+    padding: 10px 10px 0 !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="filterRow1"] {
+    display: flex !important;
+    min-width: 0;
+    margin: 0 0 10px !important;
+    padding-right: 174px;
+    align-items: flex-end !important;
+    gap: 8px !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="filterRow1"]
+    > [class*="searchInput"] {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 160px;
+    max-width: none !important;
+    padding-right: 40px !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="filterRow1"]
+    > [class*="searchBtn"] {
+    position: relative;
+    z-index: 1;
+    width: 34px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    margin-left: -42px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: transparent !important;
+    font-size: 0 !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="filterRow1"]
+    > [class*="searchBtn"]::before {
+    content: "";
+    display: block;
+    width: 14px;
+    height: 14px;
+    margin: auto;
+    background: var(--common-text-muted);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="filterRow2"] {
+    display: flex !important;
+    min-height: 62px;
+    margin: 0 -10px !important;
+    padding: 10px !important;
+    border-top: 1px solid var(--common-border) !important;
+    background: var(--common-bg-subtle);
+    align-items: flex-end !important;
+    gap: 8px !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="filterRow2"]
+    > [class*="detailFilterBtn"] {
+    position: absolute;
+    top: 28px;
+    right: 86px;
+    display: inline-flex;
+    width: 90px !important;
+    min-width: 90px;
+    height: 34px !important;
+    padding: 0 8px !important;
+    border: 1px solid var(--common-border) !important;
+    border-radius: 8px !important;
+    background: var(--common-bg) !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 11.5px !important;
+    font-weight: 500 !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="filterRow2"]
+    > [class*="resetBtn"] {
+    position: absolute;
+    top: 28px;
+    right: 10px;
+    display: inline-flex;
+    flex: 0 0 68px;
+    width: 68px !important;
+    min-width: 68px;
+    height: 34px !important;
+    padding: 0 6px !important;
+    border: 1px solid var(--common-border) !important;
+    border-radius: 8px !important;
+    background: var(--common-bg) !important;
+    color: var(--common-text-disabled) !important;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 0 !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    opacity: 1 !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="filterRow2"]
+    > [class*="resetBtn"]::before {
+    content: "";
+    display: block;
+    flex: 0 0 13px;
+    width: 13px;
+    height: 13px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="filterRow2"]
+    > [class*="resetBtn"]::after {
+    content: "초기화";
+    font-size: 11.5px;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="advancedFilters"] {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    left: 690px;
+    height: 52px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent;
+    align-items: flex-end !important;
+    gap: 8px !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow2"] > label:nth-of-type(6)):has(> [class*="advancedFilters"])
+    > [class*="advancedFilters"] {
+    left: 826px;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="advancedFilters"]
+    > label {
+    position: relative;
+    height: 52px;
+    padding-top: 18px;
+    align-items: center;
+    gap: 7px;
+    font-size: 0 !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="advancedFilters"]
+    > label::before {
+    position: absolute;
+    top: 0;
+    left: 1px;
+    color: var(--common-text-muted);
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    > [class*="advancedFilters"]
+    > label:first-child::before {
+    content: "예정일";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    > [class*="advancedFilters"]
+    > label:nth-child(2)::before {
+    content: "담당자";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    > [class*="advancedFilters"]
+    > label:nth-child(3)::before {
+    content: "실제 입고일";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    > [class*="advancedFilters"]
+    > label:nth-child(2) {
+    flex: 0 0 128px;
+    width: 128px;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    > [class*="advancedFilters"]
+    > label:nth-child(2)
+    > select {
+    width: 100%;
+    min-width: 0;
+    height: 34px;
+    padding-right: 28px;
+    border: 1px solid var(--common-border);
+    border-radius: 8px;
+    background-color: var(--common-bg);
+    color: var(--common-text-sub);
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):has(> label:nth-child(3)))
+    > [class*="advancedFilters"]
+    > label:nth-child(1)::before {
+    content: "안전재고";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):has(> label:nth-child(3)))
+    > [class*="advancedFilters"]
+    > label:nth-child(2)::before {
+    content: "판매 가능 최소";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):has(> label:nth-child(3)))
+    > [class*="advancedFilters"]
+    > label:nth-child(3)::before {
+    content: "판매 가능 최대";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):not(:has(> label:nth-child(3))))
+    > [class*="advancedFilters"]
+    > label:nth-child(1)::before {
+    content: "변동일";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):not(:has(> label:nth-child(3))))
+    > [class*="advancedFilters"]
+    > label:nth-child(2)::before {
+    content: "변동 수량";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="advancedFilters"]
+    > label
+    > span {
+    display: inline-flex;
+    height: 34px;
+    align-items: center;
+    color: var(--common-text-muted);
+    font-size: 13px;
+    line-height: 1;
+  }
+}
+
+/* Keep the inventory adjustment processed-date beside the handler filter. */
+@supports selector(:has(*)) {
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    > [class*="advancedFilters"] {
+    position: absolute;
+    bottom: 10px;
+    left: 690px;
+    height: 52px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    > [class*="advancedFilters"]
+    > label {
+    position: relative;
+    height: 52px;
+    padding-top: 18px;
+    align-items: center;
+    gap: 7px;
+    font-size: 0 !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    > [class*="advancedFilters"]
+    > label::before {
+    content: "처리일";
+    position: absolute;
+    top: 0;
+    left: 1px;
+    color: var(--common-text-muted);
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    > [class*="advancedFilters"]
+    > label
+    > span {
+    display: inline-flex;
+    height: 34px;
+    align-items: center;
+    color: var(--common-text-muted);
+    font-size: 13px;
+    line-height: 1;
+  }
+}
+
+@media (max-width: 1000px) {
+  @supports selector(:has(*)) {
+  section:has([class*="definitionStrip"])
+      [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+      > [class*="advancedFilters"] {
+      position: static;
+      height: auto;
+      margin: 0 -10px !important;
+      padding: 10px !important;
+      border-top: 1px solid var(--common-border) !important;
+    }
+  }
+}
+
+@media (max-width: 1300px) {
+  @supports selector(:has(*)) {
+  section:has([class*="definitionStrip"])
+      [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+      > [class*="advancedFilters"] {
+      position: static;
+      height: auto;
+      margin: 0 -10px !important;
+      padding: 10px !important;
+      border-top: 1px solid var(--common-border) !important;
+      background: var(--common-bg-subtle);
+      flex-wrap: wrap;
+    }
+  }
+}
+
 @media (max-width: 720px) {
   .globalFilterField {
     flex: 1 1 140px;
     max-width: none;
+  }
+
+  @supports selector(:has(*)) {
+    :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+      > :is([class*="searchRow"], [class*="filterRow1"]) {
+      flex-wrap: wrap;
+      padding-right: 0;
+    }
+
+    :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+      > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])
+      > :is([class*="clearBtn"], [class*="resetBtn"]) {
+      position: static;
+      margin-left: auto;
+    }
+
+  section:has([class*="definitionStrip"])
+      [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+      > [class*="filterRow1"] {
+      flex-wrap: wrap;
+      padding-right: 0;
+    }
+
+  section:has([class*="definitionStrip"])
+      [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+      > [class*="filterRow2"]
+      > :is([class*="detailFilterBtn"], [class*="resetBtn"]) {
+      position: static;
+    }
   }
 }
 
