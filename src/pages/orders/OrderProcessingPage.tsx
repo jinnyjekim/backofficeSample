@@ -13,7 +13,7 @@ import {
   type ProcessingOrder,
 } from './orderProcessingData';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton, SplitPaneLayout } from '../../components/common';
+import { CommonButton } from '../../components/common';
 
 const GRID_TEMPLATE = '70px 1fr 1fr 88px 76px 100px 46px 64px 46px 60px';
 const GRID_COLUMNS: GridColumn[] = [
@@ -206,41 +206,35 @@ export function OrderProcessingPage() {
           </div>
         </div>
 
-      <SplitPaneLayout
-        list={
-          <div className={styles.gridWrap}>
-            <DataGrid
-              columns={GRID_COLUMNS}
-              rows={rows}
-              gridTemplate={GRID_TEMPLATE}
-              minWidth="990px"
-              showPagination
-              pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
-              empty={rows.length === 0}
-              emptyText="현재 처리 대기 중인 주문이 없습니다"
-            />
-          </div>
-        }
-        detail={
-          selected ? (
-            <OrderProcessingDetailDrawer
-              order={selected}
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-              onClose={() => setSelectedId(null)}
-              showHoldPanel={showHoldPanel}
-              showCompletePanel={showCompletePanel}
-              onToggleHold={() => setShowHoldPanel((v) => !v)}
-              onToggleComplete={() => setShowCompletePanel((v) => !v)}
-              onStartProcess={startProcess}
-              onResume={resume}
-              onConfirmHold={confirmHold}
-              onConfirmComplete={confirmComplete}
-            />
-          ) : null
-        }
-        emptyMessage={<>왼쪽 목록에서 건을 선택하면<br />처리 상세가 여기에 표시됩니다.</>}
-      />
+      <div className={styles.gridWrap}>
+        <DataGrid
+          columns={GRID_COLUMNS}
+          rows={rows}
+          gridTemplate={GRID_TEMPLATE}
+          minWidth="990px"
+          showPagination
+          pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
+          empty={rows.length === 0}
+          emptyText="현재 처리 대기 중인 주문이 없습니다"
+        />
+      </div>
+
+      {selected && (
+        <OrderProcessingDetailDrawer
+          order={selected}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          onClose={() => setSelectedId(null)}
+          showHoldPanel={showHoldPanel}
+          showCompletePanel={showCompletePanel}
+          onToggleHold={() => setShowHoldPanel((v) => !v)}
+          onToggleComplete={() => setShowCompletePanel((v) => !v)}
+          onStartProcess={startProcess}
+          onResume={resume}
+          onConfirmHold={confirmHold}
+          onConfirmComplete={confirmComplete}
+        />
+      )}
     </div>
   );
 }

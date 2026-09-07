@@ -23,6 +23,19 @@
   margin-bottom: 16px;
 }
 
+.filterHeadRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filterHeadRow > .quickFilters,
+.filterHeadRow > .filterRow1 {
+  margin-bottom: 0;
+}
+
 .quickFilters {
   display: flex;
   gap: 8px;

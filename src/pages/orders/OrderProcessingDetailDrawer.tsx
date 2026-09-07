@@ -1,5 +1,6 @@
+import { useRef } from 'react';
 import styles from './ordersShared.module.css';
-import { SplitPanePanel } from '../../components/common';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import { fmt, isDelayed, STATUS_META, type ProcessingOrder } from './orderProcessingData';
 
 const TABS: [string, string][] = [
@@ -86,8 +87,11 @@ export function OrderProcessingDetailDrawer({
     { label: '납품', value: o.status === '처리 완료' ? 'DL-00291' : '없음', color: o.status === '처리 완료' ? 'var(--accent)' : '#71717a' },
   ];
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <SplitPanePanel>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.asideTop}>
         <div className={styles.headRowD}>
           <div className={styles.headMain}>
@@ -299,6 +303,6 @@ export function OrderProcessingDetailDrawer({
           </div>
         )}
       </div>
-    </SplitPanePanel>
+    </aside>
   );
 }

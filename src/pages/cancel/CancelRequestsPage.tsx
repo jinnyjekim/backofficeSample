@@ -5,7 +5,7 @@ import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { DetailDrawer } from '../c2c/sales/SalesActivityShared';
 import drawer from '../ops/opsDrawerShared.module.css';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton, showToast, SplitPaneLayout } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import { CANCEL_REASON_META, CANCEL_STAGE_META, INITIAL_CANCELS, type CancelItem } from './cancelData';
 
@@ -202,25 +202,21 @@ export function CancelRequestsPage() {
         </div>
       </header>
 
-      <SplitPaneLayout
-        list={
-          <div className={styles.tableWrap}>
-            <DataGrid
-              columns={GRID_COLUMNS}
-              rows={rows}
-              gridTemplate={GRID_TEMPLATE}
-              minWidth="990px"
-              showPagination
-              pages={[{ label: '1', active: true }]}
-              empty={rows.length === 0}
-              emptyText="접수된 취소 요청 건이 없습니다."
-            />
-          </div>
-        }
-        detail={
-          selected && (
+      <div className={styles.tableWrap}>
+        <DataGrid
+          columns={GRID_COLUMNS}
+          rows={rows}
+          gridTemplate={GRID_TEMPLATE}
+          minWidth="990px"
+          showPagination
+          pages={[{ label: '1', active: true }]}
+          empty={rows.length === 0}
+          emptyText="접수된 취소 요청 건이 없습니다."
+        />
+      </div>
+
+      {selected && (
         <DetailDrawer
-          variant="panel"
           eyebrow={`취소 요청 심사 · ${selected.id}`}
           title={`${selected.product}`}
           status={selected.stage}
@@ -262,10 +258,7 @@ export function CancelRequestsPage() {
             {selected.reasonDetail}
           </div>
         </DetailDrawer>
-          )
-        }
-        emptyMessage={<>왼쪽 목록에서 건을 선택하면<br />취소 요청 심사 상세가 여기에 표시됩니다.</>}
-      />
+      )}
     </div>
   );
 }

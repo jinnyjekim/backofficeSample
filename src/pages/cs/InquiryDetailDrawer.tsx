@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './CsInquiriesPage.module.css';
-import { SplitPanePanel } from '../../components/common';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   getSlaInfo,
   inquiryIssues,
@@ -57,8 +57,11 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
     setConfirmSend(true);
   };
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <SplitPanePanel>
+    <aside ref={asideRef} className={drawer.aside}>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>
@@ -234,6 +237,6 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
           </div>
         </div>
       )}
-    </SplitPanePanel>
+    </aside>
   );
 }

@@ -16,7 +16,7 @@ import {
   ResultBar,
 } from "../../c2c/sales/SalesActivityShared";
 import styles from "./CommerceOperations.module.css";
-import { CommonButton, SplitPaneLayout } from "../../../components/common";
+import { CommonButton } from "../../../components/common";
 import { ExcelDownloadButton } from "../../../components/common/ExcelDownloadButton";
 
 type ClaimKind = "cancel" | "return";
@@ -199,11 +199,9 @@ const pages = [{ label: "‹" }, { label: "1", active: true }, { label: "›" }]
 function ClaimPage({
   kind,
   history = false,
-  splitLayout = false,
 }: {
   kind: ClaimKind;
   history?: boolean;
-  splitLayout?: boolean;
 }) {
   const config = CLAIM_CONFIG[kind];
   const [searchParams] = useSearchParams();
@@ -328,30 +326,30 @@ function ClaimPage({
         ]}
       />
       <ControlArea>
-        <div className={shared.quickFilters}>
-          {["전체", ...config.stages].map((status) => {
-            const active = quick === status;
-            return (
-              <CommonButton
-                key={status}
-                variant={active ? "primary-light" : "secondary"}
-                size="md"
-                className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
-                onClick={() => setQuick(status)}
-              >
-                <span className={shared.qfLabel}>{status}</span>
-                <span className={shared.qfCount}>
-                  {
-                    records.filter(
-                      (item) => status === "전체" || item.stage === status,
-                    ).length
-                  }
-                </span>
-              </CommonButton>
-            );
-          })}
-        </div>
-        <FilterBox>
+        <div className={shared.filterHeadRow}>
+          <div className={shared.quickFilters}>
+            {["전체", ...config.stages].map((status) => {
+              const active = quick === status;
+              return (
+                <CommonButton
+                  key={status}
+                  variant={active ? "primary-light" : "secondary"}
+                  size="md"
+                  className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
+                  onClick={() => setQuick(status)}
+                >
+                  <span className={shared.qfLabel}>{status}</span>
+                  <span className={shared.qfCount}>
+                    {
+                      records.filter(
+                        (item) => status === "전체" || item.stage === status,
+                      ).length
+                    }
+                  </span>
+                </CommonButton>
+              );
+            })}
+          </div>
           <form
             className={shared.filterRow1}
             onSubmit={(event) => {
@@ -376,6 +374,8 @@ function ClaimPage({
             />
             <button className={shared.searchBtn}>조회</button>
           </form>
+        </div>
+        <FilterBox>
           <div className={shared.filterRow2}>
             <label className="globalFilterField">
               <span>담당자</span>
@@ -448,7 +448,6 @@ function ClaimPage({
 
         const detailNode = selected ? (
           <DetailDrawer
-            variant={splitLayout ? "panel" : undefined}
             eyebrow={`${config.label} ${history ? "감사 이력" : "처리"} · ${selected.id}`}
             title={selected.product}
             status={selected.stage}
@@ -514,19 +513,7 @@ function ClaimPage({
           </DetailDrawer>
         ) : null;
 
-        return splitLayout ? (
-          <SplitPaneLayout
-            list={listNode}
-            detail={detailNode}
-            emptyMessage={
-              <>
-                왼쪽 목록에서 건을 선택하면
-                <br />
-                처리 상세가 여기에 표시됩니다.
-              </>
-            }
-          />
-        ) : (
+        return (
           <>
             {listNode}
             {detailNode}

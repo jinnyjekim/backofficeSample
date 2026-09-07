@@ -225,29 +225,32 @@ export function BrandsListPage() {
           </div>
         </div>
 
-        <div className={styles.quickFilters}>
-          {QUICK_FILTERS.map((f) => {
-            const active = quickFilter === f;
-            return (
-              <CommonButton
-                key={f}
-                variant={active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
-                onClick={() => setQuickFilter(f)}
-              >
-                <span className={styles.qfLabel}>{f}</span>
-                <span className={styles.qfCount}>{counts[f] ?? 0}</span>
-              </CommonButton>
-            );
-          })}
-        </div>
+        <div className={styles.filterHeadRow}>
+          <div className={styles.quickFilters}>
+            {QUICK_FILTERS.map((f) => {
+              const active = quickFilter === f;
+              return (
+                <CommonButton
+                  key={f}
+                  variant={active ? 'primary-light' : 'secondary'}
+                  size="md"
+                  className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                  onClick={() => setQuickFilter(f)}
+                >
+                  <span className={styles.qfLabel}>{f}</span>
+                  <span className={styles.qfCount}>{counts[f] ?? 0}</span>
+                </CommonButton>
+              );
+            })}
+          </div>
 
-        <div className={styles.filterBox}>
           <form className={styles.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
             <input className={styles.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="브랜드명 또는 브랜드 코드 검색" />
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
+        </div>
+
+        <div className={styles.filterBox}>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>사용 상태</span><select aria-label="사용 상태" className={styles.selectSm} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as BrandStatus | '')}>
               <option value="">사용 상태 전체</option>

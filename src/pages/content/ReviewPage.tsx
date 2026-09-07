@@ -11,7 +11,7 @@ import { REJECT_REASONS, REVIEW_ITEMS, STATUS_PILL, type ReviewItem, type Review
 import { CONTENT_ITEMS } from '../../data/content';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType } from './contentBusiness';
-import { CommonButton, SplitPaneLayout } from '../../components/common';
+import { CommonButton } from '../../components/common';
 import { ReviewDetailPanel } from './ReviewDetailPanel';
 
 const TABS: Array<ReviewItemStatus | '전체'> = ['대기', '검수중', '승인', '반려', '전체'];
@@ -399,70 +399,63 @@ export function ReviewPage() {
           </div>
         </div>
 
-        <SplitPaneLayout
-          detailWidth="min(860px, 58%)"
-          list={
-            <div className={`${sh.listArea} ${filterStyles.listArea}`}>
-              <div className={sh.toolbarRow}>
-                {sel_.length > 0 ? (
-                  <div className={sh.selBar}>
-                    <span className={sh.selCount}>✓ {sel_.length}건 선택됨</span>
-                    <button type="button" className={sh.selBtn} onClick={assignSelected}>담당자 지정</button>
-                    <button type="button" className={sh.selBtnGreen} onClick={approveSelected}>일괄 승인</button>
-                    <div className={sh.rowSpacer} />
-                    <button type="button" className={sh.clearSelBtn} onClick={() => setSel([])}>선택 해제</button>
-                  </div>
-                ) : (
-                  <div className={sh.noSelBar}>
-                    <span className={sh.totalLabel}>{`총 ${list.length.toLocaleString('ko-KR')}건`}</span>
-                    <div className={sh.rowSpacer} />
-                    <select className={sh.pageSizeSelect} defaultValue="20개씩 보기">
-                      <option>20개씩 보기</option>
-                      <option>50개씩 보기</option>
-                    </select>
-                  </div>
-                )}
+        <div className={`${sh.listArea} ${filterStyles.listArea}`}>
+          <div className={sh.toolbarRow}>
+            {sel_.length > 0 ? (
+              <div className={sh.selBar}>
+                <span className={sh.selCount}>✓ {sel_.length}건 선택됨</span>
+                <button type="button" className={sh.selBtn} onClick={assignSelected}>담당자 지정</button>
+                <button type="button" className={sh.selBtnGreen} onClick={approveSelected}>일괄 승인</button>
+                <div className={sh.rowSpacer} />
+                <button type="button" className={sh.clearSelBtn} onClick={() => setSel([])}>선택 해제</button>
               </div>
+            ) : (
+              <div className={sh.noSelBar}>
+                <span className={sh.totalLabel}>{`총 ${list.length.toLocaleString('ko-KR')}건`}</span>
+                <div className={sh.rowSpacer} />
+                <select className={sh.pageSizeSelect} defaultValue="20개씩 보기">
+                  <option>20개씩 보기</option>
+                  <option>50개씩 보기</option>
+                </select>
+              </div>
+            )}
+          </div>
 
-              <div className={sh.gridArea}>
-                <DataGrid
-                  columns={columns}
-                  rows={rows}
-                  gridTemplate="minmax(220px,2fr) 67px 90px 100px 49px 56px 49px 76px"
-                  minWidth="850px"
-                  selectable
-                  allSelected={list.length > 0 && sel_.length === list.length}
-                  onToggleAll={() => setSel(sel_.length === list.length ? [] : list.map((it) => it.id))}
-                  empty={list.length === 0}
-                  emptyText={emptyAll ? '검수 요청이 없습니다.' : '검수 대기 중인 콘텐츠가 없습니다.'}
-                  emptySubtext={emptyAll ? undefined : '다른 검색어나 필터 조건을 사용해 주세요.'}
-                  emptyActionLabel={emptySearch ? '필터 초기화' : undefined}
-                  emptyActionClick={resetAll}
-                  fillHeight
-                  stickyHeader
-                />
-              </div>
-            </div>
-          }
-          detail={
-            det ? (
-              <ReviewDetailPanel
-                det={det}
-                detCd={detCd}
-                onClose={() => setDetailId(null)}
-                onStartReview={() => startReview(det)}
-                onToggleChecklist={(i) => setItem(det.id, { checklist: det.checklist.map((c, ci) => (ci === i ? !c : c)) })}
-                onMemoChange={(memo) => setItem(det.id, { memo })}
-                onOpenApprove={() => setModal({ kind: 'approve', id: det.id, memo: det.memo, reason: '', detail: '', show: true })}
-                onOpenReject={() => setModal({ kind: 'reject', id: det.id, memo: '', reason: '', detail: '', show: true })}
-                onOpenHold={() => setModal({ kind: 'hold', id: det.id, memo: '', reason: '', detail: '', show: true })}
-                hasNext={nextPending(det.id) !== null}
-                onGoNext={() => { const n = nextPending(det.id); setDetailId(n ? n.id : null); }}
-              />
-            ) : null
-          }
-          emptyMessage={<>왼쪽 목록에서 검수 건을 선택하면<br />상세 내용과 처리 화면이 여기에 표시됩니다.</>}
-        />
+          <div className={sh.gridArea}>
+            <DataGrid
+              columns={columns}
+              rows={rows}
+              gridTemplate="minmax(220px,2fr) 67px 90px 100px 49px 56px 49px 76px"
+              minWidth="850px"
+              selectable
+              allSelected={list.length > 0 && sel_.length === list.length}
+              onToggleAll={() => setSel(sel_.length === list.length ? [] : list.map((it) => it.id))}
+              empty={list.length === 0}
+              emptyText={emptyAll ? '검수 요청이 없습니다.' : '검수 대기 중인 콘텐츠가 없습니다.'}
+              emptySubtext={emptyAll ? undefined : '다른 검색어나 필터 조건을 사용해 주세요.'}
+              emptyActionLabel={emptySearch ? '필터 초기화' : undefined}
+              emptyActionClick={resetAll}
+              fillHeight
+              stickyHeader
+            />
+          </div>
+        </div>
+
+        {det && (
+          <ReviewDetailPanel
+            det={det}
+            detCd={detCd}
+            onClose={() => setDetailId(null)}
+            onStartReview={() => startReview(det)}
+            onToggleChecklist={(i) => setItem(det.id, { checklist: det.checklist.map((c, ci) => (ci === i ? !c : c)) })}
+            onMemoChange={(memo) => setItem(det.id, { memo })}
+            onOpenApprove={() => setModal({ kind: 'approve', id: det.id, memo: det.memo, reason: '', detail: '', show: true })}
+            onOpenReject={() => setModal({ kind: 'reject', id: det.id, memo: '', reason: '', detail: '', show: true })}
+            onOpenHold={() => setModal({ kind: 'hold', id: det.id, memo: '', reason: '', detail: '', show: true })}
+            hasNext={nextPending(det.id) !== null}
+            onGoNext={() => { const n = nextPending(det.id); setDetailId(n ? n.id : null); }}
+          />
+        )}
       </div>
     </div>
   );

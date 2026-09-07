@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid';
 import type { GridColumn, GridRow } from '../../components/DataGrid/types';
-import { showToast, SplitPaneLayout } from '../../components/common';
+import { showToast } from '../../components/common';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import styles from '../delivery/deliveryShared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
@@ -11,9 +11,53 @@ import { INITIAL_EXCHANGES, matchesExchangeKeyword, type ExchangeItem } from './
 const COLUMNS: GridColumn[] = [{ label: '교환번호' }, { label: '주문번호' }, { label: '고객명' }, { label: '교환상품' }, { label: '변경 옵션' }, { label: '재고상태' }, { label: '준비담당' }, { label: '최근갱신' }];
 
 export function ExchangePreparingPage() {
-  const [items, setItems] = useState<ExchangeItem[]>(INITIAL_EXCHANGES); const [keyword, setKeyword] = useState(''); const [stock, setStock] = useState(''); const [selectedId, setSelectedId] = useState<string | null>(null);
-  const filtered = useMemo(() => items.filter((item) => item.stage === '교환 상품 준비' && (!stock || item.stockStatus.includes(stock)) && matchesExchangeKeyword(item, keyword)), [items, keyword, stock]); const selected = items.find((item) => item.id === selectedId) ?? null;
+  const [items, setItems] = useState<ExchangeItem[]>(INITIAL_EXCHANGES);
+  const [keyword, setKeyword] = useState('');
+  const [stock, setStock] = useState('');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const filtered = useMemo(() => items.filter((item) => item.stage === '교환 상품 준비' && (!stock || item.stockStatus.includes(stock)) && matchesExchangeKeyword(item, keyword)), [items, keyword, stock]);
+  const selected = items.find((item) => item.id === selectedId) ?? null;
   const reship = () => { if (!selected) return; setItems((current) => current.map((item) => item.id === selected.id ? { ...item, stage: '재출고', carrier: 'CJ대한통운', trackingNo: 'C-신규발급', stockStatus: '출고 완료', updatedAt: '2026-09-07 15:20' } : item)); showToast({ message: '교환 상품을 재출고 처리했습니다.', type: 'success' }); setSelectedId(null); };
   const rows: GridRow[] = filtered.map((item) => ({ id: item.id, onClick: () => setSelectedId(item.id), cells: [{ kind: 'text', text: item.id, weight: 600 }, { kind: 'text', text: item.orderId }, { kind: 'text', text: item.member, weight: 600 }, { kind: 'text', text: item.product }, { kind: 'stack', title: item.optionAfter, subtitle: `기존 ${item.optionBefore}` }, { kind: 'badge', text: item.stockStatus, bg: '#f5f3ff', fg: '#7c3aed' }, { kind: 'text', text: item.assignee }, { kind: 'text', text: item.updatedAt, numeric: true }] }));
-  return <div className={styles.page}><header className={styles.header}><div className={styles.headerTop}><div><div className={styles.title}>교환 상품 준비</div><div className={styles.subtitle}>검수를 통과한 교환 건의 대체 재고를 할당하고 출고를 준비합니다.</div></div></div><div className={styles.filterCard}><div className={styles.filterRow1}><label className="globalFilterField"><span>검색 범위</span><select className={styles.selectSm} aria-label="검색 범위"><option>전체</option><option>교환번호</option><option>상품명</option></select></label><input className={styles.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="교환번호 / 주문번호 / 고객명 / 상품명"/><button className={styles.searchBtn}>검색</button></div><div className={styles.filterRow2}><label className="globalFilterField"><span>재고 상태</span><select className={styles.selectSm} value={stock} onChange={(event) => setStock(event.target.value)}><option value="">전체 재고 상태</option><option>피킹</option><option>재고</option></select></label><span className={styles.rowSpacer}/><button className={styles.resetBtn} onClick={() => { setKeyword(''); setStock(''); }}>초기화</button></div></div><div className={styles.resultBar}><span className={styles.resultLabel}>총 {filtered.length}건 출고 준비</span><div className={styles.resultActions}><ExcelDownloadButton data-grid-download/></div></div></header><SplitPaneLayout list={<div className={styles.tableWrap}><DataGrid columns={COLUMNS} rows={rows} gridTemplate="140px 140px 90px minmax(190px,1fr) 140px 110px 100px 130px" minWidth="1010px" empty={!rows.length} emptyText="준비 중인 교환 상품이 없습니다." showPagination pages={[{ label: '1', active: true }]}/></div>} detail={selected ? <ExchangeDetailDrawer item={selected} eyebrow="교환 상품 준비 상세" onClose={() => setSelectedId(null)} actions={<button className={drawer.primaryBtn} onClick={reship}>재출고 처리</button>}/> : null} emptyMessage={<>목록에서 교환 건을 선택하면<br/>재고와 출고 정보를 확인할 수 있습니다.</>}/></div>;
+  return (
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
+          <div>
+            <div className={styles.title}>교환 상품 준비</div>
+            <div className={styles.subtitle}>검수를 통과한 교환 건의 대체 재고를 할당하고 출고를 준비합니다.</div>
+          </div>
+        </div>
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            <label className="globalFilterField"><span>검색 범위</span><select className={styles.selectSm} aria-label="검색 범위"><option>전체</option><option>교환번호</option><option>상품명</option></select></label>
+            <input className={styles.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="교환번호 / 주문번호 / 고객명 / 상품명"/>
+            <button className={styles.searchBtn}>검색</button>
+          </div>
+          <div className={styles.filterRow2}>
+            <label className="globalFilterField"><span>재고 상태</span><select className={styles.selectSm} value={stock} onChange={(event) => setStock(event.target.value)}><option value="">전체 재고 상태</option><option>피킹</option><option>재고</option></select></label>
+            <span className={styles.rowSpacer}/>
+            <button className={styles.resetBtn} onClick={() => { setKeyword(''); setStock(''); }}>초기화</button>
+          </div>
+        </div>
+        <div className={styles.resultBar}>
+          <span className={styles.resultLabel}>총 {filtered.length}건 출고 준비</span>
+          <div className={styles.resultActions}>
+            <ExcelDownloadButton data-grid-download/>
+          </div>
+        </div>
+      </header>
+      <div className={styles.tableWrap}>
+        <DataGrid columns={COLUMNS} rows={rows} gridTemplate="140px 140px 90px minmax(190px,1fr) 140px 110px 100px 130px" minWidth="1010px" empty={!rows.length} emptyText="준비 중인 교환 상품이 없습니다." showPagination pages={[{ label: '1', active: true }]}/>
+      </div>
+      {selected && (
+        <ExchangeDetailDrawer
+          item={selected}
+          eyebrow="교환 상품 준비 상세"
+          onClose={() => setSelectedId(null)}
+          actions={<button className={drawer.primaryBtn} onClick={reship}>재출고 처리</button>}
+        />
+      )}
+    </div>
+  );
 }

@@ -1,9 +1,10 @@
+import { useRef } from 'react';
 import { CHECK_LABELS_BY_BUSINESS, STATUS_PILL, type ReviewItem } from './reviewData';
 import type { ContentItem } from '../../data/content';
 import { ACCENT } from '../../lib/theme';
 import sh from './contentShared.module.css';
 import styles from './ReviewPage.module.css';
-import { SplitPanePanel } from '../../components/common';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 
 interface Props {
   det: ReviewItem;
@@ -36,9 +37,11 @@ export function ReviewDetailPanel({
   const diffEntries = det.diff ? Object.entries(det.diff) : [];
   const stp = STATUS_PILL[det.status];
   const decided = det.status === '승인' || det.status === '반려' || det.status === '보류';
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
 
   return (
-    <SplitPanePanel>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.detailHeader}>
         <button type="button" className={styles.backBtn} onClick={onClose}>닫기</button>
         <div className={styles.detailTitle}>{`검수 상세 · ${det.ctid}`}</div>
@@ -128,6 +131,6 @@ export function ReviewDetailPanel({
           </div>
         </div>
       </div>
-    </SplitPanePanel>
+    </aside>
   );
 }

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid';
 import type { GridColumn, GridRow } from '../../components/DataGrid/types';
-import { CommonButton, showToast, SplitPaneLayout } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { DatePicker } from '../../components/forms/DatePicker';
 import styles from '../delivery/deliveryShared.module.css';
@@ -21,5 +21,58 @@ export function ExchangeRequestsPage() {
   const selected = items.find((item) => item.id === selectedId) ?? null;
   const updateStage = (stage: '교환 승인' | '교환 반려') => { if (!selected) return; setItems((current) => current.map((item) => item.id === selected.id ? { ...item, stage, assignee: 'admin01', updatedAt: '2026-09-07 15:20' } : item)); showToast({ message: `${selected.id} 건을 ${stage} 처리했습니다.`, type: 'success' }); setSelectedId(null); };
   const rows: GridRow[] = filtered.map((item) => ({ id: item.id, onClick: () => setSelectedId(item.id), cells: [{ kind: 'text', text: item.id, weight: 600 }, { kind: 'text', text: item.orderId }, { kind: 'text', text: item.member, weight: 600 }, { kind: 'text', text: item.reason }, { kind: 'stack', title: item.product, subtitle: `${item.optionBefore} → ${item.optionAfter}` }, { kind: 'text', text: formatWon(item.amount), align: 'right', numeric: true, weight: 600 }, { kind: 'text', text: item.requestedAt, numeric: true }] }));
-  return <div className={styles.page}><header className={styles.header}><div className={styles.headerTop}><div><div className={styles.title}>교환 요청</div><div className={styles.subtitle}>고객이 신청한 신규 교환 건의 재고와 교환 가능 조건을 심사합니다.</div></div></div><div className={styles.quickFilters}>{['전체','사이즈','색상','불량'].map((value) => <CommonButton key={value} variant={reason === value ? 'primary-light' : 'secondary'} size="md" className={`${styles.qfBtn} ${reason === value ? styles.active : ''}`} onClick={() => setReason(value)}><span className={styles.qfLabel}>{value}</span><span className={styles.qfCount}>{requests.filter((item) => value === '전체' || item.reason.includes(value)).length}</span></CommonButton>)}</div><div className={styles.filterCard}><div className={styles.filterRow1}><label className="globalFilterField"><span>검색 범위</span><select className={styles.selectSm} aria-label="검색 범위"><option>전체</option><option>교환번호</option><option>주문번호</option><option>고객명</option></select></label><input className={styles.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="교환번호 / 주문번호 / 고객명 / 상품명"/><button className={styles.searchBtn}>검색</button></div><div className={styles.filterRow2}><label className={styles.dateFilterField}><span>신청일</span><span className={styles.dateRange}><DatePicker defaultValue="2026-09-01"/><span className={styles.dateSeparator}>~</span><DatePicker defaultValue="2026-09-07"/></span></label><span className={styles.rowSpacer}/><button className={styles.resetBtn} onClick={() => { setReason('전체'); setKeyword(''); }}>초기화</button></div></div><div className={styles.resultBar}><span className={styles.resultLabel}>총 {filtered.length}건 심사 대기</span><div className={styles.resultActions}><ExcelDownloadButton data-grid-download/></div></div></header><SplitPaneLayout list={<div className={styles.tableWrap}><DataGrid columns={COLUMNS} rows={rows} gridTemplate="140px 140px 90px 110px minmax(220px,1fr) 100px 130px" minWidth="990px" empty={!rows.length} emptyText="접수된 교환 요청이 없습니다." showPagination pages={[{ label: '1', active: true }]}/></div>} detail={selected ? <ExchangeDetailDrawer item={selected} eyebrow="교환 요청 심사" onClose={() => setSelectedId(null)} actions={<><button className={drawer.primaryBtn} onClick={() => updateStage('교환 승인')}>교환 승인</button><button className={drawer.dangerBtn} onClick={() => updateStage('교환 반려')}>교환 반려</button></>}/> : null} emptyMessage={<>왼쪽 목록에서 건을 선택하면<br/>교환 요청 상세가 표시됩니다.</>}/></div>;
+  return (
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
+          <div>
+            <div className={styles.title}>교환 요청</div>
+            <div className={styles.subtitle}>고객이 신청한 신규 교환 건의 재고와 교환 가능 조건을 심사합니다.</div>
+          </div>
+        </div>
+        <div className={styles.quickFilters}>
+          {['전체','사이즈','색상','불량'].map((value) => (
+            <CommonButton key={value} variant={reason === value ? 'primary-light' : 'secondary'} size="md" className={`${styles.qfBtn} ${reason === value ? styles.active : ''}`} onClick={() => setReason(value)}>
+              <span className={styles.qfLabel}>{value}</span>
+              <span className={styles.qfCount}>{requests.filter((item) => value === '전체' || item.reason.includes(value)).length}</span>
+            </CommonButton>
+          ))}
+        </div>
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            <label className="globalFilterField"><span>검색 범위</span><select className={styles.selectSm} aria-label="검색 범위"><option>전체</option><option>교환번호</option><option>주문번호</option><option>고객명</option></select></label>
+            <input className={styles.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="교환번호 / 주문번호 / 고객명 / 상품명"/>
+            <button className={styles.searchBtn}>검색</button>
+          </div>
+          <div className={styles.filterRow2}>
+            <label className={styles.dateFilterField}><span>신청일</span><span className={styles.dateRange}><DatePicker defaultValue="2026-09-01"/><span className={styles.dateSeparator}>~</span><DatePicker defaultValue="2026-09-07"/></span></label>
+            <span className={styles.rowSpacer}/>
+            <button className={styles.resetBtn} onClick={() => { setReason('전체'); setKeyword(''); }}>초기화</button>
+          </div>
+        </div>
+        <div className={styles.resultBar}>
+          <span className={styles.resultLabel}>총 {filtered.length}건 심사 대기</span>
+          <div className={styles.resultActions}>
+            <ExcelDownloadButton data-grid-download/>
+          </div>
+        </div>
+      </header>
+      <div className={styles.tableWrap}>
+        <DataGrid columns={COLUMNS} rows={rows} gridTemplate="140px 140px 90px 110px minmax(220px,1fr) 100px 130px" minWidth="990px" empty={!rows.length} emptyText="접수된 교환 요청이 없습니다." showPagination pages={[{ label: '1', active: true }]}/>
+      </div>
+      {selected && (
+        <ExchangeDetailDrawer
+          item={selected}
+          eyebrow="교환 요청 심사"
+          onClose={() => setSelectedId(null)}
+          actions={
+            <>
+              <button className={drawer.primaryBtn} onClick={() => updateStage('교환 승인')}>교환 승인</button>
+              <button className={drawer.dangerBtn} onClick={() => updateStage('교환 반려')}>교환 반려</button>
+            </>
+          }
+        />
+      )}
+    </div>
+  );
 }

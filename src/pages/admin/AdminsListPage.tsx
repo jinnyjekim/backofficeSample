@@ -213,25 +213,25 @@ export function AdminsListPage() {
           <button type="button" className={styles.registerBtn} onClick={() => setEditor({ mode: 'create' })}>＋ 관리자 등록</button>
         </div>
 
-        <div className={styles.quickFilters}>
-          {STATUS_QUICK_FILTERS.map((s) => {
-            const active = s === '전체' ? statusFilter === '' : statusFilter === s;
-            return (
-              <CommonButton
-                key={s}
-                variant={active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
-                onClick={() => setStatusFilter(s === '전체' ? '' : s)}
-              >
-                <span className={styles.qfLabel}>{s}</span>
-                <span className={styles.qfCount}>{statusCounts[s] ?? 0}</span>
-              </CommonButton>
-            );
-          })}
-        </div>
+        <div className={styles.filterHeadRow}>
+          <div className={styles.quickFilters}>
+            {STATUS_QUICK_FILTERS.map((s) => {
+              const active = s === '전체' ? statusFilter === '' : statusFilter === s;
+              return (
+                <CommonButton
+                  key={s}
+                  variant={active ? 'primary-light' : 'secondary'}
+                  size="md"
+                  className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                  onClick={() => setStatusFilter(s === '전체' ? '' : s)}
+                >
+                  <span className={styles.qfLabel}>{s}</span>
+                  <span className={styles.qfCount}>{statusCounts[s] ?? 0}</span>
+                </CommonButton>
+              );
+            })}
+          </div>
 
-        <div className={styles.filterBox}>
           <form className={styles.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
             <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} value={scope} onChange={(e) => setScope(e.target.value as SearchScope)}>
               {SEARCH_SCOPES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -239,6 +239,9 @@ export function AdminsListPage() {
             <input className={styles.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="검색어를 입력하세요" />
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
+        </div>
+
+        <div className={styles.filterBox}>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>역할</span><select aria-label="역할" className={styles.selectSm} value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
               <option value="">역할 전체</option>

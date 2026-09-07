@@ -13,7 +13,6 @@ interface ExchangeDetailDrawerProps {
 export function ExchangeDetailDrawer({ item, eyebrow, onClose, actions }: ExchangeDetailDrawerProps) {
   return (
     <DetailDrawer
-      variant="panel"
       eyebrow={`${eyebrow} · ${item.id}`}
       title={item.product}
       status={item.stage}

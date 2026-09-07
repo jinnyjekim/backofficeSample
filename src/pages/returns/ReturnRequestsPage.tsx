@@ -5,7 +5,7 @@ import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { DetailDrawer } from '../c2c/sales/SalesActivityShared';
 import drawer from '../ops/opsDrawerShared.module.css';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton, showToast, SplitPaneLayout } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import { INITIAL_RETURNS, REASON_META, STAGE_META, type ReturnItem } from './returnsData';
 
@@ -187,71 +187,64 @@ export function ReturnRequestsPage() {
         </div>
       </header>
 
-      <SplitPaneLayout
-        list={
-          <div className={styles.tableWrap}>
-            <DataGrid
-              columns={GRID_COLUMNS}
-              rows={rows}
-              gridTemplate={GRID_TEMPLATE}
-              minWidth="990px"
-              showPagination
-              pages={[{ label: '1', active: true }]}
-              empty={rows.length === 0}
-              emptyText="접수된 반품 요청 건이 없습니다."
-            />
+      <div className={styles.tableWrap}>
+        <DataGrid
+          columns={GRID_COLUMNS}
+          rows={rows}
+          gridTemplate={GRID_TEMPLATE}
+          minWidth="990px"
+          showPagination
+          pages={[{ label: '1', active: true }]}
+          empty={rows.length === 0}
+          emptyText="접수된 반품 요청 건이 없습니다."
+        />
+      </div>
+
+      {selected && (
+        <DetailDrawer
+          eyebrow={`반품 요청 심사 · ${selected.id}`}
+          title={`${selected.product}`}
+          status={selected.stage}
+          statusMeta={STAGE_META[selected.stage]}
+          subtitle={`${selected.orderId} · ${selected.member} 님 (${selected.phone})`}
+          onClose={() => setSelectedId(null)}
+          actions={
+            <>
+              <button
+                type="button"
+                className={drawer.primaryBtn}
+                onClick={() => handleApprove(selected.id)}
+              >
+                반품 승인
+              </button>
+              <button
+                type="button"
+                className={drawer.dangerBtn}
+                onClick={() => handleReject(selected.id)}
+              >
+                반품 반려
+              </button>
+            </>
+          }
+          stats={[
+            { label: '반품 사유', value: selected.reasonCategory },
+            { label: '결제 금액', value: `${selected.amount.toLocaleString()}원` },
+            { label: '환불 예정', value: `${selected.refundAmount.toLocaleString()}원` },
+          ]}
+          fields={[
+            { label: '수량', value: `${selected.quantity}개` },
+            { label: '반품 배송비 차감', value: selected.deductFee > 0 ? `${selected.deductFee.toLocaleString()}원 (고객 부담)` : '무료 (판매자 부담)' },
+            { label: '회수지 주소', value: selected.pickupAddress },
+            { label: '신청 일시', value: selected.requestedAt },
+            { label: '상세 사유', value: selected.reasonDetail },
+          ]}
+        >
+          <div className={drawer.sectionTitleLoose}>반품 신청 사유 내용</div>
+          <div style={{ fontSize: '13px', lineHeight: 1.6, color: '#334155', background: '#f8fafc', padding: '12px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            {selected.reasonDetail}
           </div>
-        }
-        detail={
-          selected ? (
-            <DetailDrawer
-              variant="panel"
-              eyebrow={`반품 요청 심사 · ${selected.id}`}
-              title={`${selected.product}`}
-              status={selected.stage}
-              statusMeta={STAGE_META[selected.stage]}
-              subtitle={`${selected.orderId} · ${selected.member} 님 (${selected.phone})`}
-              onClose={() => setSelectedId(null)}
-              actions={
-                <>
-                  <button
-                    type="button"
-                    className={drawer.primaryBtn}
-                    onClick={() => handleApprove(selected.id)}
-                  >
-                    반품 승인
-                  </button>
-                  <button
-                    type="button"
-                    className={drawer.dangerBtn}
-                    onClick={() => handleReject(selected.id)}
-                  >
-                    반품 반려
-                  </button>
-                </>
-              }
-              stats={[
-                { label: '반품 사유', value: selected.reasonCategory },
-                { label: '결제 금액', value: `${selected.amount.toLocaleString()}원` },
-                { label: '환불 예정', value: `${selected.refundAmount.toLocaleString()}원` },
-              ]}
-              fields={[
-                { label: '수량', value: `${selected.quantity}개` },
-                { label: '반품 배송비 차감', value: selected.deductFee > 0 ? `${selected.deductFee.toLocaleString()}원 (고객 부담)` : '무료 (판매자 부담)' },
-                { label: '회수지 주소', value: selected.pickupAddress },
-                { label: '신청 일시', value: selected.requestedAt },
-                { label: '상세 사유', value: selected.reasonDetail },
-              ]}
-            >
-              <div className={drawer.sectionTitleLoose}>반품 신청 사유 내용</div>
-              <div style={{ fontSize: '13px', lineHeight: 1.6, color: '#334155', background: '#f8fafc', padding: '12px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                {selected.reasonDetail}
-              </div>
-            </DetailDrawer>
-          ) : null
-        }
-        emptyMessage={<>왼쪽 목록에서 건을 선택하면<br />반품 요청 심사 상세가 여기에 표시됩니다.</>}
-      />
+        </DetailDrawer>
+      )}
     </div>
   );
 }

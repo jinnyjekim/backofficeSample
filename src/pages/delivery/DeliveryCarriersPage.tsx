@@ -8,7 +8,7 @@ import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton
 import { CommonButton, showToast } from '../../components/common';
 import { CARRIER_INFOS, type CarrierInfo } from './deliveryExtraData';
 
-const GRID_TEMPLATE = '120px 140px 180px 100px 160px 100px 90px 120px 60px';
+const GRID_TEMPLATE = '120px 140px minmax(180px, 1fr) 100px 160px 100px 90px 120px';
 const GRID_COLUMNS: GridColumn[] = [
   { label: '배송사코드' },
   { label: '택배사명' },
@@ -18,7 +18,6 @@ const GRID_COLUMNS: GridColumn[] = [
   { label: '배송성공률' },
   { label: '연동상태' },
   { label: '담당조직' },
-  { label: '관리' },
 ];
 
 const CARRIER_STATUS_META: Record<string, { bg: string; fg: string }> = {
@@ -81,7 +80,6 @@ export function DeliveryCarriersPage() {
         { kind: 'text', text: item.successRate, align: 'right', weight: 700, color: '#059669' },
         { kind: 'badge', text: item.status, bg: sm.bg, fg: sm.fg },
         { kind: 'text', text: item.owner, color: '#71717a', size: '12px' },
-        { kind: 'link', text: '설정', size: '12px' },
       ],
     };
   });
@@ -160,7 +158,7 @@ export function DeliveryCarriersPage() {
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="1050px"
+          minWidth="1010px"
           showPagination={false}
           empty={rows.length === 0}
           emptyText="조건에 해당하는 배송사가 없습니다."

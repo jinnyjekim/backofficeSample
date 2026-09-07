@@ -129,25 +129,25 @@ export function AdminHistoryPage() {
           </div>
         </div>
 
-        <div className={styles.quickFilters}>
-          {TABS.map((t) => {
-            const active = tab === t;
-            return (
-              <CommonButton
-                key={t}
-                type="button"
-                variant={active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${styles.qfBtn} ${active ? styles.quickActive : ''}`}
-                onClick={() => { setTab(t); resetFilters(); }}
-              >
-                <span className={styles.qfLabel}>{t}</span>
-              </CommonButton>
-            );
-          })}
-        </div>
+        <div className={styles.filterHeadRow}>
+          <div className={styles.quickFilters}>
+            {TABS.map((t) => {
+              const active = tab === t;
+              return (
+                <CommonButton
+                  key={t}
+                  type="button"
+                  variant={active ? 'primary-light' : 'secondary'}
+                  size="md"
+                  className={`${styles.qfBtn} ${active ? styles.quickActive : ''}`}
+                  onClick={() => { setTab(t); resetFilters(); }}
+                >
+                  <span className={styles.qfLabel}>{t}</span>
+                </CommonButton>
+              );
+            })}
+          </div>
 
-        <div className={styles.filterBox}>
           <form className={styles.filterRow1} onSubmit={(e) => { e.preventDefault(); setSearch(keyword.trim()); }}>
             <label className="globalFilterField"><span>관리자</span><select aria-label="관리자" className={styles.selectSm} value={adminFilter} onChange={(e) => setAdminFilter(e.target.value)}>
               <option value="">관리자 전체</option>
@@ -156,6 +156,9 @@ export function AdminHistoryPage() {
             <input className={styles.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder={tab === '로그인 이력' ? '관리자 ID, 이름 또는 IP 검색' : '관리자 ID, 이름 또는 대상 ID 검색'} />
             <button type="submit" className={styles.searchBtn}>검색</button>
           </form>
+        </div>
+
+        <div className={styles.filterBox}>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>결과</span><select aria-label="결과" className={styles.selectSm} value={resultFilter} onChange={(e) => setResultFilter(e.target.value)}>
               <option value="">결과 전체</option>

@@ -5,7 +5,7 @@ import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { DetailDrawer } from '../c2c/sales/SalesActivityShared';
 import drawer from '../ops/opsDrawerShared.module.css';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { showToast, SplitPaneLayout } from '../../components/common';
+import { showToast } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import { INITIAL_RETURNS, STAGE_META, type ReturnItem } from './returnsData';
 
@@ -153,61 +153,54 @@ export function ReturnApprovalPage() {
         </div>
       </header>
 
-      <SplitPaneLayout
-        list={
-          <div className={styles.tableWrap}>
-            <DataGrid
-              columns={GRID_COLUMNS}
-              rows={rows}
-              gridTemplate={GRID_TEMPLATE}
-              minWidth="960px"
-              showPagination
-              pages={[{ label: '1', active: true }]}
-              empty={rows.length === 0}
-              emptyText="회수 지시 대기 중인 반품 건이 없습니다."
-            />
-          </div>
-        }
-        detail={
-          selected ? (
-            <DetailDrawer
-              variant="panel"
-              eyebrow={`반품 승인 상세 · ${selected.id}`}
-              title={`${selected.product}`}
-              status={selected.stage}
-              statusMeta={STAGE_META[selected.stage]}
-              subtitle={`${selected.orderId} · ${selected.member} 님`}
-              onClose={() => setSelectedId(null)}
-              actions={
-                <button
-                  type="button"
-                  className={drawer.primaryBtn}
-                  onClick={() => handleStartCollecting(selected.id)}
-                >
-                  택배사 회수 지시
-                </button>
-              }
-              stats={[
-                { label: '승인 일시', value: selected.approvedAt ?? '-' },
-                { label: '승인 담당자', value: selected.assignee },
-                { label: '환불 예정액', value: `${selected.refundAmount.toLocaleString()}원` },
-              ]}
-              fields={[
-                { label: '회수 택배사', value: selected.carrier },
-                { label: '회수지 주소', value: selected.pickupAddress },
-                { label: '고객 연락처', value: selected.phone },
-                { label: '반품 사유', value: `${selected.reasonCategory} - ${selected.reasonDetail}` },
-              ]}
+      <div className={styles.tableWrap}>
+        <DataGrid
+          columns={GRID_COLUMNS}
+          rows={rows}
+          gridTemplate={GRID_TEMPLATE}
+          minWidth="960px"
+          showPagination
+          pages={[{ label: '1', active: true }]}
+          empty={rows.length === 0}
+          emptyText="회수 지시 대기 중인 반품 건이 없습니다."
+        />
+      </div>
+
+      {selected && (
+        <DetailDrawer
+          eyebrow={`반품 승인 상세 · ${selected.id}`}
+          title={`${selected.product}`}
+          status={selected.stage}
+          statusMeta={STAGE_META[selected.stage]}
+          subtitle={`${selected.orderId} · ${selected.member} 님`}
+          onClose={() => setSelectedId(null)}
+          actions={
+            <button
+              type="button"
+              className={drawer.primaryBtn}
+              onClick={() => handleStartCollecting(selected.id)}
             >
-              <div className={drawer.sectionTitleLoose}>회수 지시 안내</div>
-              <div style={{ fontSize: '13px', lineHeight: 1.6, color: '#334155', background: '#f8fafc', padding: '12px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                [택배사 회수 지시] 버튼을 클릭하면 지정된 {selected.carrier} 시스템으로 방문 수거 지시가 자동 전송되며 회수 전용 송장이 채번됩니다.
-              </div>
-            </DetailDrawer>
-          ) : null
-        }
-        emptyMessage={<>왼쪽 목록에서 건을 선택하면<br />회수 지시 상세가 여기에 표시됩니다.</>}
-      />
+              택배사 회수 지시
+            </button>
+          }
+          stats={[
+            { label: '승인 일시', value: selected.approvedAt ?? '-' },
+            { label: '승인 담당자', value: selected.assignee },
+            { label: '환불 예정액', value: `${selected.refundAmount.toLocaleString()}원` },
+          ]}
+          fields={[
+            { label: '회수 택배사', value: selected.carrier },
+            { label: '회수지 주소', value: selected.pickupAddress },
+            { label: '고객 연락처', value: selected.phone },
+            { label: '반품 사유', value: `${selected.reasonCategory} - ${selected.reasonDetail}` },
+          ]}
+        >
+          <div className={drawer.sectionTitleLoose}>회수 지시 안내</div>
+          <div style={{ fontSize: '13px', lineHeight: 1.6, color: '#334155', background: '#f8fafc', padding: '12px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            [택배사 회수 지시] 버튼을 클릭하면 지정된 {selected.carrier} 시스템으로 방문 수거 지시가 자동 전송되며 회수 전용 송장이 채번됩니다.
+          </div>
+        </DetailDrawer>
+      )}
     </div>
   );
 }

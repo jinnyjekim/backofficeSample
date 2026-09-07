@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './RefundPage.module.css';
-import { SplitPanePanel } from '../../components/common';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   ADJUSTMENT_TYPES,
   STATUS_META,
@@ -78,8 +78,11 @@ export function RefundDrawer({
     setShowAdjustForm(false);
   };
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <SplitPanePanel>
+    <aside ref={asideRef} className={drawer.aside}>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>
@@ -345,6 +348,6 @@ export function RefundDrawer({
           )
         )}
       </div>
-    </SplitPanePanel>
+    </aside>
   );
 }

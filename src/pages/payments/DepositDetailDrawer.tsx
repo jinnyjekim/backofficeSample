@@ -1,5 +1,6 @@
+import { useRef } from 'react';
 import styles from './drawerShared.module.css';
-import { SplitPanePanel } from '../../components/common';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import type { DepositDetail } from './depositDetail';
 
 interface Props {
@@ -8,8 +9,11 @@ interface Props {
 }
 
 export function DepositDetailDrawer({ detail: d, onTabChange }: Props) {
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, d.close);
+
   return (
-    <SplitPanePanel>
+    <aside ref={asideRef} className={styles.aside}>
       <div className={styles.top}>
         <div className={styles.headRow}>
           <div className={styles.headBody}>
@@ -198,6 +202,6 @@ export function DepositDetailDrawer({ detail: d, onTabChange }: Props) {
           </div>
         )}
       </div>
-    </SplitPanePanel>
+    </aside>
   );
 }

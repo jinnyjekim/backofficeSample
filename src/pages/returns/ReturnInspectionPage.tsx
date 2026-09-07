@@ -5,7 +5,7 @@ import type { GridColumn, GridRow } from '../../components/DataGrid/types';
 import { DetailDrawer } from '../c2c/sales/SalesActivityShared';
 import drawer from '../ops/opsDrawerShared.module.css';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton, showToast, SplitPaneLayout } from '../../components/common';
+import { CommonButton, showToast } from '../../components/common';
 import { INITIAL_RETURNS, type ReturnItem } from './returnsData';
 
 const GRID_TEMPLATE = '140px 140px 90px minmax(200px, 1fr) 110px 110px 120px';
@@ -178,69 +178,62 @@ export function ReturnInspectionPage() {
         </div>
       </header>
 
-      <SplitPaneLayout
-        list={
-          <div className={styles.tableWrap}>
-            <DataGrid
-              columns={GRID_COLUMNS}
-              rows={rows}
-              gridTemplate={GRID_TEMPLATE}
-              minWidth="960px"
-              showPagination
-              pages={[{ label: '1', active: true }]}
-              empty={rows.length === 0}
-              emptyText="검수 진행 중인 반품 건이 없습니다."
-            />
+      <div className={styles.tableWrap}>
+        <DataGrid
+          columns={GRID_COLUMNS}
+          rows={rows}
+          gridTemplate={GRID_TEMPLATE}
+          minWidth="960px"
+          showPagination
+          pages={[{ label: '1', active: true }]}
+          empty={rows.length === 0}
+          emptyText="검수 진행 중인 반품 건이 없습니다."
+        />
+      </div>
+
+      {selected && (
+        <DetailDrawer
+          eyebrow={`상품 실물 검수 · ${selected.id}`}
+          title={`${selected.product}`}
+          status={selected.inspectionResult ?? '검수중'}
+          statusMeta={selected.inspectionResult ? INSPECTION_META[selected.inspectionResult] : { bg: '#f4f4f5', fg: '#52525b' }}
+          subtitle={`${selected.orderId} · ${selected.member} 님`}
+          onClose={() => setSelectedId(null)}
+          actions={
+            <>
+              <button
+                type="button"
+                className={drawer.primaryBtn}
+                onClick={() => handlePass(selected.id)}
+              >
+                검수 합격 (환불 승인)
+              </button>
+              <button
+                type="button"
+                className={drawer.dangerBtn}
+                onClick={() => handleFail(selected.id)}
+              >
+                검수 불합격 (반려)
+              </button>
+            </>
+          }
+          stats={[
+            { label: '검수 결과', value: selected.inspectionResult ?? '판정 대기' },
+            { label: '검수 일시', value: selected.inspectedAt ?? '-' },
+            { label: '환불 예정액', value: `${selected.refundAmount.toLocaleString()}원` },
+          ]}
+          fields={[
+            { label: '고객 반품 사유', value: `${selected.reasonCategory} - ${selected.reasonDetail}` },
+            { label: '회수 송장번호', value: selected.returnInvoiceNo },
+            { label: '검수 담당자', value: selected.assignee },
+          ]}
+        >
+          <div className={drawer.sectionTitleLoose}>검수 판정 가이드</div>
+          <div style={{ fontSize: '13px', lineHeight: 1.6, color: '#334155', background: '#f8fafc', padding: '12px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            양품 또는 재포장 가능 상품인 경우 [검수 합격]을 선택하여 PG 환불 및 재고 환입을 실행합니다. 사용 흔적이나 구성품 누락으로 판매 불가능한 경우 [검수 불합격]을 선택하여 고객 착불 반송 처리합니다.
           </div>
-        }
-        detail={
-          selected ? (
-            <DetailDrawer
-              variant="panel"
-              eyebrow={`상품 실물 검수 · ${selected.id}`}
-              title={`${selected.product}`}
-              status={selected.inspectionResult ?? '검수중'}
-              statusMeta={selected.inspectionResult ? INSPECTION_META[selected.inspectionResult] : { bg: '#f4f4f5', fg: '#52525b' }}
-              subtitle={`${selected.orderId} · ${selected.member} 님`}
-              onClose={() => setSelectedId(null)}
-              actions={
-                <>
-                  <button
-                    type="button"
-                    className={drawer.primaryBtn}
-                    onClick={() => handlePass(selected.id)}
-                  >
-                    검수 합격 (환불 승인)
-                  </button>
-                  <button
-                    type="button"
-                    className={drawer.dangerBtn}
-                    onClick={() => handleFail(selected.id)}
-                  >
-                    검수 불합격 (반려)
-                  </button>
-                </>
-              }
-              stats={[
-                { label: '검수 결과', value: selected.inspectionResult ?? '판정 대기' },
-                { label: '검수 일시', value: selected.inspectedAt ?? '-' },
-                { label: '환불 예정액', value: `${selected.refundAmount.toLocaleString()}원` },
-              ]}
-              fields={[
-                { label: '고객 반품 사유', value: `${selected.reasonCategory} - ${selected.reasonDetail}` },
-                { label: '회수 송장번호', value: selected.returnInvoiceNo },
-                { label: '검수 담당자', value: selected.assignee },
-              ]}
-            >
-              <div className={drawer.sectionTitleLoose}>검수 판정 가이드</div>
-              <div style={{ fontSize: '13px', lineHeight: 1.6, color: '#334155', background: '#f8fafc', padding: '12px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                양품 또는 재포장 가능 상품인 경우 [검수 합격]을 선택하여 PG 환불 및 재고 환입을 실행합니다. 사용 흔적이나 구성품 누락으로 판매 불가능한 경우 [검수 불합격]을 선택하여 고객 착불 반송 처리합니다.
-              </div>
-            </DetailDrawer>
-          ) : null
-        }
-        emptyMessage={<>왼쪽 목록에서 건을 선택하면<br />검수 판정 상세가 여기에 표시됩니다.</>}
-      />
+        </DetailDrawer>
+      )}
     </div>
   );
 }
