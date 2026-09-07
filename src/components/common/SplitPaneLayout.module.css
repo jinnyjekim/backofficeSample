@@ -3,6 +3,7 @@
   min-height: 0;
   display: flex;
   overflow: hidden;
+  padding: 0 24px 20px 0;
 }
 .splitListCol {
   flex: 1;
