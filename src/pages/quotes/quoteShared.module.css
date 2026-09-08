@@ -58,13 +58,16 @@
 .filterHeadRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: flex-start;
+  gap: 12px;
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
 .filterHeadRow > .quickFilters,
 .filterHeadRow > .filterRow1 {
+  margin-bottom: 0;
+}
+.filterRow1 > .quickFilters {
   margin-bottom: 0;
 }
 
@@ -120,8 +123,10 @@
 }
 .filterRow1 {
   display: flex;
+  align-items: flex-end;
   gap: 8px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 .filterRow2 {
   display: flex;

@@ -1,12 +1,12 @@
 .button {
   display: inline-flex;
-  height: 32px;
+  height: 30px;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 0 12px;
+  padding: 0 10px;
   border: 1px solid rgba(0, 0, 0, .1);
-  border-radius: 8px;
+  border-radius: 7px;
   background: #fff;
   color: #3f3f46;
   font-family: inherit;
@@ -15,6 +15,7 @@
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .button svg {

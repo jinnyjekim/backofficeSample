@@ -24,7 +24,7 @@ export function ExchangeRejectedPage() {
         </div>
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select className={styles.selectSm} aria-label="검색 범위"><option>전체</option><option>교환번호</option><option>주문번호</option></select></label>
+            
             <input className={styles.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="교환번호 / 주문번호 / 고객명 / 상품명"/>
             <button className={styles.searchBtn}>검색</button>
           </div>
@@ -32,6 +32,7 @@ export function ExchangeRejectedPage() {
             <label className="globalFilterField"><span>반려 구분</span><select className={styles.selectSm} value={reason} onChange={(event) => setReason(event.target.value)}><option value="">전체 반려 구분</option><option>사용 흔적</option><option>재고</option></select></label>
             <label className={styles.dateFilterField}><span>반려일</span><span className={styles.dateRange}><DatePicker defaultValue="2026-09-01"/><span className={styles.dateSeparator}>~</span><DatePicker defaultValue="2026-09-07"/></span></label>
             <span className={styles.rowSpacer}/>
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button className={styles.resetBtn} onClick={() => { setKeyword(''); setReason(''); }}>초기화</button>
           </div>
         </div>

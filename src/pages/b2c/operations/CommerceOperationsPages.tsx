@@ -327,29 +327,6 @@ function ClaimPage({
       />
       <ControlArea>
         <div className={shared.filterHeadRow}>
-          <div className={shared.quickFilters}>
-            {["전체", ...config.stages].map((status) => {
-              const active = quick === status;
-              return (
-                <CommonButton
-                  key={status}
-                  variant={active ? "primary-light" : "secondary"}
-                  size="md"
-                  className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
-                  onClick={() => setQuick(status)}
-                >
-                  <span className={shared.qfLabel}>{status}</span>
-                  <span className={shared.qfCount}>
-                    {
-                      records.filter(
-                        (item) => status === "전체" || item.stage === status,
-                      ).length
-                    }
-                  </span>
-                </CommonButton>
-              );
-            })}
-          </div>
           <form
             className={shared.filterRow1}
             onSubmit={(event) => {
@@ -357,15 +334,6 @@ function ClaimPage({
               setSearch(keyword.trim());
             }}
           >
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select aria-label="검색 범위" className={shared.selectSm}>
-                <option>통합 검색</option>
-                <option>처리번호</option>
-                <option>주문번호</option>
-                <option>회원</option>
-              </select>
-            </label>
             <input
               className={shared.searchInput}
               value={keyword}
@@ -373,6 +341,29 @@ function ClaimPage({
               placeholder={`${config.label}번호 / 주문번호 / 회원 / 상품 / 사유`}
             />
             <button className={shared.searchBtn}>조회</button>
+            <div className={shared.quickFilters}>
+              {["전체", ...config.stages].map((status) => {
+                const active = quick === status;
+                return (
+                  <CommonButton
+                    key={status}
+                    variant={active ? "primary-light" : "secondary"}
+                    size="md"
+                    className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
+                    onClick={() => setQuick(status)}
+                  >
+                    <span className={shared.qfLabel}>{status}</span>
+                    <span className={shared.qfCount}>
+                      {
+                        records.filter(
+                          (item) => status === "전체" || item.stage === status,
+                        ).length
+                      }
+                    </span>
+                  </CommonButton>
+                );
+              })}
+            </div>
           </form>
         </div>
         <FilterBox>
@@ -399,8 +390,11 @@ function ClaimPage({
               </div>
             </label>
             <span className={shared.rowSpacer} />
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
             <button type="button" className={shared.resetBtn} onClick={reset}>
-              필터 초기화
+              초기화
             </button>
           </div>
         </FilterBox>
@@ -433,7 +427,7 @@ function ClaimPage({
               minWidth="1110px"
               empty={!filtered.length}
               emptyText="조건에 맞는 처리 건이 없습니다."
-              emptyActionLabel="필터 초기화"
+              emptyActionLabel="초기화"
               emptyActionClick={reset}
               showPagination
               pages={pages}
@@ -724,15 +718,6 @@ function DeliveryTablePage({
               setSearch(keyword.trim());
             }}
           >
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select aria-label="검색 범위" className={shared.selectSm}>
-                <option>통합 검색</option>
-                <option>배송번호</option>
-                <option>주문번호</option>
-                <option>송장번호</option>
-              </select>
-            </label>
             <input
               className={shared.searchInput}
               value={keyword}
@@ -766,7 +751,7 @@ function DeliveryTablePage({
             </label>
             <span className={shared.rowSpacer} />
             <button type="button" className={shared.resetBtn} onClick={reset}>
-              필터 초기화
+              초기화
             </button>
           </div>
         </FilterBox>
@@ -795,7 +780,7 @@ function DeliveryTablePage({
           minWidth="1080px"
           empty={!filtered.length}
           emptyText="조건에 맞는 배송 건이 없습니다."
-          emptyActionLabel="필터 초기화"
+          emptyActionLabel="초기화"
           emptyActionClick={reset}
           showPagination
           pages={pages}
@@ -1048,7 +1033,7 @@ export function CarrierManagementPage() {
                 setStatus("");
               }}
             >
-              필터 초기화
+              초기화
             </button>
           </div>
         </FilterBox>

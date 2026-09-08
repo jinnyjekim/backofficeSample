@@ -30,13 +30,14 @@ export function ExchangePreparingPage() {
         </div>
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select className={styles.selectSm} aria-label="검색 범위"><option>전체</option><option>교환번호</option><option>상품명</option></select></label>
+            
             <input className={styles.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="교환번호 / 주문번호 / 고객명 / 상품명"/>
             <button className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>재고 상태</span><select className={styles.selectSm} value={stock} onChange={(event) => setStock(event.target.value)}><option value="">전체 재고 상태</option><option>피킹</option><option>재고</option></select></label>
             <span className={styles.rowSpacer}/>
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button className={styles.resetBtn} onClick={() => { setKeyword(''); setStock(''); }}>초기화</button>
           </div>
         </div>

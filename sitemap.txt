@@ -82,7 +82,6 @@
    │  └─ 프로모션 적용 이력 .................... /promotions/history
    ├─ 쿠폰 관리 [B2C]
    │  ├─ 쿠폰 목록 .............................. /coupons
-   │  ├─ 쿠폰 등록 .............................. /b2c/coupons/create
    │  ├─ 쿠폰 발급 .............................. /coupons/issue
    │  ├─ 자동 발급 .............................. /b2c/coupons/automatic
    │  ├─ 쿠폰 사용 내역 ........................ /coupons/usage
@@ -344,7 +343,6 @@
 /b2c/promotions/targets                B2C 프로모션 대상 관리
 /promotions/history                    B2C 프로모션 적용 이력
 /coupons                               B2C 쿠폰 목록
-/b2c/coupons/create                    B2C 쿠폰 등록
 /coupons/issue                         B2C 쿠폰 발급
 /b2c/coupons/automatic                 B2C 자동 발급
 /coupons/usage                         B2C 쿠폰 사용 내역

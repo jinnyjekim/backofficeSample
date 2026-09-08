@@ -117,7 +117,19 @@ export function ReturnRequestsPage() {
           </div>
         </div>
 
-        <div className={styles.quickFilters}>
+        
+
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            
+            <input
+              className={styles.searchInput}
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="반품번호 / 주문번호 / 고객명 / 상품명 / 상세사유"
+            />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {QUICK_FILTERS.map((k) => {
             const active = filter === k;
             const count = requestItems.filter((item) => k === '전체' || item.reasonCategory === k).length;
@@ -135,26 +147,6 @@ export function ReturnRequestsPage() {
             );
           })}
         </div>
-
-        <div className={styles.filterCard}>
-          <div className={styles.filterRow1}>
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-                <option>전체</option>
-                <option>반품번호</option>
-                <option>주문번호</option>
-                <option>신청고객</option>
-                <option>상품명</option>
-              </select>
-            </label>
-            <input
-              className={styles.searchInput}
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="반품번호 / 주문번호 / 고객명 / 상품명 / 상세사유"
-            />
-            <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className={styles.dateFilterField}>
@@ -166,6 +158,7 @@ export function ReturnRequestsPage() {
               </div>
             </label>
             <div className={styles.rowSpacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button
               type="button"
               className={styles.resetBtn}

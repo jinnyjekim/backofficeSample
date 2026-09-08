@@ -83,7 +83,19 @@ export function DeliveryHistoryPage() {
           </div>
         </div>
 
-        <div className={styles.quickFilters}>
+        
+
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            
+            <input
+              className={styles.searchInput}
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="로그 ID / 주문번호 / 운송장번호 / 처리자 / 이벤트 내용"
+            />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {QUICK_FILTERS.map((k) => {
             const active = filter === k;
             const count = items.filter((item) => k === '전체' || item.eventType === k).length;
@@ -101,26 +113,6 @@ export function DeliveryHistoryPage() {
             );
           })}
         </div>
-
-        <div className={styles.filterCard}>
-          <div className={styles.filterRow1}>
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-                <option>전체</option>
-                <option>로그 ID</option>
-                <option>주문번호</option>
-                <option>운송장번호</option>
-                <option>처리자</option>
-              </select>
-            </label>
-            <input
-              className={styles.searchInput}
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="로그 ID / 주문번호 / 운송장번호 / 처리자 / 이벤트 내용"
-            />
-            <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className="globalFilterField">
@@ -147,6 +139,7 @@ export function DeliveryHistoryPage() {
               </div>
             </label>
             <div className={styles.rowSpacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button
               type="button"
               className={styles.resetBtn}

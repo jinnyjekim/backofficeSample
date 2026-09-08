@@ -51,13 +51,16 @@
 .filterHeadRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: flex-start;
+  gap: 12px;
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
 .filterHeadRow > .quickFilters,
 .filterHeadRow > .filterRow1 {
+  margin-bottom: 0;
+}
+.filterRow1 > .quickFilters {
   margin-bottom: 0;
 }
 
@@ -117,6 +120,9 @@
   align-items: flex-end;
   gap: 8px;
   margin-bottom: 12px;
+}
+.searchRow > .quickFilters {
+  margin-bottom: 0;
 }
 .scopeSelect {
   height: 34px;

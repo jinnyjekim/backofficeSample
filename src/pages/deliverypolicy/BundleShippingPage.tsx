@@ -1,11 +1,11 @@
-import { useMemo, useRef, useState } from 'react';
-import { DataGrid } from '../../components/DataGrid/DataGrid';
-import type { GridRow } from '../../components/DataGrid/types';
-import shared from '../ops/opsShared.module.css';
-import drawerShared from '../ops/opsDrawerShared.module.css';
-import styles from './BundleShippingPage.module.css';
-import { BundleGroupDrawer } from './BundleGroupDrawer';
-import { useOutsideClose } from '../../lib/useOutsideClose';
+import { useMemo, useRef, useState } from "react";
+import { DataGrid } from "../../components/DataGrid/DataGrid";
+import type { GridRow } from "../../components/DataGrid/types";
+import shared from "../ops/opsShared.module.css";
+import drawerShared from "../ops/opsDrawerShared.module.css";
+import styles from "./BundleShippingPage.module.css";
+import { BundleGroupDrawer } from "./BundleGroupDrawer";
+import { useOutsideClose } from "../../lib/useOutsideClose";
 import {
   DELIVERY_METHODS,
   INITIAL_BASE_SETTINGS,
@@ -24,19 +24,37 @@ import {
   type BundleGroup,
   type NoGroupHandling,
   type QuickFilter,
-} from './bundleShippingData';
-import { CommonButton, showToast } from '../../components/common';
+} from "./bundleShippingData";
+import { CommonButton, showToast } from "../../components/common";
 
-const TODAY = '2026-08-25';
+const TODAY = "2026-08-25";
 
-type ConfirmState = { kind: 'delete' | 'deactivate' | 'activate'; item: BundleGroup } | null;
+type ConfirmState = {
+  kind: "delete" | "deactivate" | "activate";
+  item: BundleGroup;
+} | null;
 
-function history(item: BundleGroup, action: string, before?: string, after?: string): BundleGroup {
+function history(
+  item: BundleGroup,
+  action: string,
+  before?: string,
+  after?: string,
+): BundleGroup {
   return {
     ...item,
     updatedAt: TODAY,
-    updatedBy: 'admin01',
-    history: [...item.history, { id: `H-${item.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, at: `${TODAY} 15:00`, by: 'admin01', action, before, after }],
+    updatedBy: "admin01",
+    history: [
+      ...item.history,
+      {
+        id: `H-${item.id}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        at: `${TODAY} 15:00`,
+        by: "admin01",
+        action,
+        before,
+        after,
+      },
+    ],
   };
 }
 
@@ -44,13 +62,17 @@ export function BundleShippingPage() {
   const [groups, setGroups] = useState(INITIAL_GROUPS);
   const [baseSettings, setBaseSettings] = useState(INITIAL_BASE_SETTINGS);
   const [editingBase, setEditingBase] = useState(false);
-  const [draftBase, setDraftBase] = useState<BaseBundleSettings>(INITIAL_BASE_SETTINGS);
+  const [draftBase, setDraftBase] = useState<BaseBundleSettings>(
+    INITIAL_BASE_SETTINGS,
+  );
 
-  const [quickFilter, setQuickFilter] = useState<QuickFilter>('전체');
-  const [keyword, setKeyword] = useState('');
-  const [search, setSearch] = useState('');
-  const [warehouseFilter, setWarehouseFilter] = useState('');
-  const [methodFilter, setMethodFilter] = useState<BundleDeliveryMethod | ''>('');
+  const [quickFilter, setQuickFilter] = useState<QuickFilter>("전체");
+  const [keyword, setKeyword] = useState("");
+  const [search, setSearch] = useState("");
+  const [warehouseFilter, setWarehouseFilter] = useState("");
+  const [methodFilter, setMethodFilter] = useState<BundleDeliveryMethod | "">(
+    "",
+  );
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   const [drawerId, setDrawerId] = useState<string | null>(null);
@@ -69,7 +91,11 @@ export function BundleShippingPage() {
     () =>
       groups.filter((g) => {
         if (!matchesQuickFilter(g, quickFilter, warnings)) return false;
-        if (search && !`${g.name} ${g.code}`.toLowerCase().includes(search.toLowerCase())) return false;
+        if (
+          search &&
+          !`${g.name} ${g.code}`.toLowerCase().includes(search.toLowerCase())
+        )
+          return false;
         if (warehouseFilter && g.warehouse !== warehouseFilter) return false;
         if (methodFilter && g.deliveryMethod !== methodFilter) return false;
         return true;
@@ -78,17 +104,17 @@ export function BundleShippingPage() {
   );
 
   const toastBriefly = (message: string) => {
-    showToast({ message, type: 'success' });
+    showToast({ message, type: "success" });
   };
   const reset = () => {
-    setKeyword('');
-    setSearch('');
-    setWarehouseFilter('');
-    setMethodFilter('');
+    setKeyword("");
+    setSearch("");
+    setWarehouseFilter("");
+    setMethodFilter("");
   };
 
   const openCreate = () => {
-    setDrawerId('new');
+    setDrawerId("new");
     setIsNew(true);
   };
   const openDetail = (id: string) => {
@@ -96,71 +122,120 @@ export function BundleShippingPage() {
     setIsNew(false);
   };
   const drawerItem: BundleGroup | null = useMemo(
-    () => (drawerId === 'new' ? newGroup() : drawerId ? groups.find((g) => g.id === drawerId) ?? null : null),
+    () =>
+      drawerId === "new"
+        ? newGroup()
+        : drawerId
+          ? (groups.find((g) => g.id === drawerId) ?? null)
+          : null,
     [drawerId, groups],
   );
 
   const save = (item: BundleGroup) => {
     if (isNew) {
-      const saved = history({ ...item, history: [] }, '그룹 생성');
+      const saved = history({ ...item, history: [] }, "그룹 생성");
       setGroups((current) => [saved, ...current]);
       setDrawerId(null);
       setIsNew(false);
-      toastBriefly('묶음 배송 그룹을 등록했습니다.');
+      toastBriefly("묶음 배송 그룹을 등록했습니다.");
     } else {
       const previous = groups.find((g) => g.id === item.id);
-      const saved = previous ? history(item, '그룹 정보 수정') : item;
-      setGroups((current) => current.map((g) => (g.id === item.id ? saved : g)));
-      toastBriefly('그룹을 저장했습니다.');
+      const saved = previous ? history(item, "그룹 정보 수정") : item;
+      setGroups((current) =>
+        current.map((g) => (g.id === item.id ? saved : g)),
+      );
+      toastBriefly("그룹을 저장했습니다.");
     }
   };
 
   const toggleStatus = (item: BundleGroup) => {
-    setConfirm({ kind: item.status === '사용' ? 'deactivate' : 'activate', item });
+    setConfirm({
+      kind: item.status === "사용" ? "deactivate" : "activate",
+      item,
+    });
   };
 
   const addMemo = (id: string, text: string) => {
-    setGroups((current) => current.map((g) => (g.id === id ? { ...g, memos: [...g.memos, { id: `M-${Date.now()}`, at: `${TODAY} 15:00`, by: 'admin01', text }] } : g)));
+    setGroups((current) =>
+      current.map((g) =>
+        g.id === id
+          ? {
+              ...g,
+              memos: [
+                ...g.memos,
+                {
+                  id: `M-${Date.now()}`,
+                  at: `${TODAY} 15:00`,
+                  by: "admin01",
+                  text,
+                },
+              ],
+            }
+          : g,
+      ),
+    );
   };
 
   const confirmAction = () => {
     if (!confirm) return;
-    if (confirm.kind === 'delete') {
+    if (confirm.kind === "delete") {
       setGroups((current) => current.filter((g) => g.id !== confirm.item.id));
       setDrawerId(null);
-      toastBriefly('그룹을 삭제했습니다.');
-    } else if (confirm.kind === 'deactivate') {
-      const updated = history({ ...confirm.item, status: '비활성' }, '그룹 비활성화');
-      setGroups((current) => current.map((g) => (g.id === updated.id ? updated : g)));
-      toastBriefly('그룹을 비활성화했습니다. 연결 상품은 상품별/기본 배송 정책 기준으로 계산됩니다.');
+      toastBriefly("그룹을 삭제했습니다.");
+    } else if (confirm.kind === "deactivate") {
+      const updated = history(
+        { ...confirm.item, status: "비활성" },
+        "그룹 비활성화",
+      );
+      setGroups((current) =>
+        current.map((g) => (g.id === updated.id ? updated : g)),
+      );
+      toastBriefly(
+        "그룹을 비활성화했습니다. 연결 상품은 상품별/기본 배송 정책 기준으로 계산됩니다.",
+      );
     } else {
-      const updated = history({ ...confirm.item, status: '사용' }, '그룹 활성화');
-      setGroups((current) => current.map((g) => (g.id === updated.id ? updated : g)));
-      toastBriefly('그룹을 활성화했습니다.');
+      const updated = history(
+        { ...confirm.item, status: "사용" },
+        "그룹 활성화",
+      );
+      setGroups((current) =>
+        current.map((g) => (g.id === updated.id ? updated : g)),
+      );
+      toastBriefly("그룹을 활성화했습니다.");
     }
     setConfirm(null);
   };
 
   const saveBaseSettings = () => {
-    setBaseSettings({ ...draftBase, updatedAt: TODAY, updatedBy: '운영 관리자' });
+    setBaseSettings({
+      ...draftBase,
+      updatedAt: TODAY,
+      updatedBy: "운영 관리자",
+    });
     setEditingBase(false);
-    toastBriefly('기본 묶음배송 설정을 저장했습니다.');
+    toastBriefly("기본 묶음배송 설정을 저장했습니다.");
   };
 
   const examples = useMemo(() => {
     const pick = (id: string) => TEST_SCENARIOS.find((s) => s.id === id)!;
-    return ['BS-1', 'BS-3', 'BS-4'].map((id) => {
+    return ["BS-1", "BS-3", "BS-4"].map((id) => {
       const s = pick(id);
       const r = computeOrderShippingPreview(s, groups, baseSettings);
       return `${s.label} → ${fmtWon(r.total)}`;
     });
   }, [groups, baseSettings]);
 
-  const warningEntries = useMemo(() => Object.entries(warnings).filter(([, msgs]) => msgs.length > 0), [warnings]);
-  const firstWarningGroup = warningEntries.length ? groups.find((g) => g.id === warningEntries[0][0]) : undefined;
+  const warningEntries = useMemo(
+    () => Object.entries(warnings).filter(([, msgs]) => msgs.length > 0),
+    [warnings],
+  );
+  const firstWarningGroup = warningEntries.length
+    ? groups.find((g) => g.id === warningEntries[0][0])
+    : undefined;
 
   const calcSummary = (g: BundleGroup) => {
-    if (g.calcMethod === '그룹당 고정 배송비') return `그룹당 ${fmtWon(g.groupFee)}`;
+    if (g.calcMethod === "그룹당 고정 배송비")
+      return `그룹당 ${fmtWon(g.groupFee)}`;
     return g.calcMethod;
   };
 
@@ -169,15 +244,46 @@ export function BundleShippingPage() {
     return {
       id: g.id,
       onClick: () => openDetail(g.id),
-      bg: issues.length ? '#fffdf8' : undefined,
+      bg: issues.length ? "#fffdf8" : undefined,
       cells: [
-        { kind: 'titleWarn', title: `${g.name} · ${g.code}`, hasIssue: issues.length > 0, issueTitle: issues.join(' · ') },
-        { kind: 'text', text: `${g.productCodes.length}개`, size: '12px', color: '#3f3f46' },
-        { kind: 'text', text: g.warehouse, size: '12px', color: '#3f3f46' },
-        { kind: 'text', text: g.deliveryMethod, size: '12px', color: '#3f3f46' },
-        { kind: 'text', text: calcSummary(g), size: '12px', weight: 600, color: '#18181b' },
-        { kind: 'badge', text: g.regionalFeePolicy === '별도 정책 설정' ? '별도' : '기본', bg: g.regionalFeePolicy === '별도 정책 설정' ? '#eef2ff' : '#f4f4f5', fg: g.regionalFeePolicy === '별도 정책 설정' ? '#4338ca' : '#71717a' },
-        { kind: 'statusDot', text: g.status, dot: g.status === '사용' ? '#10b981' : '#a1a1aa', fg: g.status === '사용' ? '#047857' : '#71717a' },
+        {
+          kind: "titleWarn",
+          title: `${g.name} · ${g.code}`,
+          hasIssue: issues.length > 0,
+          issueTitle: issues.join(" · "),
+        },
+        {
+          kind: "text",
+          text: `${g.productCodes.length}개`,
+          size: "12px",
+          color: "#3f3f46",
+        },
+        { kind: "text", text: g.warehouse, size: "12px", color: "#3f3f46" },
+        {
+          kind: "text",
+          text: g.deliveryMethod,
+          size: "12px",
+          color: "#3f3f46",
+        },
+        {
+          kind: "text",
+          text: calcSummary(g),
+          size: "12px",
+          weight: 600,
+          color: "#18181b",
+        },
+        {
+          kind: "badge",
+          text: g.regionalFeePolicy === "별도 정책 설정" ? "별도" : "기본",
+          bg: g.regionalFeePolicy === "별도 정책 설정" ? "#eef2ff" : "#f4f4f5",
+          fg: g.regionalFeePolicy === "별도 정책 설정" ? "#4338ca" : "#71717a",
+        },
+        {
+          kind: "statusDot",
+          text: g.status,
+          dot: g.status === "사용" ? "#10b981" : "#a1a1aa",
+          fg: g.status === "사용" ? "#047857" : "#71717a",
+        },
       ],
     };
   });
@@ -192,12 +298,29 @@ export function BundleShippingPage() {
           <div>
             <div className={styles.eyebrow}>배송 정책</div>
             <div className={shared.title}>묶음 배송</div>
-            <div className={shared.subtitle}>여러 상품을 함께 주문했을 때 묶음배송과 배송비 계산 기준을 관리합니다.</div>
+            <div className={shared.subtitle}>
+              여러 상품을 함께 주문했을 때 묶음배송과 배송비 계산 기준을
+              관리합니다.
+            </div>
           </div>
           <div className={styles.headMeta}>
-            <span className={styles.headMetaText}>최종 수정 {baseSettings.updatedAt} · {baseSettings.updatedBy}</span>
-            <button type="button" className={styles.outlineBtn} onClick={() => setShowTest(true)}>배송비 계산 테스트</button>
-            <button type="button" className={styles.darkBtn} onClick={openCreate}>+ 그룹 등록</button>
+            <span className={styles.headMetaText}>
+              최종 수정 {baseSettings.updatedAt} · {baseSettings.updatedBy}
+            </span>
+            <button
+              type="button"
+              className={styles.outlineBtn}
+              onClick={() => setShowTest(true)}
+            >
+              배송비 계산 테스트
+            </button>
+            <button
+              type="button"
+              className={styles.darkBtn}
+              onClick={openCreate}
+            >
+              + 그룹 등록
+            </button>
           </div>
         </div>
       </header>
@@ -207,38 +330,111 @@ export function BundleShippingPage() {
           <div className={styles.settingsHeadLeft}>
             <div className={styles.settingsTitleRow}>
               <span className={styles.settingsTitle}>기본 묶음배송 설정</span>
-              {!editingBase && <span className={styles.appliedTag}>적용 중</span>}
+              {!editingBase && (
+                <span className={styles.appliedTag}>적용 중</span>
+              )}
             </div>
-            {!editingBase && <span className={styles.settingsDesc}>배송 그룹 조건에 해당하지 않는 상품은 이 설정 기준으로 처리됩니다.</span>}
+            {!editingBase && (
+              <span className={styles.settingsDesc}>
+                배송 그룹 조건에 해당하지 않는 상품은 이 설정 기준으로
+                처리됩니다.
+              </span>
+            )}
           </div>
           {editingBase ? (
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button type="button" className={styles.cancelButton} onClick={() => { setDraftBase(baseSettings); setEditingBase(false); }}>취소</button>
-              <button type="button" className={styles.primaryButton} onClick={saveBaseSettings}>저장</button>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={() => {
+                  setDraftBase(baseSettings);
+                  setEditingBase(false);
+                }}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                onClick={saveBaseSettings}
+              >
+                저장
+              </button>
             </div>
           ) : (
-            <button type="button" className={styles.editLink} onClick={() => { setDraftBase(baseSettings); setEditingBase(true); }}>수정</button>
+            <button
+              type="button"
+              className={styles.editLink}
+              onClick={() => {
+                setDraftBase(baseSettings);
+                setEditingBase(true);
+              }}
+            >
+              수정
+            </button>
           )}
         </div>
         {editingBase ? (
           <>
             <label className={styles.toggleField} style={{ marginTop: 12 }}>
               <span>묶음배송 사용</span>
-              <button type="button" className={`${styles.switch} ${draftBase.enabled ? styles.switchOn : ''}`} onClick={() => setDraftBase({ ...draftBase, enabled: !draftBase.enabled })}><i /></button>
+              <button
+                type="button"
+                className={`${styles.switch} ${draftBase.enabled ? styles.switchOn : ""}`}
+                onClick={() =>
+                  setDraftBase({ ...draftBase, enabled: !draftBase.enabled })
+                }
+              >
+                <i />
+              </button>
             </label>
             <div className={styles.formGrid} style={{ marginTop: 8 }}>
               <label className={drawerShared.checkRow}>
-                <input type="checkbox" checked={draftBase.requireSameWarehouse} onChange={(e) => setDraftBase({ ...draftBase, requireSameWarehouse: e.target.checked })} /> 같은 출고지
+                <input
+                  type="checkbox"
+                  checked={draftBase.requireSameWarehouse}
+                  onChange={(e) =>
+                    setDraftBase({
+                      ...draftBase,
+                      requireSameWarehouse: e.target.checked,
+                    })
+                  }
+                />{" "}
+                같은 출고지
               </label>
               <label className={drawerShared.checkRow}>
-                <input type="checkbox" checked={draftBase.requireSameMethod} onChange={(e) => setDraftBase({ ...draftBase, requireSameMethod: e.target.checked })} /> 같은 배송 방식
+                <input
+                  type="checkbox"
+                  checked={draftBase.requireSameMethod}
+                  onChange={(e) =>
+                    setDraftBase({
+                      ...draftBase,
+                      requireSameMethod: e.target.checked,
+                    })
+                  }
+                />{" "}
+                같은 배송 방식
               </label>
             </div>
             <label className={styles.formField} style={{ marginTop: 10 }}>
               <span>배송 그룹이 없는 상품</span>
               <div className={styles.radioGroup}>
-                {(['상품별 배송비 각각 계산', '기본 배송 그룹으로 처리'] as NoGroupHandling[]).map((v) => (
-                  <label key={v}><input type="radio" checked={draftBase.noGroupHandling === v} onChange={() => setDraftBase({ ...draftBase, noGroupHandling: v })} />{v}</label>
+                {(
+                  [
+                    "상품별 배송비 각각 계산",
+                    "기본 배송 그룹으로 처리",
+                  ] as NoGroupHandling[]
+                ).map((v) => (
+                  <label key={v}>
+                    <input
+                      type="radio"
+                      checked={draftBase.noGroupHandling === v}
+                      onChange={() =>
+                        setDraftBase({ ...draftBase, noGroupHandling: v })
+                      }
+                    />
+                    {v}
+                  </label>
                 ))}
               </div>
             </label>
@@ -248,94 +444,190 @@ export function BundleShippingPage() {
             <div className={styles.kpiGrid}>
               <div className={styles.kpiCard}>
                 <div className={styles.kpiLabel}>묶음배송 사용</div>
-                <strong className={styles.kpiText}>{baseSettings.enabled ? '사용' : '사용 안 함'}</strong>
-                <div className={styles.kpiSub}>{baseSettings.enabled ? '동일 조건의 상품을 하나의 배송비로 묶어 계산합니다' : '상품별로 배송비를 각각 계산합니다'}</div>
+                <strong className={styles.kpiText}>
+                  {baseSettings.enabled ? "사용" : "사용 안 함"}
+                </strong>
+                <div className={styles.kpiSub}>
+                  {baseSettings.enabled
+                    ? "동일 조건의 상품을 하나의 배송비로 묶어 계산합니다"
+                    : "상품별로 배송비를 각각 계산합니다"}
+                </div>
               </div>
               <div className={styles.kpiCard}>
                 <div className={styles.kpiLabel}>묶음배송 기본 조건</div>
-                <strong className={styles.kpiText}>{[baseSettings.requireSameWarehouse && '같은 출고지', baseSettings.requireSameMethod && '같은 배송 방식'].filter(Boolean).join(' · ') || '없음'}</strong>
-                <div className={styles.kpiSub}>이 조건을 만족하는 상품만 같은 그룹으로 묶입니다</div>
+                <strong className={styles.kpiText}>
+                  {[
+                    baseSettings.requireSameWarehouse && "같은 출고지",
+                    baseSettings.requireSameMethod && "같은 배송 방식",
+                  ]
+                    .filter(Boolean)
+                    .join(" · ") || "없음"}
+                </strong>
+                <div className={styles.kpiSub}>
+                  이 조건을 만족하는 상품만 같은 그룹으로 묶입니다
+                </div>
               </div>
               <div className={styles.kpiCard}>
                 <div className={styles.kpiLabel}>배송 그룹이 없는 상품</div>
-                <strong className={styles.kpiText}>{baseSettings.noGroupHandling}</strong>
-                <div className={styles.kpiSub}>연결된 배송 그룹이 없는 상품에 적용되는 기본 규칙입니다</div>
+                <strong className={styles.kpiText}>
+                  {baseSettings.noGroupHandling}
+                </strong>
+                <div className={styles.kpiSub}>
+                  연결된 배송 그룹이 없는 상품에 적용되는 기본 규칙입니다
+                </div>
               </div>
               <div className={styles.kpiCard}>
                 <div className={styles.kpiLabel}>무료배송 상품 혼합 처리</div>
                 <strong className={styles.kpiText}>해당 상품만 무료</strong>
-                <div className={styles.kpiSub}>그룹 내 무료배송 대상 상품에만 개별 적용됩니다</div>
+                <div className={styles.kpiSub}>
+                  그룹 내 무료배송 대상 상품에만 개별 적용됩니다
+                </div>
               </div>
             </div>
             <div className={styles.exampleRow}>
               <span className={styles.exampleLabel}>적용 예시</span>
-              {examples.map((ex) => <span key={ex} className={styles.exampleItem}>{ex}</span>)}
+              {examples.map((ex) => (
+                <span key={ex} className={styles.exampleItem}>
+                  {ex}
+                </span>
+              ))}
             </div>
           </>
         )}
       </div>
 
       <div className={styles.filterHeadRow}>
+        <form
+          className={styles.filterInline}
+          onSubmit={(event) => {
+            event.preventDefault();
+            setSearch(keyword.trim());
+          }}
+        >
+          <select
+            aria-label="출고지"
+            className={shared.selectSm}
+            value={warehouseFilter}
+            onChange={(e) => setWarehouseFilter(e.target.value)}
+          >
+            <option value="">전체 출고지</option>
+            {WAREHOUSES.map((w) => (
+              <option key={w}>{w}</option>
+            ))}
+          </select>
+          <select
+            aria-label="배송방식"
+            className={shared.selectSm}
+            value={methodFilter}
+            onChange={(e) =>
+              setMethodFilter(e.target.value as BundleDeliveryMethod | "")
+            }
+          >
+            <option value="">전체 배송방식</option>
+            {DELIVERY_METHODS.map((m) => (
+              <option key={m}>{m}</option>
+            ))}
+          </select>
+          <input
+            className={shared.searchInput}
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="그룹명, 그룹코드 검색"
+          />
+          <button type="submit" className={shared.searchBtn}>
+            검색
+          </button>
+          <button type="button" className={shared.resetBtn} onClick={reset}>
+            초기화
+          </button>
+        </form>
         <div className={shared.quickFilters} style={{ marginBottom: 0 }}>
           {QUICK_FILTERS.map((filter) => {
             const active = quickFilter === filter;
             return (
               <CommonButton
                 key={filter}
-                variant={active ? 'primary-light' : 'secondary'}
+                variant={active ? "primary-light" : "secondary"}
                 size="md"
-                className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
+                className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
                 onClick={() => setQuickFilter(filter)}
               >
                 <span className={shared.qfLabel}>{filter}</span>
-                <span className={shared.qfCount}>{groups.filter((g) => matchesQuickFilter(g, filter, warnings)).length}</span>
+                <span className={shared.qfCount}>
+                  {
+                    groups.filter((g) =>
+                      matchesQuickFilter(g, filter, warnings),
+                    ).length
+                  }
+                </span>
               </CommonButton>
             );
           })}
         </div>
-        <form className={styles.filterInline} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
-          <select aria-label="출고지" className={shared.selectSm} value={warehouseFilter} onChange={(e) => setWarehouseFilter(e.target.value)}>
-            <option value="">전체 출고지</option>
-            {WAREHOUSES.map((w) => <option key={w}>{w}</option>)}
-          </select>
-          <select aria-label="배송방식" className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as BundleDeliveryMethod | '')}>
-            <option value="">전체 배송방식</option>
-            {DELIVERY_METHODS.map((m) => <option key={m}>{m}</option>)}
-          </select>
-          <input className={shared.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="그룹명, 그룹코드 검색" />
-          <button type="submit" className={shared.searchBtn}>검색</button>
-          <button type="button" className={shared.resetBtn} onClick={reset}>초기화</button>
-        </form>
       </div>
 
       {firstWarningGroup && (
         <div className={styles.warnBanner}>
           <span className={styles.warnIcon}>!</span>
           <div className={styles.warnBody}>
-            <div className={styles.warnTitle}>확인이 필요한 그룹이 {warningEntries.length}건 있습니다</div>
-            <div className={styles.warnDesc}>{firstWarningGroup.name} · {warningEntries[0][1][0]}</div>
+            <div className={styles.warnTitle}>
+              확인이 필요한 그룹이 {warningEntries.length}건 있습니다
+            </div>
+            <div className={styles.warnDesc}>
+              {firstWarningGroup.name} · {warningEntries[0][1][0]}
+            </div>
           </div>
-          <button type="button" className={styles.warnBtn} onClick={() => { setQuickFilter('설정 확인'); openDetail(firstWarningGroup.id); }}>그룹 확인</button>
+          <button
+            type="button"
+            className={styles.warnBtn}
+            onClick={() => {
+              setQuickFilter("설정 확인");
+              openDetail(firstWarningGroup.id);
+            }}
+          >
+            그룹 확인
+          </button>
         </div>
       )}
 
       <div className={shared.gridWrap}>
         <div className={shared.resultRow}>
-          <span className={shared.resultLabel}>등록 그룹 총 {filtered.length}개</span>
-          <span className={styles.resultNote}>그룹 배송비는 연결된 상품에 우선 적용됩니다</span>
+          <span className={shared.resultLabel}>
+            등록 그룹 총 {filtered.length}개
+          </span>
+          <span className={styles.resultNote}>
+            그룹 배송비는 연결된 상품에 우선 적용됩니다
+          </span>
         </div>
         <DataGrid
           columns={[
-            { label: '그룹명' }, { label: '상품수' }, { label: '출고지' }, { label: '배송방식' },
-            { label: '배송비 계산' }, { label: '지역비' }, { label: '상태' },
+            { label: "그룹명" },
+            { label: "상품수" },
+            { label: "출고지" },
+            { label: "배송방식" },
+            { label: "배송비 계산" },
+            { label: "지역비" },
+            { label: "상태" },
           ]}
           rows={rows}
           gridTemplate="1.3fr 44px 56px 52px 92px 52px 58px"
           minWidth="850px"
           empty={filtered.length === 0}
-          emptyText={groups.length === 0 ? '등록된 묶음 배송 그룹이 없습니다.' : quickFilter === '설정 확인' ? '현재 확인이 필요한 묶음배송 설정이 없습니다.' : '검색 결과가 없습니다.'}
-          emptySubtext={groups.length === 0 ? '상품별 배송비를 묶어서 계산하려면 배송 그룹을 등록해 주세요.' : '검색어나 필터 조건을 변경해 주세요.'}
-          emptyActionLabel={groups.length === 0 ? '+ 묶음 배송 그룹 등록' : '필터 초기화'}
+          emptyText={
+            groups.length === 0
+              ? "등록된 묶음 배송 그룹이 없습니다."
+              : quickFilter === "설정 확인"
+                ? "현재 확인이 필요한 묶음배송 설정이 없습니다."
+                : "검색 결과가 없습니다."
+          }
+          emptySubtext={
+            groups.length === 0
+              ? "상품별 배송비를 묶어서 계산하려면 배송 그룹을 등록해 주세요."
+              : "검색어나 필터 조건을 변경해 주세요."
+          }
+          emptyActionLabel={
+            groups.length === 0 ? "+ 묶음 배송 그룹 등록" : "초기화"
+          }
           emptyActionClick={groups.length === 0 ? openCreate : reset}
         />
       </div>
@@ -348,37 +640,69 @@ export function BundleShippingPage() {
           isNew={isNew}
           startEditing={isNew}
           issues={warnings[drawerItem.id] ?? []}
-          onClose={() => { setDrawerId(null); setIsNew(false); }}
+          onClose={() => {
+            setDrawerId(null);
+            setIsNew(false);
+          }}
           onSave={save}
           onToggleStatus={toggleStatus}
-          onDelete={(item) => setConfirm({ kind: 'delete', item })}
+          onDelete={(item) => setConfirm({ kind: "delete", item })}
           onAddMemo={(text) => addMemo(drawerItem.id, text)}
         />
       )}
 
       {showTest && (
-        <aside ref={testAsideRef} className={`${drawerShared.aside} ${styles.testDrawer}`} aria-label="배송비 계산 테스트">
+        <aside
+          ref={testAsideRef}
+          className={`${drawerShared.aside} ${styles.testDrawer}`}
+          aria-label="배송비 계산 테스트"
+        >
           <div className={drawerShared.head}>
             <div className={drawerShared.headRow}>
               <div className={drawerShared.headBody}>
-                <div className={drawerShared.eyebrow}>묶음 배송 · 배송비 계산 테스트</div>
+                <div className={drawerShared.eyebrow}>
+                  묶음 배송 · 배송비 계산 테스트
+                </div>
                 <h2 className={drawerShared.title}>주문 배송비 계산 Preview</h2>
               </div>
-              <button type="button" className={drawerShared.closeBtn} onClick={() => setShowTest(false)}>✕</button>
+              <button
+                type="button"
+                className={drawerShared.closeBtn}
+                onClick={() => setShowTest(false)}
+              >
+                ✕
+              </button>
             </div>
           </div>
           <div className={drawerShared.scroll}>
             <div className={styles.previewCard} style={{ marginBottom: 16 }}>
-              <h3 style={{ margin: '0 0 10px', fontSize: 12.5, fontWeight: 700 }}>테스트 주문 선택</h3>
+              <h3
+                style={{ margin: "0 0 10px", fontSize: 12.5, fontWeight: 700 }}
+              >
+                테스트 주문 선택
+              </h3>
               <div className={styles.orderPick}>
                 {TEST_SCENARIOS.map((s) => (
-                  <button key={s.id} type="button" className={`${styles.orderOption} ${scenarioId === s.id ? styles.orderOptionActive : ''}`} onClick={() => setScenarioId(s.id)}>
-                    <span><strong>{s.label}</strong> · {s.items.map((it) => productName(it.productCode)).join(' + ')}</span>
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`${styles.orderOption} ${scenarioId === s.id ? styles.orderOptionActive : ""}`}
+                    onClick={() => setScenarioId(s.id)}
+                  >
+                    <span>
+                      <strong>{s.label}</strong> ·{" "}
+                      {s.items
+                        .map((it) => productName(it.productCode))
+                        .join(" + ")}
+                    </span>
                     <span>{s.region}</span>
                   </button>
                 ))}
               </div>
-              <div className={styles.infoNote}>현재 저장된(적용중인) 그룹 정책과 기본 묶음배송 설정 기준으로 계산합니다.</div>
+              <div className={styles.infoNote}>
+                현재 저장된(적용중인) 그룹 정책과 기본 묶음배송 설정 기준으로
+                계산합니다.
+              </div>
             </div>
 
             <div className={styles.resultHero}>
@@ -390,11 +714,17 @@ export function BundleShippingPage() {
               <div key={u.key} className={styles.unitCard}>
                 <div className={styles.unitHead}>
                   <span className={styles.unitLabel}>{u.label}</span>
-                  <span className={styles.unitTotal}>{fmtWon(u.unitTotal)}</span>
+                  <span className={styles.unitTotal}>
+                    {fmtWon(u.unitTotal)}
+                  </span>
                 </div>
                 <div className={styles.unitReason}>{u.reason}</div>
                 <div className={styles.unitItems}>
-                  {u.items.map((it) => <span key={it.code} className={styles.unitItemChip}>{it.name} × {it.qty}</span>)}
+                  {u.items.map((it) => (
+                    <span key={it.code} className={styles.unitItemChip}>
+                      {it.name} × {it.qty}
+                    </span>
+                  ))}
                 </div>
                 <div className={styles.unitBreakdown}>
                   <span>배송비 {fmtWon(u.fee)}</span>
@@ -407,31 +737,71 @@ export function BundleShippingPage() {
       )}
 
       {confirm && (
-        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
+        <div
+          className={shared.dialogOverlay}
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setConfirm(null);
+          }}
+        >
           <div className={shared.dialogBox}>
             <h2 className={shared.dialogTitle}>
-              {confirm.kind === 'delete' ? '묶음 배송 그룹 삭제' : confirm.kind === 'deactivate' ? '묶음 배송 그룹 비활성화' : '묶음 배송 그룹 활성화'}
+              {confirm.kind === "delete"
+                ? "묶음 배송 그룹 삭제"
+                : confirm.kind === "deactivate"
+                  ? "묶음 배송 그룹 비활성화"
+                  : "묶음 배송 그룹 활성화"}
             </h2>
             <p className={shared.dialogBody}>
-              {confirm.kind === 'delete' && '주문 적용 이력이 없는 그룹입니다. 삭제하면 복구할 수 없습니다.'}
-              {confirm.kind === 'deactivate' && '비활성화 후 연결 상품은 상품별 배송 정책 또는 기본 배송 정책 기준으로 배송비가 계산됩니다.'}
-              {confirm.kind === 'activate' && '그룹을 다시 활성화하면 연결 상품에 그룹 배송비 정책이 적용됩니다.'}
+              {confirm.kind === "delete" &&
+                "주문 적용 이력이 없는 그룹입니다. 삭제하면 복구할 수 없습니다."}
+              {confirm.kind === "deactivate" &&
+                "비활성화 후 연결 상품은 상품별 배송 정책 또는 기본 배송 정책 기준으로 배송비가 계산됩니다."}
+              {confirm.kind === "activate" &&
+                "그룹을 다시 활성화하면 연결 상품에 그룹 배송비 정책이 적용됩니다."}
             </p>
             <div className={shared.dialogSummary}>
-              <div className={shared.dialogSummaryRow}><span>그룹명</span><strong>{confirm.item.name}</strong></div>
-              <div className={shared.dialogSummaryRow}><span>연결 상품</span><strong>{confirm.item.productCodes.length}개</strong></div>
-              <div className={shared.dialogSummaryRow}><span>주문 적용 이력</span><strong>{confirm.item.orderUsageCount.toLocaleString()}건</strong></div>
+              <div className={shared.dialogSummaryRow}>
+                <span>그룹명</span>
+                <strong>{confirm.item.name}</strong>
+              </div>
+              <div className={shared.dialogSummaryRow}>
+                <span>연결 상품</span>
+                <strong>{confirm.item.productCodes.length}개</strong>
+              </div>
+              <div className={shared.dialogSummaryRow}>
+                <span>주문 적용 이력</span>
+                <strong>
+                  {confirm.item.orderUsageCount.toLocaleString()}건
+                </strong>
+              </div>
             </div>
             <div className={shared.dialogActions}>
-              <button type="button" className={styles.cancelButton} onClick={() => setConfirm(null)}>취소</button>
-              <button type="button" className={confirm.kind === 'delete' ? styles.dangerButton : styles.primaryButton} onClick={confirmAction}>
-                {confirm.kind === 'delete' ? '삭제' : confirm.kind === 'deactivate' ? '비활성화' : '활성화'}
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={() => setConfirm(null)}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className={
+                  confirm.kind === "delete"
+                    ? styles.dangerButton
+                    : styles.primaryButton
+                }
+                onClick={confirmAction}
+              >
+                {confirm.kind === "delete"
+                  ? "삭제"
+                  : confirm.kind === "deactivate"
+                    ? "비활성화"
+                    : "활성화"}
               </button>
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 }

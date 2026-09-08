@@ -94,36 +94,11 @@ export function DeliveryCarriersPage() {
           </div>
         </div>
 
-        <div className={styles.quickFilters}>
-          {QUICK_FILTERS.map((k) => {
-            const active = filter === k;
-            const count = items.filter((item) => k === '전체' || item.status === k).length;
-            return (
-              <CommonButton
-                key={k}
-                variant={active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
-                onClick={() => setFilter(k)}
-              >
-                <span className={styles.qfLabel}>{k}</span>
-                <span className={styles.qfCount}>{count}</span>
-              </CommonButton>
-            );
-          })}
-        </div>
+        
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-                <option>전체</option>
-                <option>배송사코드</option>
-                <option>택배사명</option>
-                <option>담당조직</option>
-              </select>
-            </label>
+            
             <input
               className={styles.searchInput}
               value={keyword}
@@ -142,6 +117,24 @@ export function DeliveryCarriersPage() {
             >
               초기화
             </button>
+          <div className={styles.quickFilters}>
+          {QUICK_FILTERS.map((k) => {
+            const active = filter === k;
+            const count = items.filter((item) => k === '전체' || item.status === k).length;
+            return (
+              <CommonButton
+                key={k}
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                onClick={() => setFilter(k)}
+              >
+                <span className={styles.qfLabel}>{k}</span>
+                <span className={styles.qfCount}>{count}</span>
+              </CommonButton>
+            );
+          })}
+        </div>
           </div>
         </div>
 

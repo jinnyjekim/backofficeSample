@@ -129,7 +129,19 @@ export function QuoteApprovalPage() {
             </div>
           </div>
 
-          <div className={styles.quickFilters}>
+          
+
+          <div className={styles.filterBox}>
+            <div className={styles.filterRow1}>
+              
+              <input
+                className={styles.searchInput}
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="견적번호 또는 거래처명"
+              />
+              <button type="button" className={styles.searchBtn}>검색</button>
+            <div className={styles.quickFilters}>
             {FILTER_KEYS.map((k) => {
               const active = filter === k;
               return (
@@ -146,22 +158,6 @@ export function QuoteApprovalPage() {
               );
             })}
           </div>
-
-          <div className={styles.filterBox}>
-            <div className={styles.filterRow1}>
-              <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm}>
-                <option>전체</option>
-                <option>견적번호</option>
-                <option>거래처명</option>
-                <option>요청자</option>
-              </select></label>
-              <input
-                className={styles.searchInput}
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="견적번호 또는 거래처명"
-              />
-              <button type="button" className={styles.searchBtn}>검색</button>
             </div>
             <div className={styles.filterRow2}>
               <label className="globalFilterField"><span>요청자</span><select aria-label="요청자" className={styles.selectXs}>
@@ -180,6 +176,7 @@ export function QuoteApprovalPage() {
                 <option>회사 02</option>
               </select></label>
               <div className={styles.rowSpacer} />
+              <button type="button" className="detailFilterBtn">상세 필터</button>
               <button type="button" className={styles.resetBtn} onClick={() => { setFilter('승인대기'); setQ(''); }}>초기화</button>
             </div>
           </div>

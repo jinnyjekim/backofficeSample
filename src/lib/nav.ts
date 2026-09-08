@@ -178,7 +178,6 @@ export const NAV_GROUPS: NavGroup[] = [
 
       { key: 'coupons', icon: Ticket, label: '쿠폰 관리', to: '/coupons', business: 'B' },
       { key: 'coupons_list', sub: true, label: '쿠폰 목록', to: '/coupons', business: 'B' },
-      { key: 'coupons_create', sub: true, label: '쿠폰 등록', to: '/b2c/coupons/create', business: 'B' },
       { key: 'coupons_issue', sub: true, label: '쿠폰 발급', to: '/coupons/issue', business: 'B' },
       { key: 'coupons_auto', sub: true, label: '자동 발급', to: '/b2c/coupons/automatic', business: 'B' },
       { key: 'coupons_usage', sub: true, label: '쿠폰 사용 내역', to: '/coupons/usage', business: 'B' },
@@ -498,7 +497,9 @@ export const BREADCRUMB: Record<string, [string, string]> = {
 
   coupons_list: ['서비스 관리 · 쿠폰 관리', '쿠폰 목록'],
   coupons_issue: ['서비스 관리 · 쿠폰 관리', '쿠폰 발급 관리'],
+  coupons_auto: ['서비스 관리 · 쿠폰 관리', '자동 발급'],
   coupons_usage: ['서비스 관리 · 쿠폰 관리', '쿠폰 사용 내역'],
+  coupons_expired: ['서비스 관리 · 쿠폰 관리', '만료 쿠폰'],
   coupons_policy: ['서비스 관리 · 쿠폰 관리', '쿠폰 정책'],
 
   points_status: ['서비스 관리 · 포인트 / 적립금 관리', '보유 현황'],
@@ -663,9 +664,11 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/promotions/history')) return 'promotions_history';
   if (pathname.startsWith('/promotions')) return 'promotions_list';
 
-  if (pathname.startsWith('/coupons/issue')) return 'coupons_issue';
-  if (pathname.startsWith('/coupons/usage')) return 'coupons_usage';
-  if (pathname.startsWith('/coupons/policy')) return 'coupons_policy';
+  if (pathname.startsWith('/coupons/issue') || pathname.startsWith('/b2c/coupons/issue')) return 'coupons_issue';
+  if (pathname.startsWith('/coupons/usage') || pathname.startsWith('/b2c/coupons/usage')) return 'coupons_usage';
+  if (pathname.startsWith('/coupons/policy') || pathname.startsWith('/b2c/coupons/policy')) return 'coupons_policy';
+  if (pathname.startsWith('/b2c/coupons/automatic')) return 'coupons_auto';
+  if (pathname.startsWith('/b2c/coupons/expired')) return 'coupons_expired';
   if (pathname.startsWith('/coupons')) return 'coupons_list';
 
   if (pathname.startsWith('/points/history')) return 'points_history';

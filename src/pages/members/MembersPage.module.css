@@ -253,8 +253,9 @@
 }
 
 .conditionBar > :first-child {
-  flex: 1 1 420px;
-  max-width: none;
+  flex: 0 1 320px;
+  min-width: 220px;
+  max-width: 360px;
 }
 
 @media (max-width: 1100px) {

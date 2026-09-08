@@ -4,12 +4,14 @@ import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { ToastProvider } from '../common';
 import { useGridDownload } from '../../lib/useGridDownload';
+import { useDetailFilterToggle } from '../../lib/useDetailFilterToggle';
 import styles from './Shell.module.css';
 
 export function Shell() {
   const [navOpen, setNavOpen] = useState(true);
   const pageRef = useRef<HTMLDivElement>(null);
   useGridDownload(pageRef);
+  useDetailFilterToggle(pageRef);
 
   return (
     <ToastProvider>

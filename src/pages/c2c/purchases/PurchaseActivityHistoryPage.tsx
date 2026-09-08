@@ -139,16 +139,7 @@ export function PurchaseActivityHistoryPage() {
               setSearch(keyword.trim());
             }}
           >
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select aria-label="검색 범위" className={shared.selectSm}>
-                <option>통합 검색</option>
-                <option>로그 ID</option>
-                <option>구매번호</option>
-                <option>구매자</option>
-                <option>처리자</option>
-              </select>
-            </label>
+            
             <input
               className={shared.searchInput}
               value={keyword}
@@ -206,6 +197,7 @@ export function PurchaseActivityHistoryPage() {
               </div>
             </label>
             <span className={shared.rowSpacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button
               type="button"
               className={shared.resetBtn}

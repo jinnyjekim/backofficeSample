@@ -173,20 +173,7 @@ export function MinOrderQtyPage() {
         </div>
 
         <div className={styles.viewToggleRow}>
-          <div className={styles.quickFilters} style={{ marginBottom: 0 }}>
-            {quickFilters.map((qf) => (
-              <CommonButton
-                key={qf.label}
-                variant={qf.active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${styles.quickFilterBtn} ${qf.active ? styles.active : ''}`}
-                onClick={() => setStatusFilter(qf.label)}
-              >
-                <span className={styles.quickFilterLabel}>{qf.label}</span>
-                <span className={styles.quickFilterCount}>{qf.count}</span>
-              </CommonButton>
-            ))}
-          </div>
+          
           <div className={styles.viewToggle}>
             <button
               type="button"
@@ -207,13 +194,7 @@ export function MinOrderQtyPage() {
 
         <div className={styles.filterBox}>
           <div className={styles.searchRow}>
-            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectField} defaultValue="전체">
-              <option>전체</option>
-              <option>상품명</option>
-              <option>상품코드</option>
-              <option>거래처명</option>
-              <option>거래처코드</option>
-            </select></label>
+            
             <input
               className={styles.searchInput}
               value={q}
@@ -221,6 +202,20 @@ export function MinOrderQtyPage() {
               placeholder="상품명 또는 상품코드"
             />
             <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters} style={{ marginBottom: 0 }}>
+            {quickFilters.map((qf) => (
+              <CommonButton
+                key={qf.label}
+                variant={qf.active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${styles.quickFilterBtn} ${qf.active ? styles.active : ''}`}
+                onClick={() => setStatusFilter(qf.label)}
+              >
+                <span className={styles.quickFilterLabel}>{qf.label}</span>
+                <span className={styles.quickFilterCount}>{qf.count}</span>
+              </CommonButton>
+            ))}
+          </div>
           </div>
           <div className={styles.filterRow}>
             <label className="globalFilterField"><span>유형</span><select aria-label="유형"
@@ -245,6 +240,7 @@ export function MinOrderQtyPage() {
               <option>카테고리 03</option>
             </select></label>
             <div className={styles.spacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button type="button" className={styles.resetBtn} onClick={clearAll}>초기화</button>
           </div>
         </div>

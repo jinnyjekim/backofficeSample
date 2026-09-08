@@ -121,7 +121,14 @@ export function TaxInvoicesPage() {
           <button type="button" className={styles.primaryBtn}>+ 세금 계산 등록</button>
         </div>
 
-        <div className={styles.quickFilters}>
+        
+
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            
+            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="청구번호 · 주문번호 · 거래처" />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {FILTER_KEYS.map((k) => {
             const active = filter === k;
             return (
@@ -138,17 +145,6 @@ export function TaxInvoicesPage() {
             );
           })}
         </div>
-
-        <div className={styles.filterCard}>
-          <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm}>
-              <option>전체</option>
-              <option>청구번호</option>
-              <option>주문번호</option>
-              <option>거래처명</option>
-            </select></label>
-            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="청구번호 · 주문번호 · 거래처" />
-            <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectXs}>
@@ -169,6 +165,7 @@ export function TaxInvoicesPage() {
               <option>발행완료</option>
             </select></label>
             <div className={styles.spacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
           </div>
         </div>

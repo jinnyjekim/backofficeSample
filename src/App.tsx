@@ -101,7 +101,6 @@ import { CouponsListPage } from './pages/coupons/CouponsListPage';
 import { CouponIssuesPage } from './pages/coupons/CouponIssuesPage';
 import { CouponUsagePage } from './pages/coupons/CouponUsagePage';
 import { CouponPolicyPage } from './pages/coupons/CouponPolicyPage';
-import { CouponCreatePage } from './pages/coupons/CouponCreatePage';
 import { AutomaticCouponsPage } from './pages/coupons/AutomaticCouponsPage';
 import { ExpiredCouponsPage } from './pages/coupons/ExpiredCouponsPage';
 import { PointsBalancePage } from './pages/points/PointsBalancePage';
@@ -258,7 +257,6 @@ export default function App() {
         <Route path="b2c/promotions/member" element={<MemberPromotionsPage />} />
         <Route path="b2c/promotions/targets" element={<PromotionTargetsPage />} />
         <Route path="b2c/promotions/history" element={<PromotionApplicationsPage />} />
-        <Route path="b2c/coupons/create" element={<CouponCreatePage />} />
         <Route path="b2c/coupons/automatic" element={<AutomaticCouponsPage />} />
         <Route path="b2c/coupons/expired" element={<ExpiredCouponsPage />} />
         <Route path="b2c/coupons/issue" element={<CouponIssuesPage />} />

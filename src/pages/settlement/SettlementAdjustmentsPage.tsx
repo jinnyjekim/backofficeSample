@@ -71,24 +71,7 @@ export function SettlementAdjustmentsPage() {
         <div className={styles.title}>조정 내역</div>
         <div className={styles.subtitle}>정산금액에 반영된 모든 가산·차감 조정을 조회합니다.</div>
 
-        <div className={styles.quickFilters}>
-          {DIRECTION_FILTERS.map((filter) => {
-            const active = direction === filter;
-            const count = filter === '전체' ? all.length : all.filter((item) => filter === '가산' ? item.amount > 0 : item.amount < 0).length;
-            return (
-              <CommonButton
-                key={filter}
-                variant={active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
-                onClick={() => setDirection(filter)}
-              >
-                <span className={styles.qfLabel}>{filter}</span>
-                <span className={styles.qfCount}>{count}</span>
-              </CommonButton>
-            );
-          })}
-        </div>
+        
 
         <div className={styles.filterBox}>
           <div className={styles.filterRow1}>
@@ -96,31 +79,50 @@ export function SettlementAdjustmentsPage() {
               className={styles.searchInput}
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="정산번호, 정산대상 또는 조정 사유"
+              placeholder="정산번호, 정산대상 또는 조정 사유로 검색"
             />
             <button type="button" className={styles.searchBtn}>검색</button>
+            <div className={styles.quickFilters}>
+              {DIRECTION_FILTERS.map((filter) => {
+                const active = direction === filter;
+                const count = filter === '전체' ? all.length : all.filter((item) => filter === '가산' ? item.amount > 0 : item.amount < 0).length;
+                return (
+                  <CommonButton
+                    key={filter}
+                    variant={active ? 'primary-light' : 'secondary'}
+                    size="md"
+                    className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                    onClick={() => setDirection(filter)}
+                  >
+                    <span className={styles.qfLabel}>{filter}</span>
+                    <span className={styles.qfCount}>{count}</span>
+                  </CommonButton>
+                );
+              })}
+            </div>
           </div>
           <div className={styles.filterRow2}>
-            <label className={styles.filterField}>
-              <span className={styles.filterFieldLabel}>정산대상</span>
+            <label className="globalFilterField">
+              <span>정산대상</span>
               <select className={styles.selectXs} value={target} onChange={(event) => setTarget(event.target.value)}>
                 {targetOptions.map((option) => <option key={option}>{option}</option>)}
               </select>
             </label>
-            <label className={styles.filterField}>
-              <span className={styles.filterFieldLabel}>처리자</span>
+            <label className="globalFilterField">
+              <span>처리자</span>
               <select className={styles.selectXs} value={actor} onChange={(event) => setActor(event.target.value)}>
                 {actorOptions.map((option) => <option key={option}>{option}</option>)}
               </select>
             </label>
-            <label className={styles.filterField}>
-              <span className={styles.filterFieldLabel}>처리월</span>
+            <label className="globalFilterField">
+              <span>처리월</span>
               <select className={styles.selectXs} value={month} onChange={(event) => setMonth(event.target.value)}>
                 {monthOptions.map((option) => <option key={option}>{option}</option>)}
               </select>
             </label>
             <div className={styles.rowSpacer} />
-            {hasActiveFilters && <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>}
+            <button type="button" className="detailFilterBtn">상세 필터</button>
+            <button type="button" className={styles.resetBtn} onClick={resetFilters}>초기화</button>
           </div>
         </div>
 

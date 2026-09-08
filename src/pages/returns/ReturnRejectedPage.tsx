@@ -67,16 +67,7 @@ export function ReturnRejectedPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-                <option>전체</option>
-                <option>반품번호</option>
-                <option>주문번호</option>
-                <option>고객명</option>
-                <option>반려사유</option>
-              </select>
-            </label>
+            
             <input
               className={styles.searchInput}
               value={keyword}
@@ -85,6 +76,7 @@ export function ReturnRejectedPage() {
             />
             <button type="button" className={styles.searchBtn}>검색</button>
             <div className={styles.rowSpacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button
               type="button"
               className={styles.resetBtn}

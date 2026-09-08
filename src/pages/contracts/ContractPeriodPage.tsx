@@ -96,7 +96,19 @@ export function ContractPeriodPage() {
         </div>
       </div>
 
-      <div className={styles.quickFilters}>
+      
+
+      <div className={styles.filterCard}>
+        <div className={styles.searchRow}>
+          
+          <input
+            className={styles.searchInput}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="계약번호 또는 거래처명"
+          />
+          <button type="button" className={styles.searchBtn}>검색</button>
+        <div className={styles.quickFilters}>
         {FILTER_KEYS.map((k) => {
           const active = filter === k;
           return (
@@ -113,22 +125,6 @@ export function ContractPeriodPage() {
           );
         })}
       </div>
-
-      <div className={styles.filterCard}>
-        <div className={styles.searchRow}>
-          <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.select}>
-            <option>전체</option>
-            <option>계약번호</option>
-            <option>계약명</option>
-            <option>거래처명</option>
-          </select></label>
-          <input
-            className={styles.searchInput}
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="계약번호 또는 거래처명"
-          />
-          <button type="button" className={styles.searchBtn}>검색</button>
         </div>
         <div className={styles.filterRow}>
           <label className="globalFilterField"><span>기간상태</span><select aria-label="기간상태" className={styles.selectSm}>
@@ -152,6 +148,7 @@ export function ContractPeriodPage() {
             <option>회사 02</option>
           </select></label>
           <div className={styles.spacer} />
+          <button type="button" className="detailFilterBtn">상세 필터</button>
           <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
         </div>
       </div>

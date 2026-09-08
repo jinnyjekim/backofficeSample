@@ -90,16 +90,7 @@ export function CancelApprovalPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-                <option>전체</option>
-                <option>취소번호</option>
-                <option>주문번호</option>
-                <option>고객명</option>
-                <option>결제수단</option>
-              </select>
-            </label>
+            
             <input
               className={styles.searchInput}
               value={keyword}
@@ -118,6 +109,7 @@ export function CancelApprovalPage() {
               </div>
             </label>
             <div className={styles.rowSpacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button
               type="button"
               className={styles.resetBtn}

@@ -27,7 +27,7 @@ export function ExchangeCompletedPage() {
         </div>
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select className={styles.selectSm} aria-label="검색 범위"><option>전체</option><option>교환번호</option><option>주문번호</option></select></label>
+            
             <input className={styles.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="교환번호 / 주문번호 / 고객명 / 상품명"/>
             <button className={styles.searchBtn}>검색</button>
           </div>
@@ -35,6 +35,7 @@ export function ExchangeCompletedPage() {
             <label className="globalFilterField"><span>택배사</span><select className={styles.selectSm} value={carrier} onChange={(event) => setCarrier(event.target.value)}><option value="">전체 택배사</option><option>CJ대한통운</option><option>우체국택배</option></select></label>
             <label className={styles.dateFilterField}><span>완료일</span><span className={styles.dateRange}><DatePicker defaultValue="2026-09-01"/><span className={styles.dateSeparator}>~</span><DatePicker defaultValue="2026-09-07"/></span></label>
             <span className={styles.rowSpacer}/>
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button className={styles.resetBtn} onClick={() => { setKeyword(''); setCarrier(''); }}>초기화</button>
           </div>
         </div>

@@ -76,13 +76,16 @@
 .filterHeadRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: flex-start;
+  gap: 12px;
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
 .filterHeadRow > .quickFilters,
 .filterHeadRow > .filterRow1 {
+  margin-bottom: 0;
+}
+.filterRow1 > .quickFilters {
   margin-bottom: 0;
 }
 
@@ -143,6 +146,9 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+}
+.searchRow > .quickFilters {
+  margin-bottom: 0;
 }
 .selectField {
   height: 34px;

@@ -30,7 +30,13 @@ export function ExchangeRequestsPage() {
             <div className={styles.subtitle}>고객이 신청한 신규 교환 건의 재고와 교환 가능 조건을 심사합니다.</div>
           </div>
         </div>
-        <div className={styles.quickFilters}>
+        
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            
+            <input className={styles.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="교환번호 / 주문번호 / 고객명 / 상품명"/>
+            <button className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {['전체','사이즈','색상','불량'].map((value) => (
             <CommonButton key={value} variant={reason === value ? 'primary-light' : 'secondary'} size="md" className={`${styles.qfBtn} ${reason === value ? styles.active : ''}`} onClick={() => setReason(value)}>
               <span className={styles.qfLabel}>{value}</span>
@@ -38,15 +44,11 @@ export function ExchangeRequestsPage() {
             </CommonButton>
           ))}
         </div>
-        <div className={styles.filterCard}>
-          <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select className={styles.selectSm} aria-label="검색 범위"><option>전체</option><option>교환번호</option><option>주문번호</option><option>고객명</option></select></label>
-            <input className={styles.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="교환번호 / 주문번호 / 고객명 / 상품명"/>
-            <button className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className={styles.dateFilterField}><span>신청일</span><span className={styles.dateRange}><DatePicker defaultValue="2026-09-01"/><span className={styles.dateSeparator}>~</span><DatePicker defaultValue="2026-09-07"/></span></label>
             <span className={styles.rowSpacer}/>
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button className={styles.resetBtn} onClick={() => { setReason('전체'); setKeyword(''); }}>초기화</button>
           </div>
         </div>

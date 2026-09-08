@@ -716,7 +716,7 @@ export function DeliveryClaimsStatsPage() {
               <strong>분석할 배송 데이터가 없습니다.</strong>
               <span>기간 또는 조건을 변경해 주세요.</span>
               <button type="button" onClick={reset}>
-                필터 초기화
+                초기화
               </button>
             </div>
           )}
@@ -835,7 +835,7 @@ export function DeliveryClaimsStatsPage() {
             empty={!rows.length}
             emptyText="현재 조건에 해당하는 배송 데이터가 없습니다."
             emptySubtext="기간 또는 조건을 변경해 주세요."
-            emptyActionLabel="필터 초기화"
+            emptyActionLabel="초기화"
             emptyActionClick={reset}
           />
         </section>

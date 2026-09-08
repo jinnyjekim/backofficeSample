@@ -129,7 +129,14 @@ export function DepositConfirmPage() {
           <button type="button" className={styles.primaryBtn}>+ 입금 내역 등록</button>
         </div>
 
-        <div className={styles.quickFilters}>
+        
+
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            
+            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="입금자 · 거래처 · 거래번호" />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {FILTER_KEYS.map((k) => {
             const active = filter === k;
             return (
@@ -146,17 +153,6 @@ export function DepositConfirmPage() {
             );
           })}
         </div>
-
-        <div className={styles.filterCard}>
-          <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm}>
-              <option>전체</option>
-              <option>입금자명</option>
-              <option>거래처명</option>
-              <option>거래번호</option>
-            </select></label>
-            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="입금자 · 거래처 · 거래번호" />
-            <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>매칭상태</span><select aria-label="매칭상태" className={styles.selectXs}>
@@ -172,6 +168,7 @@ export function DepositConfirmPage() {
               <option>은행02 · B2B수금계좌</option>
             </select></label>
             <div className={styles.spacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button type="button" className={styles.clearBtn} onClick={() => { setFilter('확인대기'); setQ(''); }}>초기화</button>
           </div>
         </div>
