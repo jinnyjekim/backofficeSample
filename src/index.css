@@ -658,6 +658,151 @@
   }
 }
 
+/*
+ * Unified list search + quick-status tabs
+ *
+ * List pages historically rendered the status buttons immediately above the
+ * search panel.  Keep their filtering behavior intact while presenting both
+ * controls as the single toolbar used by the current member-list layout.
+ */
+@supports selector(:has(*)) {
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"])) {
+    display: flex !important;
+    min-width: 0;
+    margin-bottom: 0 !important;
+    padding: 10px 12px !important;
+    border: 1px solid var(--common-border) !important;
+    border-radius: var(--common-radius-lg) !important;
+    background: var(--common-bg) !important;
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+    > :is(form, [class*="filterRow1"]) {
+    order: -1;
+    display: flex !important;
+    flex: 1 1 52%;
+    min-width: 260px;
+    max-width: none;
+    margin: 0 !important;
+    align-items: flex-end !important;
+    gap: 8px !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+    > [class*="quickFilters"] {
+    display: flex !important;
+    flex: 0 1 auto;
+    max-width: 48%;
+    margin: 0 0 0 auto !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  :where([class*="filterHeadRow"]):has(+ :is([class*="filterBox"], [class*="filterCard"])) {
+    border-radius: var(--common-radius-lg) var(--common-radius-lg) 0 0 !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))
+    + :is([class*="filterBox"], [class*="filterCard"]) {
+    margin-top: -1px !important;
+    border-radius: 0 0 var(--common-radius-lg) var(--common-radius-lg) !important;
+  }
+
+  :where([class*="quickFilters"]):has(+ :is([class*="filterBox"], [class*="filterCard"])) {
+    position: relative;
+    z-index: 2;
+    display: flex !important;
+    width: fit-content;
+    max-width: 48%;
+    margin: 0 12px -44px auto !important;
+    transform: translateY(18px);
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  :where([class*="quickFilters"]):has(
+      + :is([class*="filterBox"], [class*="filterCard"])
+      > :is(form, [class*="searchRow"], [class*="filterRow1"]):first-child:not(:has(label))
+    ) {
+    transform: none;
+  }
+
+  :where([class*="filterHeadRow"], [class*="quickFilters"])
+    > [class*="quickFilters"]::-webkit-scrollbar,
+  :where([class*="quickFilters"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))::-webkit-scrollbar {
+    display: none;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"])
+    > [class*="quickFilters"]
+    > *,
+  :where([class*="quickFilters"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))
+    > * {
+    flex: none;
+  }
+
+  :where([class*="quickFilters"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))
+    + :is([class*="filterBox"], [class*="filterCard"]) {
+    min-width: 0;
+    padding: 10px 12px !important;
+  }
+
+  :where([class*="quickFilters"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))
+    + :is([class*="filterBox"], [class*="filterCard"])
+    > :is(form, [class*="searchRow"], [class*="filterRow1"]):first-child {
+    width: 52%;
+    min-width: 0;
+    max-width: none;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  :where([class*="quickFilters"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))
+    + :is([class*="filterBox"], [class*="filterCard"])
+    > :is([class*="filterRow2"], [class*="filterRow"]):not(:first-child) {
+    margin-top: 10px !important;
+  }
+}
+
+@media (max-width: 980px) {
+  @supports selector(:has(*)) {
+    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"])) {
+      flex-wrap: wrap !important;
+    }
+
+    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+      > :is(form, [class*="filterRow1"]),
+    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+      > [class*="quickFilters"] {
+      flex-basis: 100%;
+      width: 100%;
+      max-width: none;
+      margin-left: 0 !important;
+    }
+
+    :where([class*="quickFilters"]):has(+ :is([class*="filterBox"], [class*="filterCard"])) {
+      width: auto;
+      max-width: none;
+      margin: 0 0 8px !important;
+      transform: none;
+    }
+
+    :where([class*="quickFilters"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))
+      + :is([class*="filterBox"], [class*="filterCard"])
+      > :is(form, [class*="searchRow"], [class*="filterRow1"]):first-child {
+      width: 100%;
+    }
+  }
+}
+
 html, body, #root {
   height: 100%;
 }

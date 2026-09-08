@@ -363,21 +363,7 @@ export function MembersPage() {
       <div className={styles.body}>
         <main className={styles.main}>
           <div className={styles.filterZone}>
-            <nav className={styles.viewNav}>
-              {cfg.tabs.map((t) => (
-                <button
-                  key={t.key}
-                  type="button"
-                  className={`${styles.viewBtn} ${view === t.key ? styles.active : ''}`}
-                  onClick={() => { setView(t.key); setPage(1); setSel([]); }}
-                >
-                  {t.label}
-                  <span className={styles.viewCount}>{data.filter((r) => t.test(r)).length}</span>
-                </button>
-              ))}
-            </nav>
-
-            <div className={styles.stepLabel} style={{ marginTop: 12 }}>
+            <div className={styles.stepLabel}>
               <span className={styles.stepTitle}>조건 설정</span>
               <span className={styles.stepHint}>검색어와 조건 칩으로 대상을 좁힙니다 · {cfg.label} 조건 세트</span>
             </div>
@@ -390,6 +376,20 @@ export function MembersPage() {
                 placeholder={cfg.placeholder}
                 shortcutHint="/"
               />
+
+              <nav className={styles.viewNav} aria-label={`${cfg.label} 회원 상태 보기`}>
+                {cfg.tabs.map((t) => (
+                  <button
+                    key={t.key}
+                    type="button"
+                    className={`${styles.viewBtn} ${view === t.key ? styles.active : ''}`}
+                    onClick={() => { setView(t.key); setPage(1); setSel([]); }}
+                  >
+                    {t.label}
+                    <span className={styles.viewCount}>{data.filter((r) => t.test(r)).length}</span>
+                  </button>
+                ))}
+              </nav>
 
               {chips.map((c, i) => (
                 <button key={i} type="button" className={styles.chip} onClick={() => removeChip(i)}>

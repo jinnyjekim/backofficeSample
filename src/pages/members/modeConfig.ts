@@ -87,7 +87,7 @@ export function getModeConfig(mode: BusinessMode): ModeConfig {
     return {
       unit: '회원', unitSuffix: '명', label: 'C2C',
       note: '구매·판매 역할과 제재를 축으로 분기됩니다',
-      placeholder: '이름 · 아이디 · 상점명 · 회원번호 — 무엇이든 입력',
+      placeholder: '이름 · 아이디 · 상점명 · 회원번호',
       searchExtra: (r) => (r.shop || '') + r.handle,
       tabs: [
         { key: 'all', label: '전체', test: () => true },
@@ -164,7 +164,7 @@ export function getModeConfig(mode: BusinessMode): ModeConfig {
     return {
       unit: '계정', unitSuffix: '명', label: 'B2B',
       note: '회원 = 회사에 소속된 로그인 계정. 회사 정보는 거래처 관리에서 관리',
-      placeholder: '이름 · 이메일 · 회사명 · 회사코드 — 무엇이든 입력',
+      placeholder: '이름 · 이메일 · 회사명 · 회사코드',
       searchExtra: (r) => r.company + r.companyCode + r.dept,
       tabs: [
         { key: 'all', label: '전체', test: () => true },
@@ -244,7 +244,7 @@ export function getModeConfig(mode: BusinessMode): ModeConfig {
   return {
     unit: '회원', unitSuffix: '명', label: 'B2C',
     note: '등급·구매 이력을 축으로 분기됩니다',
-    placeholder: '이름 · 이메일 · 회원번호 · 휴대폰 — 무엇이든 입력',
+    placeholder: '이름 · 이메일 · 회원번호 · 휴대폰',
     searchExtra: (r) => r.handle,
     tabs: [
       { key: 'all', label: '전체', test: () => true },
