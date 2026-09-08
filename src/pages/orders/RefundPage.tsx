@@ -1,3 +1,4 @@
+import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridRow } from "../../components/DataGrid/types";
@@ -604,6 +605,13 @@ export function RefundPage() {
       <div className={shared.gridWrap}>
         <div className={shared.resultRow}>
           <span className={shared.resultLabel}>총 {filtered.length}건</span>
+          <div className={shared.resultActions}>
+            <ExcelDownloadButton type="button" data-grid-download />
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
+          </div>
         </div>
       </div>
 

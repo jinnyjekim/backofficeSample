@@ -142,6 +142,10 @@ export function ReturnCollectingPage() {
           <span className={styles.resultLabel}>{`총 ${filtered.length}건 회수 진행중`}</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
+            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
           </div>
         </div>
       </header>

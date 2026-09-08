@@ -1,3 +1,4 @@
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { useMemo, useState } from 'react';
 import styles from './RecordsPage.module.css';
 import { BAN_MEMBERS, LEFT_MEMBERS, type BanMember, type LeftMember, type MemberBusinessType } from '../../data/members';
@@ -259,6 +260,13 @@ export function RecordsPage({ kind }: Props) {
             <span className={styles.tableHeadHint}>{rec.listHint}</span>
             <div className={styles.spacer} />
             <span className={styles.tableHeadResult}>{rec.resultLabel}</span>
+            <div className={styles.resultActions}>
+              <ExcelDownloadButton type="button" data-grid-download />
+              <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+                <option>20개씩 보기</option>
+                <option>50개씩 보기</option>
+              </select>
+            </div>
           </div>
 
           <DataGrid

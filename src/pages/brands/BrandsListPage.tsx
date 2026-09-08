@@ -505,6 +505,17 @@ export function BrandsListPage() {
         </div>
       )}
 
+      <div className={styles.resultRow}>
+          <span className={styles.resultLabel}>총 {filtered.length}건</span>
+          <div className={styles.resultActions}>
+            <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly("브랜드 목록을 다운로드했습니다.")} />
+            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
+          </div>
+        </div>
+
       <div className={styles.gridWrap}>
         <DataGrid
           columns={GRID_COLUMNS}

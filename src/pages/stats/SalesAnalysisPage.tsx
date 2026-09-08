@@ -9,6 +9,7 @@ import {
 import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "../../components/DataGrid";
+import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import type {
   Cell,
   GridColumn,
@@ -1586,6 +1587,20 @@ export function SalesAnalysisPage() {
                 {item}
               </button>
             ))}
+          </div>
+          <div className={styles.resultRow}>
+            <span className={styles.resultLabel}>총 {gridRows.length}건</span>
+            <div className={styles.resultActions}>
+              <ExcelDownloadButton
+                type="button"
+                data-grid-download
+                onClick={() => setDownloadOpen(true)}
+              />
+              <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+                <option>20개씩 보기</option>
+                <option>50개씩 보기</option>
+              </select>
+            </div>
           </div>
           <DataGrid
             columns={columns}

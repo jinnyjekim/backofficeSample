@@ -339,6 +339,10 @@ export function PaymentAuditPage() {
           </span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton data-grid-download />
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
           </div>
         </div>
         <p className={styles.readOnlyNotice}>

@@ -1,3 +1,4 @@
+import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import { useMemo, useRef, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridRow } from "../../components/DataGrid/types";
@@ -574,7 +575,14 @@ export function JejuRemotePolicyPage() {
           <span className={styles.resultNote}>
             추가비는 기본 배송비에 합산되어 부과됩니다
           </span>
-        </div>
+        
+          <div className={shared.resultActions}>
+            <ExcelDownloadButton type="button" data-grid-download />
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
+          </div></div>
         <DataGrid
           columns={[
             { label: "지역" },

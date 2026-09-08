@@ -18,6 +18,7 @@ import { DatePicker } from '../../components/forms/DatePicker';
 import { SearchField } from '../../components/SearchField';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
 import type { GridColumn, GridRow } from '../../components/DataGrid/types';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { BusinessScopeSwitch } from '../../components/business/BusinessScopeSwitch';
 
 interface Section {
@@ -437,6 +438,16 @@ export function ComponentsPage() {
                 <SearchField value={gridSearch} onValueChange={setGridSearch} placeholder="이름으로 검색" shortcutHint="/" />
               </Demo>
               <Demo name="DataGrid" col note="검색어를 입력하면 아래 표가 실시간으로 좁혀집니다">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#3f3f46' }}>총 {gridRows.length}건</span>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <ExcelDownloadButton data-grid-download />
+                    <select style={{ height: 30, borderRadius: 7, border: '1px solid rgba(0,0,0,0.1)', fontSize: '12px', padding: '0 8px', background: '#fff', color: '#3f3f46' }} defaultValue="20개씩 보기">
+                      <option>20개씩 보기</option>
+                      <option>50개씩 보기</option>
+                    </select>
+                  </div>
+                </div>
                 <DataGrid
                   columns={gridColumns}
                   rows={gridRows}

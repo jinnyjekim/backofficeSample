@@ -693,6 +693,16 @@ function AnalyticsPage({
               <p>대상 구간별 성과와 구성비</p>
             </div>
           </div>
+          <div className={styles.resultBar}>
+            <span className={styles.resultLabel}>총 {rows.length}건</span>
+            <div className={styles.resultActions}>
+              <ExcelDownloadButton data-grid-download />
+              <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+                <option>20개씩 보기</option>
+                <option>50개씩 보기</option>
+              </select>
+            </div>
+          </div>
           <DataGrid
             columns={[
               { label: "구간" },

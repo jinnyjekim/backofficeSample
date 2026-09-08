@@ -395,3 +395,6 @@
   color: #fff;
   font-weight: 600;
 }
+
+.resultActions { display: flex; gap: 8px; align-items: center; }
+.pageSizeSelect { height: 30px; box-sizing: border-box; padding: 0 9px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 7px; background: #fff; color: #52525b; font-size: 12px; }

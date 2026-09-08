@@ -434,6 +434,10 @@ export function AdminsListPage() {
               data-grid-download
               onClick={() => toastBriefly("관리자 목록을 다운로드했습니다.")}
             />
+            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
           </div>
         </div>
       </div>

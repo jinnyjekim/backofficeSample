@@ -355,6 +355,10 @@ export function CsHistoryPage() {
               data-grid-download
               onClick={() => setDownloadOpen(true)}
             />
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
           </div>
         </div>
         <DataGrid

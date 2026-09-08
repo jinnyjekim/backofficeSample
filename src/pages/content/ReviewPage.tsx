@@ -1,3 +1,4 @@
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { DatePicker } from "../../components/forms/DatePicker";
 import { SearchField } from "../../components/SearchField";
 import {
@@ -826,6 +827,7 @@ export function ReviewPage() {
                   className={sh.totalLabel}
                 >{`총 ${list.length.toLocaleString("ko-KR")}건`}</span>
                 <div className={sh.rowSpacer} />
+                <ExcelDownloadButton type="button" data-grid-download />
                 <select
                   className={sh.pageSizeSelect}
                   defaultValue="20개씩 보기"

@@ -539,7 +539,14 @@ export function MembersPage() {
               <button type="button" className={styles.sortBtn} onClick={() => setDesc((v) => !v)}>
                 가입일순 {desc ? '↓' : '↑'}
               </button>
-              <span className={styles.tableHeadResult}>조건 결과 {formatNumber(rows.length)}{cfg.unitSuffix}</span>
+              <span className={styles.tableHeadResult}>총 {formatNumber(rows.length)}{cfg.unitSuffix}</span>
+              <div className={styles.resultActions}>
+                <ExcelDownloadButton type="button" data-grid-download onClick={() => setModal({ kind: 'export' })} />
+                <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+                  <option>20개씩 보기</option>
+                  <option>50개씩 보기</option>
+                </select>
+              </div>
             </div>
 
             <DataGrid

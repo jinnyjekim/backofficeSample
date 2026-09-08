@@ -205,6 +205,15 @@
   display: flex;
   gap: 8px;
 }
+.pageSizeSelect {
+  height: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  padding: 0 9px;
+  font-size: 12px;
+  color: #52525b;
+  background: #fff;
+}
 
 .tableWrap {
   margin: 0 24px 20px;

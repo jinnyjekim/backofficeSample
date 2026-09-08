@@ -45,6 +45,10 @@ export function ExchangePreparingPage() {
           <span className={styles.resultLabel}>총 {filtered.length}건 출고 준비</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton data-grid-download/>
+            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
           </div>
         </div>
       </header>

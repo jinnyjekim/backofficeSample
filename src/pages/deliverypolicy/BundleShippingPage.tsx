@@ -1,3 +1,4 @@
+import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import { useMemo, useRef, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridRow } from "../../components/DataGrid/types";
@@ -598,7 +599,14 @@ export function BundleShippingPage() {
           <span className={styles.resultNote}>
             그룹 배송비는 연결된 상품에 우선 적용됩니다
           </span>
-        </div>
+        
+          <div className={shared.resultActions}>
+            <ExcelDownloadButton type="button" data-grid-download />
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
+          </div></div>
         <DataGrid
           columns={[
             { label: "그룹명" },

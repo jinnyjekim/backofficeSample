@@ -135,7 +135,14 @@ export function ReviewAnalyticsPage() {
         </div>
 
         <div className={shared.resultRow}>
-          <span className={shared.resultLabel}>상품별 리뷰 성과</span>
+          <span className={shared.resultLabel}>총 {rows.length}개 상품</span>
+          <div className={shared.resultActions}>
+            <ExcelDownloadButton type="button" data-grid-download />
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
+          </div>
         </div>
       </header>
 

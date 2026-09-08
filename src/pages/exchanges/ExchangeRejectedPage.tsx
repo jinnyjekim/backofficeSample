@@ -38,7 +38,11 @@ export function ExchangeRejectedPage() {
         </div>
         <div className={styles.resultBar}>
           <span className={styles.resultLabel}>총 {filtered.length}건 교환 반려</span>
-          <div className={styles.resultActions}><ExcelDownloadButton data-grid-download/></div>
+          <div className={styles.resultActions}><ExcelDownloadButton data-grid-download/>
+            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select></div>
         </div>
       </header>
       <div className={styles.tableWrap}>

@@ -407,6 +407,10 @@ export function AdminHistoryPage() {
                 toastBriefly("현재 조건으로 이력을 다운로드했습니다.")
               }
             />
+            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
           </div>
         </div>
       </div>

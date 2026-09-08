@@ -1,9 +1,10 @@
-import { useRef, type ReactNode } from 'react';
+import { useRef, type ReactNode, Children, isValidElement } from 'react';
 import { useOutsideClose } from '../../../lib/useOutsideClose';
 import shared from '../shared.module.css';
 import drawer from '../../ops/opsDrawerShared.module.css';
 import styles from './SalesActivity.module.css';
 import { SplitPanePanel } from '../../../components/common';
+import { ExcelDownloadButton } from '../../../components/common/ExcelDownloadButton';
 
 export interface Metric { label: string; value: string; note: string; tone?: 'up' | 'down'; dot?: string }
 export interface DrawerField { label: string; value: ReactNode }
@@ -17,9 +18,35 @@ export function Metrics({ items }: { items: Metric[] }) {
   return <div className={styles.summaryGrid}>{items.map((item) => <div key={item.label} className={styles.summaryCard}><div className={styles.summaryHead}><span>{item.label}</span>{item.dot && <i className={styles.summaryDot} style={{ background: item.dot }}/>}</div><strong>{item.value}</strong><em className={item.tone === 'up' ? styles.deltaUp : item.tone === 'down' ? styles.deltaDown : ''}>{item.note}</em></div>)}</div>;
 }
 
-export function FilterBox({ children }: { children: ReactNode }) { return <div className={shared.filterBox}>{children}</div>; }
-export function ControlArea({ children }: { children: ReactNode }) { return <div className={styles.controlArea}>{children}</div>; }
-export function ResultBar({ count, unit = '명', children }: { count: number; unit?: string; children?: ReactNode }) { return <div className={shared.resultRow}><span className={shared.resultLabel}>총 {count.toLocaleString()}{unit}</span><div className={shared.resultActions}>{children}</div></div>; }
+export function FilterBox({ children }: { children?: ReactNode }) { return <div className={shared.filterBox}>{children}</div>; }
+export function ControlArea({ children }: { children?: ReactNode }) { return <div className={styles.controlArea}>{children}</div>; }
+
+export function ResultBar({ count, unit = '명', children }: { count: number; unit?: string; children?: ReactNode }) {
+  const childArray = Children.toArray(children);
+  const hasDownload = childArray.some(
+    (c) => isValidElement(c) && ((c.props as any)?.['data-grid-download'] !== undefined || (c.props as any)?.['data-excel-download'] !== undefined || (c.props as any)?.className?.includes?.('downloadBtn'))
+  );
+  const hasSelect = childArray.some(
+    (c) => isValidElement(c) && (c.type === 'select' || (c.props as any)?.className?.includes?.('pageSizeSelect'))
+  );
+
+  return (
+    <div className={shared.resultRow}>
+      <span className={shared.resultLabel}>총 {count.toLocaleString()}{unit}</span>
+      <div className={shared.resultActions}>
+        {!hasDownload && <ExcelDownloadButton type="button" data-grid-download />}
+        {children}
+        {!hasSelect && (
+          <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+            <option>20개씩 보기</option>
+            <option>50개씩 보기</option>
+          </select>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function GridArea({ children }: { children: ReactNode }) { return <div className={shared.gridWrap}>{children}</div>; }
 
 export function DetailDrawer({ eyebrow, title, status, statusMeta, subtitle, stats, fields, actions, children, onClose, variant = 'overlay' }: { eyebrow: string; title: string; status: string; statusMeta: { bg: string; fg: string }; subtitle: string; stats?: DrawerStat[]; fields: DrawerField[]; actions?: ReactNode; children?: ReactNode; onClose: () => void; variant?: 'overlay' | 'panel' }) {

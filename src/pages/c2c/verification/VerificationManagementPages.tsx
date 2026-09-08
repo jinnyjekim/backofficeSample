@@ -465,6 +465,10 @@ export function VerificationReviewPage() {
               data-grid-download
               onClick={downloadCases}
             />
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
           </div>
         </div>
       </header>
@@ -910,6 +914,10 @@ export function VerificationPolicyPage() {
               data-grid-download
               onClick={downloadPolicies}
             />
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
           </div>
         </div>
       </header>
@@ -1243,6 +1251,10 @@ export function VerificationHistoryPage() {
               data-grid-download
               onClick={downloadHistory}
             />
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
           </div>
         </div>
       </header>
