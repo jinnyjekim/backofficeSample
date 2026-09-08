@@ -94,26 +94,19 @@ function adjustedWarehouses(sku: InventorySku, delta: number) {
 
 type InventoryStatusPageProps = {
   initialView?: ViewMode;
-  initialQuickFilter?: QuickFilter;
-  initialSafetyFilter?: "" | "설정" | "미설정";
-  alertOnly?: boolean;
   pageTitle?: string;
   pageSubtitle?: string;
 };
 
 export function InventoryStatusPage({
   initialView = "product",
-  initialQuickFilter = "전체",
-  initialSafetyFilter = "",
-  alertOnly = false,
   pageTitle = "재고 현황",
   pageSubtitle = "상품·옵션별 물리재고와 예약 수량을 구분해 실제 판매 가능한 재고를 확인합니다.",
 }: InventoryStatusPageProps = {}) {
   const [products, setProducts] =
     useState<InventoryProduct[]>(INVENTORY_PRODUCTS);
   const [view, setView] = useState<ViewMode>(initialView);
-  const [quickFilter, setQuickFilter] =
-    useState<QuickFilter>(initialQuickFilter);
+  const [quickFilter, setQuickFilter] = useState<QuickFilter>("전체");
   const [keyword, setKeyword] = useState("");
   const [search, setSearch] = useState("");
   const [stockStatus, setStockStatus] = useState("");
@@ -122,10 +115,10 @@ export function InventoryStatusPage({
   const [brand, setBrand] = useState("");
   const [warehouse, setWarehouse] = useState("");
   const [optionFilter, setOptionFilter] = useState("");
-  const [safetyFilter, setSafetyFilter] = useState<string>(initialSafetyFilter);
+  const [safetyFilter, setSafetyFilter] = useState<string>("");
   const [availableMin, setAvailableMin] = useState("");
   const [availableMax, setAvailableMax] = useState("");
-  const [showAdvanced, setShowAdvanced] = useState(initialSafetyFilter !== "");
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -167,8 +160,6 @@ export function InventoryStatusPage({
     () =>
       allRows.filter((row) => {
         if (!rowMatches(row, quickFilter)) return false;
-        if (alertOnly && !row.sourceSkus.some((sku) => sku.alertEnabled))
-          return false;
         const haystack =
           `${row.productName} ${row.productCode} ${row.sku ?? ""} ${row.option} ${row.brand}`.toLowerCase();
         if (search && !haystack.includes(search.toLowerCase())) return false;
@@ -209,7 +200,6 @@ export function InventoryStatusPage({
       safetyFilter,
       availableMin,
       availableMax,
-      alertOnly,
     ],
   );
   const detail = allRows.find((row) => row.id === detailId) ?? null;
