@@ -114,6 +114,7 @@ import { PointExpiringPage } from './pages/points/PointExpiringPage';
 import { PointManualGrantPage } from './pages/points/PointManualGrantPage';
 import { BrandsListPage } from './pages/brands/BrandsListPage';
 import { ReviewsListPage } from './pages/reviews/ReviewsListPage';
+import { ReviewAnalyticsPage } from './pages/reviews/ReviewAnalyticsPage';
 import { AdminsListPage } from './pages/admin/AdminsListPage';
 import { AdminRolesPage } from './pages/admin/AdminRolesPage';
 import { AdminHistoryPage } from './pages/admin/AdminHistoryPage';
@@ -518,6 +519,7 @@ export default function App() {
         <Route path="brands" element={<BrandsListPage />} />
 
         <Route path="reviews" element={<ReviewsListPage />} />
+        <Route path="reviews/analytics" element={<ReviewAnalyticsPage />} />
 
         <Route path="cart-conversion" element={<CartConversionPage />} />
 

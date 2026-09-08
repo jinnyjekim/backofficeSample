@@ -86,7 +86,7 @@ export function ReviewAnalyticsPage() {
         </div>
 
         <div className={shared.filterBox}>
-          <div className={shared.filterRow2}>
+          <div className={styles.filterControls}>
             <label className="globalFilterField"><span>조회 기간</span><select aria-label="조회 기간" className={shared.selectSm} value={period} onChange={(event) => setPeriod(event.target.value)}>
               <option value="7">최근 7일</option>
               <option value="30">최근 30일</option>
@@ -97,7 +97,7 @@ export function ReviewAnalyticsPage() {
               {productOptions.map((code) => <option key={code} value={code}>{productName(code)} · {code}</option>)}
             </select></label>
             <span className={shared.rowSpacer} />
-          <ExcelDownloadButton type="button" data-grid-download />
+            <ExcelDownloadButton type="button" data-grid-download />
           </div>
         </div>
 

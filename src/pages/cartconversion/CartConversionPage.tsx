@@ -1,5 +1,13 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronDown, ChevronUp, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import {
+  CommonButton,
+  CommonCheckbox,
+  CommonDatePicker,
+  CommonSelect,
+} from '../../components/common';
+import { BusinessScopeSwitch } from '../../components/business/BusinessScopeSwitch';
 import shared from '../ops/opsShared.module.css';
 import styles from '../stats/TransactionStatsPage.module.css';
 import extra from './cartConversionExtra.module.css';
@@ -13,7 +21,6 @@ import {
   bucketSeries,
   delta,
   fmtCount,
-  fmtDate,
   fmtItemCount,
   fmtPct,
   fmtSignedPct,
@@ -74,9 +81,8 @@ export function CartConversionPage() {
   const [tab, setTab] = useState<Tab>('overview');
   const [start, setStart] = useState(quickRangeDates('최근 30일')[0]);
   const [end, setEnd] = useState(TODAY);
-  const [draftStart, setDraftStart] = useState(start);
-  const [draftEnd, setDraftEnd] = useState(end);
   const [compare, setCompare] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
   const [channel, setChannel] = useState<Channel>('전체');
   const [category, setCategory] = useState<Category>('전체');
   const [granularity, setGranularity] = useState<Granularity>('일별');
@@ -85,9 +91,8 @@ export function CartConversionPage() {
 
   const applyQuick = (range: QuickRange) => {
     const [s, e] = quickRangeDates(range);
-    setStart(s); setEnd(e); setDraftStart(s); setDraftEnd(e);
+    setStart(s); setEnd(e);
   };
-  const applyCustom = () => { setStart(draftStart); setEnd(draftEnd); };
   const resetFilters = () => { setChannel('전체'); setCategory('전체'); applyQuick('최근 30일'); };
 
   const agg: PeriodAggregate = useMemo(() => aggregate(start, end, channel, category), [start, end, channel, category]);
@@ -109,9 +114,12 @@ export function CartConversionPage() {
 
   const steps = useMemo(() => funnelSteps(agg), [agg]);
   const prevSteps = useMemo(() => funnelSteps(prevAgg), [prevAgg]);
-  const maxStep = Math.max(...steps.map((s) => s.count), 1);
   const finalConv = steps[0].count ? (steps[steps.length - 1].count / steps[0].count) * 100 : 0;
   const prevFinalConv = prevSteps[0].count ? (prevSteps[prevSteps.length - 1].count / prevSteps[0].count) * 100 : 0;
+  const activeQuickRange = QUICK_RANGES.find((range) => {
+    const [rangeStart, rangeEnd] = quickRangeDates(range);
+    return rangeStart === start && rangeEnd === end;
+  });
 
   return (
     <section className={shared.page}>
@@ -130,36 +138,90 @@ export function CartConversionPage() {
         ))}
       </div>
 
-      <div className={styles.filterBar}>
-        <div className={styles.filterRow}>
-          <input type="date" className={styles.dateInput} value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
-          <span className={styles.tilde}>~</span>
-          <input type="date" className={styles.dateInput} value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
-          <button type="button" className={styles.applyBtn} onClick={applyCustom}>조회</button>
-          <label className={styles.compareCheck}>
-            <input type="checkbox" checked={compare} onChange={(e) => setCompare(e.target.checked)} /> 이전 기간과 비교
-          </label>
-          <span style={{ flex: 1 }} />
-          <button type="button" className={styles.resetLink} onClick={resetFilters}>초기화</button>
+      <div className={extra.filterPanel} data-filter-expanded={showDetails || undefined}>
+        <div className={extra.filterMainRow}>
+          <div className={extra.dateRangeFields}>
+            <CommonDatePicker
+              size="md"
+              clearable={false}
+              value={start}
+              aria-label="조회 시작일"
+              onChange={(value) => {
+                if (!Array.isArray(value) && value) setStart(value);
+              }}
+            />
+            <span className={extra.dateSeparator} aria-hidden="true">~</span>
+            <CommonDatePicker
+              size="md"
+              clearable={false}
+              value={end}
+              aria-label="조회 종료일"
+              onChange={(value) => {
+                if (!Array.isArray(value) && value) setEnd(value);
+              }}
+            />
+          </div>
+          <BusinessScopeSwitch
+            value={activeQuickRange}
+            options={QUICK_RANGES}
+            onChange={applyQuick}
+            label=""
+            size="md"
+          />
+          <CommonCheckbox
+            className={extra.compareCheck}
+            size="sm"
+            checked={compare}
+            onChange={setCompare}
+          >
+            이전 기간과 비교
+          </CommonCheckbox>
+          <span className={extra.filterSpacer} />
+          <CommonButton
+            variant="secondary"
+            size="md"
+            icon={<SlidersHorizontal size={14} aria-hidden="true" />}
+            aria-expanded={showDetails}
+            onClick={() => setShowDetails((visible) => !visible)}
+          >
+            상세 필터
+            {showDetails ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
+          </CommonButton>
+          <CommonButton
+            variant="secondary"
+            size="md"
+            icon={<RotateCcw size={13} aria-hidden="true" />}
+            onClick={resetFilters}
+          >
+            초기화
+          </CommonButton>
         </div>
-        <div className={styles.filterRow}>
-          {QUICK_RANGES.map((r) => {
-            const [qs, qe] = quickRangeDates(r);
-            const active = qs === start && qe === end;
-            return <button key={r} type="button" className={`${styles.quickBtn} ${active ? styles.quickBtnActive : ''}`} onClick={() => applyQuick(r)}>{r}</button>;
-          })}
-        </div>
-        <div className={styles.filterRow}>
-          <label className="globalFilterField"><span>채널</span><select aria-label="채널" className={styles.selectSm} value={channel} onChange={(e) => setChannel(e.target.value as Channel)}>
-            {CHANNELS.map((c) => <option key={c} value={c}>{c === '전체' ? '채널 전체' : c}</option>)}
-          </select></label>
-          <label className="globalFilterField"><span>카테고리</span><select aria-label="카테고리" className={styles.selectSm} value={category} onChange={(e) => setCategory(e.target.value as Category)}>
-            {CATEGORIES.map((c) => <option key={c} value={c}>{c === '전체' ? '카테고리 전체' : c}</option>)}
-          </select></label>
-        </div>
-        <div className={styles.periodInfo}>
-          조회 기간 <b>{fmtDate(start)} ~ {fmtDate(end)}</b> ({agg.days}일){compare && <> · 비교 기간 <b>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</b> ({prevAgg.days}일)</>}
-        </div>
+        {showDetails && (
+          <div className={extra.detailFilters}>
+            <label className={extra.filterField}>
+              <span>채널</span>
+              <CommonSelect
+                className={extra.filterSelect}
+                size="md"
+                aria-label="채널"
+                options={CHANNELS.map((value) => ({ value, label: value === '전체' ? '채널 전체' : value }))}
+                value={channel}
+                onChange={(value) => setChannel(value as Channel)}
+              />
+            </label>
+            <label className={extra.filterField}>
+              <span>카테고리</span>
+              <CommonSelect
+                className={extra.filterSelect}
+                size="md"
+                aria-label="카테고리"
+                options={CATEGORIES.map((value) => ({ value, label: value === '전체' ? '카테고리 전체' : value }))}
+                value={category}
+                onChange={(value) => setCategory(value as Category)}
+              />
+            </label>
+          </div>
+        )}
       </div>
 
       <div className={styles.body}>
@@ -292,7 +354,10 @@ export function CartConversionPage() {
                         <span className={extra.funnelDrop}>(이탈 {fmtCount(Math.max(0, steps[i - 1].count - s.count))})</span>
                       </div>
                     )}
-                    <div className={extra.funnelBar} style={{ width: `${Math.max(28, (s.count / maxStep) * 100)}%` }}>
+                    <div
+                      className={extra.funnelBar}
+                      style={{ width: `${Math.max(48, 100 - i * 13)}%` }}
+                    >
                       <div className={extra.funnelLabel}>{s.label}</div>
                       <div className={extra.funnelCount}>{fmtCount(s.count)}</div>
                     </div>

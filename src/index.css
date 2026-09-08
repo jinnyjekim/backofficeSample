@@ -1046,13 +1046,20 @@ button {
   :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
     + :is([class*="filterBox"], [class*="filterCard"])[data-filter-expanded="true"]:has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"]) {
     height: auto !important;
-    margin-top: -1px !important;
+    margin: -1px 0 16px !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"]):has(
+    + :is([class*="filterBox"], [class*="filterCard"])[data-filter-expanded="true"]
+  ) {
+    border-radius: var(--common-radius-lg) var(--common-radius-lg) 0 0 !important;
   }
 
   :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
     + :is([class*="filterBox"], [class*="filterCard"])[data-filter-expanded="true"]
     > :is([class*="filterRow2"], [class*="filterRow"]) {
     margin: 0 !important;
+    padding: 10px 12px !important;
     border: 1px solid var(--common-border) !important;
     border-radius: 0 0 var(--common-radius-lg) var(--common-radius-lg) !important;
   }

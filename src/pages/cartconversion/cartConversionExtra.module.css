@@ -1,23 +1,121 @@
-.funnelWrap {
+.filterPanel {
+  margin: 0 24px 18px;
+  padding: 10px;
+  border: 1px solid var(--common-border);
+  border-radius: var(--common-radius-lg);
+  background: var(--common-bg);
+}
+
+.filterMainRow {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.compareCheck {
+  width: max-content;
+  flex: none;
+}
+
+.dateRangeFields {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 7px;
+}
+
+.dateSeparator {
+  display: inline-flex;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  color: var(--common-text-muted);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.filterSpacer {
+  min-width: 12px;
+  flex: 1 1 auto;
+}
+
+.detailFilters {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 10px -10px -10px;
+  padding: 10px;
+  border-top: 1px solid var(--common-border);
+  border-radius: 0 0 var(--common-radius-lg) var(--common-radius-lg);
+  background: var(--common-bg-subtle);
+}
+
+.filterField {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  max-width: 420px;
-  margin: 4px auto 8px;
+  gap: 6px;
+  color: var(--common-text-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.filterSelect {
+  width: 160px;
+}
+
+@media (max-width: 1180px) {
+  .filterMainRow {
+    flex-wrap: wrap;
+  }
+
+  .filterSpacer {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .filterPanel {
+    margin-inline: 14px;
+  }
+
+  .dateRangeFields {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+  }
+
+  .detailFilters {
+    flex-wrap: wrap;
+  }
+}
+
+.funnelWrap {
+  display: flex;
+  width: min(720px, 100%);
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px auto 10px;
 }
 .funnelRow {
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
 }
 .funnelBar {
-  background: var(--accent);
+  display: flex;
+  min-height: 52px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, var(--accent), var(--accent-hover));
   color: #fff;
-  border-radius: 8px;
-  padding: 10px 16px;
+  border-radius: 9px;
+  padding: 9px 16px;
   text-align: center;
-  width: 100%;
   box-sizing: border-box;
+  transition: width 180ms ease;
 }
 .funnelLabel {
   font-size: 11.5px;
@@ -31,9 +129,10 @@
   font-variant-numeric: tabular-nums;
 }
 .funnelArrow {
+  min-height: 24px;
   font-size: 11px;
   color: #a1a1aa;
-  padding: 4px 0;
+  padding: 3px 0;
   display: flex;
   align-items: center;
   gap: 6px;

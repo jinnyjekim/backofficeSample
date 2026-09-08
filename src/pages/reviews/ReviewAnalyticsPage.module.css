@@ -1,3 +1,10 @@
+.filterControls {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .metricGrid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));

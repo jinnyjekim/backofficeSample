@@ -203,13 +203,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'brands_exposure', sub: true, label: '브랜드 노출 관리', to: '/b2c/brands/exposure', business: 'B' },
 
       { key: 'reviews', icon: Star, label: '리뷰 관리', to: '/reviews', business: 'B' },
-      { key: 'reviews_list', sub: true, label: '리뷰 목록', to: '/reviews', business: 'B' },
-      { key: 'reviews_detail', sub: true, label: '리뷰 상세', to: '/b2c/reviews/detail', business: 'B' },
-      { key: 'reviews_reported', sub: true, label: '신고 리뷰', to: '/b2c/reviews/reported', business: 'B' },
-      { key: 'reviews_hidden', sub: true, label: '숨김 리뷰', to: '/b2c/reviews/hidden', business: 'B' },
-      { key: 'reviews_replies', sub: true, label: '리뷰 답변', to: '/b2c/reviews/replies', business: 'B' },
-      { key: 'reviews_sanctions', sub: true, label: '리뷰 제재', to: '/b2c/reviews/sanctions', business: 'B' },
-      { key: 'reviews_stats', sub: true, label: '리뷰 통계', to: '/b2c/reviews/stats', business: 'B' },
+      { key: 'reviews_operations', sub: true, label: '리뷰 운영', to: '/reviews', business: 'B' },
+      { key: 'reviews_analytics', sub: true, label: '리뷰 분석', to: '/reviews/analytics', business: 'B' },
 
       { key: 'cart_conversion', icon: ShoppingBag, label: '장바구니 / 구매 전환', to: '/cart-conversion', business: 'B' },
 
