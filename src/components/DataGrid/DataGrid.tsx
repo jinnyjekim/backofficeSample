@@ -113,6 +113,29 @@ function isStatusColumnLabel(label: string) {
   return label.replace(/\s/g, '').includes('상태');
 }
 
+function cellBgColor(cell: Cell): string | undefined {
+  if (cell.kind === 'pillText' || cell.kind === 'badge' || cell.kind === 'badgeSub' || cell.kind === 'badgeSquare') {
+    return cell.bg;
+  }
+  if (cell.kind === 'noTag' && cell.hasTag) {
+    return cell.tagBg;
+  }
+  return undefined;
+}
+
+function cellFgColor(cell: Cell): string | undefined {
+  if (cell.kind === 'pillText' || cell.kind === 'badge' || cell.kind === 'badgeSub' || cell.kind === 'badgeSquare' || cell.kind === 'statusDot') {
+    return cell.fg;
+  }
+  if (cell.kind === 'text') {
+    return cell.color;
+  }
+  if (cell.kind === 'noTag' && cell.hasTag) {
+    return cell.tagFg;
+  }
+  return undefined;
+}
+
 function RowMenuView({ cell }: { cell: Extract<Cell, { kind: 'rowMenu' }> }) {
   const toggleRef = useRef<HTMLButtonElement>(null);
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
@@ -530,11 +553,30 @@ export function DataGrid({
                 />
               </div>
             )}
-            {row.cells.map((cell, i) => (
-              <div key={i} className={`${styles.cellWrap} ${isBadgeCell(cell) ? styles.badgeCellWrap : ''}`} style={{ textAlign: temporalColumnIndexes.has(i) || serialColumnIndexes.has(i) || statusColumnIndexes.has(i) ? 'center' : isBadgeCell(cell) ? undefined : cell.align }} data-datagrid-cell data-export-value={cellExportValue(cell)}>
-                <CellView cell={cell} />
-              </div>
-            ))}
+            {row.cells.map((cell, i) => {
+              const cellAlign = temporalColumnIndexes.has(i) || serialColumnIndexes.has(i) || statusColumnIndexes.has(i)
+                ? 'center'
+                : isBadgeCell(cell)
+                  ? 'center'
+                  : cell.align;
+              const bg = cellBgColor(cell);
+              const fg = cellFgColor(cell);
+              return (
+                <div
+                  key={i}
+                  className={`${styles.cellWrap} ${isBadgeCell(cell) ? styles.badgeCellWrap : ''}`}
+                  style={{ textAlign: cellAlign }}
+                  data-datagrid-cell
+                  data-export-value={cellExportValue(cell)}
+                  data-cell-align={cellAlign}
+                  data-cell-bg={bg}
+                  data-cell-fg={fg}
+                  data-cell-kind={cell.kind}
+                >
+                  <CellView cell={cell} />
+                </div>
+              );
+            })}
           </div>
         ))}
 

@@ -210,7 +210,7 @@
 .sectionNum { width: 19px; height: 19px; border-radius: 5px; background: #18181b; color: #fff; font-size: 10.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none; }
 .sectionHeadTitle { font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; }
 .sectionDescText { font-size: 11.5px; color: #a1a1aa; margin-top: 7px; line-height: 1.55; }
-.sectionControls { flex: 1 1 360px; min-width: 0; max-width: 880px; container-type: inline-size; display: flex; flex-direction: column; gap: 15px; }
+.sectionControls { flex: 1 1 360px; min-width: 0; max-width: 880px; container-type: inline-size; display: flex; flex-direction: column; gap: 14px; }
 
 .usageGrid { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
 /* 선택 카드는 CommonButton variant="option" 이 담당합니다 */
@@ -224,7 +224,7 @@
 .thresholdSuffix { font-size: 12px; color: #71717a; white-space: nowrap; }
 
 /* 섹션 필드 그리드 — 세 행이 같은 열 폭·같은 시작점을 공유합니다 */
-.amountRow, .unitRow, .taxRow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px 20px; align-items: start; }
+.amountRow, .unitRow, .taxRow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 20px; align-items: start; }
 .fieldSpan2 { grid-column: span 2; min-width: 0; }
 @container (max-width: 640px) {
   .amountRow, .unitRow, .taxRow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -243,13 +243,14 @@
 .unitRow { padding-top: 14px; border-top: 1px solid rgba(0, 0, 0, 0.06); }
 .pillRow2 { display: flex; gap: 6px; flex-wrap: wrap; }
 .pillItem { flex: 0 1 auto; }
-.unitHint { font-size: 11px; color: #a1a1aa; margin-top: 7px; }
+/* 필드 아래 보조 설명 — 계산 단위 / 적용 시작일이 같은 간격·같은 스타일을 씁니다 */
+.unitHint, .dateHint { font-size: 11px; color: #a1a1aa; line-height: 1.45; }
+.unitHint { margin-top: 7px; }
 .bundleSwitchRow { display: flex; align-items: center; min-height: 34px; }
 
 /* 날짜 필드는 열 폭을 그대로 채우고, 안내문은 계산 단위 힌트와 같은 자리에 둡니다 */
 .dateRow2 { display: flex; flex-direction: column; align-items: stretch; gap: 7px; min-width: 0; }
 .dateField { width: 100%; }
-.dateHint { font-size: 11px; color: #a1a1aa; }
 
 .sideCard { background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; overflow: hidden; }
 .sideHead { padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }

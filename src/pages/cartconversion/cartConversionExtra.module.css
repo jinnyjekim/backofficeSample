@@ -6,6 +6,12 @@
   background: var(--common-bg);
 }
 
+:global([class*="headTop"]) .filterPanel,
+:global([class*="header"]) .filterPanel {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .filterMainRow {
   display: flex;
   min-width: 0;

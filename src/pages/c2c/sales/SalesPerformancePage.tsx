@@ -31,6 +31,7 @@ export function SalesPerformancePage() {
   const [range, setRange] = useState("최근 6개월");
   const [metric, setMetric] = useState("거래액");
   const [grade, setGrade] = useState("");
+  const [pageSize, setPageSize] = useState("20개씩 보기");
   const ranked = useMemo(
     () =>
       SELLERS.filter((seller) => !grade || seller.grade === grade).sort(
@@ -228,11 +229,6 @@ export function SalesPerformancePage() {
             <option>최근 6개월</option>
             <option>올해</option>
           </select>
-          <ExcelDownloadButton
-            type="button"
-            data-grid-download
-            onClick={downloadPerformance}
-          />
           <select
             aria-label="판매자 등급"
             className={shared.selectSm}
@@ -243,6 +239,20 @@ export function SalesPerformancePage() {
             <option>일반</option>
             <option>우수</option>
             <option>파워</option>
+          </select>
+          <ExcelDownloadButton
+            type="button"
+            data-grid-download
+            onClick={downloadPerformance}
+          />
+          <select
+            aria-label="페이지당 표시 개수"
+            className={shared.pageSizeSelect}
+            value={pageSize}
+            onChange={(e) => setPageSize(e.target.value)}
+          >
+            <option>20개씩 보기</option>
+            <option>50개씩 보기</option>
           </select>
         </ResultBar>
         <DataGrid

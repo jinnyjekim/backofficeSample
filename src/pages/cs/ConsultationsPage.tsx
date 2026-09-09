@@ -15,6 +15,7 @@ import {
   ExcelDownloadButton,
   showToast,
 } from "../../components/common";
+import { DatePicker } from "../../components/forms/DatePicker";
 import {
   CONSULTATIONS,
   CONSULTATION_CATEGORIES,
@@ -108,7 +109,6 @@ export function ConsultationsPage() {
   const [startedFrom, setStartedFrom] = useState("");
   const [startedTo, setStartedTo] = useState("");
   const [completedTo, setCompletedTo] = useState("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -654,69 +654,67 @@ export function ConsultationsPage() {
                 <option>미수집</option>
               </select>
             </label>
+            <label className={shared.dateFilterField}>
+              <span>상담일</span>
+              <div className={shared.dateRange}>
+                <DatePicker
+                  value={startedFrom}
+                  onChange={(e) => setStartedFrom(e.target.value)}
+                />
+                <span className={shared.dateSeparator}>~</span>
+                <DatePicker
+                  value={startedTo}
+                  onChange={(e) => setStartedTo(e.target.value)}
+                />
+              </div>
+            </label>
+            <label className={shared.dateFilterField}>
+              <span>완료일</span>
+              <div className={shared.dateRange}>
+                <DatePicker
+                  value={completedTo}
+                  onChange={(e) => setCompletedTo(e.target.value)}
+                />
+              </div>
+            </label>
+            <label className="globalFilterField">
+              <span>재문의</span>
+              <select
+                aria-label="재문의"
+                className={shared.selectSm}
+                value={reopened}
+                onChange={(e) => setReopened(e.target.value)}
+              >
+                <option value="">전체</option>
+                <option>예</option>
+                <option>아니오</option>
+              </select>
+            </label>
+            <label className="globalFilterField">
+              <span>SLA</span>
+              <select
+                aria-label="SLA"
+                className={shared.selectSm}
+                value={sla}
+                onChange={(e) => setSla(e.target.value as SlaResult | "")}
+              >
+                <option value="">전체</option>
+                <option>준수</option>
+                <option>초과</option>
+                <option>대상 아님</option>
+              </select>
+            </label>
+            <span className={shared.rowSpacer} />
             <button
               type="button"
               className={shared.detailFilterBtn}
-              onClick={() => setShowAdvanced((current) => !current)}
             >
               상세 필터
             </button>
-            <span className={shared.rowSpacer} />
             <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
             </button>
           </div>
-          {showAdvanced && (
-            <div className={styles.advancedFilters}>
-              <label>
-                상담 시작
-                <input
-                  type="date"
-                  value={startedFrom}
-                  onChange={(e) => setStartedFrom(e.target.value)}
-                />
-              </label>
-              <label>
-                상담 종료
-                <input
-                  type="date"
-                  value={startedTo}
-                  onChange={(e) => setStartedTo(e.target.value)}
-                />
-              </label>
-              <label>
-                완료일 이내
-                <input
-                  type="date"
-                  value={completedTo}
-                  onChange={(e) => setCompletedTo(e.target.value)}
-                />
-              </label>
-              <label>
-                재문의
-                <select
-                  value={reopened}
-                  onChange={(e) => setReopened(e.target.value)}
-                >
-                  <option value="">전체</option>
-                  <option>예</option>
-                  <option>아니오</option>
-                </select>
-              </label>
-              <label>
-                SLA
-                <select
-                  value={sla}
-                  onChange={(e) => setSla(e.target.value as SlaResult | "")}
-                >
-                  <option value="">전체</option>
-                  <option>준수</option>
-                  <option>초과</option>
-                  <option>대상 아님</option>
-                </select>
-              </label>
-            </div>
-          )}
         </div>
       </header>
       {selected.length > 0 && (

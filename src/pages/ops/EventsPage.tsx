@@ -32,6 +32,7 @@ import {
 } from "./eventsData";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import { CommonButton } from "../../components/common";
+import { DatePicker } from "../../components/forms/DatePicker";
 
 const GRID_TEMPLATE =
   "minmax(300px,2.2fr) 72px minmax(230px,1.25fr) minmax(105px,.65fr) 76px minmax(175px,1fr) 96px minmax(125px,.75fr) 96px";
@@ -604,7 +605,10 @@ export function EventsPage() {
           </button>
         </div>
 
-        <div className={shared.filterBox}>
+        <div
+          className={shared.filterBox}
+          data-filter-expanded={showAdvanced ? "true" : undefined}
+        >
           <div className={shared.filterRow1}>
             <input
               className={shared.searchInput}
@@ -685,6 +689,7 @@ export function EventsPage() {
             <button
               type="button"
               className={shared.detailFilterBtn}
+              aria-expanded={showAdvanced}
               onClick={() => setShowAdvanced((value) => !value)}
             >
               상세 필터 {showAdvanced ? "−" : "＋"}
@@ -700,43 +705,51 @@ export function EventsPage() {
           </div>
           {showAdvanced && (
             <div className={styles.advancedFilters}>
-              <label className={styles.filterField}>
-                <span className={styles.filterLabel}>담당자</span>
+              <label className="globalFilterField">
+                <span>담당자</span>
                 <select
-                  className={styles.filterControl}
+                  aria-label="담당자"
+                  className={shared.selectXs}
                   value={managerFilter}
                   onChange={(e) => setManagerFilter(e.target.value)}
                 >
-                  <option>전체</option>
+                  <option value="전체">담당자 전체</option>
                   {EVENT_MANAGERS.map((item) => (
                     <option key={item}>{item}</option>
                   ))}
                 </select>
               </label>
-              <div className={styles.filterPeriod}>
-                <label className={styles.filterField}>
-                  <span className={styles.filterLabel}>진행기간 시작</span>
-                  <input
-                    type="date"
-                    className={styles.filterControl}
+              <label className={shared.dateFilterField}>
+                <span>진행기간</span>
+                <span className={shared.dateRange}>
+                  <DatePicker
+                    aria-label="진행기간 시작 날짜"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
                   />
-                </label>
-                <span className={styles.periodDash}>~</span>
-                <label className={styles.filterField}>
-                  <span className={styles.filterLabel}>진행기간 종료</span>
-                  <input
-                    type="date"
-                    className={styles.filterControl}
+                  <span className={shared.dateSeparator} aria-hidden="true">
+                    ~
+                  </span>
+                  <DatePicker
+                    aria-label="진행기간 종료 날짜"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
                   />
-                </label>
-              </div>
-              <div className={styles.issueSummary}>
-                ⚠ 확인 필요 {counts["확인 필요"]}건
-              </div>
+                </span>
+              </label>
+              <button
+                type="button"
+                className={styles.issueSummary}
+                onClick={() => setFilter("확인 필요")}
+                title="확인 필요 이벤트 모아보기"
+              >
+                <span className={styles.issueIcon} aria-hidden="true">
+                  ⚠
+                </span>
+                <span>
+                  확인 필요 <strong>{counts["확인 필요"]}건</strong>
+                </span>
+              </button>
             </div>
           )}
         </div>

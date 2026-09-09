@@ -78,7 +78,6 @@ export function AdminMemosPage() {
   const [hidden, setHidden] = useState("숨김 제외");
   const [createdFrom, setCreatedFrom] = useState("");
   const [dueTo, setDueTo] = useState("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [drawerItem, setDrawerItem] = useState<AdminMemoEntry | null>(null);
@@ -594,55 +593,61 @@ export function AdminMemosPage() {
                 <option>완료</option>
               </select>
             </label>
-            <button
-              type="button"
-              className={shared.detailFilterBtn}
-              onClick={() => setShowAdvanced((current) => !current)}
-            >
-              상세 필터
-            </button>
-            <span className={shared.rowSpacer} />
-            <button type="button" className={shared.resetBtn} onClick={reset}>
-              초기화
-            </button>
-          </div>
-          {showAdvanced && (
-            <div className={styles.advancedFilters}>
-              <label>
-                등록일 이후
+            <label className={shared.dateFilterField}>
+              <span>등록일</span>
+              <div className={shared.dateRange}>
                 <DatePicker
                   value={createdFrom}
                   onChange={(e) => setCreatedFrom(e.target.value)}
                 />
-              </label>
-              <label>
-                확인 예정일까지
+              </div>
+            </label>
+            <label className={shared.dateFilterField}>
+              <span>확인 예정일</span>
+              <div className={shared.dateRange}>
                 <DatePicker
                   value={dueTo}
                   onChange={(e) => setDueTo(e.target.value)}
                 />
-              </label>
-              <label>
-                고정 여부
-                <select value={pin} onChange={(e) => setPin(e.target.value)}>
-                  <option value="">전체</option>
-                  <option>고정</option>
-                  <option>미고정</option>
-                </select>
-              </label>
-              <label>
-                숨김 여부
-                <select
-                  value={hidden}
-                  onChange={(e) => setHidden(e.target.value)}
-                >
-                  <option>숨김 제외</option>
-                  <option>전체</option>
-                  <option>숨김만</option>
-                </select>
-              </label>
-            </div>
-          )}
+              </div>
+            </label>
+            <label className="globalFilterField">
+              <span>고정 여부</span>
+              <select
+                aria-label="고정 여부"
+                className={shared.selectSm}
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+              >
+                <option value="">전체</option>
+                <option>고정</option>
+                <option>미고정</option>
+              </select>
+            </label>
+            <label className="globalFilterField">
+              <span>숨김 여부</span>
+              <select
+                aria-label="숨김 여부"
+                className={shared.selectSm}
+                value={hidden}
+                onChange={(e) => setHidden(e.target.value)}
+              >
+                <option>숨김 제외</option>
+                <option>전체</option>
+                <option>숨김만</option>
+              </select>
+            </label>
+            <span className={shared.rowSpacer} />
+            <button
+              type="button"
+              className={shared.detailFilterBtn}
+            >
+              상세 필터
+            </button>
+            <button type="button" className={shared.resetBtn} onClick={reset}>
+              초기화
+            </button>
+          </div>
         </div>
       </header>
       {selected.length > 0 && (

@@ -15,6 +15,7 @@ import {
   ExcelDownloadButton,
   showToast,
 } from "../../components/common";
+import { DatePicker } from "../../components/forms/DatePicker";
 import { ControlArea, Metrics } from "../c2c/sales/SalesActivityShared";
 import {
   fmtDateTime,
@@ -94,7 +95,6 @@ export function CsInquiriesPage() {
   const [category, setCategory] = useState("");
   const [manager, setManager] = useState("");
   const [priority, setPriority] = useState<InquiryPriority | "">("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const [receivedFrom, setReceivedFrom] = useState("");
   const [receivedTo, setReceivedTo] = useState("");
   const [dueTo, setDueTo] = useState("");
@@ -410,9 +410,8 @@ export function CsInquiriesPage() {
           {
             label: "답변 필요",
             value: `${
-              scopeItems.filter((item) =>
-                matchesQuickFilter(item, "답변 대기"),
-              ).length
+              scopeItems.filter((item) => matchesQuickFilter(item, "답변 대기"))
+                .length
             }건`,
             note: "답변 대기 기준",
             tone: "down",
@@ -438,9 +437,8 @@ export function CsInquiriesPage() {
           {
             label: "오늘 접수",
             value: `${
-              scopeItems.filter((item) =>
-                matchesQuickFilter(item, "오늘 접수"),
-              ).length
+              scopeItems.filter((item) => matchesQuickFilter(item, "오늘 접수"))
+                .length
             }건`,
             note: "당일 신규 접수",
             tone: "up",
@@ -569,14 +567,36 @@ export function CsInquiriesPage() {
                 ))}
               </select>
             </label>
+            <label className={shared.dateFilterField}>
+              <span>접수일</span>
+              <div className={shared.dateRange}>
+                <DatePicker
+                  value={receivedFrom}
+                  onChange={(event) => setReceivedFrom(event.target.value)}
+                />
+                <span className={shared.dateSeparator}>~</span>
+                <DatePicker
+                  value={receivedTo}
+                  onChange={(event) => setReceivedTo(event.target.value)}
+                />
+              </div>
+            </label>
+            <label className={shared.dateFilterField}>
+              <span>답변 기한</span>
+              <div className={shared.dateRange}>
+                <DatePicker
+                  value={dueTo}
+                  onChange={(event) => setDueTo(event.target.value)}
+                />
+              </div>
+            </label>
+            <span className={shared.rowSpacer} />
             <button
               type="button"
               className={shared.detailFilterBtn}
-              onClick={() => setShowAdvanced((current) => !current)}
             >
-              상세 조건 {showAdvanced ? "접기" : "열기"}
+              상세 필터
             </button>
-            <span className={shared.rowSpacer} />
             <button
               type="button"
               className={shared.resetBtn}
@@ -585,34 +605,6 @@ export function CsInquiriesPage() {
               초기화
             </button>
           </div>
-          {showAdvanced && (
-            <div className={styles.advancedFilters}>
-              <label>
-                접수일 시작
-                <input
-                  type="date"
-                  value={receivedFrom}
-                  onChange={(event) => setReceivedFrom(event.target.value)}
-                />
-              </label>
-              <label>
-                접수일 종료
-                <input
-                  type="date"
-                  value={receivedTo}
-                  onChange={(event) => setReceivedTo(event.target.value)}
-                />
-              </label>
-              <label>
-                답변 기한까지
-                <input
-                  type="date"
-                  value={dueTo}
-                  onChange={(event) => setDueTo(event.target.value)}
-                />
-              </label>
-            </div>
-          )}
         </div>
       </ControlArea>
 

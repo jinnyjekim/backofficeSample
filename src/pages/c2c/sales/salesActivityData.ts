@@ -42,6 +42,7 @@ export interface SaleProduct {
   chats: number;
   reportCount: number;
   exposure: '노출' | '비노출';
+  expiresAt: string;
 }
 
 export interface SaleTrade {
@@ -117,12 +118,31 @@ const PRODUCT_SEEDS: Array<[string, string, string, number, ProductStatus, SaleP
   ['SEL-11902', '라이카 Q2 가죽 케이스', '디지털 > 액세서리', 170000, '판매중', '사용감 없음', 0],
 ];
 
+const EXPIRY_SEEDS = [
+  '2026-09-12', // 7일 이내 (만료 임박)
+  '2026-09-15', // 7일 이내 (만료 임박)
+  '2026-09-28', // 30일 이내
+  '2026-08-25', // 기한 만료
+  '2026-08-30', // 기한 만료
+  '2026-10-10', // 30일 이내
+  '2026-10-25', // 90일 이내
+  '2026-11-15', // 90일 이내
+  '2026-09-14', // 7일 이내 (만료 임박)
+  '2026-11-30', // 90일 이내
+  '2026-12-31', // 여유
+  '2026-08-20', // 기한 만료
+  '2026-10-05', // 30일 이내
+  '2026-12-15', // 여유
+  '2026-09-16', // 7일 이내 (만료 임박)
+];
+
 export const SALE_PRODUCTS: SaleProduct[] = PRODUCT_SEEDS.map((item, index) => ({
   id: `PRD-${260821 + index}`,
   sellerId: item[0], title: item[1], category: item[2], price: item[3], status: item[4], condition: item[5], reportCount: item[6],
   registeredAt: `2026-08-${String(11 + index).padStart(2, '0')} ${String(9 + index % 8).padStart(2, '0')}:20`,
   updatedAt: `2026-08-${String(19 + index % 8).padStart(2, '0')} ${String(10 + index % 7).padStart(2, '0')}:40`,
   views: 84 + index * 73, wishes: 3 + index * 4, chats: 1 + index % 9, exposure: item[4] === '숨김' ? '비노출' : '노출',
+  expiresAt: EXPIRY_SEEDS[index % EXPIRY_SEEDS.length],
 }));
 
 const TRADE_SEEDS: Array<[number, string, string, number, TradeStatus, string]> = [

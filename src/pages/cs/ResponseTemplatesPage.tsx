@@ -84,7 +84,6 @@ export function ResponseTemplatesPage() {
   const [team, setTeam] = useState("");
   const [status, setStatus] = useState<TemplateStatus | "">("");
   const [modifiedFrom, setModifiedFrom] = useState("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [drawerItem, setDrawerItem] = useState<ResponseTemplate | null>(null);
@@ -578,30 +577,26 @@ export function ResponseTemplatesPage() {
                 <option>비활성</option>
               </select>
             </label>
-            <button
-              type="button"
-              className={shared.detailFilterBtn}
-              onClick={() => setShowAdvanced((current) => !current)}
-            >
-              상세 필터
-            </button>
-            <span className={shared.rowSpacer} />
-            <button type="button" className={shared.resetBtn} onClick={reset}>
-              초기화
-            </button>
-          </div>
-          {showAdvanced && (
-            <div className={styles.advancedFilters}>
-              <label>
-                수정일 이후
+            <label className={shared.dateFilterField}>
+              <span>수정일</span>
+              <div className={shared.dateRange}>
                 <DatePicker
                   value={modifiedFrom}
                   onChange={(e) => setModifiedFrom(e.target.value)}
                 />
-              </label>
-              <span>답변 본문과 변수 변경은 개별 템플릿에서만 가능합니다.</span>
-            </div>
-          )}
+              </div>
+            </label>
+            <span className={shared.rowSpacer} />
+            <button
+              type="button"
+              className={shared.detailFilterBtn}
+            >
+              상세 필터
+            </button>
+            <button type="button" className={shared.resetBtn} onClick={reset}>
+              초기화
+            </button>
+          </div>
         </div>
       </header>
       {selected.length > 0 && (

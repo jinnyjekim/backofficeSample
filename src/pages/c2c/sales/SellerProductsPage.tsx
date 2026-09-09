@@ -22,6 +22,10 @@ import {
   type ProductStatus,
 } from "./salesActivityData";
 import { downloadCsv, pages } from "./salesActivityUtils";
+import {
+  ExpirationDateFilter,
+  type ExpirationFilterValue,
+} from "./ExpirationDateFilter";
 
 const QUICK: Array<"전체" | ProductStatus | "신고 상품"> = [
   "전체",
@@ -40,6 +44,11 @@ export function SellerProductsPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [condition, setCondition] = useState("");
+  const [expiryFilter, setExpiryFilter] = useState<ExpirationFilterValue>({
+    preset: "all",
+    startDate: "",
+    endDate: "",
+  });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const categories = [
     ...new Set(products.map((product) => product.category.split(" > ")[0])),
@@ -55,6 +64,10 @@ export function SellerProductsPage() {
           return false;
         if (category && !product.category.startsWith(category)) return false;
         if (condition && product.condition !== condition) return false;
+        if (expiryFilter.startDate && product.expiresAt < expiryFilter.startDate)
+          return false;
+        if (expiryFilter.endDate && product.expiresAt > expiryFilter.endDate)
+          return false;
         const seller = sellerById(product.sellerId);
         return (
           !search ||
@@ -63,7 +76,7 @@ export function SellerProductsPage() {
             .includes(search.toLowerCase())
         );
       }),
-    [category, condition, products, quick, search],
+    [category, condition, expiryFilter, products, quick, search],
   );
   const selected =
     products.find((product) => product.id === selectedId) ?? null;
@@ -115,6 +128,27 @@ export function SellerProductsPage() {
           ...PRODUCT_STATUS_META[product.status],
         },
         { kind: "text", text: product.condition },
+        {
+          kind: "badge",
+          text:
+            product.expiresAt < "2026-09-09"
+              ? `${product.expiresAt} (만료)`
+              : product.expiresAt <= "2026-09-16"
+                ? `${product.expiresAt} (임박)`
+                : product.expiresAt,
+          bg:
+            product.expiresAt < "2026-09-09"
+              ? "#fee2e2"
+              : product.expiresAt <= "2026-09-16"
+                ? "#fef3c7"
+                : "#f4f4f5",
+          fg:
+            product.expiresAt < "2026-09-09"
+              ? "#b91c1c"
+              : product.expiresAt <= "2026-09-16"
+                ? "#b45309"
+                : "#52525b",
+        },
         {
           kind: "text",
           text: product.views.toLocaleString(),
@@ -254,17 +288,21 @@ export function SellerProductsPage() {
               <div className={shared.dateRange}>
                 <input
                   type="number"
-                  className={shared.selectSm}
+                  className={`${shared.selectSm} ${styles.priceInput}`}
                   placeholder="최소 가격"
                 />
                 <span className={shared.dateSeparator}>~</span>
                 <input
                   type="number"
-                  className={shared.selectSm}
+                  className={`${shared.selectSm} ${styles.priceInput}`}
                   placeholder="최대 가격"
                 />
               </div>
             </label>
+            <ExpirationDateFilter
+              value={expiryFilter}
+              onChange={setExpiryFilter}
+            />
             <span className={shared.rowSpacer} />
             <button type="button" className="detailFilterBtn">
               상세 필터
@@ -277,6 +315,7 @@ export function SellerProductsPage() {
                 setSearch("");
                 setCategory("");
                 setCondition("");
+                setExpiryFilter({ preset: "all", startDate: "", endDate: "" });
               }}
             >
               초기화
@@ -299,14 +338,15 @@ export function SellerProductsPage() {
             { label: "판매가", align: "right" },
             { label: "판매 상태" },
             { label: "상품 상태" },
+            { label: "사용 기한" },
             { label: "조회", align: "right" },
             { label: "관심", align: "right" },
             { label: "신고", align: "right" },
             { label: "관리" },
           ]}
           rows={rows}
-          gridTemplate="minmax(220px,1.6fr) 84px 102px 90px 80px 82px 55px 44px 48px 55px"
-          minWidth="1065px"
+          gridTemplate="minmax(200px,1.5fr) 84px 102px 90px 80px 82px 125px 55px 44px 48px 55px"
+          minWidth="1160px"
           empty={!filtered.length}
           emptyText="조건에 맞는 판매 상품이 없습니다."
           showPagination
@@ -372,6 +412,7 @@ export function SellerProductsPage() {
             },
             { label: "판매가", value: formatWon(selected.price) },
             { label: "상품 상태", value: selected.condition },
+            { label: "사용 기한", value: selected.expiresAt },
             { label: "노출 상태", value: selected.exposure },
             { label: "등록일", value: selected.registeredAt },
             { label: "최근 수정", value: selected.updatedAt },

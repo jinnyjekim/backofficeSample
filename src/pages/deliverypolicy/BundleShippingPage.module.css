@@ -33,6 +33,7 @@
 .exampleLabel { font-size: 11px; color: #a1a1aa; font-weight: 600; flex: none; }
 .exampleItem { font-size: 11.5px; color: #52525b; }
 
+.filterBox { margin: 0 24px 16px; }
 .filterHeadRow { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin: 0 24px 16px; flex-wrap: wrap; }
 .filterInline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .filterInline input { width: 200px; }

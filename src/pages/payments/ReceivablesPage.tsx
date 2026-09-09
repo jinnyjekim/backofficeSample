@@ -173,32 +173,53 @@ export function ReceivablesPage() {
           ))}
         </div>
 
-        
-
-        <div className={styles.filterCard}>
-          <div className={styles.filterRow1}>
-            
-            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="거래처 또는 청구번호" />
-            <button type="button" className={styles.searchBtn}>검색</button>
-          <div className={styles.quickFilters}>
-          {FILTER_KEYS.map((k) => {
-            const active = filter === k;
-            return (
-              <CommonButton
-                key={k}
-                variant={active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${styles.quickFilterBtn} ${active ? styles.active : ''}`}
-                onClick={() => setFilter(k)}
-              >
-                <span className={styles.quickFilterLabel}>{k}</span>
-                <span className={styles.quickFilterCount}>{counts[k] || 0}</span>
-              </CommonButton>
-            );
-          })}
-        </div>
+        <div className={styles.viewToggleRow}>
+          <div className={styles.viewToggle}>
+            <button
+              type="button"
+              className={`${styles.viewToggleBtn} ${view === 'partner' ? styles.active : ''}`}
+              onClick={() => setView('partner')}
+            >
+              거래처 기준
+            </button>
+            <button
+              type="button"
+              className={`${styles.viewToggleBtn} ${view === 'invoice' ? styles.active : ''}`}
+              onClick={() => setView('invoice')}
+            >
+              청구 기준
+            </button>
           </div>
-          <div className={styles.filterRow2}>
+        </div>
+
+        <div className={styles.filterBox}>
+          <div className={styles.searchRow}>
+            <input
+              className={styles.searchInput}
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="거래처 또는 청구번호"
+            />
+            <button type="button" className={styles.searchBtn}>검색</button>
+            <div className={styles.quickFilters} style={{ marginBottom: 0 }}>
+              {FILTER_KEYS.map((k) => {
+                const active = filter === k;
+                return (
+                  <CommonButton
+                    key={k}
+                    variant={active ? 'primary-light' : 'secondary'}
+                    size="md"
+                    className={`${styles.quickFilterBtn} ${active ? styles.active : ''}`}
+                    onClick={() => setFilter(k)}
+                  >
+                    <span className={styles.quickFilterLabel}>{k}</span>
+                    <span className={styles.quickFilterCount}>{counts[k] || 0}</span>
+                  </CommonButton>
+                );
+              })}
+            </div>
+          </div>
+          <div className={styles.filterRow}>
             <label className="globalFilterField"><span>연체기간</span><select aria-label="연체기간" className={styles.selectXs}>
               <option>연체기간 전체</option>
               <option>1~7일</option>
@@ -214,24 +235,20 @@ export function ReceivablesPage() {
             </select></label>
             <div className={styles.spacer} />
             <button type="button" className="detailFilterBtn">상세 필터</button>
-            <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
+            <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
           </div>
         </div>
 
-        <div className={styles.resultBar}>
-          <div className={styles.viewToggle}>
-            <button type="button" className={`${styles.viewToggleBtn} ${view === 'partner' ? styles.active : ''}`} onClick={() => setView('partner')}>거래처 기준</button>
-            <button type="button" className={`${styles.viewToggleBtn} ${view === 'invoice' ? styles.active : ''}`} onClick={() => setView('invoice')}>청구 기준</button>
-          </div>
+        <div className={styles.resultRow}>
+          <span className={styles.resultLabel}>총 {rows.length}건</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={styles.selectXs}>
+            <select className={styles.selectXs} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
             </select>
           </div>
         </div>
-        <div className={styles.resultLabel} style={{ marginBottom: 9 }}>총 {rows.length}건</div>
       </header>
 
       <div className={styles.tableWrap}>

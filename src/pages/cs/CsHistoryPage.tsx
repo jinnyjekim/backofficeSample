@@ -9,6 +9,7 @@ import {
   ExcelDownloadButton,
   showToast,
 } from "../../components/common";
+import { DatePicker } from "../../components/forms/DatePicker";
 import {
   ACTION_LABELS,
   AUDIT_ADMINS,
@@ -51,7 +52,6 @@ export function CsHistoryPage() {
   const [result, setResult] = useState<AuditResult | "">("");
   const [team, setTeam] = useState("");
   const [source, setSource] = useState<AuditSource | "">("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
@@ -269,69 +269,61 @@ export function CsHistoryPage() {
                 ))}
               </select>
             </label>
+            <label className="globalFilterField">
+              <span>담당팀</span>
+              <select
+                aria-label="담당팀"
+                className={shared.selectSm}
+                value={team}
+                onChange={(e) => setTeam(e.target.value)}
+              >
+                <option value="">전체 담당팀</option>
+                {AUDIT_TEAMS.map((value) => (
+                  <option key={value}>{value}</option>
+                ))}
+              </select>
+            </label>
+            <label className="globalFilterField">
+              <span>유입 경로</span>
+              <select
+                aria-label="유입 경로"
+                className={shared.selectSm}
+                value={source}
+                onChange={(e) =>
+                  setSource(e.target.value as AuditSource | "")
+                }
+              >
+                <option value="">전체 유입 경로</option>
+                {SOURCE_TYPES.map((value) => (
+                  <option key={value}>{value}</option>
+                ))}
+              </select>
+            </label>
+            <label className={shared.dateFilterField}>
+              <span>처리일</span>
+              <div className={shared.dateRange}>
+                <DatePicker
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                />
+                <span className={shared.dateSeparator}>~</span>
+                <DatePicker
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                />
+              </div>
+            </label>
+            <span className={shared.rowSpacer} />
             <button
               type="button"
               className={shared.detailFilterBtn}
-              aria-expanded={showAdvanced}
-              onClick={() => setShowAdvanced((current) => !current)}
             >
               상세 필터
             </button>
-            <span className={shared.rowSpacer} />
             <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
             </button>
           </div>
-          {showAdvanced && (
-            <div className={styles.advancedFilters}>
-              <label className="globalFilterField">
-                <span>담당팀</span>
-                <select
-                  aria-label="담당팀"
-                  className={shared.selectSm}
-                  value={team}
-                  onChange={(e) => setTeam(e.target.value)}
-                >
-                  <option value="">전체 담당팀</option>
-                  {AUDIT_TEAMS.map((value) => (
-                    <option key={value}>{value}</option>
-                  ))}
-                </select>
-              </label>
-              <label className="globalFilterField">
-                <span>유입 경로</span>
-                <select
-                  aria-label="유입 경로"
-                  className={shared.selectSm}
-                  value={source}
-                  onChange={(e) =>
-                    setSource(e.target.value as AuditSource | "")
-                  }
-                >
-                  <option value="">전체 Source</option>
-                  {SOURCE_TYPES.map((value) => (
-                    <option key={value}>{value}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                처리일{" "}
-                <input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                />
-              </label>
-              <label>
-                ~{" "}
-                <input
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                />
-              </label>
-            </div>
-          )}
         </div>
       </header>
 
