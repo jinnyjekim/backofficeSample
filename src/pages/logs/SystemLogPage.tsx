@@ -339,6 +339,23 @@ export function SystemLogPage() {
             setSearch(keyword.trim());
           }}
         >
+          <CommonInput.Search
+            className={pageStyles.searchInput}
+            size="md"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onSearch={(value) => setSearch(value.trim())}
+            onClear={() => {
+              setKeyword("");
+              setSearch("");
+            }}
+            placeholder={
+              tab === "api"
+                ? "Endpoint, 요청자 또는 Request ID 검색"
+                : "오류 코드 또는 메시지 검색"
+            }
+            aria-label={tab === "api" ? "API 로그 검색" : "오류 로그 검색"}
+          />
           <div className={pageStyles.dateRangeFields}>
             <CommonDatePicker
               size="md"
@@ -368,23 +385,6 @@ export function SystemLogPage() {
             onChange={applyQuick}
             label=""
             size="md"
-          />
-          <CommonInput.Search
-            className={pageStyles.searchInput}
-            size="md"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onSearch={(value) => setSearch(value.trim())}
-            onClear={() => {
-              setKeyword("");
-              setSearch("");
-            }}
-            placeholder={
-              tab === "api"
-                ? "Endpoint, 요청자 또는 Request ID 검색"
-                : "오류 코드 또는 메시지 검색"
-            }
-            aria-label={tab === "api" ? "API 로그 검색" : "오류 로그 검색"}
           />
           <span className={pageStyles.filterSpacer} />
           <CommonButton

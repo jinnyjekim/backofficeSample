@@ -110,12 +110,7 @@ import { ExpiredCouponsPage } from './pages/coupons/ExpiredCouponsPage';
 import { PointsBalancePage } from './pages/points/PointsBalancePage';
 import { PointLedgerPage } from './pages/points/PointLedgerPage';
 import { PointPolicyPage } from './pages/points/PointPolicyPage';
-import { PointGrantedPage } from './pages/points/PointGrantedPage';
-import { PointUsedPage } from './pages/points/PointUsedPage';
-import { PointDeductedPage } from './pages/points/PointDeductedPage';
-import { PointExpiredPage } from './pages/points/PointExpiredPage';
 import { PointExpiringPage } from './pages/points/PointExpiringPage';
-import { PointManualGrantPage } from './pages/points/PointManualGrantPage';
 import { BrandsListPage } from './pages/brands/BrandsListPage';
 import { BrandCreatePage } from './pages/brands/BrandCreatePage';
 import { BrandDetailPage } from './pages/brands/BrandDetailPage';
@@ -271,12 +266,13 @@ export default function App() {
         <Route path="b2c/coupons/issue" element={<CouponIssuesPage />} />
         <Route path="b2c/coupons/usage" element={<CouponUsagePage />} />
         <Route path="b2c/coupons/policy" element={<CouponPolicyPage />} />
-        <Route path="b2c/points/granted" element={<PointGrantedPage />} />
-        <Route path="b2c/points/used" element={<PointUsedPage />} />
-        <Route path="b2c/points/deducted" element={<PointDeductedPage />} />
-        <Route path="b2c/points/expired" element={<PointExpiredPage />} />
-        <Route path="b2c/points/expiring" element={<PointExpiringPage />} />
-        <Route path="b2c/points/manual" element={<PointManualGrantPage />} />
+        {/* 구 포인트 하위 라우트 → 포인트 내역으로 리다이렉트 */}
+        <Route path="b2c/points/granted" element={<Navigate to="/points/history" replace />} />
+        <Route path="b2c/points/used" element={<Navigate to="/points/history" replace />} />
+        <Route path="b2c/points/deducted" element={<Navigate to="/points/history" replace />} />
+        <Route path="b2c/points/expired" element={<Navigate to="/points/history" replace />} />
+        <Route path="b2c/points/expiring" element={<Navigate to="/points/expiring" replace />} />
+        <Route path="b2c/points/manual" element={<Navigate to="/points" replace />} />
         <Route path="b2c/brands" element={<Navigate to="/brands" replace />} />
         <Route path="b2c/brands/create" element={<BrandCreatePage />} />
         <Route path="b2c/brands/detail" element={<BrandDetailPage />} />
@@ -526,6 +522,7 @@ export default function App() {
 
         <Route path="points" element={<PointsBalancePage />} />
         <Route path="points/history" element={<PointLedgerPage />} />
+        <Route path="points/expiring" element={<PointExpiringPage />} />
         <Route path="points/policy" element={<PointPolicyPage />} />
 
         <Route path="brands" element={<BrandsListPage />} />

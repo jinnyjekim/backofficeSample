@@ -196,3 +196,87 @@
   .amountGrid { grid-template-columns: 1fr; }
   .dateFieldRow { align-items: flex-start; flex-direction: column; }
 }
+
+/* ── 기본 설정 탭: 단일 카드 + 사이드바 레이아웃 ───────────────────────── */
+.policyLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 430px); gap: 14px; align-items: start; }
+.policyMain { min-width: 0; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+.policySideOuter { min-width: 0; }
+.policySide { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 14px; }
+
+.policySection { display: flex; flex-wrap: wrap; gap: 14px 26px; padding: 20px 22px; border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
+.policySection:last-child { border-bottom: 0; }
+.sectionDesc { flex: 0 1 210px; min-width: 0; }
+.sectionHead { display: flex; align-items: center; gap: 8px; }
+.sectionNum { width: 19px; height: 19px; border-radius: 5px; background: #18181b; color: #fff; font-size: 10.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none; }
+.sectionHeadTitle { font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; }
+.sectionDescText { font-size: 11.5px; color: #a1a1aa; margin-top: 7px; line-height: 1.55; }
+.sectionControls { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 15px; }
+
+.usageGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 8px; }
+.choiceCard { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; height: auto; min-height: 58px; text-align: left; padding: 10px 14px; }
+.choiceCardTitle { display: block; font-size: 12.5px; font-weight: 600; color: inherit; line-height: 1.35; }
+.choiceCardCaption { display: block; font-size: 11px; color: inherit; opacity: 0.65; margin-top: 3px; line-height: 1.4; }
+
+.thresholdRow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; background: #fafafa; }
+.thresholdText { flex: 1 1 220px; min-width: 0; }
+.thresholdTitle { font-size: 12.5px; font-weight: 600; }
+.thresholdDesc { font-size: 11.5px; color: #a1a1aa; margin-top: 2px; }
+.thresholdInputRow { display: flex; align-items: center; gap: 8px; flex: none; }
+.thresholdInput { width: 150px; }
+.thresholdSuffix { font-size: 12px; color: #71717a; white-space: nowrap; }
+
+.amountRow { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 15px 20px; align-items: start; }
+.fieldBlockLabel { display: flex; align-items: baseline; gap: 6px; font-size: 11.5px; color: #71717a; font-weight: 600; margin-bottom: 7px; }
+.fieldBlockHint { font-size: 11px; color: #a1a1aa; font-weight: 400; }
+.fieldInput { width: 100%; }
+.presetRow2 { display: flex; gap: 6px; margin-top: 7px; flex-wrap: wrap; }
+.presetChip2 { min-width: 62px; }
+
+.unitRow { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 15px 20px; align-items: start; padding-top: 14px; border-top: 1px solid rgba(0, 0, 0, 0.06); }
+.pillRow2 { display: flex; gap: 6px; flex-wrap: wrap; }
+.pillItem { flex: 0 1 auto; }
+.unitHint { font-size: 11px; color: #a1a1aa; margin-top: 7px; }
+.bundleSwitchRow { display: flex; align-items: center; min-height: 34px; }
+
+.taxRow { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 15px 20px; align-items: start; }
+.dateRow2 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.dateHint { font-size: 11px; color: #a1a1aa; }
+
+.sideCard { background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; overflow: hidden; }
+.sideHead { padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.sideTitle { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+.sideDesc { font-size: 11.5px; color: #a1a1aa; margin-top: 3px; }
+.sideFields { padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); display: flex; flex-direction: column; gap: 12px; }
+.sideFieldRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.sideFieldLabel { font-size: 12px; color: #71717a; font-weight: 600; flex: none; }
+.sideFieldControl { flex: 0 1 190px; min-width: 0; display: flex; justify-content: flex-end; }
+.sideStepper { display: flex; align-items: center; gap: 8px; }
+.sideStepperValue { min-width: 26px; text-align: center; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sideBody { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.sideLine { display: flex; align-items: baseline; gap: 10px; }
+.sideLineLabel { flex: 1; min-width: 0; font-size: 12px; color: #71717a; }
+.sideLineValue { flex: none; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; color: #18181b; }
+.sideLineValueMuted { color: #8b8b93; }
+.sideLineValueNeg { color: #b42318; }
+.sideTotalRow { padding: 13px 16px; background: #fafafa; border-top: 1px solid rgba(0, 0, 0, 0.06); border-bottom: 1px solid rgba(0, 0, 0, 0.06); display: flex; align-items: baseline; gap: 10px; }
+.sideTotalLabel { flex: 1; font-size: 12px; color: #52525b; font-weight: 700; }
+.sideTotalValue { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.scenarioBox { padding: 13px 16px; display: flex; flex-direction: column; gap: 6px; }
+.scenarioBoxTitle { font-size: 11px; font-weight: 600; color: #a1a1aa; margin-bottom: 2px; }
+.scenarioBoxRow { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 12px; color: #71717a; }
+.scenarioBoxRow strong { font-size: 12.5px; font-weight: 700; color: #18181b; font-variant-numeric: tabular-nums; }
+
+.digestRow { display: flex; align-items: baseline; gap: 10px; padding: 10px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
+.digestRow:last-of-type { border-bottom: 0; }
+.digestLabel { flex: 1; min-width: 0; font-size: 11.5px; color: #a1a1aa; font-weight: 600; }
+.digestValue { flex: none; max-width: 64%; font-size: 12px; font-weight: 600; text-align: right; color: #3f3f46; }
+.sideFootNote { padding: 12px 16px; border-top: 1px solid rgba(0, 0, 0, 0.06); background: #fafafa; font-size: 11px; color: #8b8b93; line-height: 1.6; }
+
+@media (max-width: 1200px) {
+  .policyLayout { grid-template-columns: 1fr; }
+  .policySide { position: static; }
+}
+@media (max-width: 900px) {
+  .policySection { flex-direction: column; }
+  .sectionDesc { flex-basis: auto; }
+}

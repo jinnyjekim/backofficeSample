@@ -53,6 +53,7 @@ export function PointsBalancePage() {
     member: string;
     mode: GrantMode;
   } | null>(null);
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [toast, setToast] = useState("");
 
   const issuesMap = useMemo(() => {
@@ -96,6 +97,13 @@ export function PointsBalancePage() {
   function openDetail(member: string) {
     setDrawerMember(member);
     setGrantTarget(null);
+  }
+
+  function openBulkGrant(mode: GrantMode) {
+    // 선택된 회원 중 첫 번째 회원을 대상으로 지급/차감 드로어 열기
+    const target = selectedMembers.length > 0 ? selectedMembers[0] : null;
+    if (!target) return;
+    setGrantTarget({ member: target, mode });
   }
 
   const selected = drawerMember
@@ -304,6 +312,24 @@ export function PointsBalancePage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}명</span>
           <div className={styles.resultActions}>
+            {selectedMembers.length > 0 && (
+              <>
+                <CommonButton
+                  variant="emphasis"
+                  size="sm"
+                  onClick={() => openBulkGrant("grant")}
+                >
+                  선택 지급 ({selectedMembers.length}명)
+                </CommonButton>
+                <CommonButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => openBulkGrant("deduct")}
+                >
+                  선택 차감
+                </CommonButton>
+              </>
+            )}
             <ExcelDownloadButton
               type="button"
               data-grid-download

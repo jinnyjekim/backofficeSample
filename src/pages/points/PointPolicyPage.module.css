@@ -225,6 +225,7 @@
 .controlWrap {
   position: relative;
   display: flex;
+  width: 100%;
   align-items: center;
 }
 
@@ -234,44 +235,10 @@
   flex: 1;
 }
 
-.controlWrap input,
-.controlWrap select,
+.numberInput,
 .textControl {
   width: 100%;
-  height: 36px;
-  box-sizing: border-box;
-  padding: 0 34px 0 11px;
-  border: 1px solid #e0e1e6;
-  border-radius: 8px;
-  background: #fff;
-  color: #18181b;
-  font-size: 12px;
-  outline: 0;
-}
-
-.controlWrap select {
-  padding-right: 30px;
-}
-
-.controlWrap input:focus,
-.controlWrap select:focus {
-  border-color: var(--accent);
-}
-
-.controlWrap input:disabled,
-.controlWrap select:disabled {
-  background: #fff;
-  color: #18181b;
-  opacity: 1;
-  cursor: default;
-}
-
-.suffix {
-  position: absolute;
-  right: 11px;
-  color: #a1a1aa;
-  font-size: 11px;
-  pointer-events: none;
+  min-width: 0;
 }
 
 .helper {
@@ -489,28 +456,8 @@
 }
 
 .previewInput {
-  display: flex;
   margin-bottom: 16px;
-  align-items: center;
-  gap: 8px;
-}
-
-.previewInput input {
-  flex: 1;
-  height: 36px;
-  box-sizing: border-box;
-  padding: 0 34px 0 11px;
-  border: 1px solid #e2e4e9;
-  border-radius: 8px;
-  color: #18181b;
-  font-size: 12px;
-  font-weight: 600;
-  text-align: right;
-}
-
-.previewInput span {
-  color: #a1a1aa;
-  font-size: 10.5px;
+  width: 100%;
 }
 
 .previewRows,

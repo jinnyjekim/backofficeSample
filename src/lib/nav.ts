@@ -186,13 +186,8 @@ export const NAV_GROUPS: NavGroup[] = [
 
       { key: 'points', icon: Coins, label: '포인트 / 적립금 관리', to: '/points', business: 'B' },
       { key: 'points_status', sub: true, label: '보유 현황', to: '/points', business: 'B' },
-      { key: 'points_granted', sub: true, label: '지급 내역', to: '/b2c/points/granted', business: 'B' },
-      { key: 'points_used', sub: true, label: '사용 내역', to: '/b2c/points/used', business: 'B' },
-      { key: 'points_deducted', sub: true, label: '차감 내역', to: '/b2c/points/deducted', business: 'B' },
-      { key: 'points_expired', sub: true, label: '소멸 내역', to: '/b2c/points/expired', business: 'B' },
-      { key: 'points_expiring', sub: true, label: '소멸 예정', to: '/b2c/points/expiring', business: 'B' },
-      { key: 'points_manual', sub: true, label: '수동 지급', to: '/b2c/points/manual', business: 'B' },
-      { key: 'points_history', sub: true, label: '전체 포인트 내역', to: '/points/history', business: 'B' },
+      { key: 'points_history', sub: true, label: '포인트 내역', to: '/points/history', business: 'B' },
+      { key: 'points_expiring', sub: true, label: '소멸 예정', to: '/points/expiring', business: 'B' },
       { key: 'points_policy', sub: true, label: '적립 정책', to: '/points/policy', business: 'B' },
 
       { key: 'brands', icon: Award, label: '브랜드 관리', to: '/brands', business: 'B' },
@@ -499,11 +494,12 @@ export const BREADCRUMB: Record<string, [string, string]> = {
 
   points_status: ['서비스 관리 · 포인트 / 적립금 관리', '보유 현황'],
   points_history: ['서비스 관리 · 포인트 / 적립금 관리', '포인트 내역'],
+  points_expiring: ['서비스 관리 · 포인트 / 적립금 관리', '소멸 예정'],
+  points_policy: ['서비스 관리 · 포인트 / 적립금 관리', '적립 정책'],
 
   brands: ['서비스 관리', '브랜드 관리'],
   reviews: ['서비스 관리', '리뷰 관리'],
   cart_conversion: ['서비스 관리', '장바구니 / 구매 전환'],
-  points_policy: ['서비스 관리', '포인트 정책'],
 };
 
 export function breadcrumbForKey(key: string): [string, string] {
@@ -667,7 +663,9 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/coupons')) return 'coupons_list';
 
   if (pathname.startsWith('/points/history')) return 'points_history';
+  if (pathname.startsWith('/points/expiring') || pathname.startsWith('/b2c/points/expiring')) return 'points_expiring';
   if (pathname.startsWith('/points/policy')) return 'points_policy';
+  if (pathname.startsWith('/b2c/points')) return 'points_history'; // 구 URL → 포인트 내역으로 매핑
   if (pathname.startsWith('/points')) return 'points_status';
 
   if (pathname.startsWith('/brands')) return 'brands';
