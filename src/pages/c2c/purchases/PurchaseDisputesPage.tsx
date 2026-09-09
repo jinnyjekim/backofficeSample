@@ -275,7 +275,7 @@ export function PurchaseDisputesPage() {
         ]}
       />
       <ControlArea>
-        <div className={shared.filterHeadRow}>
+        <FilterBox>
           <form
             className={shared.filterRow1}
             onSubmit={(e) => {
@@ -320,8 +320,6 @@ export function PurchaseDisputesPage() {
               })}
             </div>
           </form>
-        </div>
-        <FilterBox>
           <div className={shared.filterRow2}>
             <label className="globalFilterField">
               <span>분쟁 유형</span>

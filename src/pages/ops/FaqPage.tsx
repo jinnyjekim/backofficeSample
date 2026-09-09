@@ -360,8 +360,6 @@ export function FaqPage() {
             <div className={styles.subtitle}>사용자가 자주 묻는 질문과 답변을 카테고리·검색 키워드·노출 순서로 관리합니다.</div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'categoryManage' })}>카테고리 관리</button>
-            <button type="button" className={styles.bulkBtn} onClick={openOrderManage}>순서 관리</button>
             <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ FAQ 등록</button>
           </div>
         </div>
@@ -412,6 +410,8 @@ export function FaqPage() {
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
+            <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'categoryManage' })}>카테고리 관리</button>
+            <button type="button" className={styles.bulkBtn} onClick={openOrderManage}>순서 관리</button>
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

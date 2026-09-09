@@ -239,7 +239,7 @@ export function ProceedsOverviewPage() {
         ]}
       />
       <ControlArea>
-        <div className={shared.filterHeadRow}>
+        <FilterBox>
           <form
             className={shared.filterRow1}
             onSubmit={(event) => {
@@ -279,8 +279,6 @@ export function ProceedsOverviewPage() {
               })}
             </div>
           </form>
-        </div>
-        <FilterBox>
           <div className={shared.filterRow2}>
             <DateRangeFilter label="최근 정산일" />
             <span className={shared.rowSpacer} />
@@ -577,6 +575,36 @@ export function C2CSettlementManagementPage() {
       <PageHeading
         title="C2C 정산 관리"
         subtitle="구매 확정 거래를 판매자별로 집계해 수수료·취소·조정을 검토하고 판매대금으로 확정합니다."
+        action={
+          <ExcelDownloadButton
+            data-grid-download
+            onClick={() =>
+              downloadCsv(
+                "c2c-settlements.csv",
+                [
+                  "정산번호",
+                  "판매자",
+                  "거래수",
+                  "거래금액",
+                  "차감",
+                  "조정",
+                  "최종금액",
+                  "상태",
+                ],
+                filtered.map((item) => [
+                  item.id,
+                  item.sellerName,
+                  item.tradeCount,
+                  item.gross,
+                  item.cancelRefund + item.fee,
+                  item.adjustment,
+                  item.net,
+                  item.status,
+                ]),
+              )
+            }
+          />
+        }
       />
       <Metrics
         items={[
@@ -613,7 +641,7 @@ export function C2CSettlementManagementPage() {
         ]}
       />
       <ControlArea>
-        <div className={shared.filterHeadRow}>
+        <FilterBox>
           <form
             className={shared.filterRow1}
             onSubmit={(event) => {
@@ -654,8 +682,6 @@ export function C2CSettlementManagementPage() {
               })}
             </div>
           </form>
-        </div>
-        <FilterBox>
           <div className={shared.filterRow2}>
             <DateRangeFilter label="정산 생성일" />
             <span className={shared.rowSpacer} />
@@ -666,36 +692,7 @@ export function C2CSettlementManagementPage() {
         </FilterBox>
       </ControlArea>
       <GridArea>
-        <ResultBar count={filtered.length} unit="건">
-          <ExcelDownloadButton
-            data-grid-download
-            onClick={() =>
-              downloadCsv(
-                "c2c-settlements.csv",
-                [
-                  "정산번호",
-                  "판매자",
-                  "거래수",
-                  "거래금액",
-                  "차감",
-                  "조정",
-                  "최종금액",
-                  "상태",
-                ],
-                filtered.map((item) => [
-                  item.id,
-                  item.sellerName,
-                  item.tradeCount,
-                  item.gross,
-                  item.cancelRefund + item.fee,
-                  item.adjustment,
-                  item.net,
-                  item.status,
-                ]),
-              )
-            }
-          />
-        </ResultBar>
+        <ResultBar count={filtered.length} unit="건"></ResultBar>
         <DataGrid
           columns={[
             { label: "정산번호 / 기간" },
@@ -1074,58 +1071,63 @@ export function WithdrawalManagementPage() {
           <div className={shared.filterRow2}>
             <DateRangeFilter label="요청일" />
             <span className={shared.rowSpacer} />
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
             <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
             </button>
           </div>
         </FilterBox>
       </ControlArea>
-      <GridArea>
-        <ResultBar count={filtered.length} unit="건">
-          <ExcelDownloadButton
-            data-grid-download
-            onClick={() =>
-              downloadCsv(
-                "c2c-withdrawals.csv",
-                ["출금번호", "판매자", "금액", "계좌", "상태", "담당자"],
-                filtered.map((item) => [
-                  item.id,
-                  item.sellerName,
-                  item.amount,
-                  item.bankAccount,
-                  item.status,
-                  item.handler,
-                ]),
-              )
+      <div className={styles.resultArea}>
+        <GridArea>
+          <ResultBar count={filtered.length} unit="건">
+            <ExcelDownloadButton
+              data-grid-download
+              onClick={() =>
+                downloadCsv(
+                  "c2c-withdrawals.csv",
+                  ["출금번호", "판매자", "금액", "계좌", "상태", "담당자"],
+                  filtered.map((item) => [
+                    item.id,
+                    item.sellerName,
+                    item.amount,
+                    item.bankAccount,
+                    item.status,
+                    item.handler,
+                  ]),
+                )
+              }
+            />
+          </ResultBar>
+          <DataGrid
+            columns={[
+              { label: "출금번호 / 요청일" },
+              { label: "판매자" },
+              { label: "출금 금액", align: "right" },
+              { label: "출금계좌" },
+              { label: "상태" },
+              { label: "담당자" },
+              { label: "처리일 / 사유" },
+            ]}
+            rows={rows}
+            gridTemplate="120px 90px 88px 98px 74px 62px minmax(175px,1fr)"
+            minWidth="755px"
+            empty={!filtered.length}
+            emptyText="조건에 맞는 출금 요청이 없습니다."
+            emptyActionLabel="초기화"
+            emptyActionClick={reset}
+            showPagination
+            pages={pages}
+            rangeLabel={
+              filtered.length
+                ? `1–${filtered.length} / ${filtered.length}`
+                : "0건"
             }
           />
-        </ResultBar>
-        <DataGrid
-          columns={[
-            { label: "출금번호 / 요청일" },
-            { label: "판매자" },
-            { label: "출금 금액", align: "right" },
-            { label: "출금계좌" },
-            { label: "상태" },
-            { label: "담당자" },
-            { label: "처리일 / 사유" },
-          ]}
-          rows={rows}
-          gridTemplate="120px 90px 88px 98px 74px 62px minmax(175px,1fr)"
-          minWidth="755px"
-          empty={!filtered.length}
-          emptyText="조건에 맞는 출금 요청이 없습니다."
-          emptyActionLabel="초기화"
-          emptyActionClick={reset}
-          showPagination
-          pages={pages}
-          rangeLabel={
-            filtered.length
-              ? `1–${filtered.length} / ${filtered.length}`
-              : "0건"
-          }
-        />
-      </GridArea>
+        </GridArea>
+      </div>
       {selected && (
         <DetailDrawer
           eyebrow={`출금 요청 · ${selected.id}`}

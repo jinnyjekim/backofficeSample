@@ -600,14 +600,15 @@ export function RefundPage() {
             </button>
           </div>
         </div>
-      </div>
 
-      <div className={shared.gridWrap}>
         <div className={shared.resultRow}>
           <span className={shared.resultLabel}>총 {filtered.length}건</span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+            <select
+              className={shared.pageSizeSelect}
+              defaultValue="20개씩 보기"
+            >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
             </select>

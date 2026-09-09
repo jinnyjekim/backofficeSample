@@ -7,7 +7,7 @@ import shared from "../../ops/opsShared.module.css";
 import drawer from "../../ops/opsDrawerShared.module.css";
 import base from "../sales/SalesActivity.module.css";
 import styles from "./SanctionManagement.module.css";
-import { CommonButton } from "../../../components/common";
+import { CommonButton, ExcelDownloadButton } from "../../../components/common";
 import {
   ControlArea,
   DetailDrawer,
@@ -323,49 +323,16 @@ export function SanctionProcessingPage() {
         title="제재 처리"
         subtitle="C2C 회원의 경고·기능 제한·계정 정지를 하나의 업무 큐에서 검토하고 승인·적용·해제합니다."
         action={
-          <>
-            <button
-              type="button"
-              className={shared.downloadBtn}
-              onClick={() =>
-                downloadCsv(
-                  "c2c-sanctions.csv",
-                  [
-                    "제재번호",
-                    "회원",
-                    "유형",
-                    "위반",
-                    "기간",
-                    "상태",
-                    "담당자",
-                    "근거",
-                  ],
-                  filtered.map((item) => [
-                    item.id,
-                    item.memberId,
-                    item.type,
-                    item.violation,
-                    item.duration,
-                    item.status,
-                    item.assignee,
-                    item.sourceId,
-                  ]),
-                )
-              }
-            >
-              다운로드
-            </button>
-            <button
-              type="button"
-              className={shared.createBtn}
-              onClick={() => {
-                setForm(EMPTY_FORM);
-                setEditorOpen(true);
-              }}
-            >
-              + 회원 제재 등록
-            </button>
-          </>
+          <button
+            type="button"
+            className={shared.createBtn}
+            onClick={() => {
+              setForm(EMPTY_FORM);
+              setEditorOpen(true);
+            }}
+          >
+            + 회원 제재 등록
+          </button>
         }
       />
       <Metrics
@@ -1178,45 +1145,7 @@ export function SanctionHistoryPage() {
         </FilterBox>
       </ControlArea>
       <GridArea>
-        <ResultBar count={filtered.length} unit="건">
-          <button
-            type="button"
-            className={shared.downloadBtn}
-            onClick={() =>
-              downloadCsv(
-                "c2c-sanction-history.csv",
-                [
-                  "처리일",
-                  "로그 ID",
-                  "제재번호",
-                  "회원",
-                  "유형",
-                  "처리",
-                  "변경 전",
-                  "변경 후",
-                  "처리자",
-                  "근거",
-                  "사유",
-                ],
-                filtered.map((item) => [
-                  item.occurredAt,
-                  item.id,
-                  item.sanctionId,
-                  item.memberId,
-                  item.type,
-                  item.action,
-                  item.before,
-                  item.after,
-                  item.actor,
-                  item.source,
-                  item.reason,
-                ]),
-              )
-            }
-          >
-            다운로드
-          </button>
-        </ResultBar>
+        <ResultBar count={filtered.length} unit="건"></ResultBar>
         <DataGrid
           columns={[
             { label: "처리일 / 로그 ID" },

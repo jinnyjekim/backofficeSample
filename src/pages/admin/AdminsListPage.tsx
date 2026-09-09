@@ -29,6 +29,7 @@ import {
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import { CommonButton } from "../../components/common";
 import { DatePicker } from "../../components/forms/DatePicker";
+import { ControlArea, FilterBox } from "../c2c/sales/SalesActivityShared";
 
 type StatusQuick = "전체" | AdminStatus;
 const STATUS_QUICK_FILTERS: StatusQuick[] = ["전체", ...ADMIN_STATUSES];
@@ -336,96 +337,94 @@ export function AdminsListPage() {
           </button>
         </div>
 
-        <div className={styles.filterHeadRow}>
-          <form
-            className={styles.filterRow1}
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSearch(keyword.trim());
-            }}
-          >
-            <input
-              className={styles.searchInput}
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="검색어를 입력하세요"
-            />
-            <button type="submit" className={styles.searchBtn}>
-              검색
-            </button>
-            <div className={styles.quickFilters}>
-              {STATUS_QUICK_FILTERS.map((s) => {
-                const active =
-                  s === "전체" ? statusFilter === "" : statusFilter === s;
-                return (
-                  <CommonButton
-                    key={s}
-                    variant={active ? "primary-light" : "secondary"}
-                    size="md"
-                    className={`${styles.qfBtn} ${active ? styles.active : ""}`}
-                    onClick={() => setStatusFilter(s === "전체" ? "" : s)}
-                  >
-                    <span className={styles.qfLabel}>{s}</span>
-                    <span className={styles.qfCount}>
-                      {statusCounts[s] ?? 0}
-                    </span>
-                  </CommonButton>
-                );
-              })}
-            </div>
-          </form>
-        </div>
-
-        <div className={styles.filterBox}>
-          <div className={styles.filterRow2}>
-            <label className="globalFilterField">
-              <span>역할</span>
-              <select
-                aria-label="역할"
-                className={styles.selectSm}
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-              >
-                <option value="">역할 전체</option>
-                {ROLES.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className={styles.dateFilterField}>
-              <span>등록일</span>
-              <span className={styles.dateRange}>
-                <DatePicker
-                  controlSize="sm"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-                <span className={styles.dateSeparator} aria-hidden="true">
-                  ~
-                </span>
-                <DatePicker
-                  controlSize="sm"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </span>
-            </label>
-            <span className={styles.rowSpacer} />
-            <button type="button" className="detailFilterBtn">
-              상세 필터
-            </button>
-            <button
-              type="button"
-              className={styles.resetBtn}
-              onClick={resetFilters}
+        <ControlArea>
+          <FilterBox>
+            <form
+              className={styles.filterRow1}
+              onSubmit={(e) => {
+                e.preventDefault();
+                setSearch(keyword.trim());
+              }}
             >
-              초기화
-            </button>
-          </div>
-        </div>
-
+              <input
+                className={styles.searchInput}
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder="검색어를 입력하세요"
+              />
+              <button type="submit" className={styles.searchBtn}>
+                검색
+              </button>
+              <div className={styles.quickFilters}>
+                {STATUS_QUICK_FILTERS.map((s) => {
+                  const active =
+                    s === "전체" ? statusFilter === "" : statusFilter === s;
+                  return (
+                    <CommonButton
+                      key={s}
+                      variant={active ? "primary-light" : "secondary"}
+                      size="md"
+                      className={`${styles.qfBtn} ${active ? styles.active : ""}`}
+                      onClick={() => setStatusFilter(s === "전체" ? "" : s)}
+                    >
+                      <span className={styles.qfLabel}>{s}</span>
+                      <span className={styles.qfCount}>
+                        {statusCounts[s] ?? 0}
+                      </span>
+                    </CommonButton>
+                  );
+                })}
+              </div>
+            </form>
+            <div className={styles.filterRow2}>
+              <label className="globalFilterField">
+                <span>역할</span>
+                <select
+                  aria-label="역할"
+                  className={styles.selectSm}
+                  value={roleFilter}
+                  onChange={(e) => setRoleFilter(e.target.value)}
+                >
+                  <option value="">역할 전체</option>
+                  {ROLES.map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className={styles.dateFilterField}>
+                <span>등록일</span>
+                <span className={styles.dateRange}>
+                  <DatePicker
+                    controlSize="sm"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                  <span className={styles.dateSeparator} aria-hidden="true">
+                    ~
+                  </span>
+                  <DatePicker
+                    controlSize="sm"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </span>
+              </label>
+              <span className={styles.rowSpacer} />
+              <button type="button" className="detailFilterBtn">
+                상세 필터
+              </button>
+              <button
+                type="button"
+                className={styles.resetBtn}
+                onClick={resetFilters}
+              >
+                초기화
+              </button>
+            </div>
+          </FilterBox>
+        </ControlArea>
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}명</span>
           <div className={styles.resultActions}>
@@ -434,7 +433,10 @@ export function AdminsListPage() {
               data-grid-download
               onClick={() => toastBriefly("관리자 목록을 다운로드했습니다.")}
             />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <select
+              className={styles.pageSizeSelect}
+              defaultValue="20개씩 보기"
+            >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
             </select>

@@ -252,7 +252,7 @@ export function ReportProcessingPage() {
         ]}
       />
       <ControlArea>
-        <div className={shared.filterHeadRow}>
+        <FilterBox>
           <form
             className={shared.filterRow1}
             onSubmit={(event) => {
@@ -291,8 +291,6 @@ export function ReportProcessingPage() {
               })}
             </div>
           </form>
-        </div>
-        <FilterBox>
           <div className={shared.filterRow2}>
             <label className="globalFilterField">
               <span>신고 대상</span>

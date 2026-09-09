@@ -2,6 +2,7 @@ import { DatePicker } from "../../../components/forms/DatePicker";
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../../components/DataGrid";
 import type { GridRow } from "../../../components/DataGrid/types";
+import { ExcelDownloadButton } from "../../../components/common";
 import shared from "../shared.module.css";
 import drawer from "../../ops/opsDrawerShared.module.css";
 import styles from "./PurchaseActivity.module.css";
@@ -153,43 +154,7 @@ export function DisputeHistoryPage() {
         </FilterBox>
       </ControlArea>
       <GridArea>
-        <ResultBar count={filtered.length} unit="건">
-          <button
-            type="button"
-            className={shared.downloadBtn}
-            onClick={() =>
-              downloadCsv(
-                "c2c-dispute-history.csv",
-                [
-                  "처리일",
-                  "로그 ID",
-                  "분쟁번호",
-                  "구매번호",
-                  "처리",
-                  "변경 전",
-                  "변경 후",
-                  "처리자",
-                  "증빙 변경",
-                  "사유",
-                ],
-                filtered.map((item) => [
-                  item.occurredAt,
-                  item.id,
-                  item.disputeId,
-                  item.purchaseId,
-                  item.action,
-                  item.before,
-                  item.after,
-                  item.actor,
-                  item.evidenceChange,
-                  item.reason,
-                ]),
-              )
-            }
-          >
-            다운로드
-          </button>
-        </ResultBar>
+        <ResultBar count={filtered.length} unit="건" />
         <DataGrid
           columns={[
             { label: "처리일 / 로그 ID" },

@@ -139,7 +139,6 @@ export function PurchaseActivityHistoryPage() {
               setSearch(keyword.trim());
             }}
           >
-            
             <input
               className={shared.searchInput}
               value={keyword}
@@ -197,7 +196,9 @@ export function PurchaseActivityHistoryPage() {
               </div>
             </label>
             <span className={shared.rowSpacer} />
-            <button type="button" className="detailFilterBtn">상세 필터</button>
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
             <button
               type="button"
               className={shared.resetBtn}
@@ -215,7 +216,6 @@ export function PurchaseActivityHistoryPage() {
       </ControlArea>
       <GridArea>
         <ResultBar count={filtered.length} unit="건">
-          <span className={base.rangeText}>최근 발생순</span>
           <select className={shared.pageSizeSelect}>
             <option>50개씩</option>
             <option>100개씩</option>

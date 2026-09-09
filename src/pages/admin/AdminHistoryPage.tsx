@@ -18,6 +18,7 @@ import {
 } from "./adminHistoryData";
 import { CommonButton, ExcelDownloadButton } from "../../components/common";
 import { DatePicker } from "../../components/forms/DatePicker";
+import { ControlArea, FilterBox } from "../c2c/sales/SalesActivityShared";
 
 type Tab = "로그인 이력" | "작업 이력";
 const TABS: Tab[] = ["로그인 이력", "작업 이력"];
@@ -251,149 +252,148 @@ export function AdminHistoryPage() {
           </div>
         </div>
 
-        <div className={styles.filterHeadRow}>
-          <form
-            className={styles.filterRow1}
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSearch(keyword.trim());
-            }}
-          >
-            <label className="globalFilterField">
-              <span>관리자</span>
-              <select
-                aria-label="관리자"
-                className={styles.selectSm}
-                value={adminFilter}
-                onChange={(e) => setAdminFilter(e.target.value)}
-              >
-                <option value="">관리자 전체</option>
-                {ADMINS.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.id} · {a.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <input
-              className={styles.searchInput}
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder={
-                tab === "로그인 이력"
-                  ? "관리자 ID, 이름 또는 IP 검색"
-                  : "관리자 ID, 이름 또는 대상 ID 검색"
-              }
-            />
-            <button type="submit" className={styles.searchBtn}>
-              검색
-            </button>
-          </form>
-
-          <div className={styles.quickFilters}>
-            {TABS.map((t) => {
-              const active = tab === t;
-              return (
-                <CommonButton
-                  key={t}
-                  type="button"
-                  variant={active ? "primary-light" : "secondary"}
-                  size="md"
-                  className={`${styles.qfBtn} ${active ? styles.quickActive : ""}`}
-                  onClick={() => {
-                    setTab(t);
-                    resetFilters();
-                  }}
-                >
-                  <span className={styles.qfLabel}>{t}</span>
-                </CommonButton>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className={styles.filterBox}>
-          <div className={styles.filterRow2}>
-            <label className="globalFilterField">
-              <span>결과</span>
-              <select
-                aria-label="결과"
-                className={styles.selectSm}
-                value={resultFilter}
-                onChange={(e) => setResultFilter(e.target.value)}
-              >
-                <option value="">결과 전체</option>
-                <option value="성공">성공</option>
-                <option value="실패">실패</option>
-              </select>
-            </label>
-            {tab === "작업 이력" && (
-              <>
-                <label className="globalFilterField">
-                  <span>메뉴</span>
-                  <select
-                    aria-label="메뉴"
-                    className={styles.selectSm}
-                    value={menuFilter}
-                    onChange={(e) => setMenuFilter(e.target.value)}
-                  >
-                    <option value="">메뉴 전체</option>
-                    {MENUS.map((m) => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="globalFilterField">
-                  <span>작업 유형</span>
-                  <select
-                    aria-label="작업 유형"
-                    className={styles.selectSm}
-                    value={actionTypeFilter}
-                    onChange={(e) => setActionTypeFilter(e.target.value)}
-                  >
-                    <option value="">작업 유형 전체</option>
-                    {ACTION_TYPES.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </>
-            )}
-            <label className={styles.dateFilterField}>
-              <span>조회 기간</span>
-              <span className={styles.dateRange}>
-                <DatePicker
-                  controlSize="sm"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-                <span className={styles.dateSeparator} aria-hidden="true">
-                  ~
-                </span>
-                <DatePicker
-                  controlSize="sm"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </span>
-            </label>
-            <span className={styles.rowSpacer} />
-            <button type="button" className="detailFilterBtn">
-              상세 필터
-            </button>
-            <button
-              type="button"
-              className={styles.resetBtn}
-              onClick={resetFilters}
+        <ControlArea>
+          <FilterBox>
+            <form
+              className={styles.filterRow1}
+              onSubmit={(e) => {
+                e.preventDefault();
+                setSearch(keyword.trim());
+              }}
             >
-              초기화
-            </button>
-          </div>
-        </div>
+              <label className="globalFilterField">
+                <span>관리자</span>
+                <select
+                  aria-label="관리자"
+                  className={styles.selectSm}
+                  value={adminFilter}
+                  onChange={(e) => setAdminFilter(e.target.value)}
+                >
+                  <option value="">관리자 전체</option>
+                  {ADMINS.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.id} · {a.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <input
+                className={styles.searchInput}
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder={
+                  tab === "로그인 이력"
+                    ? "관리자 ID, 이름 또는 IP 검색"
+                    : "관리자 ID, 이름 또는 대상 ID 검색"
+                }
+              />
+              <button type="submit" className={styles.searchBtn}>
+                검색
+              </button>
+            </form>
+            <div className={styles.filterRow2}>
+              <label className="globalFilterField">
+                <span>결과</span>
+                <select
+                  aria-label="결과"
+                  className={styles.selectSm}
+                  value={resultFilter}
+                  onChange={(e) => setResultFilter(e.target.value)}
+                >
+                  <option value="">결과 전체</option>
+                  <option value="성공">성공</option>
+                  <option value="실패">실패</option>
+                </select>
+              </label>
+              {tab === "작업 이력" && (
+                <>
+                  <label className="globalFilterField">
+                    <span>메뉴</span>
+                    <select
+                      aria-label="메뉴"
+                      className={styles.selectSm}
+                      value={menuFilter}
+                      onChange={(e) => setMenuFilter(e.target.value)}
+                    >
+                      <option value="">메뉴 전체</option>
+                      {MENUS.map((m) => (
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="globalFilterField">
+                    <span>작업 유형</span>
+                    <select
+                      aria-label="작업 유형"
+                      className={styles.selectSm}
+                      value={actionTypeFilter}
+                      onChange={(e) => setActionTypeFilter(e.target.value)}
+                    >
+                      <option value="">작업 유형 전체</option>
+                      {ACTION_TYPES.map((t) => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </>
+              )}
+              <label className={styles.dateFilterField}>
+                <span>조회 기간</span>
+                <span className={styles.dateRange}>
+                  <DatePicker
+                    controlSize="sm"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                  <span className={styles.dateSeparator} aria-hidden="true">
+                    ~
+                  </span>
+                  <DatePicker
+                    controlSize="sm"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </span>
+              </label>
+              <span className={styles.rowSpacer} />
+              <button type="button" className="detailFilterBtn">
+                상세 필터
+              </button>
+              <button
+                type="button"
+                className={styles.resetBtn}
+                onClick={resetFilters}
+              >
+                초기화
+              </button>
+            </div>
+
+            <div className={styles.quickFilters}>
+              {TABS.map((t) => {
+                const active = tab === t;
+                return (
+                  <CommonButton
+                    key={t}
+                    type="button"
+                    variant={active ? "primary-light" : "secondary"}
+                    size="md"
+                    className={`${styles.qfBtn} ${active ? styles.quickActive : ""}`}
+                    onClick={() => {
+                      setTab(t);
+                      resetFilters();
+                    }}
+                  >
+                    <span className={styles.qfLabel}>{t}</span>
+                  </CommonButton>
+                );
+              })}
+            </div>
+          </FilterBox>
+        </ControlArea>
 
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>
@@ -407,7 +407,10 @@ export function AdminHistoryPage() {
                 toastBriefly("현재 조건으로 이력을 다운로드했습니다.")
               }
             />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <select
+              className={styles.pageSizeSelect}
+              defaultValue="20개씩 보기"
+            >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
             </select>

@@ -7,7 +7,11 @@ import shared from "../shared.module.css";
 import drawer from "../../ops/opsDrawerShared.module.css";
 import base from "../sales/SalesActivity.module.css";
 import styles from "./TradeSafety.module.css";
-import { CommonButton, showToast } from "../../../components/common";
+import {
+  CommonButton,
+  ExcelDownloadButton,
+  showToast,
+} from "../../../components/common";
 import {
   ControlArea,
   DetailDrawer,
@@ -350,11 +354,12 @@ export function TradeRiskMonitoringPage() {
           </div>
         </FilterBox>
       </ControlArea>
-      <GridArea>
-        <ResultBar count={filtered.length} unit="건">
-          <button
+      <div className={styles.resultArea}>
+        <GridArea>
+          <ResultBar count={filtered.length} unit="건">
+          <ExcelDownloadButton
             type="button"
-            className={shared.downloadBtn}
+            data-grid-download
             onClick={() =>
               downloadCsv(
                 "c2c-risk-monitoring.csv",
@@ -369,11 +374,9 @@ export function TradeRiskMonitoringPage() {
                 ]),
               )
             }
-          >
-            다운로드
-          </button>
-        </ResultBar>
-        <DataGrid
+          />
+          </ResultBar>
+          <DataGrid
           columns={[
             { label: "위험 건 / 탐지일" },
             { label: "탐지 유형" },
@@ -399,8 +402,9 @@ export function TradeRiskMonitoringPage() {
               ? `1–${filtered.length} / ${filtered.length}`
               : "0건"
           }
-        />
-      </GridArea>
+          />
+        </GridArea>
+      </div>
       {selected && (
         <DetailDrawer
           eyebrow={`거래 안전 위험 건 · ${selected.id}`}
@@ -765,17 +769,21 @@ export function TradeHoldManagementPage() {
               </span>
             </label>
             <span className={shared.rowSpacer} />
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
             <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
             </button>
           </div>
         </FilterBox>
       </ControlArea>
-      <GridArea>
-        <ResultBar count={filtered.length} unit="건">
-          <button
+      <div className={styles.resultArea}>
+        <GridArea>
+          <ResultBar count={filtered.length} unit="건">
+          <ExcelDownloadButton
             type="button"
-            className={shared.downloadBtn}
+            data-grid-download
             onClick={() =>
               downloadCsv(
                 "c2c-trade-holds.csv",
@@ -799,11 +807,9 @@ export function TradeHoldManagementPage() {
                 ]),
               )
             }
-          >
-            다운로드
-          </button>
-        </ResultBar>
-        <DataGrid
+          />
+          </ResultBar>
+          <DataGrid
           columns={[
             { label: "보류번호 / 보류일" },
             { label: "거래 / 위험 건" },
@@ -829,8 +835,9 @@ export function TradeHoldManagementPage() {
               ? `1–${filtered.length} / ${filtered.length}`
               : "0건"
           }
-        />
-      </GridArea>
+          />
+        </GridArea>
+      </div>
       {selected && (
         <DetailDrawer
           eyebrow={`거래 보류 · ${selected.id}`}

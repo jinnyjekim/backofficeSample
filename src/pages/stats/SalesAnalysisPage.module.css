@@ -156,8 +156,11 @@
 }
 
 .analysisSelect {
-  width: 100%;
-  min-width: 0;
+  flex: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
 }
 
 .filterField select:focus,
@@ -184,6 +187,7 @@
 }
 
 .filterActions {
+  grid-column: -2 / -1;
   justify-content: flex-end;
 }
 

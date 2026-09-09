@@ -2,6 +2,14 @@ import { useMemo, useRef, useState } from 'react';
 import shared from '../ops/opsShared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
+import {
+  CommonButton,
+  CommonButtonGroup,
+  CommonCheckbox,
+  CommonInput,
+  CommonSelect,
+  CommonSwitch,
+} from '../../components/common';
 import styles from './PointPolicyPage.module.css';
 import {
   INITIAL_POLICY,
@@ -66,8 +74,9 @@ function NumberControl({
 }) {
   return (
     <span className={styles.controlWrap}>
-      <input
-        type="number"
+      <CommonInput.Number
+        clearable={false}
+        size="md"
         value={value}
         min={min}
         max={max}
@@ -91,19 +100,21 @@ function SegmentGroup<T extends string | number>({
   onChange: (value: T) => void;
 }) {
   return (
-    <div className={styles.segments}>
+    <CommonButtonGroup className={styles.segments}>
       {options.map((option) => (
-        <button
+        <CommonButton
           key={String(option.value)}
           type="button"
           disabled={disabled}
+          variant={value === option.value ? 'emphasis' : 'secondary'}
+          size="md"
           className={`${styles.segment} ${value === option.value ? styles.segmentActive : ''}`}
           onClick={() => onChange(option.value)}
         >
           {option.label}
-        </button>
+        </CommonButton>
       ))}
-    </div>
+    </CommonButtonGroup>
   );
 }
 
@@ -185,13 +196,13 @@ export function PointPolicyPage() {
           </div>
           <div className={styles.headerActions}>
             <span className={styles.updated}>최종 수정 {policy.updatedAt} · {policy.updatedBy}</span>
-            <button type="button" className={styles.secondaryButton} onClick={() => setShowHistory(true)}>변경 이력</button>
+            <CommonButton type="button" variant="secondary" size="md" className={styles.secondaryButton} onClick={() => setShowHistory(true)}>변경 이력</CommonButton>
             {editing ? (
               <>
-                <button type="button" className={styles.secondaryButton} onClick={cancelEdit}>취소</button>
-                <button type="button" className={styles.primaryButton} onClick={requestSave}>저장</button>
+                <CommonButton type="button" variant="secondary" size="md" className={styles.secondaryButton} onClick={cancelEdit}>취소</CommonButton>
+                <CommonButton type="button" variant="emphasis" size="md" className={styles.primaryButton} onClick={requestSave}>저장</CommonButton>
               </>
-            ) : <button type="button" className={styles.primaryButton} onClick={startEdit}>수정</button>}
+            ) : <CommonButton type="button" variant="emphasis" size="md" className={styles.primaryButton} onClick={startEdit}>수정</CommonButton>}
           </div>
         </div>
         <div className={styles.summaryChips}>
@@ -207,20 +218,19 @@ export function PointPolicyPage() {
         <main className={styles.policyCard}>
           <PolicySection number={1} title="적립 정책" description="얼마를 어떤 기준으로 언제 적립할지 정합니다." aside={(
             <div className={styles.toggleRow}>
-              <button type="button" role="switch" aria-checked={p.purchaseEarnEnabled} aria-label="적립 사용" disabled={disabled} className={`${styles.toggle} ${p.purchaseEarnEnabled ? styles.toggleOn : ''}`} onClick={() => set('purchaseEarnEnabled', !p.purchaseEarnEnabled)} />
-              적립 사용
+              <CommonSwitch size="sm" checked={p.purchaseEarnEnabled} label="적립 사용" disabled={disabled} onChange={(checked) => set('purchaseEarnEnabled', checked)} />
             </div>
           )}>
             <div className={p.purchaseEarnEnabled ? '' : styles.disabledGroup}>
               <div className={styles.fieldGrid}>
                 <Field label="기본 적립률"><NumberControl value={p.earnRate} suffix="%" max={100} disabled={disabled || !p.purchaseEarnEnabled} onChange={(value) => set('earnRate', value)} /></Field>
-                <Field label="적립 기준금액"><span className={styles.controlWrap}><select disabled={disabled || !p.purchaseEarnEnabled} value={p.earnBasis} onChange={(event) => set('earnBasis', event.target.value as EarnBasis)}><option value="할인 전 상품금액">할인 전 상품금액</option><option value="할인 적용 후 상품금액">할인 적용 후 상품금액</option><option value="실제 결제금액">실제 결제금액</option></select></span></Field>
-                <Field label="적립 확정 시점"><span className={styles.controlWrap}><select disabled={disabled} value={p.earnConfirmTiming} onChange={(event) => set('earnConfirmTiming', event.target.value as EarnConfirmTiming)}><option value="결제 완료">결제 완료</option><option value="배송 완료">배송 완료</option><option value="구매 확정">구매 확정</option><option value="배송 완료 후 N일">배송 완료 후 N일</option></select></span></Field>
+                <Field label="적립 기준금액"><span className={styles.controlWrap}><CommonSelect className={styles.commonControl} disabled={disabled || !p.purchaseEarnEnabled} value={p.earnBasis} options={[{ value: '할인 전 상품금액', label: '할인 전 상품금액' }, { value: '할인 적용 후 상품금액', label: '할인 적용 후 상품금액' }, { value: '실제 결제금액', label: '실제 결제금액' }]} onChange={(value) => set('earnBasis', String(value) as EarnBasis)} /></span></Field>
+                <Field label="적립 확정 시점"><span className={styles.controlWrap}><CommonSelect className={styles.commonControl} disabled={disabled} value={p.earnConfirmTiming} options={[{ value: '결제 완료', label: '결제 완료' }, { value: '배송 완료', label: '배송 완료' }, { value: '구매 확정', label: '구매 확정' }, { value: '배송 완료 후 N일', label: '배송 완료 후 N일' }]} onChange={(value) => set('earnConfirmTiming', String(value) as EarnConfirmTiming)} /></span></Field>
                 <Field label="확정 후 사용 가능"><SegmentGroup value={p.immediateAfterConfirm ? '즉시' : 'N일 후'} disabled={disabled} options={[{ value: '즉시', label: '즉시' }, { value: 'N일 후', label: 'N일 후' }]} onChange={(value) => set('immediateAfterConfirm', value === '즉시')} /></Field>
               </div>
               <div className={styles.checkRow}>
-                <label><input type="checkbox" disabled={disabled || !p.purchaseEarnEnabled} checked={p.excludePointUsedFromEarnBasis} onChange={(event) => set('excludePointUsedFromEarnBasis', event.target.checked)} />포인트 사용금액은 적립 대상에서 제외</label>
-                <label><input type="checkbox" disabled={disabled || !p.purchaseEarnEnabled} checked={p.includeShippingInEarnBasis} onChange={(event) => set('includeShippingInEarnBasis', event.target.checked)} />배송비를 적립 기준금액에 포함</label>
+                <CommonCheckbox size="sm" disabled={disabled || !p.purchaseEarnEnabled} checked={p.excludePointUsedFromEarnBasis} onChange={(checked) => set('excludePointUsedFromEarnBasis', checked)} label="포인트 사용금액은 적립 대상에서 제외" />
+                <CommonCheckbox size="sm" disabled={disabled || !p.purchaseEarnEnabled} checked={p.includeShippingInEarnBasis} onChange={(checked) => set('includeShippingInEarnBasis', checked)} label="배송비를 적립 기준금액에 포함" />
               </div>
             </div>
           </PolicySection>
@@ -238,16 +248,16 @@ export function PointPolicyPage() {
             <div className={styles.fieldGridThree}>
               <Field label="포인트 유효기간">
                 <div className={styles.expirationControls}>
-                  <button type="button" disabled={disabled} className={`${styles.segment} ${p.validityType === '지급일로부터 N일' ? styles.segmentActive : ''}`} onClick={() => set('validityType', '지급일로부터 N일')}>N일</button>
-                  <button type="button" disabled={disabled} className={`${styles.segment} ${p.validityType === '소멸 없음' ? styles.segmentActive : ''}`} onClick={() => set('validityType', '소멸 없음')}>소멸 없음</button>
+                  <CommonButton type="button" disabled={disabled} variant={p.validityType === '지급일로부터 N일' ? 'emphasis' : 'secondary'} size="md" className={`${styles.segment} ${p.validityType === '지급일로부터 N일' ? styles.segmentActive : ''}`} onClick={() => set('validityType', '지급일로부터 N일')}>N일</CommonButton>
+                  <CommonButton type="button" disabled={disabled} variant={p.validityType === '소멸 없음' ? 'emphasis' : 'secondary'} size="md" className={`${styles.segment} ${p.validityType === '소멸 없음' ? styles.segmentActive : ''}`} onClick={() => set('validityType', '소멸 없음')}>소멸 없음</CommonButton>
                   <NumberControl value={p.validityDays} suffix="일" min={1} disabled={disabled || p.validityType === '소멸 없음'} onChange={(value) => set('validityDays', Math.max(1, value))} />
                 </div>
               </Field>
               <div className={styles.priorityField}>
                 <div className={styles.fieldLabel}>사용 우선순위</div>
                 <div className={styles.priorityCards}>
-                  <button type="button" disabled={disabled} className={`${styles.priorityCard} ${p.usagePriority === '소멸 예정일이 빠른 포인트부터' ? styles.priorityActive : ''}`} onClick={() => set('usagePriority', '소멸 예정일이 빠른 포인트부터')}><strong>소멸 예정일 순</strong><span>회원 손실 최소화</span></button>
-                  <button type="button" disabled={disabled} className={`${styles.priorityCard} ${p.usagePriority === '지급일이 빠른 포인트부터' ? styles.priorityActive : ''}`} onClick={() => set('usagePriority', '지급일이 빠른 포인트부터')}><strong>지급일 순</strong><span>선입선출</span></button>
+                  <CommonButton type="button" disabled={disabled} variant={p.usagePriority === '소멸 예정일이 빠른 포인트부터' ? 'emphasis' : 'secondary'} size="md" className={`${styles.priorityCard} ${p.usagePriority === '소멸 예정일이 빠른 포인트부터' ? styles.priorityActive : ''}`} onClick={() => set('usagePriority', '소멸 예정일이 빠른 포인트부터')}><strong>소멸 예정일 순</strong><span>회원 손실 최소화</span></CommonButton>
+                  <CommonButton type="button" disabled={disabled} variant={p.usagePriority === '지급일이 빠른 포인트부터' ? 'emphasis' : 'secondary'} size="md" className={`${styles.priorityCard} ${p.usagePriority === '지급일이 빠른 포인트부터' ? styles.priorityActive : ''}`} onClick={() => set('usagePriority', '지급일이 빠른 포인트부터')}><strong>지급일 순</strong><span>선입선출</span></CommonButton>
                 </div>
               </div>
             </div>
@@ -256,9 +266,9 @@ export function PointPolicyPage() {
           <PolicySection number={4} title="취소 / 반품 정책" description="거래가 되돌아갈 때 사용분을 돌려주고 적립분을 회수할지 조합으로 정합니다." aside={<div className={styles.infoBox}>ⓘ 사용한 포인트만큼의 금액은 현금으로 추가 환불되지 않습니다.</div>}>
             <div className={styles.policyTable}>
               <div className={styles.policyTableHead}><span>거래 유형</span><span>사용분 복원</span><span>적립분 회수</span></div>
-              <div className={styles.policyTableRow}><span>전체 취소</span><label className={styles.tableCheck}><input aria-label="전체 취소 사용분 복원" type="checkbox" disabled={disabled} checked={p.fullCancelRestoreUsed} onChange={(event) => set('fullCancelRestoreUsed', event.target.checked)} /></label><label className={styles.tableCheck}><input aria-label="전체 취소 적립분 회수" type="checkbox" disabled={disabled} checked={p.fullCancelRevokeEarned} onChange={(event) => set('fullCancelRevokeEarned', event.target.checked)} /></label></div>
-              <div className={styles.policyTableRow}><span>전체 반품</span><label className={styles.tableCheck}><input aria-label="전체 반품 사용분 복원" type="checkbox" disabled={disabled} checked={p.fullReturnRestoreUsed} onChange={(event) => set('fullReturnRestoreUsed', event.target.checked)} /></label><label className={styles.tableCheck}><input aria-label="전체 반품 적립분 회수" type="checkbox" disabled={disabled} checked={p.fullReturnRevokeEarned} onChange={(event) => set('fullReturnRevokeEarned', event.target.checked)} /></label></div>
-              <div className={styles.policyTableRow}><span>부분 취소 / 반품</span><label className={styles.tableCheck}><input aria-label="부분 취소 반품 사용분 복원" type="checkbox" disabled={disabled} checked={p.partialCancelRecalculate} onChange={(event) => set('partialCancelRecalculate', event.target.checked)} /></label><label className={styles.tableCheck}><input aria-label="부분 취소 반품 적립분 회수" type="checkbox" disabled={disabled} checked={p.partialCancelRecalculate} onChange={(event) => set('partialCancelRecalculate', event.target.checked)} /></label></div>
+              <div className={styles.policyTableRow}><span>전체 취소</span><span className={styles.tableCheck}><CommonCheckbox aria-label="전체 취소 사용분 복원" size="sm" disabled={disabled} checked={p.fullCancelRestoreUsed} onChange={(checked) => set('fullCancelRestoreUsed', checked)} /></span><span className={styles.tableCheck}><CommonCheckbox aria-label="전체 취소 적립분 회수" size="sm" disabled={disabled} checked={p.fullCancelRevokeEarned} onChange={(checked) => set('fullCancelRevokeEarned', checked)} /></span></div>
+              <div className={styles.policyTableRow}><span>전체 반품</span><span className={styles.tableCheck}><CommonCheckbox aria-label="전체 반품 사용분 복원" size="sm" disabled={disabled} checked={p.fullReturnRestoreUsed} onChange={(checked) => set('fullReturnRestoreUsed', checked)} /></span><span className={styles.tableCheck}><CommonCheckbox aria-label="전체 반품 적립분 회수" size="sm" disabled={disabled} checked={p.fullReturnRevokeEarned} onChange={(checked) => set('fullReturnRevokeEarned', checked)} /></span></div>
+              <div className={styles.policyTableRow}><span>부분 취소 / 반품</span><span className={styles.tableCheck}><CommonCheckbox aria-label="부분 취소 반품 사용분 복원" size="sm" disabled={disabled} checked={p.partialCancelRecalculate} onChange={(checked) => set('partialCancelRecalculate', checked)} /></span><span className={styles.tableCheck}><CommonCheckbox aria-label="부분 취소 반품 적립분 회수" size="sm" disabled={disabled} checked={p.partialCancelRecalculate} onChange={(checked) => set('partialCancelRecalculate', checked)} /></span></div>
             </div>
             <div className={styles.restoreField}>
               <div className={styles.fieldLabel}>복원 시 원 유효기간이 이미 지난 포인트</div>
@@ -268,16 +278,16 @@ export function PointPolicyPage() {
 
           <PolicySection number={5} title="계산 정책" description="적립 금액의 단수 처리 방식입니다. 마이너스 포인트는 허용하지 않습니다.">
             <div className={styles.fieldGridThree}>
-              <Field label="소수점 처리"><span className={styles.controlWrap}><select disabled={disabled} value={p.roundingMode} onChange={(event) => set('roundingMode', event.target.value as RoundingMode)}><option value="버림">버림</option><option value="반올림">반올림</option><option value="올림">올림</option></select></span></Field>
-              <Field label="절사 단위"><span className={styles.controlWrap}><select disabled={disabled} value={p.roundingUnit} onChange={(event) => set('roundingUnit', Number(event.target.value) as RoundingUnit)}><option value={1}>1P</option><option value={10}>10P</option><option value={100}>100P</option></select></span></Field>
-              <Field label="회수 / 차감 한도"><input className={styles.textControl} disabled value="보유 포인트 범위까지" readOnly /></Field>
+              <Field label="소수점 처리"><span className={styles.controlWrap}><CommonSelect className={styles.commonControl} disabled={disabled} value={p.roundingMode} options={[{ value: '버림', label: '버림' }, { value: '반올림', label: '반올림' }, { value: '올림', label: '올림' }]} onChange={(value) => set('roundingMode', String(value) as RoundingMode)} /></span></Field>
+              <Field label="절사 단위"><span className={styles.controlWrap}><CommonSelect className={styles.commonControl} disabled={disabled} value={String(p.roundingUnit)} options={[{ value: '1', label: '1P' }, { value: '10', label: '10P' }, { value: '100', label: '100P' }]} onChange={(value) => set('roundingUnit', Number(value) as RoundingUnit)} /></span></Field>
+              <Field label="회수 / 차감 한도"><CommonInput.Text className={styles.textControl} clearable={false} disabled value="보유 포인트 범위까지" readOnly /></Field>
             </div>
           </PolicySection>
 
           <PolicySection number={6} title="정책 관리" description="탈퇴 처리와 정책 변경의 적용 범위입니다.">
             <div className={styles.policyManageGrid}>
               <div><div className={styles.fieldLabel}>회원 탈퇴 시 잔여 포인트</div><SegmentGroup value={p.withdrawalPolicy} disabled={disabled} options={([{ value: '전액 소멸', label: '전액 소멸' }, { value: '유지', label: '유지' }] as { value: WithdrawalPolicy; label: string }[])} onChange={(value) => set('withdrawalPolicy', value)} /></div>
-              <Field label="변경 적용 범위"><input className={styles.textControl} disabled value="변경 이후 생성 거래부터" readOnly /></Field>
+              <Field label="변경 적용 범위"><CommonInput.Text className={styles.textControl} clearable={false} disabled value="변경 이후 생성 거래부터" readOnly /></Field>
             </div>
           </PolicySection>
         </main>
@@ -287,7 +297,7 @@ export function PointPolicyPage() {
             <div className={styles.sideCardHead}><h2>적용 프리뷰</h2><p>현재 설정으로 계산한 결과입니다.</p></div>
             <div className={styles.sideCardBody}>
               <label className={styles.fieldLabel}>주문금액</label>
-              <div className={styles.previewInput}><input type="number" min={0} value={previewAmount} onChange={(event) => setPreviewAmount(Math.max(0, Number(event.target.value) || 0))} /><span>원</span></div>
+              <div className={styles.previewInput}><CommonInput.Number clearable={false} min={0} value={previewAmount} onChange={(event) => setPreviewAmount(Math.max(0, Number(event.target.value) || 0))} /><span>원</span></div>
               <div className={styles.previewRows}>
                 <div className={styles.previewRow}><span>주문금액</span><strong>{previewAmount.toLocaleString('ko-KR')}원</strong></div>
                 <div className={styles.previewRow}><span>적립 기준금액</span><strong>{preview.basis.toLocaleString('ko-KR')}원</strong></div>
@@ -313,7 +323,7 @@ export function PointPolicyPage() {
           </section>
 
           <section className={styles.sideCard}>
-            <div className={`${styles.sideCardHead} ${styles.historyHead}`}><h2>최근 변경</h2><button type="button" onClick={() => setShowHistory(true)}>전체 보기</button></div>
+            <div className={`${styles.sideCardHead} ${styles.historyHead}`}><h2>최근 변경</h2><CommonButton type="button" variant="none" size="sm" onClick={() => setShowHistory(true)}>전체 보기</CommonButton></div>
             <div>{history.slice(0, 3).map((entry) => <div key={entry.id} className={styles.historyItem}><div className={styles.historyMeta}><span>{entry.at.slice(0, 10)}</span><span>{entry.by}</span></div><p>{entry.changes.length ? entry.changes.map((change) => `${change.field} ${change.before} → ${change.after}`).join(' · ') : entry.reason}</p></div>)}</div>
           </section>
         </aside>
@@ -321,7 +331,7 @@ export function PointPolicyPage() {
 
       {showHistory && (
         <aside ref={historyRef} className={drawer.aside} aria-label="포인트 정책 변경 이력">
-          <div className={drawer.head}><div className={drawer.headRow}><div className={drawer.headBody}><div className={drawer.eyebrow}>포인트 / 적립금 관리 · 포인트 정책</div><div className={drawer.titleRow}><span className={drawer.title}>변경 이력</span></div></div><button type="button" className={drawer.closeBtn} onClick={() => setShowHistory(false)}>×</button></div></div>
+          <div className={drawer.head}><div className={drawer.headRow}><div className={drawer.headBody}><div className={drawer.eyebrow}>포인트 / 적립금 관리 · 포인트 정책</div><div className={drawer.titleRow}><span className={drawer.title}>변경 이력</span></div></div><CommonButton type="button" variant="ghost" size="sm" className={drawer.closeBtn} onClick={() => setShowHistory(false)}>×</CommonButton></div></div>
           <div className={drawer.scroll}>{history.map((entry) => <div key={entry.id} className={drawer.timelineItem}><div className={drawer.timelineDot} /><div className={drawer.timelineBody}><div className={drawer.timelineRow}><span className={drawer.timelineTitle}>{entry.by}</span><span className={drawer.timelineWhen}>{entry.at}</span></div>{entry.changes.length ? entry.changes.map((change) => <div key={change.field} className={drawer.timelineDetail}>{change.field} · {change.before} → {change.after}</div>) : <div className={drawer.timelineDetail}>{entry.reason}</div>}</div></div>)}</div>
         </aside>
       )}
@@ -332,8 +342,8 @@ export function PointPolicyPage() {
             <div className={shared.dialogTitle}>포인트 정책을 변경하시겠습니까?</div>
             <div className={shared.dialogSummary}>{confirmChanges.map((change) => <div key={change.field} className={shared.dialogSummaryRow}><span>{change.field}</span><span>{change.before} → {change.after}</span></div>)}</div>
             <div className={shared.dialogBody} style={{ marginBottom: 10 }}>변경 사항은 이후 생성되는 적립/사용 거래부터 적용됩니다. 기존 주문 및 포인트 내역은 변경되지 않습니다.</div>
-            <input className={shared.searchInput} style={{ width: '100%', maxWidth: 'none', marginBottom: 16 }} placeholder="변경 사유" value={reason} onChange={(event) => setReason(event.target.value)} />
-            <div className={shared.dialogActions}><button type="button" className={shared.dialogBtn} style={{ border: '1px solid rgba(0,0,0,.12)', background: '#fff', color: '#52525b' }} onClick={() => setConfirmChanges(null)}>취소</button><button type="button" className={shared.dialogBtn} style={{ border: 0, background: 'var(--accent)', color: '#fff' }} onClick={confirmSave}>변경 적용</button></div>
+            <CommonInput.Text clearable={false} className={shared.searchInput} style={{ width: '100%', maxWidth: 'none', marginBottom: 16 }} placeholder="변경 사유" value={reason} onChange={(event) => setReason(event.target.value)} />
+            <div className={shared.dialogActions}><CommonButton type="button" variant="secondary" size="md" className={shared.dialogBtn} onClick={() => setConfirmChanges(null)}>취소</CommonButton><CommonButton type="button" variant="emphasis" size="md" className={shared.dialogBtn} onClick={confirmSave}>변경 적용</CommonButton></div>
           </div>
         </div>
       )}

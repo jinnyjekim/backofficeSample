@@ -228,6 +228,12 @@
   align-items: center;
 }
 
+.commonControl {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+}
+
 .controlWrap input,
 .controlWrap select,
 .textControl {
@@ -443,7 +449,7 @@
 }
 
 .policyTableHead span:not(:first-child),
-.policyTableRow label {
+.policyTableRow .tableCheck {
   justify-self: center;
 }
 

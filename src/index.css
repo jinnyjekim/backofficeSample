@@ -1076,3 +1076,15 @@ button {
   border-radius: 7px !important;
   vertical-align: middle !important;
 }
+
+/* 페이지 헤더 우측 주요 액션 버튼(등록/생성/추가 등) 토큰 검정색 통일 */
+:where(header, [class*="header"], [class*="headTop"], [class*="headRow"], [class*="pageHeader"], [class*="titleRow"], [class*="headerTop"])
+  :is([class*="createBtn"], [class*="CreateBtn"], [class*="reviewPrimaryBtn"], [class*="primaryBtn"]):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]) {
+  background: var(--common-text, #18181b) !important;
+  color: #ffffff !important;
+}
+
+:where(header, [class*="header"], [class*="headTop"], [class*="headRow"], [class*="pageHeader"], [class*="titleRow"], [class*="headerTop"])
+  :is([class*="createBtn"], [class*="CreateBtn"], [class*="reviewPrimaryBtn"], [class*="primaryBtn"]):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]):hover:not(:disabled) {
+  background: #3f3f46 !important;
+}
