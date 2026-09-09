@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react';
-import styles from '../ops/opsDrawerShared.module.css';
-import { useOutsideClose } from '../../lib/useOutsideClose';
+import { useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { DEDUCT_REASONS, GRANT_REASONS, TODAY, fmtPoint, type DeductReason, type GrantReason, type MemberPointBalance } from './pointsData';
+import modalStyles from './PointGrantModal.module.css';
 
 export type GrantMode = 'grant' | 'deduct';
 
@@ -35,6 +35,16 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
   const [timing, setTiming] = useState<'즉시' | '지정'>('즉시');
   const [confirmAt, setConfirmAt] = useState(TODAY);
   const [error, setError] = useState('');
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  // ESC 키로 닫기
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCancel();
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [onCancel]);
 
   function submit() {
     const amt = Math.max(0, Number(amount) || 0);
@@ -53,76 +63,113 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
     }
   }
 
-  const asideRef = useRef<HTMLElement>(null);
-  useOutsideClose(asideRef, onCancel);
-
-  return (
-    <aside ref={asideRef} className={styles.aside}>
-      <div className={styles.head}>
-        <div className={styles.headRow}>
-          <div className={styles.headBody}>
-            <div className={styles.eyebrow}>포인트 / 적립금 관리 · 보유 현황</div>
-            <div className={styles.titleRow}><span className={styles.title}>{mode === 'grant' ? '포인트 지급' : '포인트 차감'}</span></div>
+  const modal = (
+    <div className={modalStyles.overlay} onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}>
+      <div className={modalStyles.modal} role="dialog" aria-modal="true" aria-label={mode === 'grant' ? '포인트 지급' : '포인트 차감'} ref={dialogRef}>
+        {/* 헤더 */}
+        <div className={modalStyles.header}>
+          <div>
+            <div className={modalStyles.eyebrow}>포인트 / 적립금 관리 · 보유 현황</div>
+            <div className={modalStyles.title}>{mode === 'grant' ? '포인트 지급' : '포인트 차감'}</div>
           </div>
-          <button type="button" className={styles.closeBtn} onClick={onCancel}>×</button>
-        </div>
-      </div>
-
-      <div className={styles.scroll}>
-        <div className={styles.fieldBox}>
-          <div className={styles.fieldRow}><span className={styles.fieldLabel}>회원</span><span className={styles.fieldValue}>{b.member}</span></div>
-          <div className={styles.fieldRow}><span className={styles.fieldLabel}>현재 사용 가능</span><span className={styles.fieldValue} style={{ fontWeight: 700 }}>{fmtPoint(b.available)}</span></div>
+          <button type="button" className={modalStyles.closeBtn} onClick={onCancel} aria-label="닫기">×</button>
         </div>
 
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>{mode === 'grant' ? '지급' : '차감'} 포인트 *</label>
-          <input className={styles.formInput} type="number" min={1} value={amount} onChange={(e) => setAmount(e.target.value)} />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>{mode === 'grant' ? '지급' : '차감'} 사유 *</label>
-          {mode === 'grant' ? (
-            <select className={styles.formSelect} value={grantReason} onChange={(e) => setGrantReason(e.target.value as GrantReason)}>
-              {GRANT_REASONS.map((r) => <option key={r}>{r}</option>)}
-            </select>
-          ) : (
-            <select className={styles.formSelect} value={deductReason} onChange={(e) => setDeductReason(e.target.value as DeductReason)}>
-              {DEDUCT_REASONS.map((r) => <option key={r}>{r}</option>)}
-            </select>
-          )}
-        </div>
-
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>상세 사유 *</label>
-          <input className={styles.formInput} value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="상세 사유를 입력하세요" />
-        </div>
-
-        {mode === 'grant' && (
-          <>
-            <div className={styles.sectionTitleLoose}>사용 가능 시점</div>
-            <div className={styles.radioRow}>
-              <label className={styles.radioOption}><input type="radio" checked={timing === '즉시'} onChange={() => setTiming('즉시')} />즉시</label>
-              <label className={styles.radioOption}><input type="radio" checked={timing === '지정'} onChange={() => setTiming('지정')} />날짜 지정</label>
+        {/* 본문 */}
+        <div className={modalStyles.body}>
+          {/* 회원 정보 */}
+          <div className={modalStyles.infoBox}>
+            <div className={modalStyles.infoRow}>
+              <span className={modalStyles.infoLabel}>회원</span>
+              <span className={modalStyles.infoValue}>{b.member}</span>
             </div>
-            {timing === '지정' && (
-              <div className={styles.formGroup}>
-                <input type="date" className={styles.dateInput} style={{ width: '100%' }} value={confirmAt} onChange={(e) => setConfirmAt(e.target.value)} />
-              </div>
+            <div className={modalStyles.infoRow}>
+              <span className={modalStyles.infoLabel}>현재 사용 가능</span>
+              <span className={modalStyles.infoValue} style={{ fontWeight: 700, color: b.available < 0 ? '#dc2626' : undefined }}>
+                {fmtPoint(b.available)}
+              </span>
+            </div>
+          </div>
+
+          {/* 포인트 입력 */}
+          <div className={modalStyles.formGroup}>
+            <label className={modalStyles.formLabel}>{mode === 'grant' ? '지급' : '차감'} 포인트 *</label>
+            <input
+              className={modalStyles.formInput}
+              type="number"
+              min={1}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0"
+            />
+          </div>
+
+          {/* 사유 선택 */}
+          <div className={modalStyles.formGroup}>
+            <label className={modalStyles.formLabel}>{mode === 'grant' ? '지급' : '차감'} 사유 *</label>
+            {mode === 'grant' ? (
+              <select className={modalStyles.formSelect} value={grantReason} onChange={(e) => setGrantReason(e.target.value as GrantReason)}>
+                {GRANT_REASONS.map((r) => <option key={r}>{r}</option>)}
+              </select>
+            ) : (
+              <select className={modalStyles.formSelect} value={deductReason} onChange={(e) => setDeductReason(e.target.value as DeductReason)}>
+                {DEDUCT_REASONS.map((r) => <option key={r}>{r}</option>)}
+              </select>
             )}
-          </>
-        )}
+          </div>
 
-        {mode === 'deduct' && (
-          <div className={styles.emptyInline}>사용 가능한 포인트보다 많이 차감할 수 없습니다. 마이너스 잔액은 허용되지 않습니다.</div>
-        )}
+          {/* 상세 사유 */}
+          <div className={modalStyles.formGroup}>
+            <label className={modalStyles.formLabel}>상세 사유 *</label>
+            <input
+              className={modalStyles.formInput}
+              value={detail}
+              onChange={(e) => setDetail(e.target.value)}
+              placeholder="상세 사유를 입력하세요"
+            />
+          </div>
 
-        {error && <div style={{ fontSize: 12, color: '#dc2626', marginTop: 12 }}>{error}</div>}
+          {/* 지급 시점 (지급 모드만) */}
+          {mode === 'grant' && (
+            <>
+              <div className={modalStyles.sectionTitle}>사용 가능 시점</div>
+              <div className={modalStyles.radioRow}>
+                <label className={modalStyles.radioOption}>
+                  <input type="radio" checked={timing === '즉시'} onChange={() => setTiming('즉시')} /> 즉시
+                </label>
+                <label className={modalStyles.radioOption}>
+                  <input type="radio" checked={timing === '지정'} onChange={() => setTiming('지정')} /> 날짜 지정
+                </label>
+              </div>
+              {timing === '지정' && (
+                <div className={modalStyles.formGroup}>
+                  <input type="date" className={modalStyles.formInput} value={confirmAt} onChange={(e) => setConfirmAt(e.target.value)} />
+                </div>
+              )}
+            </>
+          )}
+
+          {/* 차감 시 안내 */}
+          {mode === 'deduct' && (
+            <div className={modalStyles.notice}>
+              사용 가능한 포인트보다 많이 차감할 수 없습니다. 마이너스 잔액은 허용되지 않습니다.
+            </div>
+          )}
+
+          {/* 에러 */}
+          {error && <div className={modalStyles.error}>{error}</div>}
+        </div>
+
+        {/* 푸터 */}
+        <div className={modalStyles.footer}>
+          <button type="button" className={modalStyles.cancelBtn} onClick={onCancel}>취소</button>
+          <button type="button" className={modalStyles.confirmBtn} onClick={submit}>
+            {mode === 'grant' ? '지급' : '차감'}
+          </button>
+        </div>
       </div>
-
-      <div className={styles.footer}>
-        <button type="button" className={styles.editCancel} onClick={onCancel}>취소</button>
-        <button type="button" className={styles.editConfirm} onClick={submit}>{mode === 'grant' ? '지급' : '차감'}</button>
-      </div>
-    </aside>
+    </div>
   );
+
+  return ReactDOM.createPortal(modal, document.body);
 }
