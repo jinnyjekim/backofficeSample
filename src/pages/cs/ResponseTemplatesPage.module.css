@@ -1,7 +1,5 @@
 .quickActive { border-color: rgba(79, 70, 229, 0.25) !important; background: #eef2ff !important; color: #4338ca !important; }
 .quickActive span { color: #4338ca !important; }
-.advancedFilters { display:flex; align-items:center; gap:14px; padding-top:12px; margin-top:12px; border-top:1px solid rgba(0,0,0,.06); color:#8b8b93; font-size:11px; }
-.advancedFilters label { display:flex; align-items:center; gap:7px; }.advancedFilters input { height:31px; padding:0 8px; border:1px solid rgba(0,0,0,.1); border-radius:7px; font-size:11.5px; }
 .bulkGuard { margin-left:auto; color:#a16207; font-size:11.5px; }.templateDrawer { width:min(800px,96%)!important; }.recommendBadge { padding:3px 7px; border-radius:999px; background:#fffbeb; color:#a16207; font-size:10.5px; font-weight:700; }
 .issueBanner { display:flex; flex-direction:column; gap:3px; padding:10px 12px; margin-bottom:15px; border:1px solid #fed7aa; border-radius:9px; background:#fff7ed; color:#9a3412; font-size:11px; }.issueBanner strong { margin-bottom:2px; font-size:11.5px; }
 .formSection { padding-bottom:18px; margin-bottom:18px; border-bottom:1px solid rgba(0,0,0,.07); }.formSection:last-child { border-bottom:0; }.formSection>h3 { margin:0 0 12px; color:#52525b; font-size:11.5px; }

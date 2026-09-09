@@ -1,6 +1,5 @@
 import {
   CommonButton,
-  CommonSelect,
   ExcelDownloadButton,
   showToast,
 } from "../../../components/common";
@@ -384,33 +383,42 @@ export function VerificationReviewPage() {
           <div className={shared.filterRow2}>
             <label className="globalFilterField">
               <span>인증 목적</span>
-              <CommonSelect
+              <select
                 aria-label="인증 목적"
-                size="md"
+                className={shared.selectSm}
                 value={purpose}
-                placeholder="전체 인증 목적"
-                options={[
-                  { label: "전체 인증 목적", value: "" },
-                  ...PURPOSES.map((value) => ({ label: value, value })),
-                ]}
-                onChange={(value) =>
-                  updateParams(value as VerificationPurpose | "", quick)
+                onChange={(event) =>
+                  updateParams(
+                    event.target.value as VerificationPurpose | "",
+                    quick,
+                  )
                 }
-              />
+              >
+                <option value="">전체 인증 목적</option>
+                {PURPOSES.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className="globalFilterField">
               <span>위험도</span>
-              <CommonSelect
+              <select
                 aria-label="위험도"
-                size="md"
+                className={shared.selectSm}
                 value={risk}
-                placeholder="전체 위험도"
-                options={["", "긴급", "높음", "주의", "정상"].map((value) => ({
-                  label: value || "전체 위험도",
-                  value,
-                }))}
-                onChange={(value) => setRisk(value as VerificationRisk | "")}
-              />
+                onChange={(event) =>
+                  setRisk(event.target.value as VerificationRisk | "")
+                }
+              >
+                <option value="">전체 위험도</option>
+                {["긴급", "높음", "주의", "정상"].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className={shared.dateFilterField}>
               <span>접수일</span>
@@ -851,19 +859,21 @@ export function VerificationPolicyPage() {
           <div className={shared.filterRow2}>
             <label className="globalFilterField">
               <span>인증 목적</span>
-              <CommonSelect
+              <select
                 aria-label="인증 목적"
-                size="md"
+                className={shared.selectSm}
                 value={purpose}
-                placeholder="전체 인증 목적"
-                options={[
-                  { label: "전체 인증 목적", value: "" },
-                  ...PURPOSES.map((value) => ({ label: value, value })),
-                ]}
-                onChange={(value) =>
-                  setPurpose(value as VerificationPurpose | "")
+                onChange={(event) =>
+                  setPurpose(event.target.value as VerificationPurpose | "")
                 }
-              />
+              >
+                <option value="">전체 인증 목적</option>
+                {PURPOSES.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className={shared.dateFilterField}>
               <span>수정일</span>
@@ -1173,34 +1183,34 @@ export function VerificationHistoryPage() {
           <div className={shared.filterRow2}>
             <label className="globalFilterField">
               <span>인증 목적</span>
-              <CommonSelect
+              <select
                 aria-label="인증 목적"
-                size="md"
+                className={shared.selectSm}
                 value={purpose}
-                placeholder="전체 인증 목적"
-                options={[
-                  { label: "전체 인증 목적", value: "" },
-                  ...PURPOSES.map((value) => ({ label: value, value })),
-                ]}
-                onChange={(value) =>
-                  setPurpose(value as VerificationPurpose | "")
+                onChange={(event) =>
+                  setPurpose(event.target.value as VerificationPurpose | "")
                 }
-              />
+              >
+                <option value="">전체 인증 목적</option>
+                {PURPOSES.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className="globalFilterField">
               <span>처리 주체</span>
-              <CommonSelect
+              <select
                 aria-label="처리 주체"
-                size="md"
+                className={shared.selectSm}
                 value={actor}
-                placeholder="전체 처리 주체"
-                options={[
-                  { label: "전체 처리 주체", value: "" },
-                  { label: "관리자", value: "관리자" },
-                  { label: "SYSTEM", value: "SYSTEM" },
-                ]}
-                onChange={(value) => setActor(String(value))}
-              />
+                onChange={(event) => setActor(event.target.value)}
+              >
+                <option value="">전체 처리 주체</option>
+                <option value="관리자">관리자</option>
+                <option value="SYSTEM">SYSTEM</option>
+              </select>
             </label>
             <label className={shared.dateFilterField}>
               <span>처리일</span>

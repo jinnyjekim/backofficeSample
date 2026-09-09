@@ -131,21 +131,59 @@
   color: #4338ca;
 }
 
-.filterCard {
+.viewToggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.viewToggle {
+  display: flex;
+  background: #f0f0f2;
+  border-radius: 9px;
+  padding: 3px;
+  gap: 2px;
+}
+.viewToggleBtn {
+  height: 28px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: #71717a;
+}
+.viewToggleBtn.active {
+  background: #fff;
+  color: #18181b;
+}
+
+.filterCard,
+.filterBox {
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   padding: 14px 16px;
   margin-bottom: 16px;
 }
-.filterRow1 {
+.filterRow1,
+.searchRow {
   display: flex;
   align-items: flex-end;
   gap: 8px;
   margin-bottom: 12px;
   flex-wrap: wrap;
 }
-.filterRow2 {
+.searchRow > .quickFilters,
+.filterRow1 > .quickFilters {
+  margin-bottom: 0;
+}
+.filterRow2,
+.filterRow {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -212,7 +250,8 @@
 .spacer {
   flex: 1;
 }
-.clearBtn {
+.clearBtn,
+.resetBtn {
   height: 32px;
   padding: 0 10px;
   border: 0;
@@ -221,17 +260,18 @@
   font-size: 12px;
   cursor: pointer;
 }
-.clearBtn:hover {
+.clearBtn:hover,
+.resetBtn:hover {
   color: #52525b;
 }
 
-.resultBar {
+.resultBar,
+.resultRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 9px;
   gap: 8px;
-  flex-wrap: wrap;
 }
 .resultLabel {
   font-size: 12.5px;
@@ -261,25 +301,3 @@
   margin: 0 24px 20px;
   flex: none;
 }
-
-.viewToggle {
-  display: flex;
-  gap: 6px;
-}
-.viewToggleBtn {
-  height: 30px;
-  padding: 0 12px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  background: #fff;
-  color: #3f3f46;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.viewToggleBtn.active {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: #fff;
-}
-

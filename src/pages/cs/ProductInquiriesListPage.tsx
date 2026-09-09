@@ -21,6 +21,7 @@ import {
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import { CommonButton, showToast } from "../../components/common";
 import { ProductInquiryDetailDrawer } from "./ProductInquiryDetailDrawer";
+import { DatePicker } from "../../components/forms";
 
 const GRID_TEMPLATE = "64px 72px minmax(220px,2fr) 60px 76px 54px";
 const GRID_COLUMNS: GridColumn[] = [
@@ -272,19 +273,22 @@ export function ProductInquiriesListPage() {
                 <option value="비공개">비공개</option>
               </select>
             </label>
-            <input
-              type="date"
-              className={styles.selectSm}
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <span style={{ color: "#a1a1aa", fontSize: 12 }}>~</span>
-            <input
-              type="date"
-              className={styles.selectSm}
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
+
+            <label className={styles.dateFilterField}>
+              <span>등록일</span>
+              <div className={styles.dateRange}>
+                <DatePicker
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+                <span className={styles.dateSeparator}>~</span>
+                <DatePicker
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </div>
+            </label>
+
             <span className={styles.rowSpacer} />
             <button type="button" className="detailFilterBtn">
               상세 필터
@@ -307,7 +311,10 @@ export function ProductInquiriesListPage() {
               data-grid-download
               onClick={() => toastBriefly("상품 문의 목록을 다운로드했습니다.")}
             />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <select
+              className={styles.pageSizeSelect}
+              defaultValue="20개씩 보기"
+            >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
             </select>

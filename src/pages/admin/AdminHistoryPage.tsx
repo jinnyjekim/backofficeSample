@@ -22,7 +22,7 @@ import { DatePicker } from "../../components/forms/DatePicker";
 type Tab = "로그인 이력" | "작업 이력";
 const TABS: Tab[] = ["로그인 이력", "작업 이력"];
 
-const LOGIN_TEMPLATE = "130px 110px 56px minmax(110px,1fr) 138px 130px 58px";
+const LOGIN_TEMPLATE = "130px 110px 56px minmax(110px,1fr) 138px 130px";
 const LOGIN_COLUMNS: GridColumn[] = [
   { label: "로그인 일시" },
   { label: "관리자" },
@@ -30,10 +30,9 @@ const LOGIN_COLUMNS: GridColumn[] = [
   { label: "IP" },
   { label: "접속 환경" },
   { label: "로그아웃 일시" },
-  { label: "상세" },
 ];
 
-const ACTION_TEMPLATE = "130px 122px 84px 66px minmax(140px,1fr) 56px 58px";
+const ACTION_TEMPLATE = "130px 122px 84px 66px minmax(140px,1fr) 56px";
 const ACTION_COLUMNS: GridColumn[] = [
   { label: "작업 일시" },
   { label: "관리자" },
@@ -41,7 +40,6 @@ const ACTION_COLUMNS: GridColumn[] = [
   { label: "작업" },
   { label: "대상" },
   { label: "결과" },
-  { label: "상세" },
 ];
 
 function adminName(id: string) {
@@ -182,7 +180,6 @@ export function AdminHistoryPage() {
         weight: 500,
         numeric: true,
       },
-      { kind: "link", text: "보기", size: "12px" },
     ];
     return { id: l.id, cells, onClick: () => setLoginDrawer(l) };
   });
@@ -231,7 +228,6 @@ export function AdminHistoryPage() {
         bg: a.result === "성공" ? "#ecfdf5" : "#fef2f2",
         fg: a.result === "성공" ? "#059669" : "#b91c1c",
       },
-      { kind: "link", text: "보기", size: "12px" },
     ];
     return { id: a.id, cells, onClick: () => setActionDrawer(a) };
   });
@@ -420,7 +416,7 @@ export function AdminHistoryPage() {
             columns={LOGIN_COLUMNS}
             rows={loginRows}
             gridTemplate={LOGIN_TEMPLATE}
-            minWidth="900px"
+            minWidth="840px"
             empty={loginRows.length === 0}
             emptyText="조회된 이력이 없습니다."
             emptySubtext="검색 조건이나 조회 기간을 변경해 주세요."
@@ -432,7 +428,7 @@ export function AdminHistoryPage() {
             columns={ACTION_COLUMNS}
             rows={actionRows}
             gridTemplate={ACTION_TEMPLATE}
-            minWidth="940px"
+            minWidth="880px"
             empty={actionRows.length === 0}
             emptyText="조회된 이력이 없습니다."
             emptySubtext="검색 조건이나 조회 기간을 변경해 주세요."

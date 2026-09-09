@@ -8,6 +8,7 @@ import drawer from "../../ops/opsDrawerShared.module.css";
 import base from "../sales/SalesActivity.module.css";
 import styles from "./ReportManagement.module.css";
 import { CommonButton, showToast } from "../../../components/common";
+import { ExcelDownloadButton } from "../../../components/common/ExcelDownloadButton";
 import {
   ControlArea,
   DetailDrawer,
@@ -696,39 +697,7 @@ export function ReportHistoryPage() {
       </ControlArea>
       <GridArea>
         <ResultBar count={filtered.length} unit="건">
-          <button
-            type="button"
-            className={shared.downloadBtn}
-            onClick={() =>
-              downloadCsv(
-                "c2c-report-history.csv",
-                [
-                  "처리일",
-                  "로그 ID",
-                  "신고번호",
-                  "대상",
-                  "처리",
-                  "변경 전",
-                  "변경 후",
-                  "처리자",
-                  "사유",
-                ],
-                filtered.map((item) => [
-                  item.occurredAt,
-                  item.id,
-                  item.reportId,
-                  `${item.targetType}:${item.targetId}`,
-                  item.action,
-                  item.before,
-                  item.after,
-                  item.actor,
-                  item.reason,
-                ]),
-              )
-            }
-          >
-            다운로드
-          </button>
+          <ExcelDownloadButton type="button" data-grid-download />
         </ResultBar>
         <DataGrid
           columns={[

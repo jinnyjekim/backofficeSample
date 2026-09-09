@@ -1,8 +1,5 @@
 .quickActive { border-color: rgba(79, 70, 229, 0.25) !important; background: #eef2ff !important; color: #4338ca !important; box-shadow: 0 4px 10px rgba(0,0,0,.08); }
 .quickActive span { color: #4338ca !important; }
-.advancedFilters { display: flex; gap: 10px; padding-top: 12px; margin-top: 12px; border-top: 1px solid rgba(0,0,0,.06); }
-.advancedFilters label { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: #71717a; }
-.advancedFilters input { height: 31px; padding: 0 8px; border: 1px solid rgba(0,0,0,.1); border-radius: 7px; font-size: 12px; color: #3f3f46; }
 .bulkGuard { margin-left: auto; font-size: 11.5px; color: #a16207; }
 
 .detailDrawer { width: min(760px, 96%) !important; }
@@ -105,7 +102,6 @@
 
 @media (max-width: 900px) {
   .headerStats { display: none; }
-  .advancedFilters { flex-wrap: wrap; }
   .bulkGuard { display: none; }
   .customerFacts { grid-template-columns: 1fr; }
   .channelRow { flex-wrap: wrap; }

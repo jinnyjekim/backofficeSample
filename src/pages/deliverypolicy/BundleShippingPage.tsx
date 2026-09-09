@@ -497,38 +497,14 @@ export function BundleShippingPage() {
         )}
       </div>
 
-      <div className={styles.filterHeadRow}>
+      <div className={`${shared.filterBox} ${styles.filterBox}`}>
         <form
-          className={styles.filterInline}
+          className={shared.filterRow1}
           onSubmit={(event) => {
             event.preventDefault();
             setSearch(keyword.trim());
           }}
         >
-          <select
-            aria-label="출고지"
-            className={shared.selectSm}
-            value={warehouseFilter}
-            onChange={(e) => setWarehouseFilter(e.target.value)}
-          >
-            <option value="">전체 출고지</option>
-            {WAREHOUSES.map((w) => (
-              <option key={w}>{w}</option>
-            ))}
-          </select>
-          <select
-            aria-label="배송방식"
-            className={shared.selectSm}
-            value={methodFilter}
-            onChange={(e) =>
-              setMethodFilter(e.target.value as BundleDeliveryMethod | "")
-            }
-          >
-            <option value="">전체 배송방식</option>
-            {DELIVERY_METHODS.map((m) => (
-              <option key={m}>{m}</option>
-            ))}
-          </select>
           <input
             className={shared.searchInput}
             value={keyword}
@@ -538,32 +514,68 @@ export function BundleShippingPage() {
           <button type="submit" className={shared.searchBtn}>
             검색
           </button>
+          <div className={shared.quickFilters}>
+            {QUICK_FILTERS.map((filter) => {
+              const active = quickFilter === filter;
+              return (
+                <CommonButton
+                  key={filter}
+                  variant={active ? "primary-light" : "secondary"}
+                  size="md"
+                  className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
+                  onClick={() => setQuickFilter(filter)}
+                >
+                  <span className={shared.qfLabel}>{filter}</span>
+                  <span className={shared.qfCount}>
+                    {
+                      groups.filter((g) =>
+                        matchesQuickFilter(g, filter, warnings),
+                      ).length
+                    }
+                  </span>
+                </CommonButton>
+              );
+            })}
+          </div>
+        </form>
+        <div className={shared.filterRow2}>
+          <label className="globalFilterField">
+            <span>출고지</span>
+            <select
+              aria-label="출고지"
+              className={shared.selectSm}
+              value={warehouseFilter}
+              onChange={(e) => setWarehouseFilter(e.target.value)}
+            >
+              <option value="">전체 출고지</option>
+              {WAREHOUSES.map((w) => (
+                <option key={w}>{w}</option>
+              ))}
+            </select>
+          </label>
+          <label className="globalFilterField">
+            <span>배송방식</span>
+            <select
+              aria-label="배송방식"
+              className={shared.selectSm}
+              value={methodFilter}
+              onChange={(e) =>
+                setMethodFilter(e.target.value as BundleDeliveryMethod | "")
+              }
+            >
+              <option value="">전체 배송방식</option>
+              {DELIVERY_METHODS.map((m) => (
+                <option key={m}>{m}</option>
+              ))}
+            </select>
+          </label>
+          <span className={shared.rowSpacer} />
+          <button type="button" className="detailFilterBtn">
+            상세 필터
+          </button>
           <button type="button" className={shared.resetBtn} onClick={reset}>
             초기화
           </button>
-        </form>
-        <div className={shared.quickFilters} style={{ marginBottom: 0 }}>
-          {QUICK_FILTERS.map((filter) => {
-            const active = quickFilter === filter;
-            return (
-              <CommonButton
-                key={filter}
-                variant={active ? "primary-light" : "secondary"}
-                size="md"
-                className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
-                onClick={() => setQuickFilter(filter)}
-              >
-                <span className={shared.qfLabel}>{filter}</span>
-                <span className={shared.qfCount}>
-                  {
-                    groups.filter((g) =>
-                      matchesQuickFilter(g, filter, warnings),
-                    ).length
-                  }
-                </span>
-              </CommonButton>
-            );
-          })}
         </div>
       </div>
 

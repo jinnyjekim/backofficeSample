@@ -6,6 +6,7 @@ import { DetailDrawer } from "../c2c/sales/SalesActivityShared";
 import drawer from "../ops/opsDrawerShared.module.css";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import { showToast } from "../../components/common";
+import { DatePicker } from "../../components/forms/DatePicker";
 import { INITIAL_RETURNS, STAGE_META, type ReturnItem } from "./returnsData";
 
 const GRID_TEMPLATE = "140px 140px 90px 100px minmax(200px, 1fr) 120px 100px";
@@ -22,6 +23,7 @@ const GRID_COLUMNS: GridColumn[] = [
 export function ReturnCollectedPage() {
   const [items, setItems] = useState<ReturnItem[]>(INITIAL_RETURNS);
   const [keyword, setKeyword] = useState("");
+  const [carrier, setCarrier] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const collectedItems = useMemo(
@@ -31,14 +33,15 @@ export function ReturnCollectedPage() {
 
   const filtered = useMemo(() => {
     return collectedItems.filter((item) => {
+      const matchCarrier = !carrier || item.carrier === carrier;
       const matchKey =
         !keyword ||
         `${item.id} ${item.orderId} ${item.member} ${item.product}`
           .toLowerCase()
           .includes(keyword.toLowerCase());
-      return matchKey;
+      return matchCarrier && matchKey;
     });
-  }, [collectedItems, keyword]);
+  }, [collectedItems, keyword, carrier]);
 
   const selected = selectedId
     ? (items.find((item) => item.id === selectedId) ?? null)
@@ -134,11 +137,42 @@ export function ReturnCollectedPage() {
             <button type="button" className={styles.searchBtn}>
               검색
             </button>
+          </div>
+          <div className={styles.filterRow2}>
+            <label className="globalFilterField">
+              <span>회수 택배사</span>
+              <select
+                aria-label="회수 택배사"
+                className={styles.selectXs}
+                value={carrier}
+                onChange={(e) => setCarrier(e.target.value)}
+              >
+                <option value="">전체 택배사</option>
+                <option>CJ대한통운</option>
+                <option>한진택배</option>
+                <option>롯데택배</option>
+                <option>우체국택배</option>
+              </select>
+            </label>
+            <label className={styles.dateFilterField}>
+              <span>입고완료일</span>
+              <div className={styles.dateRange}>
+                <DatePicker defaultValue="2026-08-20" />
+                <span className={styles.dateSeparator}>~</span>
+                <DatePicker defaultValue="2026-08-27" />
+              </div>
+            </label>
             <div className={styles.rowSpacer} />
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
             <button
               type="button"
               className={styles.resetBtn}
-              onClick={() => setKeyword("")}
+              onClick={() => {
+                setKeyword("");
+                setCarrier("");
+              }}
             >
               초기화
             </button>

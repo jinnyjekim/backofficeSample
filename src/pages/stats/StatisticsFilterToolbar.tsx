@@ -33,6 +33,7 @@ interface StatisticsFilterToolbarProps {
   onReset: () => void;
   onApply?: () => void;
   summary?: ReactNode;
+  className?: string;
 }
 
 export function StatisticsFilterToolbar({
@@ -53,6 +54,7 @@ export function StatisticsFilterToolbar({
   onReset,
   onApply,
   summary,
+  className,
 }: StatisticsFilterToolbarProps) {
   const [expanded, setExpanded] = useState(false);
   const compactCompare =
@@ -63,7 +65,7 @@ export function StatisticsFilterToolbar({
 
   return (
     <div
-      className={styles.filterPanel}
+      className={`${styles.filterPanel} ${className ?? ""}`.trim()}
       data-filter-expanded={expanded || undefined}
     >
       <div className={styles.filterMainRow}>
@@ -93,6 +95,15 @@ export function StatisticsFilterToolbar({
               </>
             )}
           </div>
+        )}
+        {range !== undefined && ranges?.length && onRangeChange && (
+          <BusinessScopeSwitch
+            value={range}
+            options={[...ranges]}
+            onChange={onRangeChange}
+            label=""
+            size="md"
+          />
         )}
         {onApply && (
           <CommonButton variant="emphasis" size="md" onClick={onApply}>
@@ -158,17 +169,6 @@ export function StatisticsFilterToolbar({
           초기화
         </CommonButton>
       </div>
-      {range !== undefined && ranges?.length && onRangeChange && (
-        <div className={styles.quickRangeRow}>
-          <BusinessScopeSwitch
-            value={range}
-            options={[...ranges]}
-            onChange={onRangeChange}
-            label=""
-            size="sm"
-          />
-        </div>
-      )}
       {expanded && details && (
         <div className={styles.detailFilters}>{details}</div>
       )}

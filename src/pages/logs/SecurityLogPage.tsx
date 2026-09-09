@@ -322,12 +322,15 @@ export function SecurityLogPage() {
                 ))}
               </select>
             </label>
-            <input
-              className={shared.selectSm}
-              value={ipFilter}
-              onChange={(event) => setIpFilter(event.target.value)}
-              placeholder="IP 필터"
-            />
+            <label className="globalFilterField">
+              <span>IP</span>
+              <input
+                className={shared.selectSm}
+                value={ipFilter}
+                onChange={(event) => setIpFilter(event.target.value)}
+                placeholder="IP 입력"
+              />
+            </label>
             <span className={shared.rowSpacer} />
             <button type="button" className="detailFilterBtn">
               상세 필터

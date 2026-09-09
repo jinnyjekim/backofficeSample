@@ -6,6 +6,7 @@ import { DetailDrawer } from "../c2c/sales/SalesActivityShared";
 import drawer from "../ops/opsDrawerShared.module.css";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import { CommonButton, showToast } from "../../components/common";
+import { DatePicker } from "../../components/forms/DatePicker";
 import { INITIAL_RETURNS, type ReturnItem } from "./returnsData";
 
 const GRID_TEMPLATE = "140px 140px 90px minmax(200px, 1fr) 110px 110px 120px";
@@ -38,6 +39,7 @@ export function ReturnInspectionPage() {
   const [items, setItems] = useState<ReturnItem[]>(INITIAL_RETURNS);
   const [filter, setFilter] = useState<string>("전체");
   const [keyword, setKeyword] = useState("");
+  const [assignee, setAssignee] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const inspectionItems = useMemo(
@@ -48,14 +50,15 @@ export function ReturnInspectionPage() {
   const filtered = useMemo(() => {
     return inspectionItems.filter((item) => {
       const matchQuick = filter === "전체" || item.inspectionResult === filter;
+      const matchAssignee = !assignee || item.assignee === assignee;
       const matchKey =
         !keyword ||
         `${item.id} ${item.orderId} ${item.member} ${item.product}`
           .toLowerCase()
           .includes(keyword.toLowerCase());
-      return matchQuick && matchKey;
+      return matchQuick && matchAssignee && matchKey;
     });
-  }, [inspectionItems, filter, keyword]);
+  }, [inspectionItems, filter, assignee, keyword]);
 
   const selected = selectedId
     ? (items.find((item) => item.id === selectedId) ?? null)
@@ -191,17 +194,6 @@ export function ReturnInspectionPage() {
             <button type="button" className={styles.searchBtn}>
               검색
             </button>
-            <div className={styles.rowSpacer} />
-            <button
-              type="button"
-              className={styles.resetBtn}
-              onClick={() => {
-                setFilter("전체");
-                setKeyword("");
-              }}
-            >
-              초기화
-            </button>
             <div className={styles.quickFilters}>
               {QUICK_FILTERS.map((k) => {
                 const active = filter === k;
@@ -222,6 +214,44 @@ export function ReturnInspectionPage() {
                 );
               })}
             </div>
+          </div>
+          <div className={styles.filterRow2}>
+            <label className="globalFilterField">
+              <span>검수담당</span>
+              <select
+                aria-label="검수담당"
+                className={styles.selectXs}
+                value={assignee}
+                onChange={(e) => setAssignee(e.target.value)}
+              >
+                <option value="">전체 담당자</option>
+                <option>admin01</option>
+                <option>admin02</option>
+              </select>
+            </label>
+            <label className={styles.dateFilterField}>
+              <span>검수일</span>
+              <div className={styles.dateRange}>
+                <DatePicker defaultValue="2026-08-20" />
+                <span className={styles.dateSeparator}>~</span>
+                <DatePicker defaultValue="2026-08-27" />
+              </div>
+            </label>
+            <div className={styles.rowSpacer} />
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
+            <button
+              type="button"
+              className={styles.resetBtn}
+              onClick={() => {
+                setFilter("전체");
+                setAssignee("");
+                setKeyword("");
+              }}
+            >
+              초기화
+            </button>
           </div>
         </div>
 

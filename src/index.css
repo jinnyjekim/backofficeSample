@@ -202,7 +202,7 @@
     [class*="filterCard"],
     [class*="FilterBox"],
     [class*="filterContainer"]
-  ) :is([class*="SearchField_field"], [class*="searchField"], [class*="field"]) {
+  ) :is([class*="SearchField_field"], [class*="searchField"], [class*="SearchField"] [class*="field"]):not([class*="globalFilterField"]):not([class*="globalFilterField"] *) {
     flex: 0 1 320px !important;
     min-width: 220px !important;
     max-width: 360px !important;
