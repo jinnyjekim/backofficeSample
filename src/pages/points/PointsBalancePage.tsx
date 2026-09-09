@@ -13,6 +13,7 @@ import {
   type GrantFormData,
   type GrantMode,
 } from "./PointGrantDrawer";
+import { PointBulkGrantModal, type BulkGrantFormData } from "./PointBulkGrantModal";
 import {
   MEMBER_BALANCES,
   QUICK_FILTERS,
@@ -54,6 +55,7 @@ export function PointsBalancePage() {
     mode: GrantMode;
   } | null>(null);
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [bulkGrantOpen, setBulkGrantOpen] = useState(false);
   const [toast, setToast] = useState("");
 
   const issuesMap = useMemo(() => {
@@ -105,9 +107,13 @@ export function PointsBalancePage() {
     setGrantTarget({ member: target, mode });
   }
 
-  // 헤더 버튼: 선택된 회원이 있으면 선택 지급, 없으면 전체 대상 첫 번째 지급
+  // 헤더 버튼: 2명 이상 선택 → 일괄 지급 모달, 1명 선택 또는 미선택 → 단일 지급 모달
   function openHeaderGrant() {
-    const target = selectedMembers.length > 0 ? selectedMembers[0] : (filtered[0]?.member ?? null);
+    if (selectedMembers.length >= 2) {
+      setBulkGrantOpen(true);
+      return;
+    }
+    const target = selectedMembers.length === 1 ? selectedMembers[0] : (filtered[0]?.member ?? null);
     if (!target) return;
     setGrantTarget({ member: target, mode: 'grant' });
   }
@@ -153,6 +159,23 @@ export function PointsBalancePage() {
           : b,
       ),
     );
+  }
+
+  function submitBulkGrant(form: BulkGrantFormData) {
+    const targets = selectedMembers.length > 0
+      ? balances.filter((b) => selectedMembers.includes(b.member))
+      : filtered;
+    setBalances((prev) =>
+      prev.map((b) =>
+        targets.some((t) => t.member === b.member)
+          ? grant(b, form.amount, form.reason, form.detail, form.immediate, form.confirmAt)
+          : b
+      )
+    );
+    const names = targets.map((t) => t.member).join(', ');
+    toastBriefly(`${targets.length}명(${names})에게 ${fmtPoint(form.amount)}를 지급했습니다.`);
+    setBulkGrantOpen(false);
+    setSelectedMembers([]);
   }
 
   function submitGrant(form: GrantFormData) {
@@ -428,6 +451,18 @@ export function PointsBalancePage() {
           onCancel={() => setGrantTarget(null)}
           onSubmitGrant={submitGrant}
           onSubmitDeduct={submitDeduct}
+        />
+      )}
+
+      {bulkGrantOpen && (
+        <PointBulkGrantModal
+          members={
+            selectedMembers.length > 0
+              ? balances.filter((b) => selectedMembers.includes(b.member))
+              : filtered
+          }
+          onCancel={() => setBulkGrantOpen(false)}
+          onSubmit={submitBulkGrant}
         />
       )}
 
