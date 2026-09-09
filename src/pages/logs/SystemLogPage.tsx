@@ -1,5 +1,10 @@
 import { useMemo, useState } from "react";
-import { ChevronDown, ChevronUp, RotateCcw, Search as SearchIcon, SlidersHorizontal } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  RotateCcw,
+  SlidersHorizontal,
+} from "lucide-react";
 import styles from "../ops/opsShared.module.css";
 import pageStyles from "./SystemLogPage.module.css";
 import { DataGrid } from "../../components/DataGrid";
@@ -32,6 +37,7 @@ import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton
 import {
   CommonButton,
   CommonDatePicker,
+  CommonInput,
   CommonSelect,
 } from "../../components/common";
 import { BusinessScopeSwitch } from "../../components/business/BusinessScopeSwitch";
@@ -115,14 +121,28 @@ export function SystemLogPage() {
         if (moduleFilter && e.module !== moduleFilter) return false;
         if (methodFilter && e.method !== methodFilter) return false;
         if (statusFilter) {
-          if (statusFilter === "2xx" && (e.statusCode < 200 || e.statusCode >= 300)) return false;
-          if (statusFilter === "4xx" && (e.statusCode < 400 || e.statusCode >= 500)) return false;
-          if (statusFilter === "5xx" && (e.statusCode < 500 || e.statusCode >= 600)) return false;
+          if (
+            statusFilter === "2xx" &&
+            (e.statusCode < 200 || e.statusCode >= 300)
+          )
+            return false;
+          if (
+            statusFilter === "4xx" &&
+            (e.statusCode < 400 || e.statusCode >= 500)
+          )
+            return false;
+          if (
+            statusFilter === "5xx" &&
+            (e.statusCode < 500 || e.statusCode >= 600)
+          )
+            return false;
         }
         if (durationFilter) {
           if (durationFilter === "slow" && e.durationMs < SLOW_MS) return false;
-          if (durationFilter === "verySlow" && e.durationMs < 2000) return false;
-          if (durationFilter === "normal" && e.durationMs >= SLOW_MS) return false;
+          if (durationFilter === "verySlow" && e.durationMs < 2000)
+            return false;
+          if (durationFilter === "normal" && e.durationMs >= SLOW_MS)
+            return false;
         }
         if (search) {
           const k = search.toLowerCase();
@@ -137,7 +157,16 @@ export function SystemLogPage() {
         }
         return true;
       }),
-    [start, end, resultFilter, moduleFilter, methodFilter, statusFilter, durationFilter, search],
+    [
+      start,
+      end,
+      resultFilter,
+      moduleFilter,
+      methodFilter,
+      statusFilter,
+      durationFilter,
+      search,
+    ],
   );
 
   const filteredErrors = useMemo(
@@ -148,7 +177,11 @@ export function SystemLogPage() {
         if (last < start || first > end) return false;
         if (levelFilter && g.level !== levelFilter) return false;
         if (moduleFilter && g.module !== moduleFilter) return false;
-        if (minOccurrencesFilter && g.occurrences.length < Number(minOccurrencesFilter)) return false;
+        if (
+          minOccurrencesFilter &&
+          g.occurrences.length < Number(minOccurrencesFilter)
+        )
+          return false;
         if (search) {
           const k = search.toLowerCase();
           if (
@@ -295,7 +328,10 @@ export function SystemLogPage() {
         ))}
       </div>
 
-      <div className={pageStyles.filterPanel} data-filter-expanded={showAdvanced || undefined}>
+      <div
+        className={pageStyles.filterPanel}
+        data-filter-expanded={showAdvanced || undefined}
+      >
         <form
           className={pageStyles.filterMainRow}
           onSubmit={(e) => {
@@ -313,7 +349,9 @@ export function SystemLogPage() {
                 if (!Array.isArray(value) && value) setStart(value);
               }}
             />
-            <span className={pageStyles.dateSeparator} aria-hidden="true">-</span>
+            <span className={pageStyles.dateSeparator} aria-hidden="true">
+              -
+            </span>
             <CommonDatePicker
               size="md"
               clearable={false}
@@ -331,25 +369,23 @@ export function SystemLogPage() {
             label=""
             size="md"
           />
-          <div className={pageStyles.searchField}>
-            <input
-              className={pageStyles.searchInput}
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder={
-                tab === "api"
-                  ? "Endpoint, 요청자 또는 Request ID 검색"
-                  : "오류 코드 또는 메시지 검색"
-              }
-            />
-            <button
-              type="submit"
-              className={pageStyles.searchIconBtn}
-              aria-label="검색"
-            >
-              <SearchIcon size={14} aria-hidden="true" />
-            </button>
-          </div>
+          <CommonInput.Search
+            className={pageStyles.searchInput}
+            size="md"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onSearch={(value) => setSearch(value.trim())}
+            onClear={() => {
+              setKeyword("");
+              setSearch("");
+            }}
+            placeholder={
+              tab === "api"
+                ? "Endpoint, 요청자 또는 Request ID 검색"
+                : "오류 코드 또는 메시지 검색"
+            }
+            aria-label={tab === "api" ? "API 로그 검색" : "오류 로그 검색"}
+          />
           <span className={pageStyles.filterSpacer} />
           <CommonButton
             type="button"
@@ -507,7 +543,10 @@ export function SystemLogPage() {
           </span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <select
+              className={styles.pageSizeSelect}
+              defaultValue="20개씩 보기"
+            >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
             </select>
