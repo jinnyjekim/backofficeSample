@@ -100,10 +100,31 @@ export function PointsBalancePage() {
   }
 
   function openBulkGrant(mode: GrantMode) {
-    // 선택된 회원 중 첫 번째 회원을 대상으로 지급/차감 드로어 열기
-    const target = selectedMembers.length > 0 ? selectedMembers[0] : null;
+    const target = selectedMembers.length > 0 ? selectedMembers[0] : (filtered[0]?.member ?? null);
     if (!target) return;
     setGrantTarget({ member: target, mode });
+  }
+
+  // 헤더 버튼: 선택된 회원이 있으면 선택 지급, 없으면 전체 대상 첫 번째 지급
+  function openHeaderGrant() {
+    const target = selectedMembers.length > 0 ? selectedMembers[0] : (filtered[0]?.member ?? null);
+    if (!target) return;
+    setGrantTarget({ member: target, mode: 'grant' });
+  }
+
+  function toggleMember(id: string) {
+    setSelectedMembers((prev) =>
+      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
+    );
+  }
+
+  const allSelected = filtered.length > 0 && filtered.every((b) => selectedMembers.includes(b.member));
+  function toggleAll() {
+    if (allSelected) {
+      setSelectedMembers([]);
+    } else {
+      setSelectedMembers(filtered.map((b) => b.member));
+    }
   }
 
   const selected = drawerMember
@@ -174,6 +195,7 @@ export function PointsBalancePage() {
   const rows: GridRow[] = filtered.map((b) => {
     const sm = STATUS_META[b.memberStatus];
     const issueList = issuesMap[b.member] ?? [];
+    const isSelected = selectedMembers.includes(b.member);
     const cells: Cell[] = [
       {
         kind: "titleWarn",
@@ -228,7 +250,13 @@ export function PointsBalancePage() {
       { kind: "badge", text: b.memberStatus, bg: sm.bg, fg: sm.fg },
       { kind: "link", text: "상세", size: "12px" },
     ];
-    return { id: b.member, cells, onClick: () => openDetail(b.member) };
+    return {
+      id: b.member,
+      cells,
+      selected: isSelected,
+      onToggleSelect: (e: React.MouseEvent) => { e.stopPropagation(); toggleMember(b.member); },
+      onClick: () => openDetail(b.member),
+    };
   });
 
   return (
@@ -241,6 +269,13 @@ export function PointsBalancePage() {
               회원별 포인트/적립금 보유 및 사용 가능 잔액을 조회합니다.
             </div>
           </div>
+          <button
+            type="button"
+            className={styles.createBtn}
+            onClick={openHeaderGrant}
+          >
+            + 포인트 지급
+          </button>
         </div>
 
         <div className={styles.filterBox}>
@@ -349,6 +384,9 @@ export function PointsBalancePage() {
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
           minWidth="760px"
+          selectable
+          allSelected={allSelected}
+          onToggleAll={toggleAll}
           empty={rows.length === 0}
           emptyText={
             balances.length === 0

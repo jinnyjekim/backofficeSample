@@ -213,9 +213,10 @@
 .sectionControls { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 15px; }
 
 .usageGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 8px; }
-.choiceCard { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; height: auto; min-height: 58px; text-align: left; padding: 10px 14px; }
-.choiceCardTitle { display: block; font-size: 12.5px; font-weight: 600; color: inherit; line-height: 1.35; }
-.choiceCardCaption { display: block; font-size: 11px; color: inherit; opacity: 0.65; margin-top: 3px; line-height: 1.4; }
+.choiceCard { display: flex; align-items: stretch; justify-content: flex-start; height: auto; min-height: 58px; text-align: left; padding: 10px 14px; }
+.choiceCard :global(.bsButtonLabel) { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; width: 100%; min-width: 0; }
+.choiceCardTitle { display: block; width: 100%; font-size: 12.5px; font-weight: 600; color: inherit; line-height: 1.35; }
+.choiceCardCaption { display: block; width: 100%; font-size: 11px; color: inherit; opacity: 0.65; margin-top: 3px; line-height: 1.4; white-space: normal; }
 
 .thresholdRow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; background: #fafafa; }
 .thresholdText { flex: 1 1 220px; min-width: 0; }
