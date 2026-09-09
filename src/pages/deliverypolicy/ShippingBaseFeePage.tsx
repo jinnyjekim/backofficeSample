@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './ShippingBaseFeePage.module.css';
 import { CommonBadge, CommonButton, CommonDatePicker, CommonInput, CommonSwitch } from '../../components/common';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   INITIAL_HISTORY,
   INITIAL_LAST_MODIFIED,
@@ -26,13 +27,12 @@ import {
   type TaxTreatment,
 } from './shippingBaseFeeData';
 
-type Tab = 'basic' | 'free' | 'bundle' | 'preview' | 'history';
+type Tab = 'basic' | 'free' | 'bundle' | 'preview';
 const TABS: [Tab, string][] = [
   ['basic', '기본 설정'],
   ['free', '무료배송'],
   ['bundle', '묶음 · 분할배송'],
   ['preview', '정책 Preview'],
-  ['history', '변경 이력'],
 ];
 
 const USAGE_OPTIONS: { value: ShippingUsage; title: string; desc: string }[] = [
@@ -52,7 +52,9 @@ export function ShippingBaseFeePage() {
   const [lastModified, setLastModified] = useState<LastModified>(INITIAL_LAST_MODIFIED);
 
   const [tab, setTab] = useState<Tab>('basic');
+  const [editing, setEditing] = useState(false);
   const [draftPolicy, setDraftPolicy] = useState(policy);
+  const [showHistory, setShowHistory] = useState(false);
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
   const [reason, setReason] = useState('');
   const [saveError, setSaveError] = useState('');
@@ -61,6 +63,9 @@ export function ShippingBaseFeePage() {
   const [previewOrderId, setPreviewOrderId] = useState(TEST_ORDERS[0].id);
   const [calcAmount, setCalcAmount] = useState(38000);
   const [calcCount, setCalcCount] = useState(2);
+  const historyRef = useRef<HTMLElement>(null);
+
+  useOutsideClose(historyRef, () => setShowHistory(false));
 
   const warnings = useMemo(() => computeWarnings(draftPolicy), [draftPolicy]);
 
@@ -69,12 +74,25 @@ export function ShippingBaseFeePage() {
     window.setTimeout(() => setToast(''), 2400);
   };
 
-  const set = <K extends keyof ShippingBasePolicy>(key: K, value: ShippingBasePolicy[K]) => setDraftPolicy((current) => ({ ...current, [key]: value }));
+  const set = <K extends keyof ShippingBasePolicy>(key: K, value: ShippingBasePolicy[K]) => {
+    if (!editing) return;
+    setDraftPolicy((current) => ({ ...current, [key]: value }));
+  };
 
-  const cancelEdit = () => setDraftPolicy(policy);
+  const startEdit = () => {
+    setDraftPolicy(policy);
+    setEditing(true);
+  };
+  const cancelEdit = () => {
+    setDraftPolicy(policy);
+    setEditing(false);
+  };
   const requestSave = () => {
     const diffs = describePolicyChanges(policy, draftPolicy);
-    if (diffs.length === 0) return toastBriefly('변경된 내용이 없습니다.');
+    if (diffs.length === 0) {
+      setEditing(false);
+      return;
+    }
     setReason('');
     setSaveError('');
     setConfirmSave(diffs);
@@ -94,6 +112,7 @@ export function ShippingBaseFeePage() {
     setPolicy(draftPolicy);
     setHistory((current) => [...entries, ...current]);
     setLastModified({ at: '2026-09-01', by: '운영 관리자' });
+    setEditing(false);
     setConfirmSave(null);
     toastBriefly('기본 배송비 정책을 저장했습니다.');
   };
@@ -137,8 +156,15 @@ export function ShippingBaseFeePage() {
           </div>
           <div className={styles.headMeta}>
             <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>
-            <CommonButton type="button" variant="secondary" size="md" onClick={() => setTab('history')}>변경 이력</CommonButton>
-            <CommonButton type="button" variant="emphasis" size="md" onClick={requestSave}>정책 수정</CommonButton>
+            <CommonButton type="button" variant="secondary" size="md" onClick={() => setShowHistory(true)}>변경 이력</CommonButton>
+            {editing ? (
+              <>
+                <CommonButton type="button" variant="secondary" size="md" onClick={cancelEdit}>취소</CommonButton>
+                <CommonButton type="button" variant="emphasis" size="md" onClick={requestSave}>저장</CommonButton>
+              </>
+            ) : (
+              <CommonButton type="button" variant="emphasis" size="md" onClick={startEdit}>수정</CommonButton>
+            )}
           </div>
         </div>
         <div className={shared.quickFilters}>
@@ -170,7 +196,7 @@ export function ShippingBaseFeePage() {
                 {warnings.map((w) => <div key={w.id} className={styles.warningItem}>{w.message}</div>)}
               </div>
             </div>
-            {warnings[0] && warningFix(warnings[0].id) && (
+            {editing && warnings[0] && warningFix(warnings[0].id) && (
               <CommonButton type="button" variant="secondary" size="sm" className={styles.warningAction} onClick={warningFix(warnings[0].id)!.onClick}>{warningFix(warnings[0].id)!.label}</CommonButton>
             )}
           </div>
@@ -199,6 +225,7 @@ export function ShippingBaseFeePage() {
                           size="md"
                           selected={draftPolicy.usage === o.value}
                           description={o.desc}
+                          disabled={!editing}
                           onClick={() => set('usage', o.value)}
                         >
                           {o.title}
@@ -210,6 +237,7 @@ export function ShippingBaseFeePage() {
                       <CommonSwitch
                         size="md"
                         checked={draftPolicy.freeShippingEnabled}
+                        disabled={!editing}
                         aria-label="무료배송 기준 사용"
                         onChange={(checked) => set('freeShippingEnabled', checked)}
                       />
@@ -224,7 +252,7 @@ export function ShippingBaseFeePage() {
                           min={0}
                           suffix="원"
                           aria-label="무료배송 기준금액"
-                          disabled={!draftPolicy.freeShippingEnabled}
+                          disabled={!editing || !draftPolicy.freeShippingEnabled}
                           value={draftPolicy.freeShippingThreshold}
                           onChange={(e) => set('freeShippingThreshold', Math.max(0, Number(e.target.value) || 0))}
                         />
@@ -253,7 +281,7 @@ export function ShippingBaseFeePage() {
                           min={0}
                           suffix="원"
                           aria-label="기본 배송비"
-                          disabled={draftPolicy.usage === '미사용'}
+                          disabled={!editing || draftPolicy.usage === '미사용'}
                           value={draftPolicy.baseFee}
                           onChange={(e) => set('baseFee', Math.max(0, Number(e.target.value) || 0))}
                         />
@@ -266,7 +294,7 @@ export function ShippingBaseFeePage() {
                               size="sm"
                               aria-pressed={draftPolicy.baseFee === v}
                               className={styles.presetChip2}
-                              disabled={draftPolicy.usage === '미사용'}
+                              disabled={!editing || draftPolicy.usage === '미사용'}
                               onClick={() => set('baseFee', v)}
                             >
                               {v.toLocaleString('ko-KR')}
@@ -282,6 +310,7 @@ export function ShippingBaseFeePage() {
                           min={0}
                           suffix="원"
                           aria-label="최소 배송비"
+                          disabled={!editing}
                           value={draftPolicy.minFee}
                           onChange={(e) => set('minFee', Math.max(0, Number(e.target.value) || 0))}
                         />
@@ -295,6 +324,7 @@ export function ShippingBaseFeePage() {
                           suffix="원"
                           placeholder="제한 없음"
                           aria-label="최대 배송비"
+                          disabled={!editing}
                           value={draftPolicy.maxFee ?? ''}
                           onChange={(e) => set('maxFee', e.target.value === '' ? null : Math.max(0, Number(e.target.value) || 0))}
                         />
@@ -313,6 +343,7 @@ export function ShippingBaseFeePage() {
                               size="md"
                               aria-pressed={draftPolicy.calcUnit === o.value}
                               className={styles.pillItem}
+                              disabled={!editing}
                               onClick={() => set('calcUnit', o.value)}
                             >
                               {o.title}
@@ -328,6 +359,7 @@ export function ShippingBaseFeePage() {
                             size="md"
                             checked={draftPolicy.bundleCalc === '배송비 1회만 부과'}
                             label="배송비 1회만 부과"
+                            disabled={!editing}
                             onChange={(checked) => set('bundleCalc', checked ? '배송비 1회만 부과' : '모든 배송비 합산')}
                           />
                         </div>
@@ -357,6 +389,7 @@ export function ShippingBaseFeePage() {
                               size="md"
                               aria-pressed={draftPolicy.taxTreatment === v}
                               className={styles.pillItem}
+                              disabled={!editing}
                               onClick={() => set('taxTreatment', v)}
                             >
                               {v}
@@ -373,6 +406,7 @@ export function ShippingBaseFeePage() {
                             clearable={false}
                             value={draftPolicy.startDate}
                             aria-label="적용 시작일"
+                            disabled={!editing}
                             onChange={(value) => { if (!Array.isArray(value) && value) set('startDate', value); }}
                           />
                           <span className={styles.dateHint}>이 날짜 이후 주문부터 적용</span>
@@ -473,11 +507,6 @@ export function ShippingBaseFeePage() {
               </div>
             </div>
 
-            <div className={`${styles.footerBar} ${styles.basicFooter}`}>
-              <span className={styles.footerNote}>저장하면 적용 시작일부터 신규 주문에 적용되며, 이미 확정된 주문의 배송비 Snapshot은 유지됩니다.</span>
-              <CommonButton type="button" variant="secondary" size="md" onClick={cancelEdit}>취소</CommonButton>
-              <CommonButton type="button" variant="emphasis" size="md" onClick={requestSave}>저장</CommonButton>
-            </div>
           </>
         )}
 
@@ -490,19 +519,19 @@ export function ShippingBaseFeePage() {
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.bundleSwitchRow}>
-                  <CommonSwitch size="md" checked={draftPolicy.freeShippingEnabled} label="무료배송 사용" onChange={(checked) => set('freeShippingEnabled', checked)} />
+                  <CommonSwitch size="md" checked={draftPolicy.freeShippingEnabled} label="무료배송 사용" disabled={!editing} onChange={(checked) => set('freeShippingEnabled', checked)} />
                 </div>
 
                 <div className={styles.cardGrid}>
                   <div>
                     <div className={styles.fieldBlockLabel}>무료배송 기준금액</div>
-                    <CommonInput.Number clearable={false} className={styles.fieldInput} min={0} suffix="원" aria-label="무료배송 기준금액" disabled={!draftPolicy.freeShippingEnabled} value={draftPolicy.freeShippingThreshold} onChange={(e) => set('freeShippingThreshold', Math.max(0, Number(e.target.value) || 0))} />
+                    <CommonInput.Number clearable={false} className={styles.fieldInput} min={0} suffix="원" aria-label="무료배송 기준금액" disabled={!editing || !draftPolicy.freeShippingEnabled} value={draftPolicy.freeShippingThreshold} onChange={(e) => set('freeShippingThreshold', Math.max(0, Number(e.target.value) || 0))} />
                   </div>
                   <div>
                     <div className={styles.fieldBlockLabel}>무료배송 기준 비교</div>
                     <div className={styles.pillRow2}>
                       {(['이상', '초과'] as FreeShippingCompare[]).map((v) => (
-                        <CommonButton key={v} type="button" variant={draftPolicy.freeShippingCompare === v ? 'emphasis' : 'secondary'} size="md" aria-pressed={draftPolicy.freeShippingCompare === v} className={styles.pillItem} disabled={!draftPolicy.freeShippingEnabled} onClick={() => set('freeShippingCompare', v)}>{v}</CommonButton>
+                        <CommonButton key={v} type="button" variant={draftPolicy.freeShippingCompare === v ? 'emphasis' : 'secondary'} size="md" aria-pressed={draftPolicy.freeShippingCompare === v} className={styles.pillItem} disabled={!editing || !draftPolicy.freeShippingEnabled} onClick={() => set('freeShippingCompare', v)}>{v}</CommonButton>
                       ))}
                     </div>
                   </div>
@@ -512,7 +541,7 @@ export function ShippingBaseFeePage() {
                   <div className={styles.fieldBlockLabel}>기준금액 계산</div>
                   <div className={styles.pillRow2}>
                     {(['할인 후 상품금액', '할인 전 상품금액', '최종 결제금액', '배송비 제외 주문금액'] as FreeShippingBasis[]).map((v) => (
-                      <CommonButton key={v} type="button" variant={draftPolicy.freeShippingBasis === v ? 'emphasis' : 'secondary'} size="md" aria-pressed={draftPolicy.freeShippingBasis === v} className={styles.pillItem} disabled={!draftPolicy.freeShippingEnabled} onClick={() => set('freeShippingBasis', v)}>{v}</CommonButton>
+                      <CommonButton key={v} type="button" variant={draftPolicy.freeShippingBasis === v ? 'emphasis' : 'secondary'} size="md" aria-pressed={draftPolicy.freeShippingBasis === v} className={styles.pillItem} disabled={!editing || !draftPolicy.freeShippingEnabled} onClick={() => set('freeShippingBasis', v)}>{v}</CommonButton>
                     ))}
                   </div>
                 </div>
@@ -521,7 +550,7 @@ export function ShippingBaseFeePage() {
                   <div className={styles.fieldBlockLabel}>무료배송 적용 범위</div>
                   <div className={styles.pillRow2}>
                     {(['기본 배송비만 면제', '지역 추가배송비 포함 전체 면제'] as FreeShippingScope[]).map((v) => (
-                      <CommonButton key={v} type="button" variant={draftPolicy.freeShippingScope === v ? 'emphasis' : 'secondary'} size="md" aria-pressed={draftPolicy.freeShippingScope === v} className={styles.pillItem} disabled={!draftPolicy.freeShippingEnabled} onClick={() => set('freeShippingScope', v)}>{v}</CommonButton>
+                      <CommonButton key={v} type="button" variant={draftPolicy.freeShippingScope === v ? 'emphasis' : 'secondary'} size="md" aria-pressed={draftPolicy.freeShippingScope === v} className={styles.pillItem} disabled={!editing || !draftPolicy.freeShippingEnabled} onClick={() => set('freeShippingScope', v)}>{v}</CommonButton>
                     ))}
                   </div>
                 </div>
@@ -530,11 +559,6 @@ export function ShippingBaseFeePage() {
 
             <div className={styles.infoNote}>포인트 사용액은 결제수단으로 취급되어 '최종 결제금액' 기준을 선택했을 때만 무료배송 기준금액에서 차감됩니다. 할인 전/후 기준을 선택하면 포인트 사용 여부와 무관하게 계산됩니다.</div>
 
-            <div className={styles.footerBar}>
-              <span className={styles.footerNote}>저장하면 적용 시작일부터 신규 주문에 적용되며, 이미 확정된 주문의 배송비 Snapshot은 유지됩니다.</span>
-              <CommonButton type="button" variant="secondary" size="md" onClick={cancelEdit}>취소</CommonButton>
-              <CommonButton type="button" variant="emphasis" size="md" onClick={requestSave}>저장</CommonButton>
-            </div>
           </>
         )}
 
@@ -550,7 +574,7 @@ export function ShippingBaseFeePage() {
                   <div className={styles.fieldBlockLabel}>묶음배송 시 배송비 계산</div>
                   <div className={styles.pillRow2}>
                     {(['배송비 1회만 부과', '가장 높은 배송비 1건 적용', '모든 배송비 합산'] as BundleCalc[]).map((v) => (
-                      <CommonButton key={v} type="button" variant={draftPolicy.bundleCalc === v ? 'emphasis' : 'secondary'} size="md" aria-pressed={draftPolicy.bundleCalc === v} className={styles.pillItem} onClick={() => set('bundleCalc', v)}>{v}</CommonButton>
+                      <CommonButton key={v} type="button" variant={draftPolicy.bundleCalc === v ? 'emphasis' : 'secondary'} size="md" aria-pressed={draftPolicy.bundleCalc === v} className={styles.pillItem} disabled={!editing} onClick={() => set('bundleCalc', v)}>{v}</CommonButton>
                     ))}
                   </div>
                 </div>
@@ -566,7 +590,7 @@ export function ShippingBaseFeePage() {
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.toggleRow}>
-                  <CommonSwitch size="md" checked={draftPolicy.splitShippingExtraFee} aria-label="운영상 분할배송 시 추가 배송비 부과" onChange={(checked) => set('splitShippingExtraFee', checked)} />
+                  <CommonSwitch size="md" checked={draftPolicy.splitShippingExtraFee} aria-label="운영상 분할배송 시 추가 배송비 부과" disabled={!editing} onChange={(checked) => set('splitShippingExtraFee', checked)} />
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>운영상 분할배송 시 추가 배송비 부과</div>
                     <div className={styles.toggleRowDesc}>재고 문제 등으로 시스템이 배송을 나눈 경우입니다.</div>
@@ -577,11 +601,6 @@ export function ShippingBaseFeePage() {
 
             <div className={styles.infoNote}>고객이 결제한 배송비는 주문 확정 시점에 Snapshot으로 고정됩니다. 이후 운영 사정으로 배송이 나뉘어도 기본적으로 추가 배송비를 부과하지 않는 것을 권장합니다.</div>
 
-            <div className={styles.footerBar}>
-              <span className={styles.footerNote}>저장하면 적용 시작일부터 신규 주문에 적용되며, 이미 확정된 주문의 배송비 Snapshot은 유지됩니다.</span>
-              <CommonButton type="button" variant="secondary" size="md" onClick={cancelEdit}>취소</CommonButton>
-              <CommonButton type="button" variant="emphasis" size="md" onClick={requestSave}>저장</CommonButton>
-            </div>
           </>
         )}
 
@@ -625,28 +644,34 @@ export function ShippingBaseFeePage() {
           </div>
         )}
 
-        {tab === 'history' && (
-          <div className={styles.card}>
-            <div className={styles.cardHead}>
-              <div className={styles.cardTitle}>변경 이력</div>
-              <div className={styles.cardDesc}>기본 배송비 정책 변경 기록입니다.</div>
-            </div>
-            <div className={styles.cardBody}>
-              {history.length === 0 && <div className={styles.infoNote}>변경 이력이 없습니다.</div>}
-              {history.map((h) => (
-                <div key={h.id} className={timeline.timelineItem}>
-                  <span className={timeline.timelineDot} />
-                  <div className={timeline.timelineBody}>
-                    <div className={timeline.timelineRow}><strong className={timeline.timelineTitle}>{h.field}</strong><span className={timeline.timelineWhen}>{h.at}</span></div>
-                    <div className={timeline.timelineDetail}>{h.before} → {h.after} · {h.by}</div>
-                    <div className={timeline.timelineDetail}>사유: {h.reason}</div>
-                  </div>
-                </div>
-              ))}
+      </div>
+
+      {showHistory && (
+        <aside ref={historyRef} className={timeline.aside} aria-label="기본 배송비 정책 변경 이력">
+          <div className={timeline.head}>
+            <div className={timeline.headRow}>
+              <div className={timeline.headBody}>
+                <div className={timeline.eyebrow}>배송 정책 · 기본 배송비</div>
+                <div className={timeline.titleRow}><span className={timeline.title}>변경 이력</span></div>
+              </div>
+              <CommonButton type="button" variant="ghost" size="sm" className={timeline.closeBtn} onClick={() => setShowHistory(false)}>×</CommonButton>
             </div>
           </div>
-        )}
-      </div>
+          <div className={timeline.scroll}>
+            {history.length === 0 && <div className={timeline.emptyInline}>변경 이력이 없습니다.</div>}
+            {history.map((entry) => (
+              <div key={entry.id} className={timeline.timelineItem}>
+                <span className={timeline.timelineDot} />
+                <div className={timeline.timelineBody}>
+                  <div className={timeline.timelineRow}><strong className={timeline.timelineTitle}>{entry.field}</strong><span className={timeline.timelineWhen}>{entry.at}</span></div>
+                  <div className={timeline.timelineDetail}>{entry.before} → {entry.after}</div>
+                  <div className={timeline.timelineDetail}>{entry.reason} · {entry.by}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
+      )}
 
       {confirmSave && (
         <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmSave(null); }}>
