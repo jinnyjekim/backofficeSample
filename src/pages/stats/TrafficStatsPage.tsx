@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CommonButton, CommonCheckbox, CommonSelect } from '../../components/common';
-import { DatePicker } from '../../components/forms/DatePicker';
+import { CommonButton, CommonSelect } from '../../components/common';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import styles from './TransactionStatsPage.module.css';
+import { StatisticsFilterToolbar } from './StatisticsFilterToolbar';
 import {
   CONVERSION_GOALS,
   TODAY,
@@ -103,6 +103,12 @@ export function TrafficStatsPage() {
     setStart(s); setEnd(e); setDraftStart(s); setDraftEnd(e);
   };
   const applyCustom = () => { setStart(draftStart); setEnd(draftEnd); };
+  const resetFilters = () => {
+    setStart('2026-08-01'); setEnd(TODAY);
+    setDraftStart('2026-08-01'); setDraftEnd(TODAY);
+    setCompare(true);
+    setGoal('회원 가입');
+  };
 
   const agg: TrafficPeriodAggregate = useMemo(() => aggregate(start, end, goal), [start, end, goal]);
   const [prevStart, prevEnd] = useMemo(() => previousPeriod(start, end), [start, end]);
@@ -172,27 +178,30 @@ export function TrafficStatsPage() {
         </div>
       </div>
 
-      <div className={styles.filterBar}>
-        <div className={styles.filterRow}>
-          <DatePicker controlSize="sm" value={draftStart} onChange={(e) => setDraftStart(e.target.value)} />
-          <span className={styles.tilde}>~</span>
-          <DatePicker controlSize="sm" value={draftEnd} onChange={(e) => setDraftEnd(e.target.value)} />
-          <button type="button" className={styles.applyBtn} onClick={applyCustom}>조회</button>
-          <CommonCheckbox className={styles.compareCheck} size="sm" checked={compare} onChange={setCompare}>이전 기간과 비교</CommonCheckbox>
-          <span style={{ flex: 1 }} />
-          <label className="globalFilterField"><span>전환 목표</span><CommonSelect aria-label="전환 목표" size="sm" value={goal} options={CONVERSION_GOALS.map((value) => ({ label: value, value }))} onChange={(value) => setGoal(value as ConversionGoal)} /></label>
-        </div>
-        <div className={styles.filterRow}>
-          {QUICK_RANGES.map((r) => {
-            const [qs, qe] = quickRangeDates(r);
-            const active = qs === start && qe === end;
-            return <button key={r} type="button" className={`${styles.quickBtn} ${active ? styles.quickBtnActive : ''}`} onClick={() => applyQuick(r)}>{r}</button>;
-          })}
-        </div>
-        <div className={styles.periodInfo}>
-          조회 기간 <b>{fmtDate(start)} ~ {fmtDate(end)}</b> ({agg.days}일){compare && <> · 비교 기간 <b>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</b> ({prevAgg.days}일)</>} · 전환 목표 <b>{goal}</b>
-        </div>
-      </div>
+      <StatisticsFilterToolbar
+        range={QUICK_RANGES.find((item) => {
+          const [quickStart, quickEnd] = quickRangeDates(item);
+          return quickStart === start && quickEnd === end;
+        }) ?? '직접 설정'}
+        ranges={QUICK_RANGES}
+        onRangeChange={(value) => applyQuick(value as QuickRange)}
+        startDate={draftStart}
+        endDate={draftEnd}
+        onStartDateChange={setDraftStart}
+        onEndDateChange={setDraftEnd}
+        dateAriaLabel="유입 전환 통계 조회"
+        compareChecked={compare}
+        onCompareCheckedChange={setCompare}
+        details={
+          <label className="globalFilterField">
+            <span>전환 목표</span>
+            <CommonSelect aria-label="전환 목표" size="sm" value={goal} options={CONVERSION_GOALS.map((value) => ({ label: value, value }))} onChange={(value) => setGoal(value as ConversionGoal)} />
+          </label>
+        }
+        onReset={resetFilters}
+        onApply={applyCustom}
+        summary={<>조회 기간 <b>{fmtDate(start)} ~ {fmtDate(end)}</b> ({agg.days}일){compare && <> · 비교 기간 <b>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</b> ({prevAgg.days}일)</>} · 전환 목표 <b>{goal}</b></>}
+      />
 
       <div className={styles.viewTabs}>
         {TABS.map(([key, label]) => {

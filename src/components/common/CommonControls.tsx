@@ -37,27 +37,34 @@ const classNameOf = (value: CommonClassNames | undefined, key: 'root' | 'control
   typeof value === 'string' ? (key === 'root' ? value : '') : value?.[key] ?? '';
 
 export interface CommonButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'> {
-  variant?: 'primary' | 'primary-light' | 'secondary' | 'ghost' | 'emphasis' | 'inactive' | 'none' | 'outlined' | 'success' | 'success-light' | 'warning' | 'danger' | 'danger-light';
+  /** `option`: 제목 + 설명 2줄로 구성된 선택 카드형 버튼 (선택 상태는 `selected`로 제어) */
+  variant?: 'primary' | 'primary-light' | 'secondary' | 'ghost' | 'emphasis' | 'inactive' | 'none' | 'outlined' | 'option' | 'success' | 'success-light' | 'warning' | 'danger' | 'danger-light';
   size?: CommonSize;
   round?: boolean;
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
   icon?: ReactNode;
+  /** `option` variant에서 제목(children) 아래에 표시되는 보조 설명 */
+  description?: ReactNode;
+  /** 선택 상태. 지정하면 `aria-pressed`가 함께 설정됩니다. */
+  selected?: boolean;
   classNames?: CommonClassNames;
 }
 
 export const CommonButton = forwardRef<HTMLButtonElement, CommonButtonProps>(function CommonButton(
-  { variant = 'primary', size = 'md', round = false, disabled = false, loading = false, fullWidth = false, icon, className, classNames, children, onClick, type = 'button', ...props },
+  { variant = 'primary', size = 'md', round = false, disabled = false, loading = false, fullWidth = false, icon, description, selected, className, classNames, children, onClick, type = 'button', ...props },
   ref,
 ) {
   const blocked = disabled || loading || variant === 'inactive';
   const packageVariant = ['primary', 'secondary', 'ghost', 'emphasis', 'inactive', 'none'].includes(variant)
     ? variant as 'primary' | 'secondary' | 'ghost' | 'emphasis' | 'inactive' | 'none'
-    : variant === 'outlined' ? 'secondary' : 'none';
+    : variant === 'outlined' || variant === 'option' ? 'secondary' : 'none';
+  const isOption = variant === 'option';
   return (
     <M2MButton
       {...props}
+      {...(selected !== undefined ? { 'aria-pressed': selected } : {})}
       ref={ref}
       htmlType={type}
       variant={packageVariant}
@@ -71,7 +78,12 @@ export const CommonButton = forwardRef<HTMLButtonElement, CommonButtonProps>(fun
       onClick={(event) => { if (!blocked) onClick?.(event); }}
     >
       {!loading && icon}
-      {children}
+      {isOption && description !== undefined ? (
+        <>
+          <span className={styles.optionTitle}>{children}</span>
+          <span className={styles.optionDesc}>{description}</span>
+        </>
+      ) : children}
     </M2MButton>
   );
 });

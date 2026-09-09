@@ -113,6 +113,7 @@
 }
 
 .filterBox {
+  position: relative;
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;

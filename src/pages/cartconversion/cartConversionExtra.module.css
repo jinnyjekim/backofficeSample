@@ -40,6 +40,12 @@
   flex: 1 1 auto;
 }
 
+.quickRangeRow {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
 .detailFilters {
   display: flex;
   align-items: flex-end;
@@ -83,6 +89,11 @@
   .dateRangeFields {
     flex: 1 1 100%;
     flex-wrap: wrap;
+  }
+
+  .quickRangeRow {
+    overflow-x: auto;
+    padding-bottom: 2px;
   }
 
   .detailFilters {

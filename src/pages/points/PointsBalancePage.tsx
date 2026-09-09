@@ -101,21 +101,13 @@ export function PointsBalancePage() {
     setGrantTarget(null);
   }
 
-  function openBulkGrant(mode: GrantMode) {
-    const target = selectedMembers.length > 0 ? selectedMembers[0] : (filtered[0]?.member ?? null);
-    if (!target) return;
-    setGrantTarget({ member: target, mode });
-  }
-
-  // 헤더 버튼: 2명 이상 선택 → 일괄 지급 모달, 1명 선택 또는 미선택 → 단일 지급 모달
-  function openHeaderGrant() {
-    if (selectedMembers.length >= 2) {
+  // 헤더 버튼: 1명 이상 선택 시 일괄 관리 모달, 미선택 시 안내
+  function openPointManagement() {
+    if (selectedMembers.length > 0) {
       setBulkGrantOpen(true);
       return;
     }
-    const target = selectedMembers.length === 1 ? selectedMembers[0] : (filtered[0]?.member ?? null);
-    if (!target) return;
-    setGrantTarget({ member: target, mode: 'grant' });
+    toastBriefly('포인트를 관리할 회원을 목록에서 선택해 주세요.');
   }
 
   function toggleMember(id: string) {
@@ -168,12 +160,25 @@ export function PointsBalancePage() {
     setBalances((prev) =>
       prev.map((b) =>
         targets.some((t) => t.member === b.member)
-          ? grant(b, form.amount, form.reason, form.detail, form.immediate, form.confirmAt)
-          : b
+          ? form.mode === "grant"
+            ? grant(
+                b,
+                form.amount,
+                form.reason,
+                form.detail,
+                form.immediate,
+                form.confirmAt,
+              )
+            : deduct(b, form.amount, form.reason, form.detail)
+          : b,
       )
     );
     const names = targets.map((t) => t.member).join(', ');
-    toastBriefly(`${targets.length}명(${names})에게 ${fmtPoint(form.amount)}를 지급했습니다.`);
+    toastBriefly(
+      form.mode === "grant"
+        ? `${targets.length}명(${names})에게 ${fmtPoint(form.amount)}를 지급했습니다.`
+        : `${targets.length}명(${names})의 포인트를 ${fmtPoint(form.amount)}씩 차감했습니다.`,
+    );
     setBulkGrantOpen(false);
     setSelectedMembers([]);
   }
@@ -295,9 +300,9 @@ export function PointsBalancePage() {
           <button
             type="button"
             className={styles.createBtn}
-            onClick={openHeaderGrant}
+            onClick={openPointManagement}
           >
-            + 포인트 지급
+            포인트 관리
           </button>
         </div>
 
@@ -370,24 +375,6 @@ export function PointsBalancePage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}명</span>
           <div className={styles.resultActions}>
-            {selectedMembers.length > 0 && (
-              <>
-                <CommonButton
-                  variant="emphasis"
-                  size="sm"
-                  onClick={() => openBulkGrant("grant")}
-                >
-                  선택 지급 ({selectedMembers.length}명)
-                </CommonButton>
-                <CommonButton
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => openBulkGrant("deduct")}
-                >
-                  선택 차감
-                </CommonButton>
-              </>
-            )}
             <ExcelDownloadButton
               type="button"
               data-grid-download

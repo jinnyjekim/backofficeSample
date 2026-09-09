@@ -112,8 +112,6 @@ import { PointLedgerPage } from './pages/points/PointLedgerPage';
 import { PointPolicyPage } from './pages/points/PointPolicyPage';
 import { PointExpiringPage } from './pages/points/PointExpiringPage';
 import { BrandsListPage } from './pages/brands/BrandsListPage';
-import { BrandCreatePage } from './pages/brands/BrandCreatePage';
-import { BrandDetailPage } from './pages/brands/BrandDetailPage';
 import { BrandProductsPage } from './pages/brands/BrandProductsPage';
 import { BrandExposurePage } from './pages/brands/BrandExposurePage';
 import { ReviewsListPage } from './pages/reviews/ReviewsListPage';
@@ -274,8 +272,6 @@ export default function App() {
         <Route path="b2c/points/expiring" element={<Navigate to="/points/expiring" replace />} />
         <Route path="b2c/points/manual" element={<Navigate to="/points" replace />} />
         <Route path="b2c/brands" element={<Navigate to="/brands" replace />} />
-        <Route path="b2c/brands/create" element={<BrandCreatePage />} />
-        <Route path="b2c/brands/detail" element={<BrandDetailPage />} />
         <Route path="b2c/brands/products" element={<BrandProductsPage />} />
         <Route path="b2c/brands/exposure" element={<BrandExposurePage />} />
         <Route path="b2c/reviews/*" element={<Navigate to="/reviews" replace />} />

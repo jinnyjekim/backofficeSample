@@ -66,3 +66,8 @@
   color: #059669;
   font-weight: 700;
 }
+
+/* 차감 대상 뱃지 */
+.countBadgeDeduct {
+  background: #ef4444;
+}

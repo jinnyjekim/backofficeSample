@@ -24,6 +24,7 @@ import layout from "./SalesAnalysisPage.module.css";
 import styles from "./CustomerPurchaseAnalysisPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
 import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
+import { useStatisticsPeriod } from "./useStatisticsPeriod";
 import {
   AOV_LABEL,
   AUDIENCE_TAB_LABEL,
@@ -140,7 +141,8 @@ export function CustomerPurchaseAnalysisPage({
 }: { defaultMode?: Mode } = {}) {
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>(defaultMode);
-  const [range, setRange] = useState<QuickRange>("최근 30일");
+  const { range, start, end, draftStart, draftEnd, setDraftStart, setDraftEnd, setRange, applyDateRange } =
+    useStatisticsPeriod<QuickRange>("최근 30일", quickRangeDates);
   const [compare, setCompare] =
     useState<(typeof COMPARE_OPTIONS)[number]>("이전 기간");
   const [customerType, setCustomerType] = useState("전체");
@@ -165,7 +167,6 @@ export function CustomerPurchaseAnalysisPage({
       ]),
   );
 
-  const [start, end] = quickRangeDates(range);
   const [prevStart, prevEnd] = previousPeriod(start, end);
 
   const agg = useMemo(() => aggregate(mode, start, end), [mode, start, end]);
@@ -677,6 +678,11 @@ export function CustomerPurchaseAnalysisPage({
           range={range}
           ranges={QUICK_RANGES}
           onRangeChange={(value) => setRange(value as QuickRange)}
+          startDate={draftStart}
+          endDate={draftEnd}
+          onStartDateChange={setDraftStart}
+          onEndDateChange={setDraftEnd}
+          dateAriaLabel="고객 구매 분석 조회"
           compare={compare}
           compareOptions={COMPARE_OPTIONS}
           onCompareChange={(value) => setCompare(value as (typeof COMPARE_OPTIONS)[number])}
@@ -693,7 +699,7 @@ export function CustomerPurchaseAnalysisPage({
             </label>
           }
           onReset={reset}
-          onApply={() => flash("조회 조건을 적용했습니다.")}
+          onApply={() => { if (applyDateRange()) flash("조회 조건을 적용했습니다."); }}
           summary={<>조회기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong> · 비교 <strong>{compare === "비교 없음" ? "없음" : `${fmtDate(prevStart)} ~ ${fmtDate(prevEnd)}`}</strong> · 최근 집계 <strong>{refreshedAt}</strong></>}
         />
 

@@ -1,9 +1,6 @@
 import { useMemo, useState } from 'react';
-import { RotateCcw } from 'lucide-react';
-import { CommonButton, CommonCheckbox, CommonDatePicker } from '../../components/common';
-import { BusinessScopeSwitch } from '../../components/business/BusinessScopeSwitch';
+import { CommonButton } from '../../components/common';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
-import filterStyles from '../cartconversion/cartConversionExtra.module.css';
 import shared from '../ops/opsShared.module.css';
 import txStyles from './TransactionStatsPage.module.css';
 import styles from './IntegratedStatsPage.module.css';
@@ -12,6 +9,7 @@ import { MemberStatsPage } from './MemberStatsPage';
 import { ContentStatsPage } from './ContentStatsPage';
 import { TrafficStatsPage } from './TrafficStatsPage';
 import { ActivityStatsPage } from './ActivityStatsPage';
+import { StatisticsFilterToolbar } from './StatisticsFilterToolbar';
 
 import {
   TODAY,
@@ -172,59 +170,21 @@ export function IntegratedStatsPage() {
 
       {domain === 'overview' && (
         <>
-          <div className={filterStyles.filterPanel}>
-            <div className={filterStyles.filterMainRow}>
-              <div className={filterStyles.dateRangeFields}>
-                <CommonDatePicker
-                  size="md"
-                  clearable={false}
-                  value={draftStart}
-                  aria-label="통합 통계 조회 시작일"
-                  onChange={(value) => {
-                    if (!Array.isArray(value) && value) setDraftStart(value);
-                  }}
-                />
-                <span className={filterStyles.dateSeparator} aria-hidden="true">~</span>
-                <CommonDatePicker
-                  size="md"
-                  clearable={false}
-                  value={draftEnd}
-                  aria-label="통합 통계 조회 종료일"
-                  onChange={(value) => {
-                    if (!Array.isArray(value) && value) setDraftEnd(value);
-                  }}
-                />
-              </div>
-              <CommonButton variant="emphasis" size="md" onClick={applyCustom}>조회</CommonButton>
-              <BusinessScopeSwitch
-                value={activeQuickRange}
-                options={QUICK_RANGES}
-                onChange={applyQuick}
-                label=""
-                size="md"
-              />
-              <CommonCheckbox
-                className={filterStyles.compareCheck}
-                size="sm"
-                checked={compare}
-                onChange={setCompare}
-              >
-                이전 기간과 비교
-              </CommonCheckbox>
-              <span className={filterStyles.filterSpacer} />
-              <CommonButton
-                variant="secondary"
-                size="md"
-                icon={<RotateCcw size={13} aria-hidden="true" />}
-                onClick={resetFilters}
-              >
-                초기화
-              </CommonButton>
-            </div>
-            <div className={txStyles.periodInfo}>
-              조회 기간 <b>{fmtDate(start)} ~ {fmtDate(end)}</b> ({tx.days}일){compare && <> · 비교 기간 <b>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</b></>} · 각 탭에서는 탭별 기간을 별도로 조회할 수 있습니다.
-            </div>
-          </div>
+          <StatisticsFilterToolbar
+            range={activeQuickRange ?? '직접 설정'}
+            ranges={QUICK_RANGES}
+            onRangeChange={(value) => applyQuick(value as QuickRange)}
+            startDate={draftStart}
+            endDate={draftEnd}
+            onStartDateChange={setDraftStart}
+            onEndDateChange={setDraftEnd}
+            dateAriaLabel="통합 통계 조회"
+            compareChecked={compare}
+            onCompareCheckedChange={setCompare}
+            onReset={resetFilters}
+            onApply={applyCustom}
+            summary={<>조회 기간 <b>{fmtDate(start)} ~ {fmtDate(end)}</b> ({tx.days}일){compare && <> · 비교 기간 <b>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</b></>} · 각 탭에서는 탭별 기간을 별도로 조회할 수 있습니다.</>}
+          />
 
           <div className={styles.domainSection}>
             <div className={styles.domainHead}><span className={styles.domainTitle}>거래</span><button type="button" className={styles.detailLink} onClick={() => setDomain('tx')}>자세히 보기 →</button></div>

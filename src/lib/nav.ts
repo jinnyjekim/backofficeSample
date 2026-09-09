@@ -192,8 +192,6 @@ export const NAV_GROUPS: NavGroup[] = [
 
       { key: 'brands', icon: Award, label: '브랜드 관리', to: '/brands', business: 'B' },
       { key: 'brands_list', sub: true, label: '브랜드 목록', to: '/brands', business: 'B' },
-      { key: 'brands_create', sub: true, label: '브랜드 등록', to: '/b2c/brands/create', business: 'B' },
-      { key: 'brands_detail', sub: true, label: '브랜드 상세', to: '/b2c/brands/detail', business: 'B' },
       { key: 'brands_products', sub: true, label: '브랜드별 상품', to: '/b2c/brands/products', business: 'B' },
       { key: 'brands_exposure', sub: true, label: '브랜드 노출 관리', to: '/b2c/brands/exposure', business: 'B' },
 

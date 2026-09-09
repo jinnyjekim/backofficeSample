@@ -1,7 +1,6 @@
 import {
   Download,
   Info,
-  SlidersHorizontal,
   TrendingDown,
   TrendingUp,
   X,
@@ -16,12 +15,12 @@ import type {
   GridRow,
 } from "../../components/DataGrid/types";
 import { CommonSelect } from "../../components/common";
-import { DatePicker } from "../../components/forms/DatePicker";
 import { downloadStatisticsReport } from "../../lib/statisticsReport";
 import { useOutsideClose } from "../../lib/useOutsideClose";
 import shared from "../ops/opsShared.module.css";
 import styles from "./SalesAnalysisPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
+import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
 import {
   TODAY,
   aggregate,
@@ -39,6 +38,16 @@ import {
 
 type Mode = "all" | "b2c" | "c2c" | "b2b";
 type ChartMetric = "volume" | "revenue" | "count" | "average" | "cancel";
+
+const SALES_RANGES = [
+  "오늘",
+  "어제",
+  "최근 7일",
+  "최근 30일",
+  "이번 달",
+  "지난 달",
+  "이번 분기",
+] as const;
 
 interface SalesMetrics {
   volume: number;
@@ -414,7 +423,6 @@ export function SalesAnalysisPage() {
   const [amountBasis, setAmountBasis] = useState("세금 포함");
   const [channel, setChannel] = useState("전체 채널");
   const [tradeState, setTradeState] = useState("정상 거래");
-  const [advanced, setAdvanced] = useState(false);
   const [granularity, setGranularity] = useState<Granularity>("일별");
   const [chartMetric, setChartMetric] = useState<ChartMetric>("revenue");
   const [selectedRow, setSelectedRow] = useState<AnalysisRow | null>(null);
@@ -606,7 +614,6 @@ export function SalesAnalysisPage() {
     setAmountBasis("세금 포함");
     setChannel("전체 채널");
     setTradeState("정상 거래");
-    setAdvanced(false);
   }
 
   const kpis = [
@@ -1127,133 +1134,62 @@ export function SalesAnalysisPage() {
           ))}
         </div>
 
-        <div className={styles.filterCard}>
-          <div className={styles.filterGrid}>
-            <label className={styles.filterField}>
-              <span>기간</span>
-              <CommonSelect
-                className={styles.analysisSelect}
-                size="sm"
-                value={range}
-                options={[
-                  "오늘",
-                  "최근 7일",
-                  "최근 30일",
-                  "이번 달",
-                  "지난 달",
-                  "이번 분기",
-                  "직접 설정",
-                ].map((value) => ({ label: value, value }))}
-                onChange={(value) => pickRange(String(value))}
-              />
-            </label>
-            <label className={`${styles.filterField} ${styles.dateField}`}>
-              <span>조회 기간</span>
-              <div className={styles.dateRange}>
-                <DatePicker
-                  controlSize="sm"
-                  value={draftStart}
-                  onChange={(event) => setDraftStart(event.target.value)}
+        <StatisticsFilterToolbar
+          range={range}
+          ranges={SALES_RANGES}
+          onRangeChange={pickRange}
+          startDate={draftStart}
+          endDate={draftEnd}
+          onStartDateChange={setDraftStart}
+          onEndDateChange={setDraftEnd}
+          dateAriaLabel="매출 분석 조회"
+          compare={compare}
+          compareOptions={["이전 기간", "비교 없음"]}
+          onCompareChange={setCompare}
+          details={
+            <>
+              <label className={styles.filterField}>
+                <span>매출 기준</span>
+                <CommonSelect
+                  className={styles.analysisSelect}
+                  size="sm"
+                  value={salesBasis}
+                  options={["주문 기준", "결제 완료 기준", "거래 완료 기준", "매출 확정 기준"].map((value) => ({ label: value, value }))}
+                  onChange={(value) => setSalesBasis(String(value))}
                 />
-                <em>~</em>
-                <DatePicker
-                  controlSize="sm"
-                  value={draftEnd}
-                  onChange={(event) => setDraftEnd(event.target.value)}
+              </label>
+              <label className={styles.filterField}>
+                <span>날짜 기준</span>
+                <CommonSelect
+                  className={styles.analysisSelect}
+                  size="sm"
+                  value={dateBasis}
+                  options={(mode === "b2b"
+                    ? ["주문일", "납품 완료일", "매출 확정일"]
+                    : mode === "c2c"
+                      ? ["결제일", "거래 완료일", "정산 확정일"]
+                      : ["주문일", "결제일", "배송 완료일", "매출 확정일"]
+                  ).map((value) => ({ label: value, value }))}
+                  onChange={(value) => setDateBasis(String(value))}
                 />
-              </div>
-            </label>
-            <label className={styles.filterField}>
-              <span>비교</span>
-              <CommonSelect
-                className={styles.analysisSelect}
-                size="sm"
-                value={compare}
-                options={["비교 없음", "이전 기간"].map((value) => ({
-                  label: value,
-                  value,
-                }))}
-                onChange={(value) => setCompare(String(value))}
-              />
-            </label>
-            <label className={styles.filterField}>
-              <span>매출 기준</span>
-              <CommonSelect
-                className={styles.analysisSelect}
-                size="sm"
-                value={salesBasis}
-                options={[
-                  "주문 기준",
-                  "결제 완료 기준",
-                  "거래 완료 기준",
-                  "매출 확정 기준",
-                ].map((value) => ({ label: value, value }))}
-                onChange={(value) => setSalesBasis(String(value))}
-              />
-            </label>
-            <label className={styles.filterField}>
-              <span>날짜 기준</span>
-              <CommonSelect
-                className={styles.analysisSelect}
-                size="sm"
-                value={dateBasis}
-                options={(mode === "b2b"
-                  ? ["주문일", "납품 완료일", "매출 확정일"]
-                  : mode === "c2c"
-                    ? ["결제일", "거래 완료일", "정산 확정일"]
-                    : ["주문일", "결제일", "배송 완료일", "매출 확정일"]
-                ).map((value) => ({ label: value, value }))}
-                onChange={(value) => setDateBasis(String(value))}
-              />
-            </label>
-            <label className={styles.filterField}>
-              <span>금액 기준</span>
-              <CommonSelect
-                className={styles.analysisSelect}
-                size="sm"
-                value={amountBasis}
-                options={["세금 포함", "공급가액"].map((value) => ({
-                  label: value,
-                  value,
-                }))}
-                onChange={(value) => setAmountBasis(String(value))}
-              />
-            </label>
-            <div className={styles.filterActions}>
-              <button
-                type="button"
-                className={styles.detailButton}
-                onClick={() => setAdvanced((value) => !value)}
-              >
-                <SlidersHorizontal size={14} /> 상세 조건
-              </button>
-              <button
-                type="button"
-                className={styles.resetButton}
-                onClick={resetFilters}
-              >
-                초기화
-              </button>
-              <button
-                type="button"
-                className={styles.applyButton}
-                onClick={applyFilters}
-              >
-                조회
-              </button>
-            </div>
-          </div>
-          {advanced && (
-            <div className={styles.advancedFilters}>
+              </label>
+              <label className={styles.filterField}>
+                <span>금액 기준</span>
+                <CommonSelect
+                  className={styles.analysisSelect}
+                  size="sm"
+                  value={amountBasis}
+                  options={["세금 포함", "공급가액"].map((value) => ({ label: value, value }))}
+                  onChange={(value) => setAmountBasis(String(value))}
+                />
+              </label>
               <label className={styles.filterField}>
                 <span>거래 상태</span>
                 <CommonSelect
                   className={styles.analysisSelect}
                   size="sm"
                   value={tradeState}
-                  options={["정상 거래", "취소·환불 포함", "완료 거래만"].map(
-                    (value) => ({ label: value, value }),
-                  )}
+                  options={["정상 거래", "취소·환불 포함", "완료 거래만"].map((value) => ({ label: value, value }))}
                   onChange={(value) => setTradeState(String(value))}
                 />
               </label>
@@ -1263,34 +1199,16 @@ export function SalesAnalysisPage() {
                   className={styles.analysisSelect}
                   size="sm"
                   value={channel}
-                  options={["전체 채널", "모바일 앱", "웹", "파트너 포털"].map(
-                    (value) => ({ label: value, value }),
-                  )}
+                  options={["전체 채널", "모바일 앱", "웹", "파트너 포털"].map((value) => ({ label: value, value }))}
                   onChange={(value) => setChannel(String(value))}
                 />
               </label>
-              <div className={styles.filterDescription}>
-                상세 조건은 KPI, 추이, 구성 및 상세 표에 동일하게 적용됩니다.
-              </div>
-            </div>
-          )}
-          <div className={styles.periodSummary}>
-            조회 기간{" "}
-            <strong>
-              {fmtDate(start)} ~ {fmtDate(end)}
-            </strong>
-            {compare !== "비교 없음" && (
-              <>
-                {" "}
-                · 비교 기간{" "}
-                <strong>
-                  {fmtDate(prevStart)} ~ {fmtDate(prevEnd)}
-                </strong>
-              </>
-            )}{" "}
-            · 최근 집계 <strong>2026.08.31 16:55</strong>
-          </div>
-        </div>
+            </>
+          }
+          onReset={resetFilters}
+          onApply={applyFilters}
+          summary={<>조회 기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong>{compare !== "비교 없음" && <> · 비교 기간 <strong>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</strong></>} · 최근 집계 <strong>2026.08.31 16:55</strong></>}
+        />
 
         {showBasis && (
           <div className={styles.basisPanel}>

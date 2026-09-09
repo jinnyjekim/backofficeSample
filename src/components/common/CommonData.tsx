@@ -178,7 +178,21 @@ export function CommonTable<T extends object>({
                   onClick={() => onRowClick?.(row, index)}
                   onKeyDown={(event) => { if (onRowClick && (event.key === 'Enter' || event.key === ' ')) onRowClick(row, index); }}
                 >
-                  {selectable && <td className={styles.tableCheck} onClick={(event) => event.stopPropagation()}><CommonCheckbox aria-label={`${key} 선택`} checked={selectedRows.includes(key)} onChange={(checked) => select(key, checked)} /></td>}
+                  {selectable && (
+                    <td
+                      className={styles.tableCheck}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        select(key, !selectedRows.includes(key));
+                      }}
+                    >
+                      <CommonCheckbox
+                        aria-label={`${key} 선택`}
+                        checked={selectedRows.includes(key)}
+                        onChange={(checked) => select(key, checked)}
+                      />
+                    </td>
+                  )}
                   {columns.map((column) => {
                     const value = column.dataIndex == null ? undefined : row[column.dataIndex];
                     const colSpan = typeof column.colSpan === 'function' ? column.colSpan(row, index) : column.colSpan;

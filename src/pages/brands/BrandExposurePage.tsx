@@ -3,7 +3,6 @@ import { DataGrid } from "../../components/DataGrid";
 import type { GridColumn, GridRow } from "../../components/DataGrid/types";
 import {
   CommonButton,
-  CommonInput,
   CommonSwitch,
   ExcelDownloadButton,
   showToast,
@@ -29,12 +28,14 @@ export function BrandExposurePage() {
   );
   const [keyword, setKeyword] = useState("");
   const [filter, setFilter] = useState<ExposureFilter>("전체");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const filtered = useMemo(
     () =>
       brands.filter((brand) => {
         if (filter === "노출" && !brand.exposure) return false;
         if (filter === "비노출" && brand.exposure) return false;
+        if (statusFilter && brand.status !== statusFilter) return false;
         if (
           keyword &&
           !`${brand.name} ${brand.code}`
@@ -44,8 +45,14 @@ export function BrandExposurePage() {
           return false;
         return true;
       }),
-    [brands, filter, keyword],
+    [brands, filter, keyword, statusFilter],
   );
+
+  const reset = () => {
+    setKeyword("");
+    setFilter("전체");
+    setStatusFilter("");
+  };
 
   const move = (id: string, direction: -1 | 1) => {
     setBrands((current) => {
@@ -134,18 +141,18 @@ export function BrandExposurePage() {
   }));
 
   return (
-    <section className={shared.page}>
-      <div className={shared.headTop}>
+    <div className={shared.page}>
+      <header className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>브랜드 노출 관리</h1>
-            <p className={shared.subtitle}>
+            <div className={shared.title}>브랜드 노출 관리</div>
+            <div className={shared.subtitle}>
               사용자 화면의 브랜드 노출 여부와 표시 순서를 관리합니다.
-            </p>
+            </div>
           </div>
-          <CommonButton
-            variant="primary"
-            size="md"
+          <button
+            type="button"
+            className={shared.createBtn}
             onClick={() =>
               showToast({
                 message: "노출 설정을 저장했습니다.",
@@ -154,17 +161,20 @@ export function BrandExposurePage() {
             }
           >
             저장
-          </CommonButton>
+          </button>
         </div>
         <div className={shared.filterBox}>
           <div className={shared.filterRow1}>
-            <CommonInput.Search
+            <input
               aria-label="브랜드 노출 검색"
               className={shared.searchInput}
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
               placeholder="브랜드명 또는 브랜드 코드 검색"
             />
+            <button type="button" className={shared.searchBtn}>
+              검색
+            </button>
             <div className={shared.quickFilters}>
               {FILTERS.map((item) => {
                 const active = filter === item;
@@ -179,7 +189,7 @@ export function BrandExposurePage() {
                     key={item}
                     variant={active ? "primary-light" : "secondary"}
                     size="md"
-                    className={shared.qfBtn}
+                    className={`${shared.qfBtn} ${active ? shared.active : ""}`}
                     onClick={() => setFilter(item)}
                   >
                     <span className={shared.qfLabel}>{item}</span>
@@ -188,22 +198,34 @@ export function BrandExposurePage() {
                 );
               })}
             </div>
+          </div>
+          <div className={shared.filterRow2}>
+            <label className="globalFilterField">
+              <span>사용 상태</span>
+              <select
+                aria-label="사용 상태"
+                className={shared.selectSm}
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value)}
+              >
+                <option value="">전체 상태</option>
+                <option value="사용중">사용중</option>
+                <option value="미사용">미사용</option>
+              </select>
+            </label>
             <span className={shared.rowSpacer} />
-            <CommonButton
-              variant="ghost"
-              size="md"
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
+            <button
+              type="button"
               className={shared.resetBtn}
-              onClick={() => {
-                setKeyword("");
-                setFilter("전체");
-              }}
+              onClick={reset}
             >
               초기화
-            </CommonButton>
+            </button>
           </div>
         </div>
-      </div>
-      <div className={shared.gridWrap}>
         <div className={shared.resultRow}>
           <span className={shared.resultLabel}>총 {filtered.length}건</span>
           <div className={shared.resultActions}>
@@ -216,13 +238,19 @@ export function BrandExposurePage() {
                 })
               }
             />
+            <select className={shared.pageSizeSelect} aria-label="페이지 크기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
           </div>
         </div>
+      </header>
+      <div className={shared.gridWrap}>
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="150px 1.4fr 80px 90px 160px 110px"
-          minWidth="850px"
+          gridTemplate="130px minmax(220px, 2fr) 110px 100px 140px 130px"
+          minWidth="880px"
           empty={rows.length === 0}
           emptyText="검색 조건에 해당하는 브랜드가 없습니다."
           emptySubtext="검색어나 노출 상태를 변경해 주세요."
@@ -235,6 +263,6 @@ export function BrandExposurePage() {
           }
         />
       </div>
-    </section>
+    </div>
   );
 }

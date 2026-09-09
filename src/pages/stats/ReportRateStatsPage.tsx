@@ -23,6 +23,7 @@ import layout from "./SalesAnalysisPage.module.css";
 import styles from "./ReportRateStatsPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
 import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
+import { useStatisticsPeriod } from "./useStatisticsPeriod";
 import {
   aggregate,
   categoryRows,
@@ -109,7 +110,8 @@ function TrendChart({
 
 export function ReportRateStatsPage() {
   const navigate = useNavigate();
-  const [range, setRange] = useState<QuickRange>("최근 30일");
+  const { range, start, end, draftStart, draftEnd, setDraftStart, setDraftEnd, setRange, applyDateRange } =
+    useStatisticsPeriod<QuickRange>("최근 30일", quickRangeDates);
   const [dimension, setDimension] = useState<Dimension>("reason");
   const [trendMetric, setTrendMetric] = useState<TrendMetric>("reportCount");
   const [selected, setSelected] = useState<DimensionRow | null>(null);
@@ -129,7 +131,6 @@ export function ReportRateStatsPage() {
       ]),
   );
 
-  const [start, end] = quickRangeDates(range);
   const [prevStart, prevEnd] = previousPeriod(start, end);
 
   const agg = useMemo(() => aggregate(start, end), [start, end]);
@@ -449,8 +450,13 @@ export function ReportRateStatsPage() {
           range={range}
           ranges={QUICK_RANGES}
           onRangeChange={(value) => setRange(value as QuickRange)}
+          startDate={draftStart}
+          endDate={draftEnd}
+          onStartDateChange={setDraftStart}
+          onEndDateChange={setDraftEnd}
+          dateAriaLabel="신고율 조회"
           onReset={reset}
-          onApply={() => flash("조회 조건을 적용했습니다.")}
+          onApply={() => { if (applyDateRange()) flash("조회 조건을 적용했습니다."); }}
           summary={<>조회기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong> · 비교 <strong>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</strong> · 최근 집계 <strong>{refreshedAt}</strong></>}
         />
 

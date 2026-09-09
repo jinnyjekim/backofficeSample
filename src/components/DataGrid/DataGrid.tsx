@@ -435,7 +435,28 @@ export function DataGrid({
           data-datagrid-head
         >
           {effectiveSelectable && (
-            <input type="checkbox" className={styles.checkbox} checked={effectiveAllSelected} onChange={toggleAllRows} aria-label="현재 목록 전체 선택" />
+            <div
+              className={styles.checkCell}
+              onClick={toggleAllRows}
+              role="checkbox"
+              aria-checked={effectiveAllSelected}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault();
+                  toggleAllRows();
+                }
+              }}
+            >
+              <input
+                type="checkbox"
+                className={styles.checkbox}
+                checked={effectiveAllSelected}
+                onChange={() => {}}
+                style={{ pointerEvents: 'none' }}
+                aria-label="현재 목록 전체 선택"
+              />
+            </div>
           )}
           {displayColumns.map((col, i) => {
             const headerAlign = centeredColumnIndexes.has(i) ? 'center' : col.align;
@@ -456,22 +477,58 @@ export function DataGrid({
             key={row.id}
             className={styles.row}
             style={{ minWidth, gridTemplateColumns: template, background: row.bg, boxShadow: row.mark }}
-            onClick={row.onClick}
+            onClick={(e) => {
+              if (effectiveSelectable) {
+                const target = e.target as HTMLElement | null;
+                const isInsideCheckCell = Boolean(target?.closest(`.${styles.checkCell}`));
+                const firstDataCell = e.currentTarget.querySelector(`.${styles.cellWrap}`) as HTMLElement | null;
+                const isLeftOfDataCells = firstDataCell ? e.clientX < firstDataCell.getBoundingClientRect().left : false;
+
+                // 빨간색으로 표시된 체크박스 열 영역(패딩, checkCell, gap 포함)을 누른 경우: 오직 select 동작만 실행하고 드로워 등 다른 동작 차단
+                if (isInsideCheckCell || isLeftOfDataCells) {
+                  toggleRow(row, e);
+                  return;
+                }
+              }
+
+              // 버튼이나 기타 대화형 요소 클릭 시 행 클릭 동작 방지
+              const target = e.target as HTMLElement | null;
+              if (target?.closest('button, a, input, select, textarea, [data-prevent-row-click]')) {
+                return;
+              }
+
+              row.onClick?.(e);
+            }}
             data-datagrid-row
             data-selected={selectedOf(row) ? 'true' : 'false'}
           >
             {effectiveSelectable && (
-              <input
-                type="checkbox"
-                className={styles.checkbox}
-                checked={selectedOf(row)}
-                aria-label={`${row.id} 선택`}
+              <div
+                className={styles.checkCell}
+                role="checkbox"
+                aria-checked={selectedOf(row)}
+                tabIndex={0}
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleRow(row, e);
                 }}
-                onChange={() => {}}
-              />
+                onKeyDown={(e) => {
+                  if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleRow(row, e as unknown as React.MouseEvent);
+                  }
+                }}
+              >
+                <input
+                  type="checkbox"
+                  className={styles.checkbox}
+                  checked={selectedOf(row)}
+                  aria-label={`${row.id} 선택`}
+                  onChange={() => {}}
+                  style={{ pointerEvents: 'none' }}
+                />
+              </div>
             )}
             {row.cells.map((cell, i) => (
               <div key={i} className={`${styles.cellWrap} ${isBadgeCell(cell) ? styles.badgeCellWrap : ''}`} style={{ textAlign: temporalColumnIndexes.has(i) || serialColumnIndexes.has(i) || statusColumnIndexes.has(i) ? 'center' : isBadgeCell(cell) ? undefined : cell.align }} data-datagrid-cell data-export-value={cellExportValue(cell)}>

@@ -3,7 +3,6 @@ import { DataGrid } from "../../components/DataGrid";
 import type { GridColumn, GridRow } from "../../components/DataGrid/types";
 import {
   CommonButton,
-  CommonInput,
   ExcelDownloadButton,
   showToast,
 } from "../../components/common";
@@ -47,7 +46,6 @@ export function BrandProductsPage() {
   const [status, setStatus] = useState<StatusFilter>("전체");
   const [brandCode, setBrandCode] = useState("");
   const [category, setCategory] = useState("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
   const categories = useMemo(
     () => [...new Set(sourceRows.map((product) => product.category))],
     [sourceRows],
@@ -123,17 +121,17 @@ export function BrandProductsPage() {
   }));
 
   return (
-    <section className={shared.page}>
-      <div className={shared.headTop}>
+    <div className={shared.page}>
+      <header className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>브랜드별 상품</h1>
-            <p className={shared.subtitle}>
+            <div className={shared.title}>브랜드별 상품</div>
+            <div className={shared.subtitle}>
               브랜드에 연결된 상품과 판매·재고 상태를 확인합니다.
-            </p>
+            </div>
           </div>
         </div>
-        <div className={shared.filterBox} data-filter-expanded={showAdvanced}>
+        <div className={shared.filterBox}>
           <form
             className={shared.filterRow1}
             onSubmit={(event) => {
@@ -141,16 +139,15 @@ export function BrandProductsPage() {
               setSearch(keyword.trim());
             }}
           >
-            <CommonInput.Search
-              aria-label="브랜드별 상품 검색"
+            <input
               className={shared.searchInput}
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
               placeholder="상품명 / 상품코드 / 브랜드 검색"
             />
-            <CommonButton type="submit" variant="emphasis" size="sm">
+            <button type="submit" className={shared.searchBtn}>
               검색
-            </CommonButton>
+            </button>
             <div className={shared.quickFilters}>
               {STATUS_FILTERS.map((item) => {
                 const active = status === item;
@@ -164,7 +161,7 @@ export function BrandProductsPage() {
                     key={item}
                     variant={active ? "primary-light" : "secondary"}
                     size="md"
-                    className={shared.qfBtn}
+                    className={`${shared.qfBtn} ${active ? shared.active : ""}`}
                     onClick={() => setStatus(item)}
                   >
                     <span className={shared.qfLabel}>{item}</span>
@@ -173,61 +170,52 @@ export function BrandProductsPage() {
                 );
               })}
             </div>
+          </form>
+          <div className={shared.filterRow2}>
+            <label className="globalFilterField">
+              <span>브랜드</span>
+              <select
+                aria-label="브랜드"
+                className={shared.selectSm}
+                value={brandCode}
+                onChange={(event) => setBrandCode(event.target.value)}
+              >
+                <option value="">전체 브랜드</option>
+                {BRANDS.map((brand) => (
+                  <option key={brand.id} value={brand.code}>
+                    {brand.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="globalFilterField">
+              <span>카테고리</span>
+              <select
+                aria-label="카테고리"
+                className={shared.selectSm}
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+              >
+                <option value="">전체 카테고리</option>
+                {categories.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
+            </label>
             <span className={shared.rowSpacer} />
-            <CommonButton
-              variant="secondary"
-              size="md"
-              className={shared.detailFilterBtn}
-              onClick={() => setShowAdvanced((current) => !current)}
-            >
-              상세 필터 {showAdvanced ? "−" : "+"}
-            </CommonButton>
-            <CommonButton
-              variant="ghost"
-              size="md"
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
+            <button
+              type="button"
               className={shared.resetBtn}
               onClick={reset}
             >
               초기화
-            </CommonButton>
-          </form>
-          {showAdvanced && (
-            <div className={shared.filterRow2}>
-              <label className="globalFilterField">
-                <span>브랜드</span>
-                <select
-                  aria-label="브랜드"
-                  className={shared.selectSm}
-                  value={brandCode}
-                  onChange={(event) => setBrandCode(event.target.value)}
-                >
-                  <option value="">전체 브랜드</option>
-                  {BRANDS.map((brand) => (
-                    <option key={brand.id} value={brand.code}>
-                      {brand.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="globalFilterField">
-                <span>카테고리</span>
-                <select
-                  aria-label="카테고리"
-                  className={shared.selectSm}
-                  value={category}
-                  onChange={(event) => setCategory(event.target.value)}
-                >
-                  <option value="">전체 카테고리</option>
-                  {categories.map((item) => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </select>
-              </label>
-            </div>
-          )}
+            </button>
+          </div>
         </div>
-      </div>
-      <div className={shared.gridWrap}>
+
         <div className={shared.resultRow}>
           <span className={shared.resultLabel}>총 {filtered.length}건</span>
           <div className={shared.resultActions}>
@@ -246,11 +234,13 @@ export function BrandProductsPage() {
             </select>
           </div>
         </div>
+      </header>
+      <div className={shared.gridWrap}>
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="1.5fr 1fr 110px 90px 82px 70px 105px"
-          minWidth="880px"
+          gridTemplate="minmax(220px, 2fr) minmax(140px, 1.2fr) minmax(110px, 1fr) 110px 95px 85px 120px"
+          minWidth="920px"
           empty={rows.length === 0}
           emptyText="검색 조건에 해당하는 브랜드 상품이 없습니다."
           emptySubtext="검색어나 필터 조건을 변경해 주세요."
@@ -265,6 +255,6 @@ export function BrandProductsPage() {
           }
         />
       </div>
-    </section>
+    </div>
   );
 }

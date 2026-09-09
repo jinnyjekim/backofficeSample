@@ -23,6 +23,7 @@ import layout from "./SalesAnalysisPage.module.css";
 import styles from "./ProductRegistrationStatsPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
 import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
+import { useStatisticsPeriod } from "./useStatisticsPeriod";
 import {
   ACTIVE_LABEL,
   INACTIVE_LABEL,
@@ -135,7 +136,8 @@ export function ProductRegistrationStatsPage({
 }: { defaultMode?: Mode } = {}) {
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>(defaultMode);
-  const [range, setRange] = useState<QuickRange>("최근 30일");
+  const { range, start, end, draftStart, draftEnd, setDraftStart, setDraftEnd, setRange, applyDateRange } =
+    useStatisticsPeriod<QuickRange>("최근 30일", quickRangeDates);
   const [dimension, setDimension] = useState<Dimension>("category");
   const [trendMetric, setTrendMetric] =
     useState<TrendMetric>("newRegistrations");
@@ -148,7 +150,6 @@ export function ProductRegistrationStatsPage({
     () => new Set(["name", "total", "new", "active", "ended", "change"]),
   );
 
-  const [start, end] = quickRangeDates(range);
   const [prevStart, prevEnd] = previousPeriod(start, end);
 
   const agg = useMemo(() => aggregate(mode, start, end), [mode, start, end]);
@@ -530,8 +531,13 @@ export function ProductRegistrationStatsPage({
           range={range}
           ranges={QUICK_RANGES}
           onRangeChange={(value) => setRange(value as QuickRange)}
+          startDate={draftStart}
+          endDate={draftEnd}
+          onStartDateChange={setDraftStart}
+          onEndDateChange={setDraftEnd}
+          dateAriaLabel="상품 등록 분석 조회"
           onReset={reset}
-          onApply={() => flash("조회 조건을 적용했습니다.")}
+          onApply={() => { if (applyDateRange()) flash("조회 조건을 적용했습니다."); }}
           summary={<>조회기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong> · 비교 <strong>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</strong> · 최근 집계 <strong>{refreshedAt}</strong></>}
         />
 

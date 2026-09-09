@@ -36,9 +36,9 @@ const TABS: [Tab, string][] = [
 ];
 
 const USAGE_OPTIONS: { value: ShippingUsage; title: string; desc: string }[] = [
-  { value: '사용', title: '사용', desc: '모든 주문에 기본 배송비를 부과합니다.' },
-  { value: '무료배송만 사용', title: '무료배송만 사용', desc: '기준 금액 이상이면 무료, 미만이면 기본 배송비.' },
-  { value: '미사용', title: '미사용', desc: '배송비를 부과하지 않습니다.' },
+  { value: '사용', title: '사용', desc: '모든 주문에 기본 배송비 부과' },
+  { value: '무료배송만 사용', title: '무료배송만 사용', desc: '기준 금액 이상 무료, 미만은 기본 배송비' },
+  { value: '미사용', title: '미사용', desc: '배송비를 부과하지 않음' },
 ];
 const CALC_UNIT_OPTIONS: { value: CalcUnit; title: string; desc: string }[] = [
   { value: '배송건당', title: '배송건당', desc: '분할 출고 시 건마다 계산' },
@@ -195,14 +195,13 @@ export function ShippingBaseFeePage() {
                         <CommonButton
                           key={o.value}
                           type="button"
-                          variant={draftPolicy.usage === o.value ? 'primary-light' : 'secondary'}
+                          variant="option"
                           size="md"
-                          aria-pressed={draftPolicy.usage === o.value}
-                          className={styles.choiceCard}
+                          selected={draftPolicy.usage === o.value}
+                          description={o.desc}
                           onClick={() => set('usage', o.value)}
                         >
-                          <span className={styles.choiceCardTitle}>{o.title}</span>
-                          <span className={styles.choiceCardCaption}>{o.desc}</span>
+                          {o.title}
                         </CommonButton>
                       ))}
                     </div>
@@ -220,6 +219,7 @@ export function ShippingBaseFeePage() {
                       </div>
                       <div className={styles.thresholdInputRow}>
                         <CommonInput.Number
+                          clearable={false}
                           className={styles.thresholdInput}
                           min={0}
                           suffix="원"
@@ -248,6 +248,7 @@ export function ShippingBaseFeePage() {
                       <div>
                         <div className={styles.fieldBlockLabel}>기본 배송비</div>
                         <CommonInput.Number
+                          clearable={false}
                           className={styles.fieldInput}
                           min={0}
                           suffix="원"
@@ -276,6 +277,7 @@ export function ShippingBaseFeePage() {
                       <div>
                         <div className={styles.fieldBlockLabel}>최소 배송비</div>
                         <CommonInput.Number
+                          clearable={false}
                           className={styles.fieldInput}
                           min={0}
                           suffix="원"
@@ -287,6 +289,7 @@ export function ShippingBaseFeePage() {
                       <div>
                         <div className={styles.fieldBlockLabel}>최대 배송비 <span className={styles.fieldBlockHint}>비워두면 제한 없음</span></div>
                         <CommonInput.Number
+                          clearable={false}
                           className={styles.fieldInput}
                           min={0}
                           suffix="원"
@@ -343,7 +346,7 @@ export function ShippingBaseFeePage() {
                   </div>
                   <div className={styles.sectionControls}>
                     <div className={styles.taxRow}>
-                      <div>
+                      <div className={styles.fieldSpan2}>
                         <div className={styles.fieldBlockLabel}>배송비 과세 구분</div>
                         <div className={styles.pillRow2}>
                           {(['과세', '비과세', '세금 정책에 따름'] as TaxTreatment[]).map((v) => (
@@ -366,6 +369,7 @@ export function ShippingBaseFeePage() {
                         <div className={styles.dateRow2}>
                           <CommonDatePicker
                             size="md"
+                            className={styles.dateField}
                             clearable={false}
                             value={draftPolicy.startDate}
                             aria-label="적용 시작일"
@@ -393,6 +397,7 @@ export function ShippingBaseFeePage() {
                         <span className={styles.sideFieldLabel}>주문금액</span>
                         <div className={styles.sideFieldControl}>
                           <CommonInput.Number
+                            clearable={false}
                             className={styles.fieldInput}
                             min={0}
                             suffix="원"
@@ -404,10 +409,12 @@ export function ShippingBaseFeePage() {
                       </div>
                       <div className={styles.sideFieldRow}>
                         <span className={styles.sideFieldLabel}>배송 건수</span>
-                        <div className={styles.sideStepper}>
-                          <CommonButton type="button" variant="secondary" size="sm" aria-label="배송 건수 감소" onClick={() => setCalcCount((n) => Math.max(1, n - 1))}>−</CommonButton>
-                          <span className={styles.sideStepperValue}>{calcCount}</span>
-                          <CommonButton type="button" variant="secondary" size="sm" aria-label="배송 건수 증가" onClick={() => setCalcCount((n) => Math.min(9, n + 1))}>+</CommonButton>
+                        <div className={styles.sideFieldControl}>
+                          <div className={styles.sideStepper}>
+                            <CommonButton type="button" variant="secondary" size="sm" aria-label="배송 건수 감소" onClick={() => setCalcCount((n) => Math.max(1, n - 1))}>−</CommonButton>
+                            <span className={styles.sideStepperValue}>{calcCount}</span>
+                            <CommonButton type="button" variant="secondary" size="sm" aria-label="배송 건수 증가" onClick={() => setCalcCount((n) => Math.min(9, n + 1))}>+</CommonButton>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -489,7 +496,7 @@ export function ShippingBaseFeePage() {
                 <div className={styles.cardGrid}>
                   <div>
                     <div className={styles.fieldBlockLabel}>무료배송 기준금액</div>
-                    <CommonInput.Number className={styles.fieldInput} min={0} suffix="원" aria-label="무료배송 기준금액" disabled={!draftPolicy.freeShippingEnabled} value={draftPolicy.freeShippingThreshold} onChange={(e) => set('freeShippingThreshold', Math.max(0, Number(e.target.value) || 0))} />
+                    <CommonInput.Number clearable={false} className={styles.fieldInput} min={0} suffix="원" aria-label="무료배송 기준금액" disabled={!draftPolicy.freeShippingEnabled} value={draftPolicy.freeShippingThreshold} onChange={(e) => set('freeShippingThreshold', Math.max(0, Number(e.target.value) || 0))} />
                   </div>
                   <div>
                     <div className={styles.fieldBlockLabel}>무료배송 기준 비교</div>

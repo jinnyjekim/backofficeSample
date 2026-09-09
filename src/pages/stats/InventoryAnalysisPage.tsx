@@ -16,7 +16,6 @@ import type {
   GridRow,
 } from "../../components/DataGrid/types";
 import { CommonSelect } from "../../components/common";
-import { DatePicker } from "../../components/forms/DatePicker";
 import { downloadStatisticsReport } from "../../lib/statisticsReport";
 import { useOutsideClose } from "../../lib/useOutsideClose";
 import {
@@ -29,6 +28,7 @@ import shared from "../ops/opsShared.module.css";
 import layout from "./SalesAnalysisPage.module.css";
 import styles from "./InventoryAnalysisPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
+import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
 import { TODAY, addDays, fmtDate, fmtWon } from "./transactionStatsData";
 
 type Mode = "b2c" | "b2b";
@@ -1139,111 +1139,48 @@ export function InventoryAnalysisPage() {
           </button>
         </div>
 
-        <div className={layout.filterCard}>
-          <div className={`${layout.filterGrid} ${styles.inventoryFilterGrid}`}>
-            <label className={layout.filterField}>
-              <span>재고 기준일</span>
-              <DatePicker
-                controlSize="sm"
-                value={snapshotDate}
-                onChange={(event) => setSnapshotDate(event.target.value)}
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>{mode === "b2b" ? "수요 분석 기간" : "판매속도 기준"}</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={period}
-                options={Object.keys(ANALYSIS_DAYS).map((value) => ({
-                  label: value,
-                  value,
-                }))}
-                onChange={(value) => setPeriod(String(value))}
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>카테고리</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={category}
-                options={categories.map((value) => ({ label: value, value }))}
-                onChange={(value) => setCategory(String(value))}
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>창고</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={warehouse}
-                options={["전체 창고", "수도권 센터", "부산 센터"].map(
-                  (value) => ({ label: value, value }),
-                )}
-                onChange={(value) => setWarehouse(String(value))}
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>재고 위험</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={risk}
-                options={["전체 상태", ...Object.keys(RISK_META)].map(
-                  (value) => ({ label: value, value }),
-                )}
-                onChange={(value) => setRisk(String(value))}
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>재고 평가 기준</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={valuation}
-                options={["평균 원가", "최근 매입가", "표준 원가"].map(
-                  (value) => ({ label: value, value }),
-                )}
-                onChange={(value) => setValuation(String(value))}
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>입고 예정 반영</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={includeInbound}
-                options={["미반영", "7일 내 입고만", "전체 입고 예정"].map(
-                  (value) => ({ label: value, value }),
-                )}
-                onChange={(value) => setIncludeInbound(String(value))}
-              />
-            </label>
-            <div className={layout.filterActions}>
-              <button
-                type="button"
-                className={layout.resetButton}
-                onClick={reset}
-              >
-                초기화
-              </button>
-              <button
-                type="button"
-                className={layout.applyButton}
-                onClick={() => flash("조회 조건을 적용했습니다.")}
-              >
-                조회
-              </button>
-            </div>
-          </div>
-          <div className={layout.periodSummary}>
-            재고 기준 <strong>{fmtDate(snapshotDate)} 23:59</strong> ·{" "}
-            {mode === "b2b" ? "수요" : "판매"} 분석 <strong>{period}</strong> ·
-            최근 집계 <strong>{refreshedAt}</strong> · C2C는 플랫폼 보유 재고가
-            없어 분석 대상에서 제외
-          </div>
-        </div>
+        <StatisticsFilterToolbar
+          startDate={snapshotDate}
+          onStartDateChange={setSnapshotDate}
+          dateAriaLabel="재고 분석"
+          details={
+            <>
+              <label className={layout.filterField}>
+                <span>{mode === "b2b" ? "수요 분석 기간" : "판매속도 기준"}</span>
+                <CommonSelect
+                  className={layout.analysisSelect}
+                  size="sm"
+                  value={period}
+                  options={Object.keys(ANALYSIS_DAYS).map((value) => ({ label: value, value }))}
+                  onChange={(value) => setPeriod(String(value))}
+                />
+              </label>
+              <label className={layout.filterField}>
+                <span>카테고리</span>
+                <CommonSelect className={layout.analysisSelect} size="sm" value={category} options={categories.map((value) => ({ label: value, value }))} onChange={(value) => setCategory(String(value))} />
+              </label>
+              <label className={layout.filterField}>
+                <span>창고</span>
+                <CommonSelect className={layout.analysisSelect} size="sm" value={warehouse} options={["전체 창고", "수도권 센터", "부산 센터"].map((value) => ({ label: value, value }))} onChange={(value) => setWarehouse(String(value))} />
+              </label>
+              <label className={layout.filterField}>
+                <span>재고 위험</span>
+                <CommonSelect className={layout.analysisSelect} size="sm" value={risk} options={["전체 상태", ...Object.keys(RISK_META)].map((value) => ({ label: value, value }))} onChange={(value) => setRisk(String(value))} />
+              </label>
+              <label className={layout.filterField}>
+                <span>재고 평가 기준</span>
+                <CommonSelect className={layout.analysisSelect} size="sm" value={valuation} options={["평균 원가", "최근 매입가", "표준 원가"].map((value) => ({ label: value, value }))} onChange={(value) => setValuation(String(value))} />
+              </label>
+              <label className={layout.filterField}>
+                <span>입고 예정 반영</span>
+                <CommonSelect className={layout.analysisSelect} size="sm" value={includeInbound} options={["미반영", "7일 내 입고만", "전체 입고 예정"].map((value) => ({ label: value, value }))} onChange={(value) => setIncludeInbound(String(value))} />
+              </label>
+            </>
+          }
+          onReset={reset}
+          onApply={() => flash("조회 조건을 적용했습니다.")}
+          summary={<>재고 기준 <strong>{fmtDate(snapshotDate)} 23:59</strong> · {mode === "b2b" ? "수요" : "판매"} 분석 <strong>{period}</strong> · 최근 집계 <strong>{refreshedAt}</strong> · C2C는 플랫폼 보유 재고가 없어 분석 대상에서 제외</>}
+        />
 
         {showBasis && (
           <div className={layout.basisPanel}>

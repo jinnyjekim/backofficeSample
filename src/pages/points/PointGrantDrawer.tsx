@@ -27,7 +27,8 @@ interface Props {
   onSubmitDeduct: (form: DeductFormData) => void;
 }
 
-export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, onSubmitDeduct }: Props) {
+export function PointGrantDrawer({ mode: initialMode, balance: b, onCancel, onSubmitGrant, onSubmitDeduct }: Props) {
+  const [mode, setMode] = useState<GrantMode>(initialMode);
   const [amount, setAmount] = useState('1000');
   const [grantReason, setGrantReason] = useState<GrantReason>('CS 보상');
   const [deductReason, setDeductReason] = useState<DeductReason>('오지급 회수');
@@ -35,6 +36,14 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
   const [timing, setTiming] = useState<'즉시' | '지정'>('즉시');
   const [confirmAt, setConfirmAt] = useState(TODAY);
   const [error, setError] = useState('');
+  const isGrant = mode === 'grant';
+
+  function switchMode(m: GrantMode) {
+    setMode(m);
+    setError('');
+    setDetail('');
+    setAmount('1000');
+  }
 
   // ESC 키로 닫기
   useEffect(() => {
@@ -47,15 +56,15 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
 
   function submit() {
     const amt = Math.max(0, Number(amount) || 0);
-    if (amt <= 0) return setError('지급/차감할 포인트를 입력해 주세요.');
+    if (amt <= 0) return setError(`${isGrant ? '지급' : '차감'}할 포인트를 입력해 주세요.`);
     if (!detail.trim()) return setError('상세 사유를 입력해 주세요.');
 
-    if (mode === 'deduct' && amt > b.available) {
+    if (!isGrant && amt > b.available) {
       return setError(`사용 가능한 포인트(${fmtPoint(b.available)})보다 많이 차감할 수 없습니다.`);
     }
 
     setError('');
-    if (mode === 'grant') {
+    if (isGrant) {
       onSubmitGrant({ amount: amt, reason: grantReason, detail: detail.trim(), immediate: timing === '즉시', confirmAt: timing === '지정' ? confirmAt : null });
     } else {
       onSubmitDeduct({ amount: amt, reason: deductReason, detail: detail.trim() });
@@ -64,14 +73,34 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
 
   const modal = (
     <div className={modalStyles.overlay} onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}>
-      <div className={modalStyles.modal} role="dialog" aria-modal="true" aria-label={mode === 'grant' ? '포인트 지급' : '포인트 차감'}>
+      <div className={modalStyles.modal} role="dialog" aria-modal="true" aria-label="포인트 관리">
         {/* 헤더 */}
         <div className={modalStyles.header}>
           <div>
             <div className={modalStyles.eyebrow}>포인트 / 적립금 관리 · 보유 현황</div>
-            <div className={modalStyles.title}>{mode === 'grant' ? '포인트 지급' : '포인트 차감'}</div>
+            <div className={modalStyles.title}>포인트 관리</div>
           </div>
           <button type="button" className={modalStyles.closeBtn} onClick={onCancel} aria-label="닫기">×</button>
+        </div>
+
+        {/* 지급 / 차감 탭 */}
+        <div className={modalStyles.modeTabs}>
+          <button
+            type="button"
+            className={`${modalStyles.modeTab} ${isGrant ? modalStyles.modeTabActive : ''}`}
+            aria-pressed={isGrant}
+            onClick={() => switchMode('grant')}
+          >
+            포인트 지급
+          </button>
+          <button
+            type="button"
+            className={`${modalStyles.modeTab} ${!isGrant ? modalStyles.modeTabDeductActive : ''}`}
+            aria-pressed={!isGrant}
+            onClick={() => switchMode('deduct')}
+          >
+            포인트 차감
+          </button>
         </div>
 
         {/* 본문 */}
@@ -92,7 +121,9 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
 
           {/* 포인트 입력 */}
           <div className={modalStyles.formGroup}>
-            <label className={modalStyles.formLabel}>{mode === 'grant' ? '지급' : '차감'} 포인트 *</label>
+            <label className={modalStyles.formLabel}>
+              {isGrant ? '지급' : '차감'} 포인트 *
+            </label>
             <input
               className={modalStyles.formInput}
               type="number"
@@ -105,8 +136,10 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
 
           {/* 사유 선택 */}
           <div className={modalStyles.formGroup}>
-            <label className={modalStyles.formLabel}>{mode === 'grant' ? '지급' : '차감'} 사유 *</label>
-            {mode === 'grant' ? (
+            <label className={modalStyles.formLabel}>
+              {isGrant ? '지급' : '차감'} 사유 *
+            </label>
+            {isGrant ? (
               <select className={modalStyles.formSelect} value={grantReason} onChange={(e) => setGrantReason(e.target.value as GrantReason)}>
                 {GRANT_REASONS.map((r) => <option key={r}>{r}</option>)}
               </select>
@@ -129,7 +162,7 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
           </div>
 
           {/* 지급 시점 (지급 모드만) */}
-          {mode === 'grant' && (
+          {isGrant && (
             <>
               <div className={modalStyles.sectionTitle}>사용 가능 시점</div>
               <div className={modalStyles.radioRow}>
@@ -149,7 +182,7 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
           )}
 
           {/* 차감 시 안내 */}
-          {mode === 'deduct' && (
+          {!isGrant && (
             <div className={modalStyles.notice}>
               사용 가능한 포인트보다 많이 차감할 수 없습니다. 마이너스 잔액은 허용되지 않습니다.
             </div>
@@ -162,8 +195,12 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
         {/* 푸터 */}
         <div className={modalStyles.footer}>
           <button type="button" className={modalStyles.cancelBtn} onClick={onCancel}>취소</button>
-          <button type="button" className={modalStyles.confirmBtn} onClick={submit}>
-            {mode === 'grant' ? '지급' : '차감'}
+          <button
+            type="button"
+            className={isGrant ? modalStyles.confirmBtn : modalStyles.deductConfirmBtn}
+            onClick={submit}
+          >
+            {isGrant ? '지급' : '차감'}
           </button>
         </div>
       </div>
