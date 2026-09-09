@@ -22,6 +22,7 @@ import shared from "../ops/opsShared.module.css";
 import layout from "./SalesAnalysisPage.module.css";
 import styles from "./PromotionAnalysisPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
+import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
 import {
   AUDIENCE_DIMENSION,
   MODES,
@@ -619,77 +620,29 @@ export function PromotionAnalysisPage() {
           ))}
         </div>
 
-        <div className={layout.filterCard}>
-          <div className={layout.filterGrid}>
-            <label className={layout.filterField}>
-              <span>기간</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={range}
-                options={QUICK_RANGES.map((value) => ({ label: value, value }))}
-                onChange={(value) => setRange(value as QuickRange)}
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>비교</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={compare}
-                options={COMPARE_OPTIONS.map((value) => ({
-                  label: value,
-                  value,
-                }))}
-                onChange={(value) =>
-                  setCompare(value as (typeof COMPARE_OPTIONS)[number])
-                }
-              />
-            </label>
+        <StatisticsFilterToolbar
+          range={range}
+          ranges={QUICK_RANGES}
+          onRangeChange={(value) => setRange(value as QuickRange)}
+          compare={compare}
+          compareOptions={COMPARE_OPTIONS}
+          onCompareChange={(value) => setCompare(value as (typeof COMPARE_OPTIONS)[number])}
+          details={
             <label className={layout.filterField}>
               <span>프로모션 유형</span>
               <CommonSelect
                 className={layout.analysisSelect}
                 size="sm"
                 value={typeFilter}
-                options={["전체", ...PROMOTION_TYPES].map((value) => ({
-                  label: value,
-                  value,
-                }))}
+                options={["전체", ...PROMOTION_TYPES].map((value) => ({ label: value, value }))}
                 onChange={(value) => setTypeFilter(String(value))}
               />
             </label>
-            <div className={layout.filterActions}>
-              <button
-                type="button"
-                className={layout.resetButton}
-                onClick={reset}
-              >
-                초기화
-              </button>
-              <button
-                type="button"
-                className={layout.applyButton}
-                onClick={() => flash("조회 조건을 적용했습니다.")}
-              >
-                조회
-              </button>
-            </div>
-          </div>
-          <div className={layout.periodSummary}>
-            조회기간{" "}
-            <strong>
-              {fmtDate(start)} ~ {fmtDate(end)}
-            </strong>{" "}
-            · 비교{" "}
-            <strong>
-              {compare === "비교 없음"
-                ? "없음"
-                : `${fmtDate(prevStart)} ~ ${fmtDate(prevEnd)}`}
-            </strong>{" "}
-            · 최근 집계 <strong>{refreshedAt}</strong>
-          </div>
-        </div>
+          }
+          onReset={reset}
+          onApply={() => flash("조회 조건을 적용했습니다.")}
+          summary={<>조회기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong> · 비교 <strong>{compare === "비교 없음" ? "없음" : `${fmtDate(prevStart)} ~ ${fmtDate(prevEnd)}`}</strong> · 최근 집계 <strong>{refreshedAt}</strong></>}
+        />
 
         {showBasis && (
           <div className={layout.basisPanel}>

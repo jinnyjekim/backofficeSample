@@ -757,39 +757,6 @@ export function UserProductHistoryPage() {
       <PageHeading
         title="사용자 상품 처리 이력"
         subtitle="상품 등록·검수·노출·숨김·삭제·복구 과정의 변경 전후 값과 처리 근거를 조회합니다."
-        action={
-          <button
-            type="button"
-            className={shared.downloadBtn}
-            onClick={() =>
-              downloadCsv(
-                "사용자상품-처리이력.csv",
-                [
-                  "발생일시",
-                  "상품 ID",
-                  "처리",
-                  "변경 전",
-                  "변경 후",
-                  "처리자",
-                  "근거",
-                  "사유",
-                ],
-                filtered.map((item) => [
-                  item.occurredAt,
-                  item.productId,
-                  item.action,
-                  item.before,
-                  item.after,
-                  item.actor,
-                  item.source,
-                  item.reason,
-                ]),
-              )
-            }
-          >
-            이력 다운로드
-          </button>
-        }
       />
       <ControlArea>
         <FilterBox>

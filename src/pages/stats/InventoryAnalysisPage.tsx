@@ -1330,6 +1330,11 @@ export function InventoryAnalysisPage() {
                 : `일평균 ${fmtQty(total.dailySales)}`}
             </em>
           </div>
+          <div>
+            <span>재고 자산 평가액</span>
+            <strong>{fmtWon(total.asset)}</strong>
+            <em>평균 회전율 {total.turnover.toFixed(1)}회</em>
+          </div>
         </div>
 
         <section className={layout.card}>

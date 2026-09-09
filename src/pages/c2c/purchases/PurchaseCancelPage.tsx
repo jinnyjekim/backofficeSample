@@ -148,37 +148,6 @@ export function PurchaseCancelPage() {
       <PageHeading
         title="구매 취소"
         subtitle="구매 취소 요청의 사유와 귀책을 확인하고 승인, 반려 및 환불 진행 상태를 관리합니다."
-        action={
-          <button
-            type="button"
-            className={shared.downloadBtn}
-            onClick={() =>
-              downloadCsv(
-                "C2C-구매취소.csv",
-                [
-                  "취소번호",
-                  "구매번호",
-                  "사유",
-                  "귀책",
-                  "환불액",
-                  "상태",
-                  "담당자",
-                ],
-                filtered.map((item) => [
-                  item.id,
-                  item.purchaseId,
-                  item.reasonType,
-                  item.responsibility,
-                  item.refundAmount,
-                  item.status,
-                  item.assignee,
-                ]),
-              )
-            }
-          >
-            다운로드
-          </button>
-        }
       />
       <Metrics
         items={[

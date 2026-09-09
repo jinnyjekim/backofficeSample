@@ -1391,6 +1391,17 @@ export function SalesAnalysisPage() {
             <em>{amountBasis}</em>
           </div>
           <div>
+            <span>건당 평균 금액</span>
+            <strong>{fmtWon(metrics.average)}</strong>
+            <em>
+              {mode === "b2b"
+                ? "계약 건 기준"
+                : mode === "c2c"
+                  ? "거래 건 기준"
+                  : "주문 건 기준"}
+            </em>
+          </div>
+          <div>
             <span>데이터 기준</span>
             <strong>2026.08.31 16:55</strong>
             <em>5분 단위 집계</em>

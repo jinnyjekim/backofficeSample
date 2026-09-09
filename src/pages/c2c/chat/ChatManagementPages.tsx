@@ -181,45 +181,6 @@ export function ChatListPage() {
       <PageHeading
         title="거래 채팅 관리"
         subtitle="C2C 거래 대화의 메타데이터와 위험 신호를 조회하고, 승인된 업무 사유가 있을 때만 메시지 원문을 열람·조치합니다."
-        action={
-          <button
-            type="button"
-            className={shared.downloadBtn}
-            onClick={() =>
-              downloadCsv(
-                "c2c-chat-metadata.csv",
-                [
-                  "채팅방",
-                  "거래번호",
-                  "상품",
-                  "구매자",
-                  "판매자",
-                  "상태",
-                  "위험도",
-                  "메시지 수",
-                  "신고",
-                  "제한",
-                  "최근 메시지",
-                ],
-                filtered.map((room) => [
-                  room.id,
-                  room.tradeId,
-                  room.productTitle,
-                  room.buyerId,
-                  room.sellerId,
-                  room.status,
-                  room.risk,
-                  room.messageCount,
-                  room.reportedCount,
-                  room.restrictedCount,
-                  room.lastAt,
-                ]),
-              )
-            }
-          >
-            메타데이터 다운로드
-          </button>
-        }
       />
       <Metrics
         items={[

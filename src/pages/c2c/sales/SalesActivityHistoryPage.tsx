@@ -93,41 +93,6 @@ export function SalesActivityHistoryPage() {
       <PageHeading
         title="판매 활동 이력"
         subtitle="판매자, 상품, 거래, 제한과 정산에 발생한 상태 변경을 변경 전·후 값과 처리자 기준으로 감사 조회합니다."
-        action={
-          <ExcelDownloadButton
-            type="button"
-            data-grid-download
-            onClick={() =>
-              downloadCsv(
-                "판매-활동-이력.csv",
-                [
-                  "발생일시",
-                  "구분",
-                  "행위",
-                  "대상",
-                  "판매자",
-                  "변경 전",
-                  "변경 후",
-                  "처리자",
-                  "사유",
-                  "IP",
-                ],
-                filtered.map((item) => [
-                  item.occurredAt,
-                  item.category,
-                  item.action,
-                  item.target,
-                  item.sellerId,
-                  item.before,
-                  item.after,
-                  item.actor,
-                  item.reason,
-                  item.ip,
-                ]),
-              )
-            }
-          />
-        }
       />
       <ControlArea>
         <FilterBox>

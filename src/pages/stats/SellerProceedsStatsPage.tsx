@@ -22,6 +22,7 @@ import shared from "../ops/opsShared.module.css";
 import layout from "./SalesAnalysisPage.module.css";
 import styles from "./SellerProceedsStatsPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
+import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
 import {
   aggregate,
   categoryRows,
@@ -456,47 +457,14 @@ export function SellerProceedsStatsPage() {
           </div>
         </div>
 
-        <div className={layout.filterCard}>
-          <div className={layout.filterGrid}>
-            <label className={layout.filterField}>
-              <span>기간</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={range}
-                options={QUICK_RANGES.map((value) => ({ label: value, value }))}
-                onChange={(value) => setRange(value as QuickRange)}
-              />
-            </label>
-            <div className={layout.filterActions}>
-              <button
-                type="button"
-                className={layout.resetButton}
-                onClick={reset}
-              >
-                초기화
-              </button>
-              <button
-                type="button"
-                className={layout.applyButton}
-                onClick={() => flash("조회 조건을 적용했습니다.")}
-              >
-                조회
-              </button>
-            </div>
-          </div>
-          <div className={layout.periodSummary}>
-            조회기간{" "}
-            <strong>
-              {fmtDate(start)} ~ {fmtDate(end)}
-            </strong>{" "}
-            · 비교{" "}
-            <strong>
-              {fmtDate(prevStart)} ~ {fmtDate(prevEnd)}
-            </strong>{" "}
-            · 최근 집계 <strong>{refreshedAt}</strong>
-          </div>
-        </div>
+        <StatisticsFilterToolbar
+          range={range}
+          ranges={QUICK_RANGES}
+          onRangeChange={(value) => setRange(value as QuickRange)}
+          onReset={reset}
+          onApply={() => flash("조회 조건을 적용했습니다.")}
+          summary={<>조회기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong> · 비교 <strong>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</strong> · 최근 집계 <strong>{refreshedAt}</strong></>}
+        />
 
         {showBasis && (
           <div className={layout.basisPanel}>
@@ -545,6 +513,11 @@ export function SellerProceedsStatsPage() {
             <span>정산 확정금액</span>
             <strong>{fmtWon(agg.settlementFinal)}</strong>
             <em>수수료 차감 후</em>
+          </div>
+          <div>
+            <span>출금 완료금액</span>
+            <strong>{fmtWon(agg.payoutDone)}</strong>
+            <em className={layout.changeUp}>정산 지급 완료</em>
           </div>
           <div>
             <span>출금 예정금액</span>

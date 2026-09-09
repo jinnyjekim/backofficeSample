@@ -22,6 +22,7 @@ import shared from "../ops/opsShared.module.css";
 import layout from "./SalesAnalysisPage.module.css";
 import styles from "./DisputeRateStatsPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
+import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
 import {
   aggregate,
   categoryRows,
@@ -447,47 +448,14 @@ export function DisputeRateStatsPage() {
           </div>
         </div>
 
-        <div className={layout.filterCard}>
-          <div className={layout.filterGrid}>
-            <label className={layout.filterField}>
-              <span>기간</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={range}
-                options={QUICK_RANGES.map((value) => ({ label: value, value }))}
-                onChange={(value) => setRange(value as QuickRange)}
-              />
-            </label>
-            <div className={layout.filterActions}>
-              <button
-                type="button"
-                className={layout.resetButton}
-                onClick={reset}
-              >
-                초기화
-              </button>
-              <button
-                type="button"
-                className={layout.applyButton}
-                onClick={() => flash("조회 조건을 적용했습니다.")}
-              >
-                조회
-              </button>
-            </div>
-          </div>
-          <div className={layout.periodSummary}>
-            조회기간{" "}
-            <strong>
-              {fmtDate(start)} ~ {fmtDate(end)}
-            </strong>{" "}
-            · 비교{" "}
-            <strong>
-              {fmtDate(prevStart)} ~ {fmtDate(prevEnd)}
-            </strong>{" "}
-            · 최근 집계 <strong>{refreshedAt}</strong>
-          </div>
-        </div>
+        <StatisticsFilterToolbar
+          range={range}
+          ranges={QUICK_RANGES}
+          onRangeChange={(value) => setRange(value as QuickRange)}
+          onReset={reset}
+          onApply={() => flash("조회 조건을 적용했습니다.")}
+          summary={<>조회기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong> · 비교 <strong>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</strong> · 최근 집계 <strong>{refreshedAt}</strong></>}
+        />
 
         {showBasis && (
           <div className={layout.basisPanel}>
@@ -558,6 +526,18 @@ export function DisputeRateStatsPage() {
               {fmtCount(agg.pendingCount)}
             </strong>
             <em>진행중인 분쟁</em>
+          </div>
+          <div>
+            <span>분쟁 해결률</span>
+            <strong className={layout.changeUp}>
+              {fmtPct(agg.resolveRate)}
+            </strong>
+            <em>접수 대비 해결율</em>
+          </div>
+          <div>
+            <span>평균 해결기간</span>
+            <strong>{agg.avgResolveDays.toFixed(1)}일</strong>
+            <em>접수 → 해결 완료</em>
           </div>
         </div>
 

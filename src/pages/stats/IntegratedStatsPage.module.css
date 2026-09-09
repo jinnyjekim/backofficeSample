@@ -4,8 +4,8 @@
 .domainTabActive { border-color: rgba(79, 70, 229, 0.25) !important; background: #eef2ff !important; color: #4338ca !important; }
 
 .headerActions { display: flex; gap: 8px; align-items: center; }
-.reportBtn { height: 36px; padding: 0 16px; border: 0; background: var(--accent); color: #fff; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; }
-.reportBtn:hover { background: var(--accent-hover); }
+.reportBtn { height: 36px; padding: 0 16px; border: 0; background: var(--common-text, #18181b); color: #fff; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.reportBtn:hover { background: #3f3f46; }
 .dataAsOf { font-size: 11px; color: #a1a1aa; }
 
 .domainSection { background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; padding: 16px 20px; margin: 0 24px 16px; }

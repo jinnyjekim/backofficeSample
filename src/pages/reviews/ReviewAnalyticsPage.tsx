@@ -16,6 +16,8 @@ const COLUMNS: GridColumn[] = [
 ];
 
 export function ReviewAnalyticsPage() {
+  const [keyword, setKeyword] = useState('');
+  const [search, setSearch] = useState('');
   const [period, setPeriod] = useState('30');
   const [productFilter, setProductFilter] = useState('');
 
@@ -29,9 +31,23 @@ export function ReviewAnalyticsPage() {
     cutoff.setDate(cutoff.getDate() - Number(period));
     return REVIEWS.filter((review) => {
       if (new Date(review.createdAt.replace(' ', 'T')) < cutoff) return false;
-      return !productFilter || review.productCode === productFilter;
+      if (productFilter && review.productCode !== productFilter) return false;
+      if (search) {
+        const query = search.toLowerCase();
+        const pName = productName(review.productCode).toLowerCase();
+        const pCode = review.productCode.toLowerCase();
+        if (!pName.includes(query) && !pCode.includes(query)) return false;
+      }
+      return true;
     });
-  }, [period, productFilter]);
+  }, [period, productFilter, search]);
+
+  const resetFilters = () => {
+    setKeyword('');
+    setSearch('');
+    setPeriod('30');
+    setProductFilter('');
+  };
 
   const total = scopedReviews.length;
   const averageRating = total === 0 ? 0 : scopedReviews.reduce((sum, review) => sum + review.rating, 0) / total;
@@ -86,18 +102,65 @@ export function ReviewAnalyticsPage() {
         </div>
 
         <div className={shared.filterBox}>
-          <div className={styles.filterControls}>
-            <label className="globalFilterField"><span>조회 기간</span><select aria-label="조회 기간" className={shared.selectSm} value={period} onChange={(event) => setPeriod(event.target.value)}>
-              <option value="7">최근 7일</option>
-              <option value="30">최근 30일</option>
-              <option value="90">최근 90일</option>
-            </select></label>
-            <label className="globalFilterField"><span>상품</span><select aria-label="상품" className={shared.selectSm} value={productFilter} onChange={(event) => setProductFilter(event.target.value)}>
-              <option value="">전체 상품</option>
-              {productOptions.map((code) => <option key={code} value={code}>{productName(code)} · {code}</option>)}
-            </select></label>
+          <form
+            className={shared.filterRow1}
+            onSubmit={(event) => {
+              event.preventDefault();
+              setSearch(keyword.trim());
+            }}
+          >
+            <input
+              className={shared.searchInput}
+              value={keyword}
+              onChange={(event) => setKeyword(event.target.value)}
+              placeholder="상품명 또는 상품코드 검색"
+              aria-label="상품 검색"
+            />
+            <button type="submit" className={shared.searchBtn}>
+              검색
+            </button>
+          </form>
+          <div className={shared.filterRow2}>
+            <label className="globalFilterField">
+              <span>조회 기간</span>
+              <select
+                aria-label="조회 기간"
+                className={shared.selectSm}
+                value={period}
+                onChange={(event) => setPeriod(event.target.value)}
+              >
+                <option value="7">최근 7일</option>
+                <option value="30">최근 30일</option>
+                <option value="90">최근 90일</option>
+              </select>
+            </label>
+            <label className="globalFilterField">
+              <span>상품</span>
+              <select
+                aria-label="상품"
+                className={shared.selectSm}
+                value={productFilter}
+                onChange={(event) => setProductFilter(event.target.value)}
+              >
+                <option value="">전체 상품</option>
+                {productOptions.map((code) => (
+                  <option key={code} value={code}>
+                    {productName(code)} · {code}
+                  </option>
+                ))}
+              </select>
+            </label>
             <span className={shared.rowSpacer} />
-            <ExcelDownloadButton type="button" data-grid-download />
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
+            <button
+              type="button"
+              className={shared.resetBtn}
+              onClick={resetFilters}
+            >
+              초기화
+            </button>
           </div>
         </div>
 

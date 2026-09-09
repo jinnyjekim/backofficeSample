@@ -23,6 +23,7 @@ import shared from "../ops/opsShared.module.css";
 import layout from "./SalesAnalysisPage.module.css";
 import styles from "./SellerActivityStatsPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
+import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
 import {
   ENTITY_LABEL,
   MODES,
@@ -676,90 +677,51 @@ export function SellerActivityStatsPage({
           ))}
         </div>
 
-        <div className={layout.filterCard}>
-          <div className={layout.filterGrid}>
-            <label className={layout.filterField}>
-              <span>기간</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={range}
-                options={QUICK_RANGES.map((value) => ({ label: value, value }))}
-                onChange={(value) => setRange(value as QuickRange)}
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>세그먼트</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={segmentFilter}
-                options={["전체", ...SEGMENTS].map((value) => ({
-                  label: value,
-                  value,
-                }))}
-                onChange={(value) =>
-                  setSegmentFilter(value as typeof segmentFilter)
-                }
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>상태</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={statusFilter}
-                options={["전체", "활동중", "휴면"].map((value) => ({
-                  label: value,
-                  value,
-                }))}
-                onChange={(value) =>
-                  setStatusFilter(value as typeof statusFilter)
-                }
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>표본 조건</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={minDealsOnly ? "min" : "all"}
-                options={[
-                  { label: `전체 ${ENTITY_LABEL[mode]}`, value: "all" },
-                  { label: "거래 30건 이상", value: "min" },
-                ]}
-                onChange={(value) => setMinDealsOnly(value === "min")}
-              />
-            </label>
-            <div className={layout.filterActions}>
-              <button
-                type="button"
-                className={layout.resetButton}
-                onClick={reset}
-              >
-                초기화
-              </button>
-              <button
-                type="button"
-                className={layout.applyButton}
-                onClick={() => flash("조회 조건을 적용했습니다.")}
-              >
-                조회
-              </button>
-            </div>
-          </div>
-          <div className={layout.periodSummary}>
-            조회기간{" "}
-            <strong>
-              {fmtDate(start)} ~ {fmtDate(end)}
-            </strong>{" "}
-            · 비교{" "}
-            <strong>
-              {fmtDate(prevStart)} ~ {fmtDate(prevEnd)}
-            </strong>{" "}
-            · 최근 집계 <strong>{refreshedAt}</strong>
-          </div>
-        </div>
+        <StatisticsFilterToolbar
+          range={range}
+          ranges={QUICK_RANGES}
+          onRangeChange={(value) => setRange(value as QuickRange)}
+          details={
+            <>
+              <label className={layout.filterField}>
+                <span>세그먼트</span>
+                <CommonSelect
+                  className={layout.analysisSelect}
+                  size="sm"
+                  value={segmentFilter}
+                  options={["전체", ...SEGMENTS].map((value) => ({ label: value, value }))}
+                  onChange={(value) => setSegmentFilter(value as typeof segmentFilter)}
+                />
+              </label>
+              <label className={layout.filterField}>
+                <span>상태</span>
+                <CommonSelect
+                  className={layout.analysisSelect}
+                  size="sm"
+                  value={statusFilter}
+                  options={["전체", "활동중", "휴면"].map((value) => ({ label: value, value }))}
+                  onChange={(value) => setStatusFilter(value as typeof statusFilter)}
+                />
+              </label>
+              <label className={layout.filterField}>
+                <span>표본 조건</span>
+                <CommonSelect
+                  className={layout.analysisSelect}
+                  size="sm"
+                  value={minDealsOnly ? "min" : "all"}
+                  options={[
+                    { label: `전체 ${ENTITY_LABEL[mode]}`, value: "all" },
+                    { label: "거래 30건 이상", value: "min" },
+                  ]}
+                  onChange={(value) => setMinDealsOnly(value === "min")}
+                />
+              </label>
+            </>
+          }
+          onReset={reset}
+          onApply={() => flash("조회 조건을 적용했습니다.")}
+          summary={<>조회기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong> · 비교 <strong>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</strong> · 최근 집계 <strong>{refreshedAt}</strong></>}
+        />
 
         {showBasis && (
           <div className={layout.basisPanel}>

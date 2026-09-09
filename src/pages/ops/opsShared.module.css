@@ -30,7 +30,8 @@
   margin-top: 4px;
   margin-bottom: 16px;
 }
-.createBtn {
+.createBtn,
+.registerBtn {
   height: 36px;
   padding: 0 16px;
   border: 0;
@@ -42,7 +43,8 @@
   cursor: pointer;
   flex: none;
 }
-.createBtn:hover {
+.createBtn:hover,
+.registerBtn:hover {
   background: #3f3f46;
 }
 
@@ -296,16 +298,23 @@
   margin-right: 4px;
 }
 .bulkBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 30px;
   padding: 0 12px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
   font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
   color: #3f3f46;
   cursor: pointer;
+  box-sizing: border-box;
 }
 .bulkBtn:hover {
+  border-color: rgba(0, 0, 0, 0.18);
   background: #fafafa;
 }
 

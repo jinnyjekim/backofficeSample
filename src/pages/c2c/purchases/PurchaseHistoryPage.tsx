@@ -147,39 +147,6 @@ export function PurchaseHistoryPage() {
       <PageHeading
         title="구매 내역"
         subtitle="C2C 구매자의 결제, 배송, 구매확정과 취소·분쟁 상태를 구매 건별로 조회합니다."
-        action={
-          <button
-            type="button"
-            className={shared.downloadBtn}
-            onClick={() =>
-              downloadCsv(
-                "C2C-구매내역.csv",
-                [
-                  "구매번호",
-                  "구매자",
-                  "상품",
-                  "판매자",
-                  "결제금액",
-                  "결제수단",
-                  "상태",
-                  "결제일",
-                ],
-                filtered.map((item) => [
-                  item.id,
-                  buyerById(item.buyerId)?.nickname ?? item.buyerId,
-                  productById(item.productId)?.title ?? item.productId,
-                  sellerById(item.sellerId)?.nickname ?? item.sellerId,
-                  item.amount + item.deliveryFee,
-                  item.paymentMethod,
-                  item.status,
-                  item.paidAt,
-                ]),
-              )
-            }
-          >
-            다운로드
-          </button>
-        }
       />
       <Metrics
         items={[

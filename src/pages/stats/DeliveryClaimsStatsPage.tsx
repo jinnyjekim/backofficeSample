@@ -22,6 +22,7 @@ import shared from "../ops/opsShared.module.css";
 import layout from "./SalesAnalysisPage.module.css";
 import styles from "./DeliveryClaimsStatsPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
+import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
 import {
   CLAIM_TYPE_META,
   DELIVERY_STATUS_META,
@@ -567,62 +568,17 @@ export function DeliveryClaimsStatsPage() {
           ))}
         </div>
 
-        <div className={layout.filterCard}>
-          <div className={layout.filterGrid}>
-            <label className={layout.filterField}>
-              <span>기간</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={range}
-                options={QUICK_RANGES.map((value) => ({ label: value, value }))}
-                onChange={(value) => setRange(value as QuickRange)}
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>비교</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={compare}
-                options={["이전 기간", "비교 없음"].map((value) => ({
-                  label: value,
-                  value,
-                }))}
-                onChange={(value) => setCompare(value as typeof compare)}
-              />
-            </label>
-            <div className={layout.filterActions}>
-              <button
-                type="button"
-                className={layout.resetButton}
-                onClick={reset}
-              >
-                초기화
-              </button>
-              <button
-                type="button"
-                className={layout.applyButton}
-                onClick={() => flash("조회 조건을 적용했습니다.")}
-              >
-                조회
-              </button>
-            </div>
-          </div>
-          <div className={layout.periodSummary}>
-            조회기간{" "}
-            <strong>
-              {fmtDate(start)} ~ {fmtDate(end)}
-            </strong>{" "}
-            · 비교{" "}
-            <strong>
-              {compare === "비교 없음"
-                ? "없음"
-                : `${fmtDate(prevStart)} ~ ${fmtDate(prevEnd)}`}
-            </strong>{" "}
-            · 최근 집계 <strong>{refreshedAt}</strong>
-          </div>
-        </div>
+        <StatisticsFilterToolbar
+          range={range}
+          ranges={QUICK_RANGES}
+          onRangeChange={(value) => setRange(value as QuickRange)}
+          compare={compare}
+          compareOptions={["이전 기간", "비교 없음"]}
+          onCompareChange={(value) => setCompare(value as typeof compare)}
+          onReset={reset}
+          onApply={() => flash("조회 조건을 적용했습니다.")}
+          summary={<>조회기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong> · 비교 <strong>{compare === "비교 없음" ? "없음" : `${fmtDate(prevStart)} ~ ${fmtDate(prevEnd)}`}</strong> · 최근 집계 <strong>{refreshedAt}</strong></>}
+        />
 
         {showBasis && (
           <div className={layout.basisPanel}>

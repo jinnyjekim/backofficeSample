@@ -1077,14 +1077,61 @@ button {
   vertical-align: middle !important;
 }
 
-/* 페이지 헤더 우측 주요 액션 버튼(등록/생성/추가 등) 토큰 검정색 통일 */
-:where(header, [class*="header"], [class*="headTop"], [class*="headRow"], [class*="pageHeader"], [class*="titleRow"], [class*="headerTop"])
-  :is([class*="createBtn"], [class*="CreateBtn"], [class*="reviewPrimaryBtn"], [class*="primaryBtn"]):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]) {
+/* 페이지 헤더 우측 주요 액션 버튼(등록/생성/추가/신규 등) 토큰 검정색 완벽 통일 */
+:where(
+  header,
+  [class*="header"],
+  [class*="Header"],
+  [class*="headTop"],
+  [class*="headRow"],
+  [class*="head"],
+  [class*="Head"],
+  [class*="pageHeader"],
+  [class*="titleRow"],
+  [class*="headerTop"],
+  [class*="top"]
+)
+  :is(
+    [class*="createBtn"],
+    [class*="CreateBtn"],
+    [class*="registerBtn"],
+    [class*="RegisterBtn"],
+    [class*="reviewPrimaryBtn"],
+    [class*="reportBtn"],
+    [class*="addBtn"],
+    [class*="primaryBtn"],
+    [class*="PrimaryBtn"],
+    [class*="primaryButton"]
+  ):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]):not([class*="panel"]):not([class*="dialog"]) {
   background: var(--common-text, #18181b) !important;
   color: #ffffff !important;
 }
 
-:where(header, [class*="header"], [class*="headTop"], [class*="headRow"], [class*="pageHeader"], [class*="titleRow"], [class*="headerTop"])
-  :is([class*="createBtn"], [class*="CreateBtn"], [class*="reviewPrimaryBtn"], [class*="primaryBtn"]):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]):hover:not(:disabled) {
+:where(
+  header,
+  [class*="header"],
+  [class*="Header"],
+  [class*="headTop"],
+  [class*="headRow"],
+  [class*="head"],
+  [class*="Head"],
+  [class*="pageHeader"],
+  [class*="titleRow"],
+  [class*="headerTop"],
+  [class*="top"]
+)
+  :is(
+    [class*="createBtn"],
+    [class*="CreateBtn"],
+    [class*="registerBtn"],
+    [class*="RegisterBtn"],
+    [class*="reviewPrimaryBtn"],
+    [class*="reportBtn"],
+    [class*="addBtn"],
+    [class*="primaryBtn"],
+    [class*="PrimaryBtn"],
+    [class*="primaryButton"]
+  ):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]):not([class*="panel"]):not([class*="dialog"]):hover:not(:disabled) {
   background: #3f3f46 !important;
 }
+

@@ -348,10 +348,7 @@ export function PopupsPage() {
             <div className={styles.title}>팝업</div>
             <div className={styles.subtitle}>서비스 화면에 노출되는 팝업의 노출 조건·빈도·우선순위를 관리합니다.</div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button type="button" className={styles.bulkBtn} onClick={openPriorityManage}>우선순위 관리</button>
-            <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ 팝업 등록</button>
-          </div>
+          <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ 팝업 등록</button>
         </div>
 
         
@@ -395,6 +392,7 @@ export function PopupsPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
+            <button type="button" className={styles.bulkBtn} onClick={openPriorityManage}>우선순위 관리</button>
             <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>

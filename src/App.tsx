@@ -85,6 +85,7 @@ import { NotificationDispatchPage } from './pages/notifications/NotificationDisp
 import { NotificationTemplatesPage } from './pages/notifications/NotificationTemplatesPage';
 import { CommonCodesPage, IntegrationManagementPage, JobManagementPage, ServiceSettingsPage } from './pages/system/SystemManagementPages';
 import { InventoryStatusPage } from './pages/inventory/InventoryStatusPage';
+import { InventoryOptionsPage } from './pages/inventory/InventoryOptionsPage';
 import { SoldOutProductsPage } from './pages/inventory/SoldOutProductsPage';
 import { SafetyStockPage } from './pages/inventory/SafetyStockPage';
 import { InventoryAlertsPage } from './pages/inventory/InventoryAlertsPage';
@@ -116,6 +117,10 @@ import { PointExpiredPage } from './pages/points/PointExpiredPage';
 import { PointExpiringPage } from './pages/points/PointExpiringPage';
 import { PointManualGrantPage } from './pages/points/PointManualGrantPage';
 import { BrandsListPage } from './pages/brands/BrandsListPage';
+import { BrandCreatePage } from './pages/brands/BrandCreatePage';
+import { BrandDetailPage } from './pages/brands/BrandDetailPage';
+import { BrandProductsPage } from './pages/brands/BrandProductsPage';
+import { BrandExposurePage } from './pages/brands/BrandExposurePage';
 import { ReviewsListPage } from './pages/reviews/ReviewsListPage';
 import { ReviewAnalyticsPage } from './pages/reviews/ReviewAnalyticsPage';
 import { AdminsListPage } from './pages/admin/AdminsListPage';
@@ -272,9 +277,13 @@ export default function App() {
         <Route path="b2c/points/expired" element={<PointExpiredPage />} />
         <Route path="b2c/points/expiring" element={<PointExpiringPage />} />
         <Route path="b2c/points/manual" element={<PointManualGrantPage />} />
-        <Route path="b2c/brands/*" element={<Navigate to="/brands" replace />} />
+        <Route path="b2c/brands" element={<Navigate to="/brands" replace />} />
+        <Route path="b2c/brands/create" element={<BrandCreatePage />} />
+        <Route path="b2c/brands/detail" element={<BrandDetailPage />} />
+        <Route path="b2c/brands/products" element={<BrandProductsPage />} />
+        <Route path="b2c/brands/exposure" element={<BrandExposurePage />} />
         <Route path="b2c/reviews/*" element={<Navigate to="/reviews" replace />} />
-        <Route path="b2c/inventory/options" element={<InventoryStatusPage initialView="sku" pageTitle="옵션별 재고" pageSubtitle="상품 옵션과 SKU별 현재고·예약재고·판매 가능 재고를 확인합니다." />} />
+        <Route path="b2c/inventory/options" element={<InventoryOptionsPage />} />
         <Route path="b2c/inventory/sold-out" element={<SoldOutProductsPage />} />
         <Route path="b2c/inventory/safety-stock" element={<SafetyStockPage />} />
         <Route path="b2c/inventory/alerts" element={<InventoryAlertsPage />} />

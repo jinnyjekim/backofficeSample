@@ -23,6 +23,7 @@ import shared from "../ops/opsShared.module.css";
 import layout from "./SalesAnalysisPage.module.css";
 import styles from "./CustomerPurchaseAnalysisPage.module.css";
 import { StatisticsDownloadFields } from "./StatisticsDownloadFields";
+import { StatisticsFilterToolbar } from "./StatisticsFilterToolbar";
 import {
   AOV_LABEL,
   AUDIENCE_TAB_LABEL,
@@ -672,77 +673,29 @@ export function CustomerPurchaseAnalysisPage({
           ))}
         </div>
 
-        <div className={layout.filterCard}>
-          <div className={layout.filterGrid}>
-            <label className={layout.filterField}>
-              <span>기간</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={range}
-                options={QUICK_RANGES.map((value) => ({ label: value, value }))}
-                onChange={(value) => setRange(value as QuickRange)}
-              />
-            </label>
-            <label className={layout.filterField}>
-              <span>비교</span>
-              <CommonSelect
-                className={layout.analysisSelect}
-                size="sm"
-                value={compare}
-                options={COMPARE_OPTIONS.map((value) => ({
-                  label: value,
-                  value,
-                }))}
-                onChange={(value) =>
-                  setCompare(value as (typeof COMPARE_OPTIONS)[number])
-                }
-              />
-            </label>
+        <StatisticsFilterToolbar
+          range={range}
+          ranges={QUICK_RANGES}
+          onRangeChange={(value) => setRange(value as QuickRange)}
+          compare={compare}
+          compareOptions={COMPARE_OPTIONS}
+          onCompareChange={(value) => setCompare(value as (typeof COMPARE_OPTIONS)[number])}
+          details={
             <label className={layout.filterField}>
               <span>고객 유형</span>
               <CommonSelect
                 className={layout.analysisSelect}
                 size="sm"
                 value={customerType}
-                options={["전체", "신규", "기존"].map((value) => ({
-                  label: value,
-                  value,
-                }))}
-                onChange={(value) => setCustomerType(value as string)}
+                options={["전체", "신규", "기존"].map((value) => ({ label: value, value }))}
+                onChange={(value) => setCustomerType(String(value))}
               />
             </label>
-            <div className={layout.filterActions}>
-              <button
-                type="button"
-                className={layout.resetButton}
-                onClick={reset}
-              >
-                초기화
-              </button>
-              <button
-                type="button"
-                className={layout.applyButton}
-                onClick={() => flash("조회 조건을 적용했습니다.")}
-              >
-                조회
-              </button>
-            </div>
-          </div>
-          <div className={layout.periodSummary}>
-            조회기간{" "}
-            <strong>
-              {fmtDate(start)} ~ {fmtDate(end)}
-            </strong>{" "}
-            · 비교{" "}
-            <strong>
-              {compare === "비교 없음"
-                ? "없음"
-                : `${fmtDate(prevStart)} ~ ${fmtDate(prevEnd)}`}
-            </strong>{" "}
-            · 최근 집계 <strong>{refreshedAt}</strong>
-          </div>
-        </div>
+          }
+          onReset={reset}
+          onApply={() => flash("조회 조건을 적용했습니다.")}
+          summary={<>조회기간 <strong>{fmtDate(start)} ~ {fmtDate(end)}</strong> · 비교 <strong>{compare === "비교 없음" ? "없음" : `${fmtDate(prevStart)} ~ ${fmtDate(prevEnd)}`}</strong> · 최근 집계 <strong>{refreshedAt}</strong></>}
+        />
 
         {showBasis && (
           <div className={layout.basisPanel}>
@@ -813,6 +766,16 @@ export function CustomerPurchaseAnalysisPage({
             >
               전기 대비 {fmtSignedPct(frequencyChange)}
             </em>
+          </div>
+          <div>
+            <span>60일 이상 미구매</span>
+            <strong>
+              {(
+                dormancy.find((d) => d.label.startsWith("60일"))?.count ?? 0
+              ).toLocaleString("ko-KR")}
+              {AUDIENCE_UNIT[mode]}
+            </strong>
+            <em>재구매 유도 필요</em>
           </div>
           <div>
             <span>90일 이상 미구매</span>

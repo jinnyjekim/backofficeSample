@@ -348,11 +348,7 @@ export function BannersPage() {
             <div className={styles.title}>배너</div>
             <div className={styles.subtitle}>서비스 화면의 노출 위치·기간·순서·디바이스별 배너를 관리합니다.</div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'positionInfo' })}>노출 위치 정보</button>
-            <button type="button" className={styles.bulkBtn} onClick={openOrderManage}>순서 관리</button>
-            <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ 배너 등록</button>
-          </div>
+          <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ 배너 등록</button>
         </div>
 
         
@@ -401,6 +397,8 @@ export function BannersPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
+            <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'positionInfo' })}>노출 위치 정보</button>
+            <button type="button" className={styles.bulkBtn} onClick={openOrderManage}>순서 관리</button>
             <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>

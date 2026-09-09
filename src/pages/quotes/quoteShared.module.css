@@ -44,7 +44,7 @@
   padding: 0 16px;
   border: 0;
   border-radius: 9px;
-  background: var(--accent);
+  background: var(--common-text, #18181b);
   color: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -52,7 +52,7 @@
   flex: none;
 }
 .registerBtn:hover {
-  background: var(--accent-hover);
+  background: #3f3f46;
 }
 
 .filterHeadRow {
@@ -375,7 +375,7 @@
   height: 31px;
   padding: 0 12px;
   border: 0;
-  background: var(--accent);
+  background: var(--common-text, #18181b);
   color: #fff;
   border-radius: 8px;
   font-size: 12px;
@@ -383,7 +383,7 @@
   cursor: pointer;
 }
 .primaryBtn:hover {
-  background: var(--accent-hover);
+  background: #3f3f46;
 }
 .secondaryBtn {
   height: 31px;

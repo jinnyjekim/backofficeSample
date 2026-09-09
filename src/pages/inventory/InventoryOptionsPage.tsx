@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridRow } from "../../components/DataGrid/types";
+import { CommonButton, ExcelDownloadButton } from "../../components/common";
 import shared from "../ops/opsShared.module.css";
 import drawer from "../ops/opsDrawerShared.module.css";
 import { InventoryDetailDrawer } from "./InventoryDetailDrawer";
@@ -8,7 +9,7 @@ import styles from "./InventoryStatusPage.module.css";
 import {
   INVENTORY_PRODUCTS,
   inventoryStatus,
-  productRows,
+  skuRows,
   type InventoryProduct,
   type InventorySku,
   type InventoryStatus,
@@ -16,7 +17,6 @@ import {
   type SaleStatus,
   type StockMovement,
 } from "./inventoryData";
-import { CommonButton, ExcelDownloadButton } from "../../components/common";
 
 type QuickFilter =
   | "전체"
@@ -27,6 +27,7 @@ type QuickFilter =
   | "입고 예정"
   | "출고 예정";
 type Modal = "adjust" | "safety" | null;
+
 const QUICK_FILTERS: QuickFilter[] = [
   "전체",
   "정상",
@@ -36,6 +37,7 @@ const QUICK_FILTERS: QuickFilter[] = [
   "입고 예정",
   "출고 예정",
 ];
+
 const COLUMNS = [
   { label: "상품" },
   { label: "SKU / 옵션" },
@@ -50,32 +52,25 @@ const COLUMNS = [
   { label: "최근 변동" },
   { label: "관리", align: "right" as const },
 ];
+
 const STATUS_META: Record<InventoryStatus, { bg: string; fg: string }> = {
   정상: { bg: "#ecfdf5", fg: "#047857" },
   "재고 부족": { bg: "#fff7ed", fg: "#c2410c" },
   품절: { bg: "#fef2f2", fg: "#dc2626" },
   미관리: { bg: "#f4f4f5", fg: "#71717a" },
 };
-function rowMatches(row: InventoryViewRow, filter: QuickFilter) {
+
+function matchesQuickFilter(row: InventoryViewRow, filter: QuickFilter) {
   const status = inventoryStatus(row);
-  if (filter === "정상") return status === "정상" && row.soldOutSkuCount === 0;
-  if (filter === "재고 부족")
-    return (
-      status === "재고 부족" ||
-      row.sourceSkus.some(
-        (sku) =>
-          sku.inventoryManaged &&
-          sku.current - sku.reserved - sku.locked > 0 &&
-          sku.safety !== null &&
-          sku.current - sku.reserved - sku.locked <= sku.safety,
-      )
-    );
-  if (filter === "품절") return status === "품절" || row.soldOutSkuCount > 0;
+  if (filter === "정상") return status === "정상";
+  if (filter === "재고 부족") return status === "재고 부족";
+  if (filter === "품절") return status === "품절";
   if (filter === "확인 필요") return row.issues.length > 0;
   if (filter === "입고 예정") return row.inboundExpected > 0;
   if (filter === "출고 예정") return row.outboundExpected > 0;
   return true;
 }
+
 function adjustedWarehouses(sku: InventorySku, delta: number) {
   if (!sku.warehouses.length) return sku.warehouses;
   if (delta >= 0)
@@ -90,19 +85,46 @@ function adjustedWarehouses(sku: InventorySku, delta: number) {
   });
 }
 
-export function InventoryStatusPage() {
+export function InventoryOptionsPage() {
   const [products, setProducts] =
     useState<InventoryProduct[]>(INVENTORY_PRODUCTS);
-  const [quickFilter, setQuickFilter] = useState<QuickFilter>("전체");
+  const sourceRows = useMemo(() => skuRows(products), [products]);
+  const allSkus = useMemo(
+    () =>
+      products.flatMap((product) =>
+        product.skus.map((sku) => ({ product, sku })),
+      ),
+    [products],
+  );
+  const categories = useMemo(
+    () => [...new Set(sourceRows.map((row) => row.category))],
+    [sourceRows],
+  );
+  const brands = useMemo(
+    () => [...new Set(sourceRows.map((row) => row.brand))],
+    [sourceRows],
+  );
+  const warehouses = useMemo(
+    () => [
+      ...new Set(
+        sourceRows.flatMap((row) =>
+          row.sourceSkus.flatMap((sku) =>
+            sku.warehouses.map((item) => item.warehouse),
+          ),
+        ),
+      ),
+    ],
+    [sourceRows],
+  );
   const [keyword, setKeyword] = useState("");
   const [search, setSearch] = useState("");
+  const [quickFilter, setQuickFilter] = useState<QuickFilter>("전체");
   const [stockStatus, setStockStatus] = useState("");
   const [saleStatus, setSaleStatus] = useState<SaleStatus | "">("");
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [warehouse, setWarehouse] = useState("");
-  const [optionFilter, setOptionFilter] = useState("");
-  const [safetyFilter, setSafetyFilter] = useState<string>("");
+  const [safetyFilter, setSafetyFilter] = useState("");
   const [availableMin, setAvailableMin] = useState("");
   const [availableMax, setAvailableMax] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -121,29 +143,11 @@ export function InventoryStatusPage() {
   const [safetyValue, setSafetyValue] = useState("10");
   const [alertEnabled, setAlertEnabled] = useState(true);
   const [toast, setToast] = useState("");
-  const allRows = useMemo(() => productRows(products), [products]);
-  const allSkus = useMemo(
-    () =>
-      products.flatMap((product) =>
-        product.skus.map((sku) => ({ product, sku })),
-      ),
-    [products],
-  );
-  const categories = [...new Set(products.map((item) => item.category))];
-  const brands = [...new Set(products.map((item) => item.brand))];
-  const warehouses = [
-    ...new Set(
-      products.flatMap((product) =>
-        product.skus.flatMap((sku) =>
-          sku.warehouses.map((item) => item.warehouse),
-        ),
-      ),
-    ),
-  ];
+
   const filtered = useMemo(
     () =>
-      allRows.filter((row) => {
-        if (!rowMatches(row, quickFilter)) return false;
+      sourceRows.filter((row) => {
+        if (!matchesQuickFilter(row, quickFilter)) return false;
         const haystack =
           `${row.productName} ${row.productCode} ${row.sku ?? ""} ${row.option} ${row.brand}`.toLowerCase();
         if (search && !haystack.includes(search.toLowerCase())) return false;
@@ -163,8 +167,6 @@ export function InventoryStatusPage() {
           )
         )
           return false;
-        if (optionFilter === "옵션 있음" && row.skuCount <= 1) return false;
-        if (optionFilter === "단일 SKU" && row.skuCount !== 1) return false;
         if (safetyFilter === "설정" && row.safety === null) return false;
         if (safetyFilter === "미설정" && row.safety !== null) return false;
         if (availableMin && row.available < Number(availableMin)) return false;
@@ -172,21 +174,21 @@ export function InventoryStatusPage() {
         return true;
       }),
     [
-      allRows,
-      quickFilter,
-      search,
-      stockStatus,
-      saleStatus,
-      category,
-      brand,
-      warehouse,
-      optionFilter,
-      safetyFilter,
-      availableMin,
       availableMax,
+      availableMin,
+      brand,
+      category,
+      quickFilter,
+      safetyFilter,
+      saleStatus,
+      search,
+      sourceRows,
+      stockStatus,
+      warehouse,
     ],
   );
-  const detail = allRows.find((row) => row.id === detailId) ?? null;
+
+  const detail = sourceRows.find((row) => row.id === detailId) ?? null;
   const selectedSku =
     allSkus.find((item) => item.sku.id === adjustSkuId)?.sku ?? null;
   const adjustmentDelta =
@@ -199,24 +201,12 @@ export function InventoryStatusPage() {
     selectedSku && adjustmentDelta !== null
       ? selectedSku.current + adjustmentDelta
       : null;
+
   const toastBriefly = (message: string) => {
     setToast(message);
     window.setTimeout(() => setToast(""), 2400);
   };
-  const reset = () => {
-    setKeyword("");
-    setSearch("");
-    setStockStatus("");
-    setSaleStatus("");
-    setCategory("");
-    setBrand("");
-    setWarehouse("");
-    setOptionFilter("");
-    setSafetyFilter("");
-    setAvailableMin("");
-    setAvailableMax("");
-    setSelected([]);
-  };
+
   const openAdjust = (row?: InventoryViewRow) => {
     const first =
       row?.sourceSkus.find((sku) => sku.inventoryManaged) ??
@@ -228,6 +218,7 @@ export function InventoryStatusPage() {
     setAdjustDetail("");
     setModal("adjust");
   };
+
   const openSafety = (ids: string[]) => {
     setSafetyIds(ids);
     const first = allSkus.find((item) => ids.includes(item.sku.id))?.sku;
@@ -235,6 +226,7 @@ export function InventoryStatusPage() {
     setAlertEnabled(first?.alertEnabled ?? true);
     setModal("safety");
   };
+
   const updateSku = (
     id: string,
     updater: (sku: InventorySku) => InventorySku,
@@ -245,6 +237,7 @@ export function InventoryStatusPage() {
         skus: product.skus.map((sku) => (sku.id === id ? updater(sku) : sku)),
       })),
     );
+
   const applyAdjustment = () => {
     if (!selectedSku || adjustValue === "")
       return toastBriefly("조정 대상과 수량을 입력해 주세요.");
@@ -257,9 +250,7 @@ export function InventoryStatusPage() {
         "음수재고는 허용되지 않습니다. 조정 후 수량을 확인해 주세요.",
       );
     if (delta === 0)
-      return toastBriefly(
-        "재고 변동이 없어 조정 Record를 생성하지 않았습니다.",
-      );
+      return toastBriefly("재고 변동이 없어 조정 기록을 생성하지 않았습니다.");
     updateSku(selectedSku.id, (sku) => {
       const movement: StockMovement = {
         id: `MOV-${Date.now()}`,
@@ -298,9 +289,10 @@ export function InventoryStatusPage() {
     });
     setModal(null);
     toastBriefly(
-      `${delta > 0 ? "+" : ""}${delta}개 재고 조정 Record를 생성했습니다.`,
+      `${delta > 0 ? "+" : ""}${delta}개 재고 조정 기록을 생성했습니다.`,
     );
   };
+
   const applySafety = () => {
     const value = Number(safetyValue);
     if (!Number.isFinite(value) || value < 0)
@@ -319,6 +311,22 @@ export function InventoryStatusPage() {
     setSelected([]);
     toastBriefly(`${safetyIds.length}개 SKU의 안전재고를 설정했습니다.`);
   };
+
+  const reset = () => {
+    setKeyword("");
+    setSearch("");
+    setQuickFilter("전체");
+    setStockStatus("");
+    setSaleStatus("");
+    setCategory("");
+    setBrand("");
+    setWarehouse("");
+    setSafetyFilter("");
+    setAvailableMin("");
+    setAvailableMax("");
+    setSelected([]);
+  };
+
   const download = (targets: InventoryViewRow[]) => {
     const csv = [
       [
@@ -338,8 +346,6 @@ export function InventoryStatusPage() {
         "안전재고",
         "재고상태",
         "판매상태",
-        "최근입고",
-        "최근출고",
       ],
       ...targets.map((row) => [
         row.productCode,
@@ -358,8 +364,6 @@ export function InventoryStatusPage() {
         row.safety ?? "",
         inventoryStatus(row),
         row.saleStatus,
-        row.lastInboundAt ?? "",
-        row.lastOutboundAt ?? "",
       ]),
     ]
       .map((values) =>
@@ -373,18 +377,14 @@ export function InventoryStatusPage() {
     );
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = "inventory-status.csv";
+    anchor.download = "inventory-options.csv";
     anchor.click();
     URL.revokeObjectURL(url);
   };
+
   const rows: GridRow[] = filtered.map((row) => {
     const status = inventoryStatus(row);
-    const displayStatus =
-      row.sku === null && row.soldOutSkuCount > 0
-        ? `품절 옵션 ${row.soldOutSkuCount}`
-        : status;
-    const meta =
-      row.soldOutSkuCount > 0 ? STATUS_META.품절 : STATUS_META[status];
+    const meta = STATUS_META[status];
     const latest =
       [row.lastInboundAt, row.lastOutboundAt].filter(Boolean).sort().at(-1) ??
       null;
@@ -412,11 +412,7 @@ export function InventoryStatusPage() {
           id: row.productCode,
           onClick: () => setDetailId(row.id),
         },
-        {
-          kind: "stack",
-          title: row.sku ?? `옵션 ${row.skuCount}개`,
-          subtitle: row.sku ? row.option : `품절 옵션 ${row.soldOutSkuCount}개`,
-        },
+        { kind: "stack", title: row.sku ?? "-", subtitle: row.option },
         {
           kind: "text",
           text: row.inventoryManaged ? row.current.toLocaleString() : "-",
@@ -482,7 +478,7 @@ export function InventoryStatusPage() {
                 : "#a1a1aa",
           fg: row.saleStatus === "판매중" ? "#047857" : "#71717a",
         },
-        { kind: "badge", text: displayStatus, bg: meta.bg, fg: meta.fg },
+        { kind: "badge", text: status, bg: meta.bg, fg: meta.fg },
         {
           kind: "stack",
           title: latest?.slice(0, 10) ?? "변동 없음",
@@ -499,31 +495,17 @@ export function InventoryStatusPage() {
             { label: "재고 상세", click: () => setDetailId(row.id) },
             ...(row.inventoryManaged
               ? [
-                  { label: "재고 조정", click: () => openAdjust(row) },
+                  {
+                    label: "재고 조정",
+                    click: () => openAdjust(row),
+                  },
                   {
                     label: "안전재고 설정",
-                    click: () =>
-                      openSafety(
-                        row.sourceSkus
-                          .filter((sku) => sku.inventoryManaged)
-                          .map((sku) => sku.id),
-                      ),
-                  },
-                ]
-              : []),
-            ...(status === "품절" || status === "재고 부족"
-              ? [
-                  {
-                    label: "입고 등록",
-                    click: () => window.location.assign("/inventory/inbound"),
+                    click: () => openSafety([row.id]),
                   },
                 ]
               : []),
             { sep: true },
-            {
-              label: row.issues.length ? "계산 근거 보기" : "변동 이력",
-              click: () => setDetailId(row.id),
-            },
             {
               label: "전체 변동 이력",
               click: () => window.location.assign("/inventory/history"),
@@ -533,6 +515,7 @@ export function InventoryStatusPage() {
       ],
     };
   });
+
   return (
     <section
       className={shared.page}
@@ -541,27 +524,23 @@ export function InventoryStatusPage() {
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>재고 현황</h1>
+            <h1 className={shared.title}>옵션별 재고</h1>
             <p className={shared.subtitle}>
-              상품별 물리재고와 예약 수량을 구분해 실제 판매 가능한 재고를
-              확인합니다.
+              상품 옵션과 SKU별 현재고·예약재고·판매 가능 재고를 확인합니다.
             </p>
           </div>
-          <div className={styles.headActions}>
-            <button
-              type="button"
-              className={shared.createBtn}
-              onClick={() => openAdjust()}
-            >
-              재고 조정
-            </button>
-          </div>
+          <CommonButton
+            variant="primary"
+            size="md"
+            onClick={() => openAdjust()}
+          >
+            재고 조정
+          </CommonButton>
         </div>
         <div className={styles.definitionStrip}>
-          판매 가능 재고 = 현재고 − 예약재고 − 기타 잠금 · 예약재고는 결제
-          완료된 주문 기준 · 음수재고 허용 안 함
+          판매 가능 재고 = 현재고 − 예약재고 − 기타 잠금 · 재고 운영과 조정은
+          SKU 단위입니다.
         </div>
-
         <div className={shared.filterBox}>
           <form
             className={shared.filterRow1}
@@ -571,14 +550,20 @@ export function InventoryStatusPage() {
             }}
           >
             <input
+              aria-label="옵션별 재고 검색"
               className={shared.searchInput}
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
               placeholder="상품명 / 상품코드 / SKU 검색"
             />
-            <button type="submit" className={shared.searchBtn}>
+            <CommonButton
+              type="submit"
+              variant="emphasis"
+              size="sm"
+              className={shared.searchBtn}
+            >
               조회
-            </button>
+            </CommonButton>
             <div className={shared.quickFilters}>
               {QUICK_FILTERS.map((filter) => {
                 const active = quickFilter === filter;
@@ -595,7 +580,11 @@ export function InventoryStatusPage() {
                   >
                     <span className={shared.qfLabel}>{filter}</span>
                     <span className={shared.qfCount}>
-                      {allRows.filter((row) => rowMatches(row, filter)).length}
+                      {
+                        sourceRows.filter((row) =>
+                          matchesQuickFilter(row, filter),
+                        ).length
+                      }
                     </span>
                   </CommonButton>
                 );
@@ -677,30 +666,23 @@ export function InventoryStatusPage() {
                 ))}
               </select>
             </label>
-            <label className="globalFilterField">
-              <span>옵션</span>
-              <select
-                aria-label="옵션"
-                className={shared.selectSm}
-                value={optionFilter}
-                onChange={(event) => setOptionFilter(event.target.value)}
-              >
-                <option value="">전체 옵션</option>
-                <option>옵션 있음</option>
-                <option>단일 SKU</option>
-              </select>
-            </label>
-            <button
-              type="button"
+            <CommonButton
+              variant="secondary"
+              size="md"
               className={shared.detailFilterBtn}
               onClick={() => setShowAdvanced((current) => !current)}
             >
               상세 필터
-            </button>
+            </CommonButton>
             <span className={shared.rowSpacer} />
-            <button type="button" className={shared.resetBtn} onClick={reset}>
+            <CommonButton
+              variant="ghost"
+              size="md"
+              className={shared.resetBtn}
+              onClick={reset}
+            >
               초기화
-            </button>
+            </CommonButton>
           </div>
           {showAdvanced && (
             <div className={styles.advancedFilters}>
@@ -740,45 +722,33 @@ export function InventoryStatusPage() {
       {selected.length > 0 && (
         <div className={shared.bulkBar}>
           <span className={shared.bulkLabel}>{selected.length}건 선택</span>
-          <button
-            type="button"
+          <CommonButton
+            variant="secondary"
+            size="sm"
             className={shared.bulkBtn}
-            onClick={() =>
-              openSafety(
-                filtered
-                  .filter((row) => selected.includes(row.id))
-                  .flatMap((row) =>
-                    row.sourceSkus
-                      .filter((sku) => sku.inventoryManaged)
-                      .map((sku) => sku.id),
-                  ),
-              )
-            }
+            onClick={() => openSafety(selected)}
           >
             안전재고 설정
-          </button>
+          </CommonButton>
           <ExcelDownloadButton
             data-grid-download
             onClick={() =>
               download(filtered.filter((row) => selected.includes(row.id)))
             }
           />
-          <span className={styles.bulkGuard}>
-            현재고 일괄 덮어쓰기와 예약재고 직접 수정은 지원하지 않습니다.
-          </span>
         </div>
       )}
       <div className={shared.gridWrap}>
         <div className={shared.resultRow}>
           <span className={shared.resultLabel}>
-            총 {filtered.length}건 · 상품 집계
+            총 {filtered.length}건 · SKU 기준
           </span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton
               data-grid-download
               onClick={() => download(filtered)}
             />
-            <select className={shared.pageSizeSelect}>
+            <select className={shared.pageSizeSelect} aria-label="페이지 크기">
               <option>20개씩</option>
               <option>50개씩</option>
             </select>
@@ -802,13 +772,7 @@ export function InventoryStatusPage() {
             )
           }
           empty={filtered.length === 0}
-          emptyText={
-            quickFilter === "품절"
-              ? "현재 품절된 상품이 없습니다."
-              : quickFilter === "재고 부족"
-                ? "안전재고 이하의 상품이 없습니다."
-                : "검색 조건에 해당하는 재고가 없습니다."
-          }
+          emptyText="검색 조건에 해당하는 옵션별 재고가 없습니다."
           emptySubtext="검색어나 필터 조건을 변경해 주세요."
           emptyActionLabel="초기화"
           emptyActionClick={reset}
@@ -827,26 +791,20 @@ export function InventoryStatusPage() {
           row={detail}
           onClose={() => setDetailId(null)}
           onAdjust={() => openAdjust(detail)}
-          onSafety={() =>
-            openSafety(
-              detail.sourceSkus
-                .filter((sku) => sku.inventoryManaged)
-                .map((sku) => sku.id),
-            )
-          }
+          onSafety={() => openSafety([detail.id])}
         />
       )}
       {modal === "adjust" && (
         <div
           className={shared.dialogOverlay}
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) setModal(null);
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setModal(null);
           }}
         >
           <div className={`${shared.dialogBox} ${styles.adjustDialog}`}>
             <h2 className={shared.dialogTitle}>재고 조정</h2>
             <p className={shared.dialogBody}>
-              현재고를 직접 덮어쓰지 않고 증감 Adjustment Record를 생성합니다.
+              현재고를 직접 덮어쓰지 않고 증감 조정 기록을 생성합니다.
               예약재고는 변경되지 않습니다.
             </p>
             <label className={styles.dialogField}>
@@ -949,20 +907,22 @@ export function InventoryStatusPage() {
               />
             </label>
             <div className={shared.dialogActions}>
-              <button
-                type="button"
+              <CommonButton
+                variant="secondary"
+                size="md"
                 className={drawer.editCancel}
                 onClick={() => setModal(null)}
               >
                 취소
-              </button>
-              <button
-                type="button"
+              </CommonButton>
+              <CommonButton
+                variant="primary"
+                size="md"
                 className={drawer.editConfirm}
                 onClick={applyAdjustment}
               >
-                조정 Record 생성
-              </button>
+                조정 기록 생성
+              </CommonButton>
             </div>
           </div>
         </div>
@@ -970,8 +930,8 @@ export function InventoryStatusPage() {
       {modal === "safety" && (
         <div
           className={shared.dialogOverlay}
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) setModal(null);
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setModal(null);
           }}
         >
           <div className={shared.dialogBox}>
@@ -1004,20 +964,22 @@ export function InventoryStatusPage() {
               안전재고 이하 최초 진입 시 시스템 알림
             </label>
             <div className={shared.dialogActions}>
-              <button
-                type="button"
+              <CommonButton
+                variant="secondary"
+                size="md"
                 className={drawer.editCancel}
                 onClick={() => setModal(null)}
               >
                 취소
-              </button>
-              <button
-                type="button"
+              </CommonButton>
+              <CommonButton
+                variant="primary"
+                size="md"
                 className={drawer.editConfirm}
                 onClick={applySafety}
               >
                 저장
-              </button>
+              </CommonButton>
             </div>
           </div>
         </div>

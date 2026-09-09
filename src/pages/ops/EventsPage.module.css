@@ -319,7 +319,7 @@
 
 .primaryBtn {
   border: 0;
-  background: var(--accent);
+  background: var(--common-text, #18181b);
   color: #fff;
 }
 

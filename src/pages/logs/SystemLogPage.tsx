@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
+import { ChevronDown, ChevronUp, RotateCcw, Search as SearchIcon, SlidersHorizontal } from "lucide-react";
 import styles from "../ops/opsShared.module.css";
+import pageStyles from "./SystemLogPage.module.css";
 import { DataGrid } from "../../components/DataGrid";
 import type {
   Cell,
@@ -27,7 +29,12 @@ import {
   type QuickRange,
 } from "./systemLogData";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
-import { CommonButton } from "../../components/common";
+import {
+  CommonButton,
+  CommonDatePicker,
+  CommonSelect,
+} from "../../components/common";
+import { BusinessScopeSwitch } from "../../components/business/BusinessScopeSwitch";
 
 type Tab = "api" | "error";
 const TABS: [Tab, string][] = [
@@ -67,6 +74,10 @@ export function SystemLogPage() {
   const [moduleFilter, setModuleFilter] = useState<ModuleName | "">("");
   const [methodFilter, setMethodFilter] = useState<HttpMethod | "">("");
   const [levelFilter, setLevelFilter] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [durationFilter, setDurationFilter] = useState("");
+  const [minOccurrencesFilter, setMinOccurrencesFilter] = useState("");
 
   const [apiDrawer, setApiDrawer] = useState<ApiLogEntry | null>(null);
   const [errorDrawer, setErrorDrawer] = useState<ErrorGroup | null>(null);
@@ -76,6 +87,7 @@ export function SystemLogPage() {
     setStart(s);
     setEnd(e);
   };
+
   const resetFilters = () => {
     setKeyword("");
     setSearch("");
@@ -83,8 +95,16 @@ export function SystemLogPage() {
     setModuleFilter("");
     setMethodFilter("");
     setLevelFilter("");
+    setStatusFilter("");
+    setDurationFilter("");
+    setMinOccurrencesFilter("");
     applyQuick("최근 7일");
   };
+
+  const activeQuickRange = QUICK_RANGES.find((range) => {
+    const [rangeStart, rangeEnd] = quickRangeDates(range);
+    return rangeStart === start && rangeEnd === end;
+  });
 
   const filteredApi = useMemo(
     () =>
@@ -94,6 +114,16 @@ export function SystemLogPage() {
         if (resultFilter && e.result !== resultFilter) return false;
         if (moduleFilter && e.module !== moduleFilter) return false;
         if (methodFilter && e.method !== methodFilter) return false;
+        if (statusFilter) {
+          if (statusFilter === "2xx" && (e.statusCode < 200 || e.statusCode >= 300)) return false;
+          if (statusFilter === "4xx" && (e.statusCode < 400 || e.statusCode >= 500)) return false;
+          if (statusFilter === "5xx" && (e.statusCode < 500 || e.statusCode >= 600)) return false;
+        }
+        if (durationFilter) {
+          if (durationFilter === "slow" && e.durationMs < SLOW_MS) return false;
+          if (durationFilter === "verySlow" && e.durationMs < 2000) return false;
+          if (durationFilter === "normal" && e.durationMs >= SLOW_MS) return false;
+        }
         if (search) {
           const k = search.toLowerCase();
           if (
@@ -107,7 +137,7 @@ export function SystemLogPage() {
         }
         return true;
       }),
-    [start, end, resultFilter, moduleFilter, methodFilter, search],
+    [start, end, resultFilter, moduleFilter, methodFilter, statusFilter, durationFilter, search],
   );
 
   const filteredErrors = useMemo(
@@ -118,6 +148,7 @@ export function SystemLogPage() {
         if (last < start || first > end) return false;
         if (levelFilter && g.level !== levelFilter) return false;
         if (moduleFilter && g.module !== moduleFilter) return false;
+        if (minOccurrencesFilter && g.occurrences.length < Number(minOccurrencesFilter)) return false;
         if (search) {
           const k = search.toLowerCase();
           if (
@@ -130,7 +161,7 @@ export function SystemLogPage() {
         }
         return true;
       }),
-    [start, end, levelFilter, moduleFilter, search],
+    [start, end, levelFilter, moduleFilter, minOccurrencesFilter, search],
   );
 
   const apiRows: GridRow[] = filteredApi.map((e) => {
@@ -249,17 +280,60 @@ export function SystemLogPage() {
             </div>
           </div>
         </div>
+      </div>
 
-        <div className={styles.filterBox}>
-          <form
-            className={styles.filterRow1}
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSearch(keyword.trim());
-            }}
+      <div className={pageStyles.viewTabs}>
+        {TABS.map(([key, label]) => (
+          <button
+            key={key}
+            type="button"
+            className={`${pageStyles.viewTabBtn} ${tab === key ? pageStyles.viewTabActive : ""}`}
+            onClick={() => setTab(key)}
           >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className={pageStyles.filterPanel} data-filter-expanded={showAdvanced || undefined}>
+        <form
+          className={pageStyles.filterMainRow}
+          onSubmit={(e) => {
+            e.preventDefault();
+            setSearch(keyword.trim());
+          }}
+        >
+          <div className={pageStyles.dateRangeFields}>
+            <CommonDatePicker
+              size="md"
+              clearable={false}
+              value={start}
+              aria-label="조회 시작일"
+              onChange={(value) => {
+                if (!Array.isArray(value) && value) setStart(value);
+              }}
+            />
+            <span className={pageStyles.dateSeparator} aria-hidden="true">-</span>
+            <CommonDatePicker
+              size="md"
+              clearable={false}
+              value={end}
+              aria-label="조회 종료일"
+              onChange={(value) => {
+                if (!Array.isArray(value) && value) setEnd(value);
+              }}
+            />
+          </div>
+          <BusinessScopeSwitch
+            value={activeQuickRange}
+            options={QUICK_RANGES}
+            onChange={applyQuick}
+            label=""
+            size="md"
+          />
+          <div className={pageStyles.searchField}>
             <input
-              className={styles.searchInput}
+              className={pageStyles.searchInput}
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder={
@@ -268,132 +342,161 @@ export function SystemLogPage() {
                   : "오류 코드 또는 메시지 검색"
               }
             />
-            <button type="submit" className={styles.searchBtn}>
-              검색
+            <button
+              type="submit"
+              className={pageStyles.searchIconBtn}
+              aria-label="검색"
+            >
+              <SearchIcon size={14} aria-hidden="true" />
             </button>
-            <div className={styles.quickFilters}>
-              {TABS.map(([key, label]) => {
-                const active = tab === key;
-                return (
-                  <CommonButton
-                    key={key}
-                    variant={active ? "primary-light" : "secondary"}
-                    size="md"
-                    className={`${styles.qfBtn} ${active ? styles.active : ""}`}
-                    onClick={() => setTab(key)}
-                  >
-                    <span className={styles.qfLabel}>{label}</span>
-                  </CommonButton>
-                );
-              })}
-            </div>
-          </form>
-          <div className={styles.filterRow2}>
-            <input
-              type="date"
-              className={styles.selectSm}
-              value={start}
-              onChange={(e) => setStart(e.target.value)}
-            />
-            <span style={{ color: "#a1a1aa", fontSize: 12 }}>~</span>
-            <input
-              type="date"
-              className={styles.selectSm}
-              value={end}
-              onChange={(e) => setEnd(e.target.value)}
-            />
-            {QUICK_RANGES.map((r) => (
-              <button
-                key={r}
-                type="button"
-                className={styles.detailFilterBtn}
-                onClick={() => applyQuick(r)}
-              >
-                {r}
-              </button>
-            ))}
-            <label className="globalFilterField">
+          </div>
+          <span className={pageStyles.filterSpacer} />
+          <CommonButton
+            type="button"
+            variant="secondary"
+            size="md"
+            icon={<SlidersHorizontal size={14} aria-hidden="true" />}
+            aria-expanded={showAdvanced}
+            onClick={() => setShowAdvanced((visible) => !visible)}
+          >
+            상세 필터
+            {showAdvanced ? (
+              <ChevronUp size={14} aria-hidden="true" />
+            ) : (
+              <ChevronDown size={14} aria-hidden="true" />
+            )}
+          </CommonButton>
+          <CommonButton
+            type="button"
+            variant="secondary"
+            size="md"
+            icon={<RotateCcw size={13} aria-hidden="true" />}
+            onClick={resetFilters}
+          >
+            초기화
+          </CommonButton>
+        </form>
+
+        {showAdvanced && (
+          <div className={pageStyles.detailFilters}>
+            <label className={pageStyles.filterField}>
               <span>서비스 모듈</span>
-              <select
+              <CommonSelect
+                className={pageStyles.filterSelect}
+                size="md"
                 aria-label="서비스 모듈"
-                className={styles.selectSm}
+                options={[
+                  { value: "", label: "서비스/모듈 전체" },
+                  ...MODULES.map((m) => ({ value: m, label: m })),
+                ]}
                 value={moduleFilter}
-                onChange={(e) =>
-                  setModuleFilter(e.target.value as ModuleName | "")
-                }
-              >
-                <option value="">서비스/모듈 전체</option>
-                {MODULES.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setModuleFilter(val as ModuleName | "")}
+              />
             </label>
             {tab === "api" ? (
               <>
-                <label className="globalFilterField">
+                <label className={pageStyles.filterField}>
                   <span>결과</span>
-                  <select
+                  <CommonSelect
+                    className={pageStyles.filterSelect}
+                    size="md"
                     aria-label="결과"
-                    className={styles.selectSm}
+                    options={[
+                      { value: "", label: "결과 전체" },
+                      { value: "성공", label: "성공" },
+                      { value: "실패", label: "실패" },
+                    ]}
                     value={resultFilter}
-                    onChange={(e) => setResultFilter(e.target.value)}
-                  >
-                    <option value="">결과 전체</option>
-                    <option value="성공">성공</option>
-                    <option value="실패">실패</option>
-                  </select>
+                    onChange={(val) => setResultFilter(val)}
+                  />
                 </label>
-                <label className="globalFilterField">
+                <label className={pageStyles.filterField}>
                   <span>요청 방식</span>
-                  <select
+                  <CommonSelect
+                    className={pageStyles.filterSelect}
+                    size="md"
                     aria-label="요청 방식"
-                    className={styles.selectSm}
+                    options={[
+                      { value: "", label: "Method 전체" },
+                      ...HTTP_METHODS.map((m) => ({ value: m, label: m })),
+                    ]}
                     value={methodFilter}
-                    onChange={(e) =>
-                      setMethodFilter(e.target.value as HttpMethod | "")
-                    }
-                  >
-                    <option value="">Method 전체</option>
-                    {HTTP_METHODS.map((m) => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(val) => setMethodFilter(val as HttpMethod | "")}
+                  />
+                </label>
+                <label className={pageStyles.filterField}>
+                  <span>상태 코드</span>
+                  <CommonSelect
+                    className={pageStyles.filterSelect}
+                    size="md"
+                    aria-label="상태 코드"
+                    options={[
+                      { value: "", label: "상태 코드 전체" },
+                      { value: "2xx", label: "2xx 정상" },
+                      { value: "4xx", label: "4xx 클라이언트 오류" },
+                      { value: "5xx", label: "5xx 서버 오류" },
+                    ]}
+                    value={statusFilter}
+                    onChange={(val) => setStatusFilter(val)}
+                  />
+                </label>
+                <label className={pageStyles.filterField}>
+                  <span>처리 시간</span>
+                  <CommonSelect
+                    className={pageStyles.filterSelect}
+                    size="md"
+                    aria-label="처리 시간"
+                    options={[
+                      { value: "", label: "처리 시간 전체" },
+                      { value: "slow", label: "지연 로그 (800ms 이상)" },
+                      { value: "verySlow", label: "심각 지연 (2,000ms 이상)" },
+                      { value: "normal", label: "정상 (800ms 미만)" },
+                    ]}
+                    value={durationFilter}
+                    onChange={(val) => setDurationFilter(val)}
+                  />
                 </label>
               </>
             ) : (
-              <label className="globalFilterField">
-                <span>오류 수준</span>
-                <select
-                  aria-label="오류 수준"
-                  className={styles.selectSm}
-                  value={levelFilter}
-                  onChange={(e) => setLevelFilter(e.target.value)}
-                >
-                  <option value="">오류 수준 전체</option>
-                  {ERROR_LEVELS.map((l) => (
-                    <option key={l} value={l}>
-                      {l}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <>
+                <label className={pageStyles.filterField}>
+                  <span>오류 수준</span>
+                  <CommonSelect
+                    className={pageStyles.filterSelect}
+                    size="md"
+                    aria-label="오류 수준"
+                    options={[
+                      { value: "", label: "오류 수준 전체" },
+                      ...ERROR_LEVELS.map((l) => ({ value: l, label: l })),
+                    ]}
+                    value={levelFilter}
+                    onChange={(val) => setLevelFilter(val)}
+                  />
+                </label>
+                <label className={pageStyles.filterField}>
+                  <span>발생 횟수</span>
+                  <CommonSelect
+                    className={pageStyles.filterSelect}
+                    size="md"
+                    aria-label="발생 횟수"
+                    options={[
+                      { value: "", label: "발생 횟수 전체" },
+                      { value: "2", label: "2회 이상" },
+                      { value: "3", label: "3회 이상" },
+                      { value: "5", label: "5회 이상" },
+                    ]}
+                    value={minOccurrencesFilter}
+                    onChange={(val) => setMinOccurrencesFilter(val)}
+                  />
+                </label>
+              </>
             )}
-            <span className={styles.rowSpacer} />
-            <button
-              type="button"
-              className={styles.resetBtn}
-              onClick={resetFilters}
-            >
-              초기화
-            </button>
           </div>
-        </div>
+        )}
+      </div>
 
-        <div className={styles.resultRow}>
+      <div className={styles.headTop} style={{ padding: "0 24px" }}>
+        <div className={styles.resultRow} style={{ marginTop: 0 }}>
           <span className={styles.resultLabel}>
             총{" "}
             {(tab === "api"

@@ -94,41 +94,6 @@ export function PurchaseActivityHistoryPage() {
       <PageHeading
         title="구매 활동 이력"
         subtitle="구매, 결제, 배송, 취소, 분쟁과 환불 과정의 변경 내역을 처리 주체와 변경 전후 값으로 감사 조회합니다."
-        action={
-          <ExcelDownloadButton
-            type="button"
-            data-grid-download
-            onClick={() =>
-              downloadCsv(
-                "구매-활동-이력.csv",
-                [
-                  "발생일시",
-                  "구분",
-                  "행위",
-                  "대상",
-                  "구매자",
-                  "변경 전",
-                  "변경 후",
-                  "처리자",
-                  "사유",
-                  "IP",
-                ],
-                filtered.map((item) => [
-                  item.occurredAt,
-                  item.category,
-                  item.action,
-                  item.target,
-                  item.buyerId,
-                  item.before,
-                  item.after,
-                  item.actor,
-                  item.reason,
-                  item.ip,
-                ]),
-              )
-            }
-          />
-        }
       />
       <ControlArea>
         <FilterBox>

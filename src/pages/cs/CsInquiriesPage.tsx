@@ -15,6 +15,7 @@ import {
   ExcelDownloadButton,
   showToast,
 } from "../../components/common";
+import { ControlArea, Metrics } from "../c2c/sales/SalesActivityShared";
 import {
   fmtDateTime,
   getSlaInfo,
@@ -401,36 +402,54 @@ export function CsInquiriesPage() {
               관리합니다.
             </div>
           </div>
-          <div className={styles.headerStats}>
-            <div>
-              <span>답변 필요</span>
-              <strong>
-                {
-                  scopeItems.filter((item) =>
-                    matchesQuickFilter(item, "답변 대기"),
-                  ).length
-                }
-              </strong>
-            </div>
-            <div>
-              <span>SLA 임박·초과</span>
-              <strong>
-                {
-                  scopeItems.filter((item) =>
-                    ["imminent", "overdue"].includes(getSlaInfo(item).state),
-                  ).length
-                }
-              </strong>
-            </div>
-            <div>
-              <span>미배정</span>
-              <strong>
-                {scopeItems.filter((item) => !item.assignee).length}
-              </strong>
-            </div>
-          </div>
         </div>
+      </header>
 
+      <Metrics
+        items={[
+          {
+            label: "답변 필요",
+            value: `${
+              scopeItems.filter((item) =>
+                matchesQuickFilter(item, "답변 대기"),
+              ).length
+            }건`,
+            note: "답변 대기 기준",
+            tone: "down",
+            dot: "#ef4444",
+          },
+          {
+            label: "SLA 임박·초과",
+            value: `${
+              scopeItems.filter((item) =>
+                ["imminent", "overdue"].includes(getSlaInfo(item).state),
+              ).length
+            }건`,
+            note: "기한 관리 필요",
+            tone: "down",
+            dot: "#dc2626",
+          },
+          {
+            label: "미배정",
+            value: `${scopeItems.filter((item) => !item.assignee).length}건`,
+            note: "담당자 배정 필요",
+            dot: "#f59e0b",
+          },
+          {
+            label: "오늘 접수",
+            value: `${
+              scopeItems.filter((item) =>
+                matchesQuickFilter(item, "오늘 접수"),
+              ).length
+            }건`,
+            note: "당일 신규 접수",
+            tone: "up",
+            dot: "#10b981",
+          },
+        ]}
+      />
+
+      <ControlArea>
         <div className={shared.filterBox}>
           <form
             className={shared.filterRow1}
@@ -595,7 +614,7 @@ export function CsInquiriesPage() {
             </div>
           )}
         </div>
-      </header>
+      </ControlArea>
 
       {selected.length > 0 && (
         <div className={shared.bulkBar}>

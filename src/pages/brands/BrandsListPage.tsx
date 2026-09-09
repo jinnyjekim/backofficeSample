@@ -25,7 +25,7 @@ import {
   type QuickFilter,
 } from "./brandsData";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
-import { CommonButton, showToast } from "../../components/common";
+import { CommonButton, CommonInput, showToast } from "../../components/common";
 
 const GRID_TEMPLATE = "1.4fr 67px 67px 67px 50px 44px";
 const GRID_COLUMNS: GridColumn[] = [
@@ -76,6 +76,7 @@ export function BrandsListPage() {
   const [ownerFilter, setOwnerFilter] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [menuId, setMenuId] = useState<string | null>(null);
@@ -132,6 +133,7 @@ export function BrandsListPage() {
   const resetFilters = () => {
     setKeyword("");
     setSearch("");
+    setQuickFilter("전체");
     setStatusFilter("");
     setOwnerFilter("");
     setStartDate("");
@@ -365,7 +367,7 @@ export function BrandsListPage() {
           </div>
         </div>
 
-        <div className={styles.filterHeadRow}>
+        <div className={styles.filterBox} data-filter-expanded={showAdvanced}>
           <form
             className={styles.filterRow1}
             onSubmit={(e) => {
@@ -373,15 +375,14 @@ export function BrandsListPage() {
               setSearch(keyword.trim());
             }}
           >
-            <input
+            <CommonInput.Search
+              aria-label="브랜드 검색"
               className={styles.searchInput}
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
+              onSearch={(value) => setSearch(value.trim())}
               placeholder="브랜드명 또는 브랜드 코드 검색"
             />
-            <button type="submit" className={styles.searchBtn}>
-              검색
-            </button>
             <div className={styles.quickFilters}>
               {QUICK_FILTERS.map((f) => {
                 const active = quickFilter === f;
@@ -399,77 +400,71 @@ export function BrandsListPage() {
                 );
               })}
             </div>
-          </form>
-        </div>
-
-        <div className={styles.filterBox}>
-          <div className={styles.filterRow2}>
-            <label className="globalFilterField">
-              <span>사용 상태</span>
-              <select
-                aria-label="사용 상태"
-                className={styles.selectSm}
-                value={statusFilter}
-                onChange={(e) =>
-                  setStatusFilter(e.target.value as BrandStatus | "")
-                }
-              >
-                <option value="">사용 상태 전체</option>
-                <option value="사용중">사용중</option>
-                <option value="미사용">미사용</option>
-              </select>
-            </label>
-            <label className="globalFilterField">
-              <span>담당자</span>
-              <select
-                aria-label="담당자"
-                className={styles.selectSm}
-                value={ownerFilter}
-                onChange={(e) => setOwnerFilter(e.target.value)}
-              >
-                <option value="">담당자 전체</option>
-                {OWNERS.map((o) => (
-                  <option key={o}>{o}</option>
-                ))}
-              </select>
-            </label>
-            <label className={styles.dateFilterField}>
-              <span>등록일</span>
-              <div className={styles.dateRange}>
-                <DatePicker
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-                <span className={styles.dateSeparator}>~</span>
-                <DatePicker
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </div>
-            </label>
             <span className={styles.rowSpacer} />
-            <button type="button" className="detailFilterBtn">
-              상세 필터
-            </button>
-            <button
-              type="button"
+            <CommonButton
+              variant="secondary"
+              size="md"
+              className={styles.detailFilterBtn}
+              onClick={() => setShowAdvanced((current) => !current)}
+            >
+              상세 필터 {showAdvanced ? "−" : "+"}
+            </CommonButton>
+            <CommonButton
+              variant="ghost"
+              size="md"
               className={styles.resetBtn}
               onClick={resetFilters}
             >
               초기화
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.resultRow}>
-          <span className={styles.resultLabel}>총 {filtered.length}건</span>
-          <div className={styles.resultActions}>
-            <ExcelDownloadButton
-              type="button"
-              data-grid-download
-              onClick={() => toastBriefly("데이터 다운로드를 준비했습니다.")}
-            />
-          </div>
+            </CommonButton>
+          </form>
+          {showAdvanced && (
+            <div className={styles.filterRow2}>
+              <label className="globalFilterField">
+                <span>사용 상태</span>
+                <select
+                  aria-label="사용 상태"
+                  className={styles.selectSm}
+                  value={statusFilter}
+                  onChange={(e) =>
+                    setStatusFilter(e.target.value as BrandStatus | "")
+                  }
+                >
+                  <option value="">사용 상태 전체</option>
+                  <option value="사용중">사용중</option>
+                  <option value="미사용">미사용</option>
+                </select>
+              </label>
+              <label className="globalFilterField">
+                <span>담당자</span>
+                <select
+                  aria-label="담당자"
+                  className={styles.selectSm}
+                  value={ownerFilter}
+                  onChange={(e) => setOwnerFilter(e.target.value)}
+                >
+                  <option value="">담당자 전체</option>
+                  {OWNERS.map((o) => (
+                    <option key={o}>{o}</option>
+                  ))}
+                </select>
+              </label>
+              <label className={styles.dateFilterField}>
+                <span>등록일</span>
+                <div className={styles.dateRange}>
+                  <DatePicker
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                  <span className={styles.dateSeparator}>~</span>
+                  <DatePicker
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
+              </label>
+            </div>
+          )}
         </div>
       </header>
 
@@ -506,15 +501,19 @@ export function BrandsListPage() {
       )}
 
       <div className={styles.resultRow}>
-          <span className={styles.resultLabel}>총 {filtered.length}건</span>
-          <div className={styles.resultActions}>
-            <ExcelDownloadButton type="button" data-grid-download onClick={() => toastBriefly("브랜드 목록을 다운로드했습니다.")} />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
-              <option>20개씩 보기</option>
-              <option>50개씩 보기</option>
-            </select>
-          </div>
+        <span className={styles.resultLabel}>총 {filtered.length}건</span>
+        <div className={styles.resultActions}>
+          <ExcelDownloadButton
+            type="button"
+            data-grid-download
+            onClick={() => toastBriefly("브랜드 목록을 다운로드했습니다.")}
+          />
+          <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <option>20개씩 보기</option>
+            <option>50개씩 보기</option>
+          </select>
         </div>
+      </div>
 
       <div className={styles.gridWrap}>
         <DataGrid
