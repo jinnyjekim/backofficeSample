@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { DEDUCT_REASONS, GRANT_REASONS, TODAY, fmtPoint, type DeductReason, type GrantReason, type MemberPointBalance } from './pointsData';
 import modalStyles from './PointGrantModal.module.css';
@@ -35,7 +35,6 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
   const [timing, setTiming] = useState<'즉시' | '지정'>('즉시');
   const [confirmAt, setConfirmAt] = useState(TODAY);
   const [error, setError] = useState('');
-  const dialogRef = useRef<HTMLDialogElement>(null);
 
   // ESC 키로 닫기
   useEffect(() => {
@@ -65,7 +64,7 @@ export function PointGrantDrawer({ mode, balance: b, onCancel, onSubmitGrant, on
 
   const modal = (
     <div className={modalStyles.overlay} onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}>
-      <div className={modalStyles.modal} role="dialog" aria-modal="true" aria-label={mode === 'grant' ? '포인트 지급' : '포인트 차감'} ref={dialogRef}>
+      <div className={modalStyles.modal} role="dialog" aria-modal="true" aria-label={mode === 'grant' ? '포인트 지급' : '포인트 차감'}>
         {/* 헤더 */}
         <div className={modalStyles.header}>
           <div>
