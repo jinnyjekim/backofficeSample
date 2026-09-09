@@ -38,7 +38,7 @@ const RESULT_META = {
 
 export function SecurityLogPage() {
   const [quick, setQuick] = useState<Quick>("전체");
-  const [searchField, setSearchField] = useState("전체");
+  const searchField = "전체";
   const [keyword, setKeyword] = useState("");
   const [search, setSearch] = useState("");
   const [start, setStart] = useState("2026-08-23");
@@ -96,7 +96,6 @@ export function SecurityLogPage() {
     SECURITY_LOGS.find((entry) => entry.id === selectedId) ?? null;
   function reset() {
     setQuick("전체");
-    setSearchField("전체");
     setKeyword("");
     setSearch("");
     setStart("2026-08-23");
@@ -205,30 +204,7 @@ export function SecurityLogPage() {
           조회 전용 · 로그 등록/수정/삭제 불가 · 민감 인증정보는 저장 및
           다운로드에서 제외
         </div>
-        <div className={shared.quickFilters}>
-          {QUICK.map((item) => {
-            const active = quick === item;
-            return (
-              <CommonButton
-                key={item}
-                type="button"
-                variant={active ? "primary-light" : "secondary"}
-                size="md"
-                className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
-                onClick={() => setQuick(item)}
-              >
-                <span className={shared.qfLabel}>{item}</span>
-                <span className={shared.qfCount}>
-                  {
-                    SECURITY_LOGS.filter(
-                      (entry) => item === "전체" || entry.category === item,
-                    ).length
-                  }
-                </span>
-              </CommonButton>
-            );
-          })}
-        </div>
+
         <div className={shared.filterBox}>
           <form
             className={shared.filterRow1}
@@ -237,22 +213,6 @@ export function SecurityLogPage() {
               setSearch(keyword.trim());
             }}
           >
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select
-                aria-label="검색 범위"
-                className={shared.selectSm}
-                value={searchField}
-                onChange={(event) => setSearchField(event.target.value)}
-              >
-                <option>전체</option>
-                <option>이벤트 ID</option>
-                <option>관리자 ID</option>
-                <option>회원 ID</option>
-                <option>IP</option>
-                <option>Request ID</option>
-              </select>
-            </label>
             <input
               className={shared.searchInput}
               value={keyword}
@@ -262,6 +222,30 @@ export function SecurityLogPage() {
             <button type="submit" className={shared.searchBtn}>
               검색
             </button>
+            <div className={shared.quickFilters}>
+              {QUICK.map((item) => {
+                const active = quick === item;
+                return (
+                  <CommonButton
+                    key={item}
+                    type="button"
+                    variant={active ? "primary-light" : "secondary"}
+                    size="md"
+                    className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
+                    onClick={() => setQuick(item)}
+                  >
+                    <span className={shared.qfLabel}>{item}</span>
+                    <span className={shared.qfCount}>
+                      {
+                        SECURITY_LOGS.filter(
+                          (entry) => item === "전체" || entry.category === item,
+                        ).length
+                      }
+                    </span>
+                  </CommonButton>
+                );
+              })}
+            </div>
           </form>
           <div className={shared.filterRow2}>
             <label className={styles.dateFilterField}>
@@ -345,6 +329,9 @@ export function SecurityLogPage() {
               placeholder="IP 필터"
             />
             <span className={shared.rowSpacer} />
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
             <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
             </button>
@@ -378,7 +365,7 @@ export function SecurityLogPage() {
               : "조회된 보안 로그가 없습니다."
           }
           emptySubtext="기간이나 검색 조건을 변경해 주세요."
-          emptyActionLabel="필터 초기화"
+          emptyActionLabel="초기화"
           emptyActionClick={reset}
           showPagination
           pages={[{ label: "‹" }, { label: "1", active: true }, { label: "›" }]}

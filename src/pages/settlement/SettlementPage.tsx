@@ -43,24 +43,6 @@ export function SettlementPage() {
         <div className={styles.title}>정산 목록</div>
         <div className={styles.subtitle}>정산 대상별 거래를 모아 최종 정산금액과 지급 상태를 관리합니다.</div>
 
-        <div className={styles.quickFilters}>
-          {MAIN_QUICK_FILTERS.map((k) => {
-            const active = filters.quick === k;
-            return (
-              <CommonButton
-                key={k}
-                variant={active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${styles.qfBtn} ${active ? styles.active : ''}`}
-                onClick={() => setField('quick', k)}
-              >
-                <span className={styles.qfLabel}>{k}</span>
-                <span className={styles.qfCount}>{counts[k] || 0}</span>
-              </CommonButton>
-            );
-          })}
-        </div>
-
         <div className={styles.filterBox}>
           <div className={styles.filterRow1}>
             <input
@@ -70,36 +52,52 @@ export function SettlementPage() {
               placeholder="정산번호, 회사명 또는 사업자번호로 검색"
             />
             <button type="button" className={styles.searchBtn}>검색</button>
+            <div className={styles.quickFilters}>
+              {MAIN_QUICK_FILTERS.map((k) => {
+                const active = filters.quick === k;
+                return (
+                  <CommonButton
+                    key={k}
+                    variant={active ? 'primary-light' : 'secondary'}
+                    size="md"
+                    className={`${styles.qfBtn} ${active ? styles.active : ''}`}
+                    onClick={() => setField('quick', k)}
+                  >
+                    <span className={styles.qfLabel}>{k}</span>
+                    <span className={styles.qfCount}>{counts[k] || 0}</span>
+                  </CommonButton>
+                );
+              })}
+            </div>
           </div>
           <div className={styles.filterRow2}>
-            <label className={styles.filterField}>
-              <span className={styles.filterFieldLabel}>정산상태</span>
+            <label className="globalFilterField">
+              <span>정산상태</span>
               <select className={styles.selectXs} value={filters.settleStatus} onChange={(e) => setField('settleStatus', e.target.value as SettleStatus | '전체')}>
                 {SETTLE_STATUS_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
               </select>
             </label>
-            <label className={styles.filterField}>
-              <span className={styles.filterFieldLabel}>지급상태</span>
+            <label className="globalFilterField">
+              <span>지급상태</span>
               <select className={styles.selectXs} value={filters.payStatus} onChange={(e) => setField('payStatus', e.target.value as PayStatus | '전체')}>
                 {PAY_STATUS_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
               </select>
             </label>
-            <label className={styles.filterField}>
-              <span className={styles.filterFieldLabel}>정산대상</span>
+            <label className="globalFilterField">
+              <span>정산대상</span>
               <select className={styles.selectXs} value={filters.target} onChange={(e) => setField('target', e.target.value)}>
                 {targetOptions.map((o) => <option key={o} value={o}>{o}</option>)}
               </select>
             </label>
-            <label className={styles.filterField}>
-              <span className={styles.filterFieldLabel}>담당자</span>
+            <label className="globalFilterField">
+              <span>담당자</span>
               <select className={styles.selectXs} value={filters.assignee} onChange={(e) => setField('assignee', e.target.value)}>
                 {assigneeOptions.map((o) => <option key={o} value={o}>{o}</option>)}
               </select>
             </label>
             <div className={styles.rowSpacer} />
-            {hasActiveFilters && (
-              <button type="button" className={styles.resetBtn} onClick={() => setFilters(EMPTY_FILTERS)}>초기화</button>
-            )}
+            <button type="button" className="detailFilterBtn">상세 필터</button>
+            <button type="button" className={styles.resetBtn} onClick={() => setFilters(EMPTY_FILTERS)}>초기화</button>
           </div>
         </div>
 

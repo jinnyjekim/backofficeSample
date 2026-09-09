@@ -252,29 +252,6 @@ export function ReportProcessingPage() {
         ]}
       />
       <ControlArea>
-        <div className={shared.quickFilters}>
-          {quicks.map((item) => {
-            const active = quick === item;
-            return (
-              <CommonButton
-                type="button"
-                key={item}
-                variant={active ? "primary-light" : "secondary"}
-                size="md"
-                className={`${shared.qfBtn} ${active ? base.quickActive : ""}`}
-                onClick={() => selectQuick(item)}
-              >
-                <span className={shared.qfLabel}>{item}</span>
-                <span className={shared.qfCount}>
-                  {
-                    reports.filter((report) => matchesQuick(report, item))
-                      .length
-                  }
-                </span>
-              </CommonButton>
-            );
-          })}
-        </div>
         <FilterBox>
           <form
             className={shared.filterRow1}
@@ -283,15 +260,6 @@ export function ReportProcessingPage() {
               setSearch(keyword.trim());
             }}
           >
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select aria-label="검색 범위" className={shared.selectSm}>
-                <option>통합 검색</option>
-                <option>신고번호</option>
-                <option>신고 대상</option>
-                <option>신고자 / 피신고자</option>
-              </select>
-            </label>
             <input
               className={shared.searchInput}
               value={keyword}
@@ -299,6 +267,29 @@ export function ReportProcessingPage() {
               placeholder="신고번호 / 대상 / 신고자 / 피신고자 / 사유"
             />
             <button className={shared.searchBtn}>조회</button>
+            <div className={shared.quickFilters}>
+              {quicks.map((item) => {
+                const active = quick === item;
+                return (
+                  <CommonButton
+                    type="button"
+                    key={item}
+                    variant={active ? "primary-light" : "secondary"}
+                    size="md"
+                    className={`${shared.qfBtn} ${active ? base.quickActive : ""}`}
+                    onClick={() => selectQuick(item)}
+                  >
+                    <span className={shared.qfLabel}>{item}</span>
+                    <span className={shared.qfCount}>
+                      {
+                        reports.filter((report) => matchesQuick(report, item))
+                          .length
+                      }
+                    </span>
+                  </CommonButton>
+                );
+              })}
+            </div>
           </form>
           <div className={shared.filterRow2}>
             <label className="globalFilterField">
@@ -347,11 +338,20 @@ export function ReportProcessingPage() {
                 <option value="배정">담당자 배정</option>
               </select>
             </label>
-            <span>접수일</span>
-            <DatePicker className={shared.selectSm} defaultValue="2026-08-20" />
-            <span>~</span>
-            <DatePicker className={shared.selectSm} defaultValue="2026-08-27" />
+            <label className={shared.dateFilterField}>
+              <span>접수일</span>
+              <span className={shared.dateRange}>
+                <DatePicker defaultValue="2026-08-20" />
+                <span className={shared.dateSeparator} aria-hidden="true">
+                  ~
+                </span>
+                <DatePicker defaultValue="2026-08-27" />
+              </span>
+            </label>
             <span className={shared.rowSpacer} />
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
             <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
             </button>
@@ -409,7 +409,7 @@ export function ReportProcessingPage() {
           empty={!filtered.length}
           emptyText="조건에 맞는 신고가 없습니다."
           emptySubtext="신고 대상이나 상태 필터를 변경해 주세요."
-          emptyActionLabel="필터 초기화"
+          emptyActionLabel="초기화"
           emptyActionClick={reset}
           showPagination
           pages={pages}
@@ -639,16 +639,6 @@ export function ReportHistoryPage() {
               setSearch(keyword.trim());
             }}
           >
-            <label className="globalFilterField">
-              <span>검색 범위</span>
-              <select aria-label="검색 범위" className={shared.selectSm}>
-                <option>통합 검색</option>
-                <option>로그 ID</option>
-                <option>신고번호</option>
-                <option>대상 ID</option>
-                <option>처리자</option>
-              </select>
-            </label>
             <input
               className={shared.searchInput}
               value={keyword}
@@ -755,7 +745,7 @@ export function ReportHistoryPage() {
           minWidth="975px"
           empty={!filtered.length}
           emptyText="조건에 맞는 신고 처리 이력이 없습니다."
-          emptyActionLabel="필터 초기화"
+          emptyActionLabel="초기화"
           emptyActionClick={reset}
           showPagination
           pages={pages}

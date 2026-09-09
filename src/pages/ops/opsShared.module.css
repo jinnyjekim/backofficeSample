@@ -30,20 +30,35 @@
   margin-top: 4px;
   margin-bottom: 16px;
 }
-.createBtn {
+.createBtn,
+.registerBtn {
   height: 36px;
   padding: 0 16px;
   border: 0;
   border-radius: 9px;
-  background: var(--accent);
+  background: var(--common-text, #18181b);
   color: #fff;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   flex: none;
 }
-.createBtn:hover {
-  background: var(--accent-hover);
+.createBtn:hover,
+.registerBtn:hover {
+  background: #3f3f46;
+}
+
+.filterHeadRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filterHeadRow > .quickFilters,
+.filterHeadRow > .filterRow1 {
+  margin-bottom: 0;
 }
 
 .quickFilters {
@@ -98,6 +113,7 @@
 }
 
 .filterBox {
+  position: relative;
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
@@ -106,8 +122,13 @@
 }
 .filterRow1 {
   display: flex;
+  align-items: flex-end;
   gap: 8px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.filterRow1 > .quickFilters {
+  margin-bottom: 0;
 }
 .filterRow2 {
   display: flex;
@@ -278,16 +299,23 @@
   margin-right: 4px;
 }
 .bulkBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 30px;
   padding: 0 12px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
   font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
   color: #3f3f46;
   cursor: pointer;
+  box-sizing: border-box;
 }
 .bulkBtn:hover {
+  border-color: rgba(0, 0, 0, 0.18);
   background: #fafafa;
 }
 
@@ -351,3 +379,4 @@
   font-weight: 600;
   cursor: pointer;
 }
+

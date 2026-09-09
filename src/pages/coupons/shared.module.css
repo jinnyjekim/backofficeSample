@@ -7,11 +7,13 @@
   overflow-y: auto;
 }
 
-.header {
+.header,
+.headTop {
   padding: 22px 24px 0;
   flex: none;
 }
-.headerTop {
+.headerTop,
+.headRow {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -33,7 +35,7 @@
   padding: 0 16px;
   border: 0;
   border-radius: 9px;
-  background: var(--accent);
+  background: var(--common-text, #18181b);
   color: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -41,7 +43,23 @@
   flex: none;
 }
 .primaryBtn:hover {
-  background: var(--accent-hover);
+  background: #3f3f46;
+}
+
+.filterHeadRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filterHeadRow > .quickFilters,
+.filterHeadRow > .filterRow1 {
+  margin-bottom: 0;
+}
+.filterRow1 > .quickFilters {
+  margin-bottom: 0;
 }
 
 .quickFilters {
@@ -87,7 +105,8 @@
   color: #4338ca;
 }
 
-.filterCard {
+.filterCard,
+.filterBox {
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
@@ -96,8 +115,10 @@
 }
 .filterRow1 {
   display: flex;
+  align-items: flex-end;
   gap: 8px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 .filterRow2 {
   display: flex;
@@ -174,10 +195,12 @@
 .searchBtn:hover {
   background: #3f3f46;
 }
-.spacer {
+.spacer,
+.rowSpacer {
   flex: 1;
 }
-.clearBtn {
+.clearBtn,
+.resetBtn {
   height: 32px;
   padding: 0 10px;
   border: 0;
@@ -186,7 +209,8 @@
   font-size: 12px;
   cursor: pointer;
 }
-.clearBtn:hover {
+.clearBtn:hover,
+.resetBtn:hover {
   color: #52525b;
 }
 
@@ -216,7 +240,8 @@
   background: #fafafa;
 }
 
-.resultBar {
+.resultBar,
+.resultRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -234,8 +259,18 @@
   display: flex;
   gap: 8px;
 }
+.pageSizeSelect {
+  height: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  padding: 0 9px;
+  font-size: 12px;
+  color: #52525b;
+  background: #fff;
+}
 
-.tableWrap {
+.tableWrap,
+.gridWrap {
   margin: 0 24px 20px;
   flex: none;
 }

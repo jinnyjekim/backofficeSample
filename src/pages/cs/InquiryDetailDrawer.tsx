@@ -41,9 +41,6 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
   const sla = getSlaInfo(inquiry);
   const meta = STATUS_META[inquiry.status];
 
-  const asideRef = useRef<HTMLElement>(null);
-  useOutsideClose(asideRef, onClose);
-
   const toggleChannel = (channel: string) => {
     setChannels((current) => current.includes(channel) ? current.filter((item) => item !== channel) : [...current, channel]);
   };
@@ -60,8 +57,11 @@ export function InquiryDetailDrawer({ inquiry, onClose, onAssign, onStart, onHol
     setConfirmSend(true);
   };
 
+  const asideRef = useRef<HTMLElement>(null);
+  useOutsideClose(asideRef, onClose);
+
   return (
-    <aside ref={asideRef} className={`${drawer.aside} ${styles.detailDrawer}`} aria-label={`${inquiry.id} 문의 상세`}>
+    <aside ref={asideRef} className={drawer.aside}>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

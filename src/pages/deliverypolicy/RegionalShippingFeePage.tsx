@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
-import { DataGrid } from '../../components/DataGrid/DataGrid';
-import type { GridRow } from '../../components/DataGrid/types';
-import shared from '../ops/opsShared.module.css';
-import styles from './RegionalShippingFeePage.module.css';
-import { RegionalFeeDrawer } from './RegionalFeeDrawer';
+import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
+import { useMemo, useState } from "react";
+import { DataGrid } from "../../components/DataGrid/DataGrid";
+import type { GridRow } from "../../components/DataGrid/types";
+import shared from "../ops/opsShared.module.css";
+import styles from "./RegionalShippingFeePage.module.css";
+import { RegionalFeeDrawer } from "./RegionalFeeDrawer";
 import {
   DELIVERY_METHODS,
   INITIAL_POLICIES,
@@ -21,49 +22,64 @@ import {
   type RegionalFeePolicy,
   type QuickFilter,
   type RegionType,
-} from './regionalShippingFeeData';
-import { CommonButton, showToast } from '../../components/common';
+} from "./regionalShippingFeeData";
+import { CommonButton, showToast } from "../../components/common";
 
-const TODAY = '2026-08-25';
+const TODAY = "2026-08-25";
 
-type View = 'list' | 'preview';
-type ConfirmState = { kind: 'delete' | 'end'; item: RegionalFeePolicy } | null;
+type View = "list" | "preview";
+type ConfirmState = { kind: "delete" | "end"; item: RegionalFeePolicy } | null;
 
 const COLUMNS = [
-  { label: '정책명' },
-  { label: '지역유형' },
-  { label: '대상지역' },
-  { label: '추가배송비', align: 'right' as const },
-  { label: '배송방법' },
-  { label: '적용기간' },
-  { label: '상태' },
+  { label: "정책명" },
+  { label: "지역유형" },
+  { label: "대상지역" },
+  { label: "추가배송비", align: "right" as const },
+  { label: "배송방법" },
+  { label: "적용기간" },
+  { label: "상태" },
 ];
 
 const STATUS_DOT: Record<string, { dot: string; fg: string }> = {
-  '적용중': { dot: '#10b981', fg: '#047857' },
-  '적용 예정': { dot: '#3b82f6', fg: '#1d4ed8' },
-  '종료': { dot: '#a1a1aa', fg: '#71717a' },
-  '비활성': { dot: '#d4d4d8', fg: '#a1a1aa' },
+  적용중: { dot: "#10b981", fg: "#047857" },
+  "적용 예정": { dot: "#3b82f6", fg: "#1d4ed8" },
+  종료: { dot: "#a1a1aa", fg: "#71717a" },
+  비활성: { dot: "#d4d4d8", fg: "#a1a1aa" },
 };
 
-function history(item: RegionalFeePolicy, action: string, before?: string, after?: string): RegionalFeePolicy {
+function history(
+  item: RegionalFeePolicy,
+  action: string,
+  before?: string,
+  after?: string,
+): RegionalFeePolicy {
   return {
     ...item,
     updatedAt: TODAY,
-    updatedBy: 'admin01',
-    history: [...item.history, { id: `H-${item.id}-${Date.now()}`, at: `${TODAY} 14:00`, by: 'admin01', action, before, after }],
+    updatedBy: "admin01",
+    history: [
+      ...item.history,
+      {
+        id: `H-${item.id}-${Date.now()}`,
+        at: `${TODAY} 14:00`,
+        by: "admin01",
+        action,
+        before,
+        after,
+      },
+    ],
   };
 }
 
 export function RegionalShippingFeePage() {
   const [policies, setPolicies] = useState(INITIAL_POLICIES);
-  const [view, setView] = useState<View>('list');
+  const [view, setView] = useState<View>("list");
 
-  const [quickFilter, setQuickFilter] = useState<QuickFilter>('전체');
-  const [keyword, setKeyword] = useState('');
-  const [search, setSearch] = useState('');
-  const [regionTypeFilter, setRegionTypeFilter] = useState<RegionType | ''>('');
-  const [methodFilter, setMethodFilter] = useState<DeliveryMethod | ''>('');
+  const [quickFilter, setQuickFilter] = useState<QuickFilter>("전체");
+  const [keyword, setKeyword] = useState("");
+  const [search, setSearch] = useState("");
+  const [regionTypeFilter, setRegionTypeFilter] = useState<RegionType | "">("");
+  const [methodFilter, setMethodFilter] = useState<DeliveryMethod | "">("");
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   const [drawerItem, setDrawerItem] = useState<RegionalFeePolicy | null>(null);
@@ -78,7 +94,13 @@ export function RegionalShippingFeePage() {
     () =>
       policies.filter((p) => {
         if (!matchesQuickFilter(p, quickFilter, warnings)) return false;
-        if (search && !`${p.name} ${p.code} ${p.sido} ${p.sigungu}`.toLowerCase().includes(search.toLowerCase())) return false;
+        if (
+          search &&
+          !`${p.name} ${p.code} ${p.sido} ${p.sigungu}`
+            .toLowerCase()
+            .includes(search.toLowerCase())
+        )
+          return false;
         if (regionTypeFilter && p.regionType !== regionTypeFilter) return false;
         if (methodFilter && p.deliveryMethod !== methodFilter) return false;
         return true;
@@ -87,13 +109,13 @@ export function RegionalShippingFeePage() {
   );
 
   const toastBriefly = (message: string) => {
-    showToast({ message, type: 'success' });
+    showToast({ message, type: "success" });
   };
   const reset = () => {
-    setKeyword('');
-    setSearch('');
-    setRegionTypeFilter('');
-    setMethodFilter('');
+    setKeyword("");
+    setSearch("");
+    setRegionTypeFilter("");
+    setMethodFilter("");
   };
   const openCreate = () => {
     setDrawerItem(newRegionalFeePolicy());
@@ -106,40 +128,66 @@ export function RegionalShippingFeePage() {
 
   const save = (item: RegionalFeePolicy) => {
     if (isNew) {
-      const saved = history({ ...item, history: [] }, '정책 등록');
+      const saved = history({ ...item, history: [] }, "정책 등록");
       setPolicies((current) => [saved, ...current]);
       setDrawerItem(null);
       setIsNew(false);
-      toastBriefly('지역 추가배송비 정책을 등록했습니다.');
+      toastBriefly("지역 추가배송비 정책을 등록했습니다.");
     } else {
       const previous = policies.find((p) => p.id === item.id);
-      const saved = previous && previous.extraFee !== item.extraFee
-        ? history(item, '추가 배송비 변경', fmtWon(previous.extraFee), fmtWon(item.extraFee))
-        : history(item, '정책 수정');
-      setPolicies((current) => current.map((p) => (p.id === item.id ? saved : p)));
+      const saved =
+        previous && previous.extraFee !== item.extraFee
+          ? history(
+              item,
+              "추가 배송비 변경",
+              fmtWon(previous.extraFee),
+              fmtWon(item.extraFee),
+            )
+          : history(item, "정책 수정");
+      setPolicies((current) =>
+        current.map((p) => (p.id === item.id ? saved : p)),
+      );
       setDrawerItem(saved);
-      toastBriefly('정책을 저장했습니다.');
+      toastBriefly("정책을 저장했습니다.");
     }
   };
 
   const toggleActive = (item: RegionalFeePolicy) => {
-    const updated = history({ ...item, active: !item.active }, item.active ? '정책 비활성화' : '정책 활성화');
-    setPolicies((current) => current.map((p) => (p.id === updated.id ? updated : p)));
-    setDrawerItem((current) => (current && current.id === updated.id ? updated : current));
-    toastBriefly(item.active ? '정책을 비활성화했습니다.' : '정책을 활성화했습니다.');
+    const updated = history(
+      { ...item, active: !item.active },
+      item.active ? "정책 비활성화" : "정책 활성화",
+    );
+    setPolicies((current) =>
+      current.map((p) => (p.id === updated.id ? updated : p)),
+    );
+    setDrawerItem((current) =>
+      current && current.id === updated.id ? updated : current,
+    );
+    toastBriefly(
+      item.active ? "정책을 비활성화했습니다." : "정책을 활성화했습니다.",
+    );
   };
 
   const confirmAction = () => {
     if (!confirm) return;
-    if (confirm.kind === 'delete') {
+    if (confirm.kind === "delete") {
       setPolicies((current) => current.filter((p) => p.id !== confirm.item.id));
       setDrawerItem(null);
-      toastBriefly('사용 이력이 없는 정책을 삭제했습니다.');
+      toastBriefly("사용 이력이 없는 정책을 삭제했습니다.");
     } else {
-      const updated = history({ ...confirm.item, endDate: TODAY }, '정책 종료', '상시', `${TODAY} 종료`);
-      setPolicies((current) => current.map((p) => (p.id === updated.id ? updated : p)));
-      setDrawerItem((current) => (current && current.id === updated.id ? updated : current));
-      toastBriefly('정책을 종료했습니다. 신규 주문부터 적용되지 않습니다.');
+      const updated = history(
+        { ...confirm.item, endDate: TODAY },
+        "정책 종료",
+        "상시",
+        `${TODAY} 종료`,
+      );
+      setPolicies((current) =>
+        current.map((p) => (p.id === updated.id ? updated : p)),
+      );
+      setDrawerItem((current) =>
+        current && current.id === updated.id ? updated : current,
+      );
+      toastBriefly("정책을 종료했습니다. 신규 주문부터 적용되지 않습니다.");
     }
     setConfirm(null);
   };
@@ -151,15 +199,37 @@ export function RegionalShippingFeePage() {
     return {
       id: p.id,
       onClick: () => openDetail(p),
-      bg: issues.length ? '#fffdf8' : undefined,
+      bg: issues.length ? "#fffdf8" : undefined,
       cells: [
-        { kind: 'titleWarn', title: p.name, hasIssue: issues.length > 0, issueTitle: issues.join(' · ') },
-        { kind: 'badge', text: p.regionType, bg: p.regionType === '우편번호' ? '#eef2ff' : '#eff6ff', fg: p.regionType === '우편번호' ? '#4338ca' : '#2563eb' },
-        { kind: 'text', text: fmtRegion(p), size: '12px', color: '#3f3f46' },
-        { kind: 'text', text: `+${fmtWon(p.extraFee)}`, size: '12px', weight: 600, align: 'right', numeric: true },
-        { kind: 'text', text: p.deliveryMethod, size: '12px', color: '#3f3f46' },
-        { kind: 'text', text: fmtPeriod(p), size: '11px', color: '#71717a' },
-        { kind: 'statusDot', text: status, dot: dotColor.dot, fg: dotColor.fg },
+        {
+          kind: "titleWarn",
+          title: p.name,
+          hasIssue: issues.length > 0,
+          issueTitle: issues.join(" · "),
+        },
+        {
+          kind: "badge",
+          text: p.regionType,
+          bg: p.regionType === "우편번호" ? "#eef2ff" : "#eff6ff",
+          fg: p.regionType === "우편번호" ? "#4338ca" : "#2563eb",
+        },
+        { kind: "text", text: fmtRegion(p), size: "12px", color: "#3f3f46" },
+        {
+          kind: "text",
+          text: `+${fmtWon(p.extraFee)}`,
+          size: "12px",
+          weight: 600,
+          align: "right",
+          numeric: true,
+        },
+        {
+          kind: "text",
+          text: p.deliveryMethod,
+          size: "12px",
+          color: "#3f3f46",
+        },
+        { kind: "text", text: fmtPeriod(p), size: "11px", color: "#71717a" },
+        { kind: "statusDot", text: status, dot: dotColor.dot, fg: dotColor.fg },
       ],
     };
   });
@@ -173,126 +243,248 @@ export function RegionalShippingFeePage() {
         <div className={shared.headerTop}>
           <div>
             <div className={shared.title}>지역별 추가 배송비</div>
-            <div className={shared.subtitle}>배송지에 따라 기본 배송비 위에 추가로 부과되는 지역 할증 배송비를 관리합니다.</div>
+            <div className={shared.subtitle}>
+              배송지에 따라 기본 배송비 위에 추가로 부과되는 지역 할증 배송비를
+              관리합니다.
+            </div>
           </div>
-          {view === 'list' && <button type="button" className={shared.createBtn} onClick={openCreate}>+ 지역 배송비 등록</button>}
+          {view === "list" && (
+            <button
+              type="button"
+              className={shared.createBtn}
+              onClick={openCreate}
+            >
+              + 지역 배송비 등록
+            </button>
+          )}
         </div>
 
         <div className={shared.quickFilters}>
           <CommonButton
             type="button"
-            variant={view === 'list' ? 'primary-light' : 'secondary'}
+            variant={view === "list" ? "primary-light" : "secondary"}
             size="md"
-            className={`${shared.qfBtn} ${view === 'list' ? styles.quickActive : ''}`}
-            onClick={() => setView('list')}
+            className={`${shared.qfBtn} ${view === "list" ? styles.quickActive : ""}`}
+            onClick={() => setView("list")}
           >
             <span className={shared.qfLabel}>정책 목록</span>
           </CommonButton>
           <CommonButton
             type="button"
-            variant={view === 'preview' ? 'primary-light' : 'secondary'}
+            variant={view === "preview" ? "primary-light" : "secondary"}
             size="md"
-            className={`${shared.qfBtn} ${view === 'preview' ? styles.quickActive : ''}`}
-            onClick={() => setView('preview')}
+            className={`${shared.qfBtn} ${view === "preview" ? styles.quickActive : ""}`}
+            onClick={() => setView("preview")}
           >
             <span className={shared.qfLabel}>지역 판정 Preview</span>
           </CommonButton>
         </div>
 
-        {view === 'list' && (
+        {view === "list" && (
           <>
-            <div className={shared.quickFilters}>
-              {QUICK_FILTERS.map((filter) => {
-                const active = quickFilter === filter;
-                return (
-                  <CommonButton
-                    key={filter}
-                    variant={active ? 'primary-light' : 'secondary'}
-                    size="md"
-                    className={`${shared.qfBtn} ${active ? styles.quickActive : ''}`}
-                    onClick={() => setQuickFilter(filter)}
-                  >
-                    <span className={shared.qfLabel}>{filter}</span>
-                    <span className={shared.qfCount}>{policies.filter((p) => matchesQuickFilter(p, filter, warnings)).length}</span>
-                  </CommonButton>
-                );
-              })}
-            </div>
             <div className={shared.filterBox}>
-              <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
-                <input className={shared.searchInput} value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="정책명, 정책 코드, 지역명 검색" />
-                <button type="submit" className={shared.searchBtn}>검색</button>
+              <form
+                className={shared.filterRow1}
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  setSearch(keyword.trim());
+                }}
+              >
+                <input
+                  className={shared.searchInput}
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  placeholder="정책명, 정책 코드, 지역명 검색"
+                />
+                <button type="submit" className={shared.searchBtn}>
+                  검색
+                </button>
+                <div className={shared.quickFilters}>
+                  {QUICK_FILTERS.map((filter) => {
+                    const active = quickFilter === filter;
+                    return (
+                      <CommonButton
+                        key={filter}
+                        variant={active ? "primary-light" : "secondary"}
+                        size="md"
+                        className={`${shared.qfBtn} ${active ? styles.quickActive : ""}`}
+                        onClick={() => setQuickFilter(filter)}
+                      >
+                        <span className={shared.qfLabel}>{filter}</span>
+                        <span className={shared.qfCount}>
+                          {
+                            policies.filter((p) =>
+                              matchesQuickFilter(p, filter, warnings),
+                            ).length
+                          }
+                        </span>
+                      </CommonButton>
+                    );
+                  })}
+                </div>
               </form>
               <div className={shared.filterRow2}>
-                <label className="globalFilterField"><span>지역유형</span><select aria-label="지역유형" className={shared.selectSm} value={regionTypeFilter} onChange={(e) => setRegionTypeFilter(e.target.value as RegionType | '')}>
-                  <option value="">전체 지역유형</option>
-                  <option>행정구역</option>
-                  <option>우편번호</option>
-                </select></label>
-                <label className="globalFilterField"><span>배송방법</span><select aria-label="배송방법" className={shared.selectSm} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value as DeliveryMethod | '')}>
-                  <option value="">전체 배송방법</option>
-                  {DELIVERY_METHODS.map((m) => <option key={m}>{m}</option>)}
-                </select></label>
+                <label className="globalFilterField">
+                  <span>지역유형</span>
+                  <select
+                    aria-label="지역유형"
+                    className={shared.selectSm}
+                    value={regionTypeFilter}
+                    onChange={(e) =>
+                      setRegionTypeFilter(e.target.value as RegionType | "")
+                    }
+                  >
+                    <option value="">전체 지역유형</option>
+                    <option>행정구역</option>
+                    <option>우편번호</option>
+                  </select>
+                </label>
+                <label className="globalFilterField">
+                  <span>배송방법</span>
+                  <select
+                    aria-label="배송방법"
+                    className={shared.selectSm}
+                    value={methodFilter}
+                    onChange={(e) =>
+                      setMethodFilter(e.target.value as DeliveryMethod | "")
+                    }
+                  >
+                    <option value="">전체 배송방법</option>
+                    {DELIVERY_METHODS.map((m) => (
+                      <option key={m}>{m}</option>
+                    ))}
+                  </select>
+                </label>
                 <span className={shared.rowSpacer} />
-                <button type="button" className={shared.resetBtn} onClick={reset}>필터 초기화</button>
+                <button type="button" className="detailFilterBtn">
+                  상세 필터
+                </button>
+                <button
+                  type="button"
+                  className={shared.resetBtn}
+                  onClick={reset}
+                >
+                  초기화
+                </button>
               </div>
             </div>
           </>
         )}
       </header>
 
-      {view === 'list' && (
+      {view === "list" && (
         <div className={shared.gridWrap}>
           <div className={shared.resultRow}>
-            <span className={shared.resultLabel}>총 {filtered.length}개 정책</span>
-          </div>
+            <span className={shared.resultLabel}>
+              총 {filtered.length}개 정책
+            </span>
+          
+          <div className={shared.resultActions}>
+            <ExcelDownloadButton type="button" data-grid-download />
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select>
+          </div></div>
           <DataGrid
             columns={COLUMNS}
             rows={rows}
             gridTemplate="1fr 72px 122px 74px 56px 148px 70px"
             minWidth="950px"
             empty={filtered.length === 0}
-            emptyText={quickFilter === '확인 필요' ? '현재 확인이 필요한 지역 배송비 정책이 없습니다.' : '검색 결과가 없습니다.'}
+            emptyText={
+              quickFilter === "확인 필요"
+                ? "현재 확인이 필요한 지역 배송비 정책이 없습니다."
+                : "검색 결과가 없습니다."
+            }
             emptySubtext="검색어나 필터 조건을 변경해 주세요."
-            emptyActionLabel="필터 초기화"
+            emptyActionLabel="초기화"
             emptyActionClick={reset}
           />
         </div>
       )}
 
-      {view === 'preview' && (
+      {view === "preview" && (
         <div className={shared.gridWrap} style={{ marginTop: 0 }}>
           <div className={styles.previewGrid}>
             <div className={styles.previewCard}>
               <h3>테스트 배송지 선택</h3>
               <div className={styles.orderPick}>
                 {TEST_ADDRESSES.map((a) => (
-                  <button key={a.id} type="button" className={`${styles.orderOption} ${previewAddrId === a.id ? styles.orderOptionActive : ''}`} onClick={() => setPreviewAddrId(a.id)}>
-                    <span><strong>{a.label}</strong> · {a.deliveryMethod}</span>
+                  <button
+                    key={a.id}
+                    type="button"
+                    className={`${styles.orderOption} ${previewAddrId === a.id ? styles.orderOptionActive : ""}`}
+                    onClick={() => setPreviewAddrId(a.id)}
+                  >
+                    <span>
+                      <strong>{a.label}</strong> · {a.deliveryMethod}
+                    </span>
                     <span>{a.postalCode}</span>
                   </button>
                 ))}
               </div>
-              <div className={styles.infoNote}>현재 저장된(적용중인) 정책 기준으로 판정합니다. 기본 배송비는 배송 정책 &gt; 기본 배송비 설정을 따릅니다.</div>
+              <div className={styles.infoNote}>
+                현재 저장된(적용중인) 정책 기준으로 판정합니다. 기본 배송비는
+                배송 정책 &gt; 기본 배송비 설정을 따릅니다.
+              </div>
             </div>
             <div className={styles.previewCard}>
               <h3>지역 판정 · 배송비 계산 결과</h3>
-              <div className={`${styles.resultHero} ${previewResult.match.tie ? styles.resultHeroWarn : ''}`}>
-                <span>{previewAddr.label} ({previewAddr.sido} {previewAddr.sigungu}) · {previewAddr.deliveryMethod}</span>
+              <div
+                className={`${styles.resultHero} ${previewResult.match.tie ? styles.resultHeroWarn : ""}`}
+              >
+                <span>
+                  {previewAddr.label} ({previewAddr.sido} {previewAddr.sigungu})
+                  · {previewAddr.deliveryMethod}
+                </span>
                 <strong>{fmtWon(previewResult.finalFee)}</strong>
               </div>
               <div className={styles.breakdownTable}>
-                <div className={styles.breakdownRow}><span>기본 배송비</span><span>{fmtWon(previewResult.finalBaseFee)}</span></div>
-                <div className={styles.breakdownRow}><span>지역 추가배송비{previewResult.match.matched ? ` (${previewResult.match.matched.name})` : ''}</span><span>{fmtWon(previewResult.finalRegionFee)}</span></div>
-                <div className={`${styles.breakdownRow} ${styles.breakdownRowTotal}`}><span>최종 배송비</span><span>{fmtWon(previewResult.finalFee)}</span></div>
+                <div className={styles.breakdownRow}>
+                  <span>기본 배송비</span>
+                  <span>{fmtWon(previewResult.finalBaseFee)}</span>
+                </div>
+                <div className={styles.breakdownRow}>
+                  <span>
+                    지역 추가배송비
+                    {previewResult.match.matched
+                      ? ` (${previewResult.match.matched.name})`
+                      : ""}
+                  </span>
+                  <span>{fmtWon(previewResult.finalRegionFee)}</span>
+                </div>
+                <div
+                  className={`${styles.breakdownRow} ${styles.breakdownRowTotal}`}
+                >
+                  <span>최종 배송비</span>
+                  <span>{fmtWon(previewResult.finalFee)}</span>
+                </div>
               </div>
               {previewResult.match.tie && (
                 <div className={styles.noteList}>
-                  <div>⚠ 동일 우선순위로 매칭되는 정책이 {previewResult.match.candidates.length}건 있습니다: {previewResult.match.candidates.map((c) => c.name).join(', ')}. 정책 목록에서 우선순위를 조정해 주세요.</div>
+                  <div>
+                    ⚠ 동일 우선순위로 매칭되는 정책이{" "}
+                    {previewResult.match.candidates.length}건 있습니다:{" "}
+                    {previewResult.match.candidates
+                      .map((c) => c.name)
+                      .join(", ")}
+                    . 정책 목록에서 우선순위를 조정해 주세요.
+                  </div>
                 </div>
               )}
-              <div className={styles.resultRow}><span>매칭 정책</span><strong>{previewResult.match.matched?.name ?? '매칭된 정책 없음'}</strong></div>
-              <div className={styles.resultRow}><span>무료배송 적용</span><strong>{previewResult.freeShippingApplied ? '적용' : '미적용'}</strong></div>
+              <div className={styles.resultRow}>
+                <span>매칭 정책</span>
+                <strong>
+                  {previewResult.match.matched?.name ?? "매칭된 정책 없음"}
+                </strong>
+              </div>
+              <div className={styles.resultRow}>
+                <span>무료배송 적용</span>
+                <strong>
+                  {previewResult.freeShippingApplied ? "적용" : "미적용"}
+                </strong>
+              </div>
             </div>
           </div>
         </div>
@@ -305,33 +497,62 @@ export function RegionalShippingFeePage() {
           isNew={isNew}
           startEditing={isNew}
           issues={warnings[drawerItem.id] ?? []}
-          onClose={() => { setDrawerItem(null); setIsNew(false); }}
+          onClose={() => {
+            setDrawerItem(null);
+            setIsNew(false);
+          }}
           onSave={save}
           onToggleActive={toggleActive}
         />
       )}
 
       {confirm && (
-        <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirm(null); }}>
+        <div
+          className={shared.dialogOverlay}
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setConfirm(null);
+          }}
+        >
           <div className={shared.dialogBox}>
-            <h2 className={shared.dialogTitle}>{confirm.kind === 'delete' ? '지역 배송비 정책 삭제' : '지역 배송비 정책 종료'}</h2>
+            <h2 className={shared.dialogTitle}>
+              {confirm.kind === "delete"
+                ? "지역 배송비 정책 삭제"
+                : "지역 배송비 정책 종료"}
+            </h2>
             <p className={shared.dialogBody}>
-              {confirm.kind === 'delete'
-                ? '사용 이력이 없는 정책입니다. 삭제하면 복구할 수 없습니다.'
-                : '오늘 날짜로 적용 종료일을 설정합니다. 신규 주문에는 더 이상 적용되지 않습니다.'}
+              {confirm.kind === "delete"
+                ? "사용 이력이 없는 정책입니다. 삭제하면 복구할 수 없습니다."
+                : "오늘 날짜로 적용 종료일을 설정합니다. 신규 주문에는 더 이상 적용되지 않습니다."}
             </p>
             <div className={shared.dialogSummary}>
-              <div className={shared.dialogSummaryRow}><span>정책명</span><strong>{confirm.item.name}</strong></div>
-              <div className={shared.dialogSummaryRow}><span>사용 이력</span><strong>{confirm.item.usageCount.toLocaleString()}건</strong></div>
+              <div className={shared.dialogSummaryRow}>
+                <span>정책명</span>
+                <strong>{confirm.item.name}</strong>
+              </div>
+              <div className={shared.dialogSummaryRow}>
+                <span>사용 이력</span>
+                <strong>{confirm.item.usageCount.toLocaleString()}건</strong>
+              </div>
             </div>
             <div className={shared.dialogActions}>
-              <button type="button" className={styles.cancelButton} onClick={() => setConfirm(null)}>취소</button>
-              <button type="button" className={styles.dangerButton} onClick={confirmAction}>{confirm.kind === 'delete' ? '삭제' : '종료'}</button>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={() => setConfirm(null)}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className={styles.dangerButton}
+                onClick={confirmAction}
+              >
+                {confirm.kind === "delete" ? "삭제" : "종료"}
+              </button>
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 }

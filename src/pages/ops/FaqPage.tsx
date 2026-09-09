@@ -360,13 +360,18 @@ export function FaqPage() {
             <div className={styles.subtitle}>사용자가 자주 묻는 질문과 답변을 카테고리·검색 키워드·노출 순서로 관리합니다.</div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'categoryManage' })}>카테고리 관리</button>
-            <button type="button" className={styles.bulkBtn} onClick={openOrderManage}>순서 관리</button>
             <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ FAQ 등록</button>
           </div>
         </div>
 
-        <div className={styles.quickFilters}>
+        
+
+        <div className={styles.filterBox}>
+          <div className={styles.filterRow1}>
+            
+            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="질문, 답변 또는 키워드" />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {QUICK_FILTER_LABELS.map((k) => {
             const active = filter === k;
             return (
@@ -383,17 +388,6 @@ export function FaqPage() {
             );
           })}
         </div>
-
-        <div className={styles.filterBox}>
-          <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-              <option>전체</option>
-              <option>질문</option>
-              <option>답변</option>
-              <option>검색 키워드</option>
-            </select></label>
-            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="질문, 답변 또는 키워드" />
-            <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>카테고리</span><select aria-label="카테고리" className={styles.selectXs} value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
@@ -407,6 +401,7 @@ export function FaqPage() {
               <option value="중요만">중요 FAQ만</option>
             </select></label>
             <div className={styles.rowSpacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setCategoryFilter('전체'); setImportantFilter('전체'); setQ(''); }}>초기화</button>
           </div>
         </div>
@@ -415,6 +410,8 @@ export function FaqPage() {
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
+            <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'categoryManage' })}>카테고리 관리</button>
+            <button type="button" className={styles.bulkBtn} onClick={openOrderManage}>순서 관리</button>
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>

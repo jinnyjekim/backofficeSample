@@ -159,7 +159,19 @@ export function SupplyPricePage() {
           </div>
         </div>
 
-        <div className={styles.quickFilters}>
+        
+
+        <div className={styles.filterBox}>
+          <div className={styles.searchRow}>
+            
+            <input
+              className={styles.searchInput}
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="상품명, 상품코드 또는 거래처명"
+            />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {quickFilters.map((qf) => (
             <CommonButton
               key={qf.label}
@@ -173,24 +185,6 @@ export function SupplyPricePage() {
             </CommonButton>
           ))}
         </div>
-
-        <div className={styles.filterBox}>
-          <div className={styles.searchRow}>
-            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectField} defaultValue="전체">
-              <option>전체</option>
-              <option>상품명</option>
-              <option>상품코드</option>
-              <option>거래처명</option>
-              <option>거래처코드</option>
-              <option>가격 정책명</option>
-            </select></label>
-            <input
-              className={styles.searchInput}
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="상품명, 상품코드 또는 거래처명"
-            />
-            <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow}>
             <label className="globalFilterField"><span>유형</span><select aria-label="유형"
@@ -220,6 +214,7 @@ export function SupplyPricePage() {
               <option>USD</option>
             </select></label>
             <div className={styles.spacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button type="button" className={styles.resetBtn} onClick={clearAll}>초기화</button>
           </div>
         </div>

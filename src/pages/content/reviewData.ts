@@ -34,6 +34,14 @@ export interface ReviewItem {
   history: ReviewHistoryEntry[];
 }
 
+export const STATUS_PILL: Record<ReviewItemStatus, { bg: string; fg: string }> = {
+  대기: { bg: '#fffbeb', fg: '#b45309' },
+  검수중: { bg: '#eef2ff', fg: '#4338ca' },
+  승인: { bg: '#ecfdf5', fg: '#059669' },
+  반려: { bg: '#fef2f2', fg: '#b91c1c' },
+  보류: { bg: '#f4f4f5', fg: '#71717a' },
+};
+
 export const REJECT_REASONS = ['필수 정보 누락', '형식 오류', '품질 기준 미충족', '운영 정책 미충족', '중복 콘텐츠', '기타'];
 export const CHECK_LABELS_BY_BUSINESS: Record<ContentBusinessType, string[]> = {
   B2C: ['상품·혜택 정보가 정확함', '브랜드 표현과 이미지 품질 확인', '가격·프로모션 문구 검증', '게시 위치와 기간이 적절함'],

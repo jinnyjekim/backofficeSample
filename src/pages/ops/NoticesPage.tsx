@@ -322,7 +322,14 @@ export function NoticesPage() {
           <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ 공지 등록</button>
         </div>
 
-        <div className={styles.quickFilters}>
+        
+
+        <div className={styles.filterBox}>
+          <div className={styles.filterRow1}>
+            
+            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="공지 제목, 본문 또는 번호" />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {QUICK_FILTER_LABELS.map((k) => {
             const active = filter === k;
             return (
@@ -339,17 +346,6 @@ export function NoticesPage() {
             );
           })}
         </div>
-
-        <div className={styles.filterBox}>
-          <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-              <option>전체</option>
-              <option>제목</option>
-              <option>본문</option>
-              <option>공지번호</option>
-            </select></label>
-            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="공지 제목, 본문 또는 번호" />
-            <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>카테고리</span><select aria-label="카테고리" className={styles.selectXs} value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as '전체' | NoticeCategory)}>
@@ -367,6 +363,7 @@ export function NoticesPage() {
               <option value="고정만">고정된 공지만</option>
             </select></label>
             <div className={styles.rowSpacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setCategoryFilter('전체'); setImportantFilter('전체'); setPinnedFilter('전체'); setQ(''); }}>초기화</button>
           </div>
         </div>

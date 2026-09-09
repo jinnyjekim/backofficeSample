@@ -1,0 +1,24 @@
+.definitionStrip {
+  padding: 8px 11px;
+  margin-bottom: 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1e40af;
+  font-size: 10.5px;
+}
+
+.quickActive {
+  border-color: rgba(79, 70, 229, 0.25) !important;
+  background: #eef2ff !important;
+  color: #4338ca !important;
+}
+
+.issueText {
+  overflow: hidden;
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

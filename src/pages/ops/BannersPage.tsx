@@ -348,14 +348,17 @@ export function BannersPage() {
             <div className={styles.title}>배너</div>
             <div className={styles.subtitle}>서비스 화면의 노출 위치·기간·순서·디바이스별 배너를 관리합니다.</div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'positionInfo' })}>노출 위치 정보</button>
-            <button type="button" className={styles.bulkBtn} onClick={openOrderManage}>순서 관리</button>
-            <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ 배너 등록</button>
-          </div>
+          <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ 배너 등록</button>
         </div>
 
-        <div className={styles.quickFilters}>
+        
+
+        <div className={styles.filterBox}>
+          <div className={styles.filterRow1}>
+            
+            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="배너명 또는 번호" />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {QUICK_FILTER_LABELS.map((k) => {
             const active = filter === k;
             return (
@@ -372,16 +375,6 @@ export function BannersPage() {
             );
           })}
         </div>
-
-        <div className={styles.filterBox}>
-          <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-              <option>전체</option>
-              <option>배너명</option>
-              <option>배너번호</option>
-            </select></label>
-            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="배너명 또는 번호" />
-            <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>노출위치</span><select aria-label="노출위치" className={styles.selectXs} value={positionFilter} onChange={(e) => setPositionFilter(e.target.value)}>
@@ -396,6 +389,7 @@ export function BannersPage() {
               <option value="Mobile">Mobile</option>
             </select></label>
             <div className={styles.rowSpacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setPositionFilter('전체'); setDeviceFilter('전체'); setQ(''); }}>초기화</button>
           </div>
         </div>
@@ -403,6 +397,8 @@ export function BannersPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
+            <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'positionInfo' })}>노출 위치 정보</button>
+            <button type="button" className={styles.bulkBtn} onClick={openOrderManage}>순서 관리</button>
             <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>

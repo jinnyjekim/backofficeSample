@@ -1,25 +1,283 @@
-import { DatePicker } from '../../../components/forms/DatePicker';
-import { useMemo, useState } from 'react';
-import { DataGrid } from '../../../components/DataGrid';
-import type { GridRow } from '../../../components/DataGrid/types';
-import shared from '../shared.module.css';
-import drawer from '../../ops/opsDrawerShared.module.css';
-import styles from './SalesActivity.module.css';
-import { ControlArea, DetailDrawer, FilterBox, GridArea, PageHeading, ResultBar } from './SalesActivityShared';
-import { SALE_ACTIVITY_HISTORY, sellerById, type SaleActivityHistory } from './salesActivityData';
-import { downloadCsv, pages } from './salesActivityUtils';
+import { DatePicker } from "../../../components/forms/DatePicker";
+import { useMemo, useState } from "react";
+import { DataGrid } from "../../../components/DataGrid";
+import type { GridRow } from "../../../components/DataGrid/types";
+import shared from "../shared.module.css";
+import drawer from "../../ops/opsDrawerShared.module.css";
+import styles from "./SalesActivity.module.css";
+import {
+  ControlArea,
+  DetailDrawer,
+  FilterBox,
+  GridArea,
+  PageHeading,
+  ResultBar,
+} from "./SalesActivityShared";
+import {
+  SALE_ACTIVITY_HISTORY,
+  sellerById,
+  type SaleActivityHistory,
+} from "./salesActivityData";
+import { downloadCsv, pages } from "./salesActivityUtils";
+import { ExcelDownloadButton } from "../../../components/common/ExcelDownloadButton";
 
-const CATEGORY_META:Record<SaleActivityHistory['category'],{bg:string;fg:string}>={계정:{bg:'#eff6ff',fg:'#1d4ed8'},상품:{bg:'#f5f3ff',fg:'#6d28d9'},거래:{bg:'#ecfdf5',fg:'#047857'},제한:{bg:'#fef2f2',fg:'#dc2626'},정산:{bg:'#fff7ed',fg:'#c2410c'}};
+const CATEGORY_META: Record<
+  SaleActivityHistory["category"],
+  { bg: string; fg: string }
+> = {
+  계정: { bg: "#eff6ff", fg: "#1d4ed8" },
+  상품: { bg: "#f5f3ff", fg: "#6d28d9" },
+  거래: { bg: "#ecfdf5", fg: "#047857" },
+  제한: { bg: "#fef2f2", fg: "#dc2626" },
+  정산: { bg: "#fff7ed", fg: "#c2410c" },
+};
 
-export function SalesActivityHistoryPage(){
-  const [keyword,setKeyword]=useState(''); const [search,setSearch]=useState(''); const [category,setCategory]=useState(''); const [actor,setActor]=useState(''); const [changeType,setChangeType]=useState(''); const [selectedId,setSelectedId]=useState<string|null>(null);
-  const filtered=useMemo(()=>SALE_ACTIVITY_HISTORY.filter((item)=>(!category||item.category===category)&&(!actor||(actor==='SYSTEM'?item.actor==='SYSTEM':item.actor!=='SYSTEM'))&&(!changeType||(changeType==='상태 변경'?item.before!==item.after:item.action.includes(changeType)))&&(!search||`${item.id} ${item.action} ${item.target} ${item.reason} ${item.actor} ${sellerById(item.sellerId)?.nickname??''}`.toLowerCase().includes(search.toLowerCase()))),[actor,category,changeType,search]);
-  const selected=SALE_ACTIVITY_HISTORY.find((item)=>item.id===selectedId)??null; const selectedSeller=selected?sellerById(selected.sellerId):null;
-  const rows:GridRow[]=filtered.map((item)=>{const seller=sellerById(item.sellerId);return{id:item.id,onClick:()=>setSelectedId(item.id),cells:[{kind:'text',text:item.occurredAt,numeric:true},{kind:'pillText',text:item.category,...CATEGORY_META[item.category]},{kind:'stack',title:item.action,subtitle:item.target},{kind:'stack',title:seller?.nickname??item.sellerId,subtitle:item.sellerId},{kind:'text',text:item.before,color:'#71717a'},{kind:'text',text:`→ ${item.after}`,weight:600},{kind:'stack',title:item.actor,subtitle:item.ip},{kind:'text',text:item.reason},{kind:'link',text:'상세'}]};});
-  return <div className={shared.page}>
-    <PageHeading title="판매 활동 이력" subtitle="판매자, 상품, 거래, 제한과 정산에 발생한 상태 변경을 변경 전·후 값과 처리자 기준으로 감사 조회합니다." action={<button type="button" className={shared.downloadBtn} onClick={()=>downloadCsv('판매-활동-이력.csv',['발생일시','구분','행위','대상','판매자','변경 전','변경 후','처리자','사유','IP'],filtered.map((item)=>[item.occurredAt,item.category,item.action,item.target,item.sellerId,item.before,item.after,item.actor,item.reason,item.ip]))}>감사 로그 다운로드</button>}/>
-    <ControlArea><FilterBox><form className={shared.filterRow1} onSubmit={(e)=>{e.preventDefault();setSearch(keyword.trim());}}><label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={shared.selectSm}><option>통합 검색</option><option>로그 ID</option><option>판매자</option><option>대상번호</option><option>처리자</option></select></label><input className={shared.searchInput} value={keyword} onChange={(e)=>setKeyword(e.target.value)} placeholder="로그 ID / 판매자 / 대상 / 변경 사유 / 처리자"/><button className={shared.searchBtn}>조회</button></form><div className={shared.filterRow2}><label className="globalFilterField"><span>업무 구분</span><select aria-label="업무 구분" className={shared.selectSm} value={category} onChange={(e)=>setCategory(e.target.value)}><option value="">전체 업무 구분</option><option>계정</option><option>상품</option><option>거래</option><option>제한</option><option>정산</option></select></label><label className="globalFilterField"><span>처리 주체</span><select aria-label="처리 주체" className={shared.selectSm} value={actor} onChange={(e)=>setActor(e.target.value)}><option value="">전체 처리 주체</option><option value="ADMIN">관리자</option><option value="SYSTEM">SYSTEM</option></select></label><label className="globalFilterField"><span>변경 유형</span><select aria-label="변경 유형" className={shared.selectSm} value={changeType} onChange={(e)=>setChangeType(e.target.value)}><option value="">전체 변경 유형</option><option>상태 변경</option><option>제한</option><option>상품</option></select></label><label className={shared.dateFilterField}><span>발생일</span><div className={shared.dateRange}><DatePicker mode="datetime-local" className={shared.selectSm} defaultValue="2026-08-20T00:00"/><span className={shared.dateSeparator}>~</span><DatePicker mode="datetime-local" className={shared.selectSm} defaultValue="2026-08-26T23:59"/></div></label><span className={shared.rowSpacer}/><button type="button" className={shared.resetBtn} onClick={()=>{setKeyword('');setSearch('');setCategory('');setActor('');setChangeType('');}}>초기화</button></div></FilterBox></ControlArea>
-    <GridArea><ResultBar count={filtered.length} unit="건"><span className={styles.rangeText}>최근 변경순</span><select className={shared.pageSizeSelect}><option>50개씩</option><option>100개씩</option></select></ResultBar><DataGrid columns={[{label:'발생일시'},{label:'구분'},{label:'행위 / 대상'},{label:'판매자'},{label:'변경 전'},{label:'변경 후'},{label:'처리자 / IP'},{label:'변경 사유'},{label:'관리'}]} rows={rows} gridTemplate="128px 58px minmax(150px,1fr) 84px 96px 115px 83px minmax(160px,1.2fr) 55px" minWidth="1005px" empty={!filtered.length} emptyText="조건에 맞는 판매 활동 이력이 없습니다." showPagination pages={pages} rangeLabel={filtered.length?`1–${filtered.length} / ${filtered.length}`:'0건'}/></GridArea>
-    {selected&&selectedSeller&&<DetailDrawer eyebrow={`판매 활동 로그 · ${selected.id}`} title={selected.action} status={selected.category} statusMeta={CATEGORY_META[selected.category]} subtitle={`${selected.target} · ${selected.occurredAt}`} onClose={()=>setSelectedId(null)} stats={[{label:'판매자',value:selectedSeller.nickname},{label:'처리자',value:selected.actor},{label:'업무 구분',value:selected.category}]} fields={[{label:'로그 ID',value:selected.id},{label:'판매자 ID',value:selected.sellerId},{label:'변경 대상',value:selected.target},{label:'발생 일시',value:selected.occurredAt},{label:'처리자',value:selected.actor},{label:'접속 IP',value:selected.ip}]}><div className={drawer.sectionTitleLoose}>변경 내용</div><div className={styles.compare}><b>{selected.before}</b><span className={styles.arrow}>→</span><span className={styles.after}>{selected.after}</span></div><div className={drawer.sectionTitleLoose}>변경 사유</div><div className={styles.warningBox}>{selected.reason}</div><div className={drawer.sectionTitleLoose}>감사 참고</div><div className={styles.timeline}><div className={styles.timelineItem}><strong>요청 또는 조건 감지</strong><p>{selected.reason}</p><time>{selected.occurredAt}</time></div><div className={styles.timelineItem}><strong>상태 반영</strong><p>{selected.before}에서 {selected.after}(으)로 변경</p><time>{selected.occurredAt}</time></div><div className={styles.timelineItem}><strong>감사 로그 저장</strong><p>{selected.actor} · {selected.ip}</p><time>{selected.occurredAt}</time></div></div></DetailDrawer>}
-  </div>;
+export function SalesActivityHistoryPage() {
+  const [keyword, setKeyword] = useState("");
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
+  const [actor, setActor] = useState("");
+  const [changeType, setChangeType] = useState("");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const filtered = useMemo(
+    () =>
+      SALE_ACTIVITY_HISTORY.filter(
+        (item) =>
+          (!category || item.category === category) &&
+          (!actor ||
+            (actor === "SYSTEM"
+              ? item.actor === "SYSTEM"
+              : item.actor !== "SYSTEM")) &&
+          (!changeType ||
+            (changeType === "상태 변경"
+              ? item.before !== item.after
+              : item.action.includes(changeType))) &&
+          (!search ||
+            `${item.id} ${item.action} ${item.target} ${item.reason} ${item.actor} ${sellerById(item.sellerId)?.nickname ?? ""}`
+              .toLowerCase()
+              .includes(search.toLowerCase())),
+      ),
+    [actor, category, changeType, search],
+  );
+  const selected =
+    SALE_ACTIVITY_HISTORY.find((item) => item.id === selectedId) ?? null;
+  const selectedSeller = selected ? sellerById(selected.sellerId) : null;
+  const rows: GridRow[] = filtered.map((item) => {
+    const seller = sellerById(item.sellerId);
+    return {
+      id: item.id,
+      onClick: () => setSelectedId(item.id),
+      cells: [
+        { kind: "text", text: item.occurredAt, numeric: true },
+        {
+          kind: "pillText",
+          text: item.category,
+          ...CATEGORY_META[item.category],
+        },
+        { kind: "stack", title: item.action, subtitle: item.target },
+        {
+          kind: "stack",
+          title: seller?.nickname ?? item.sellerId,
+          subtitle: item.sellerId,
+        },
+        { kind: "text", text: item.before, color: "#71717a" },
+        { kind: "text", text: `→ ${item.after}`, weight: 600 },
+        { kind: "stack", title: item.actor, subtitle: item.ip },
+        { kind: "text", text: item.reason },
+        { kind: "link", text: "상세" },
+      ],
+    };
+  });
+  return (
+    <div className={shared.page}>
+      <PageHeading
+        title="판매 활동 이력"
+        subtitle="판매자, 상품, 거래, 제한과 정산에 발생한 상태 변경을 변경 전·후 값과 처리자 기준으로 감사 조회합니다."
+      />
+      <ControlArea>
+        <FilterBox>
+          <form
+            className={shared.filterRow1}
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSearch(keyword.trim());
+            }}
+          >
+            <input
+              className={shared.searchInput}
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="로그 ID / 판매자 / 대상 / 변경 사유 / 처리자"
+            />
+            <button className={shared.searchBtn}>조회</button>
+          </form>
+          <div className={shared.filterRow2}>
+            <label className="globalFilterField">
+              <span>업무 구분</span>
+              <select
+                aria-label="업무 구분"
+                className={shared.selectSm}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="">전체 업무 구분</option>
+                <option>계정</option>
+                <option>상품</option>
+                <option>거래</option>
+                <option>제한</option>
+                <option>정산</option>
+              </select>
+            </label>
+            <label className="globalFilterField">
+              <span>처리 주체</span>
+              <select
+                aria-label="처리 주체"
+                className={shared.selectSm}
+                value={actor}
+                onChange={(e) => setActor(e.target.value)}
+              >
+                <option value="">전체 처리 주체</option>
+                <option value="ADMIN">관리자</option>
+                <option value="SYSTEM">SYSTEM</option>
+              </select>
+            </label>
+            <label className="globalFilterField">
+              <span>변경 유형</span>
+              <select
+                aria-label="변경 유형"
+                className={shared.selectSm}
+                value={changeType}
+                onChange={(e) => setChangeType(e.target.value)}
+              >
+                <option value="">전체 변경 유형</option>
+                <option>상태 변경</option>
+                <option>제한</option>
+                <option>상품</option>
+              </select>
+            </label>
+            <label className={shared.dateFilterField}>
+              <span>발생일</span>
+              <div className={shared.dateRange}>
+                <DatePicker
+                  mode="datetime-local"
+                  className={shared.selectSm}
+                  defaultValue="2026-08-20T00:00"
+                />
+                <span className={shared.dateSeparator}>~</span>
+                <DatePicker
+                  mode="datetime-local"
+                  className={shared.selectSm}
+                  defaultValue="2026-08-26T23:59"
+                />
+              </div>
+            </label>
+            <span className={shared.rowSpacer} />
+            <button type="button" className="detailFilterBtn">
+              상세 필터
+            </button>
+            <button
+              type="button"
+              className={shared.resetBtn}
+              onClick={() => {
+                setKeyword("");
+                setSearch("");
+                setCategory("");
+                setActor("");
+                setChangeType("");
+              }}
+            >
+              초기화
+            </button>
+          </div>
+        </FilterBox>
+      </ControlArea>
+      <GridArea>
+        <ResultBar count={filtered.length} unit="건">
+          <select className={shared.pageSizeSelect}>
+            <option>50개씩</option>
+            <option>100개씩</option>
+          </select>
+        </ResultBar>
+        <DataGrid
+          columns={[
+            { label: "발생일시" },
+            { label: "구분" },
+            { label: "행위 / 대상" },
+            { label: "판매자" },
+            { label: "변경 전" },
+            { label: "변경 후" },
+            { label: "처리자 / IP" },
+            { label: "변경 사유" },
+            { label: "관리" },
+          ]}
+          rows={rows}
+          gridTemplate="128px 58px minmax(150px,1fr) 84px 96px 115px 83px minmax(160px,1.2fr) 55px"
+          minWidth="1005px"
+          empty={!filtered.length}
+          emptyText="조건에 맞는 판매 활동 이력이 없습니다."
+          showPagination
+          pages={pages}
+          rangeLabel={
+            filtered.length
+              ? `1–${filtered.length} / ${filtered.length}`
+              : "0건"
+          }
+        />
+      </GridArea>
+      {selected && selectedSeller && (
+        <DetailDrawer
+          eyebrow={`판매 활동 로그 · ${selected.id}`}
+          title={selected.action}
+          status={selected.category}
+          statusMeta={CATEGORY_META[selected.category]}
+          subtitle={`${selected.target} · ${selected.occurredAt}`}
+          onClose={() => setSelectedId(null)}
+          stats={[
+            { label: "판매자", value: selectedSeller.nickname },
+            { label: "처리자", value: selected.actor },
+            { label: "업무 구분", value: selected.category },
+          ]}
+          fields={[
+            { label: "로그 ID", value: selected.id },
+            { label: "판매자 ID", value: selected.sellerId },
+            { label: "변경 대상", value: selected.target },
+            { label: "발생 일시", value: selected.occurredAt },
+            { label: "처리자", value: selected.actor },
+            { label: "접속 IP", value: selected.ip },
+          ]}
+        >
+          <div className={drawer.sectionTitleLoose}>변경 내용</div>
+          <div className={styles.compare}>
+            <b>{selected.before}</b>
+            <span className={styles.arrow}>→</span>
+            <span className={styles.after}>{selected.after}</span>
+          </div>
+          <div className={drawer.sectionTitleLoose}>변경 사유</div>
+          <div className={styles.warningBox}>{selected.reason}</div>
+          <div className={drawer.sectionTitleLoose}>감사 참고</div>
+          <div className={styles.timeline}>
+            <div className={styles.timelineItem}>
+              <strong>요청 또는 조건 감지</strong>
+              <p>{selected.reason}</p>
+              <time>{selected.occurredAt}</time>
+            </div>
+            <div className={styles.timelineItem}>
+              <strong>상태 반영</strong>
+              <p>
+                {selected.before}에서 {selected.after}(으)로 변경
+              </p>
+              <time>{selected.occurredAt}</time>
+            </div>
+            <div className={styles.timelineItem}>
+              <strong>감사 로그 저장</strong>
+              <p>
+                {selected.actor} · {selected.ip}
+              </p>
+              <time>{selected.occurredAt}</time>
+            </div>
+          </div>
+        </DetailDrawer>
+      )}
+    </div>
+  );
 }

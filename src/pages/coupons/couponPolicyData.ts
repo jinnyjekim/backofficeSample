@@ -7,7 +7,7 @@ export type AllocationMethod = '상품 판매금액 비례' | '상품 수량 비
 
 export const TODAY = '2026-08-26';
 
-export const DEFAULT_DISCOUNT_ORDER = ['상품 프로모션', '상품 쿠폰', '주문 프로모션', '주문 쿠폰', '포인트', '배송비 쿠폰'];
+export const DEFAULT_DISCOUNT_ORDER = ['상품 쿠폰', '상품 프로모션', '주문 프로모션', '주문 쿠폰', '포인트', '배송비 쿠폰'];
 
 export interface PolicyChange {
   field: string;

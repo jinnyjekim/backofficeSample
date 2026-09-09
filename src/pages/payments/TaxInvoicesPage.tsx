@@ -12,7 +12,7 @@ const GRID_TEMPLATE = '88px minmax(150px,1fr) 92px 84px 96px 50px 76px 96px 50px
 const GRID_MIN_WIDTH = '900px';
 
 const GRID_COLUMNS: GridColumn[] = [
-  { label: '청구번호' }, { label: '거래처' }, { label: '공급가액' }, { label: '세액' }, { label: '합계' },
+  { label: '청구번호' }, { label: '거래처' }, { label: '공급가액', align: 'right' }, { label: '세액', align: 'right' }, { label: '합계', align: 'right' },
   { label: '과세유형' }, { label: '계산상태' }, { label: '발행상태' }, { label: '거래일' }, { label: '관리' },
 ];
 
@@ -63,9 +63,9 @@ export function TaxInvoicesPage() {
     const cells: Cell[] = [
       { kind: 'text', text: r.invoice, color: '#18181b', size: '12.5px', weight: 600 },
       { kind: 'text', text: r.partner, color: '#18181b', size: '13px', weight: 600 },
-      { kind: 'text', text: fmtWon(r.supply), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-      { kind: 'text', text: fmtWon(r.vat), color: '#71717a', size: '11.5px', weight: 500, numeric: true },
-      { kind: 'text', text: fmtWon(total), color: '#18181b', size: '12.5px', weight: 700, numeric: true },
+      { kind: 'text', text: fmtWon(r.supply), color: '#71717a', size: '11.5px', weight: 500, align: 'right', numeric: true },
+      { kind: 'text', text: fmtWon(r.vat), color: '#71717a', size: '11.5px', weight: 500, align: 'right', numeric: true },
+      { kind: 'text', text: fmtWon(total), color: '#18181b', size: '12.5px', weight: 700, align: 'right', numeric: true },
       { kind: 'text', text: r.taxType, color: '#3f3f46', size: '12px', weight: 500 },
       { kind: 'badge', text: r.calcStatus, bg: cm.bg, fg: cm.fg },
       { kind: 'badge', text: r.issueStatus, bg: im.bg, fg: im.fg },
@@ -121,7 +121,14 @@ export function TaxInvoicesPage() {
           <button type="button" className={styles.primaryBtn}>+ 세금 계산 등록</button>
         </div>
 
-        <div className={styles.quickFilters}>
+        
+
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            
+            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="청구번호 · 주문번호 · 거래처" />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {FILTER_KEYS.map((k) => {
             const active = filter === k;
             return (
@@ -138,17 +145,6 @@ export function TaxInvoicesPage() {
             );
           })}
         </div>
-
-        <div className={styles.filterCard}>
-          <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm}>
-              <option>전체</option>
-              <option>청구번호</option>
-              <option>주문번호</option>
-              <option>거래처명</option>
-            </select></label>
-            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="청구번호 · 주문번호 · 거래처" />
-            <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectXs}>
@@ -169,6 +165,7 @@ export function TaxInvoicesPage() {
               <option>발행완료</option>
             </select></label>
             <div className={styles.spacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button type="button" className={styles.clearBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
           </div>
         </div>

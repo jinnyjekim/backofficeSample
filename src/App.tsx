@@ -85,26 +85,41 @@ import { NotificationDispatchPage } from './pages/notifications/NotificationDisp
 import { NotificationTemplatesPage } from './pages/notifications/NotificationTemplatesPage';
 import { CommonCodesPage, IntegrationManagementPage, JobManagementPage, ServiceSettingsPage } from './pages/system/SystemManagementPages';
 import { InventoryStatusPage } from './pages/inventory/InventoryStatusPage';
+import { InventoryOptionsPage } from './pages/inventory/InventoryOptionsPage';
+import { SoldOutProductsPage } from './pages/inventory/SoldOutProductsPage';
+import { SafetyStockPage } from './pages/inventory/SafetyStockPage';
+import { InventoryAlertsPage } from './pages/inventory/InventoryAlertsPage';
 import { InboundManagementPage } from './pages/inventory/InboundManagementPage';
 import { StockOutboundManagementPage } from './pages/inventory/StockOutboundManagementPage';
 import { InventoryAdjustmentPage } from './pages/inventory/InventoryAdjustmentPage';
 import { StockMovementHistoryPage } from './pages/inventory/StockMovementHistoryPage';
 import { PromotionsListPage } from './pages/promotions/PromotionsListPage';
 import { PromotionApplicationsPage } from './pages/promotions/PromotionApplicationsPage';
+import { PeriodPromotionsPage } from './pages/promotions/PeriodPromotionsPage';
+import { ProductPromotionsPage } from './pages/promotions/ProductPromotionsPage';
+import { CategoryPromotionsPage } from './pages/promotions/CategoryPromotionsPage';
+import { CartPromotionsPage } from './pages/promotions/CartPromotionsPage';
+import { MemberPromotionsPage } from './pages/promotions/MemberPromotionsPage';
+import { PromotionTargetsPage } from './pages/promotions/PromotionTargetsPage';
 import { CouponsListPage } from './pages/coupons/CouponsListPage';
 import { CouponIssuesPage } from './pages/coupons/CouponIssuesPage';
 import { CouponUsagePage } from './pages/coupons/CouponUsagePage';
 import { CouponPolicyPage } from './pages/coupons/CouponPolicyPage';
+import { AutomaticCouponsPage } from './pages/coupons/AutomaticCouponsPage';
+import { ExpiredCouponsPage } from './pages/coupons/ExpiredCouponsPage';
 import { PointsBalancePage } from './pages/points/PointsBalancePage';
 import { PointLedgerPage } from './pages/points/PointLedgerPage';
 import { PointPolicyPage } from './pages/points/PointPolicyPage';
+import { PointExpiringPage } from './pages/points/PointExpiringPage';
 import { BrandsListPage } from './pages/brands/BrandsListPage';
+import { BrandProductsPage } from './pages/brands/BrandProductsPage';
+import { BrandExposurePage } from './pages/brands/BrandExposurePage';
 import { ReviewsListPage } from './pages/reviews/ReviewsListPage';
+import { ReviewAnalyticsPage } from './pages/reviews/ReviewAnalyticsPage';
 import { AdminsListPage } from './pages/admin/AdminsListPage';
 import { AdminRolesPage } from './pages/admin/AdminRolesPage';
 import { AdminHistoryPage } from './pages/admin/AdminHistoryPage';
 import { ProductInquiriesListPage } from './pages/cs/ProductInquiriesListPage';
-import { ProductInquiryDetailPage } from './pages/cs/ProductInquiryDetailPage';
 import { CartConversionPage } from './pages/cartconversion/CartConversionPage';
 import { SystemLogPage } from './pages/logs/SystemLogPage';
 import { SecurityLogPage } from './pages/logs/SecurityLogPage';
@@ -113,6 +128,35 @@ import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
 import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
 import { InTransitPage } from './pages/delivery/InTransitPage';
 import { DeliveryCompletePage } from './pages/delivery/DeliveryCompletePage';
+import { DeliveryFailedPage } from './pages/delivery/DeliveryFailedPage';
+import { DeliveryHoldPage } from './pages/delivery/DeliveryHoldPage';
+import { DeliveryInvoicesPage } from './pages/delivery/DeliveryInvoicesPage';
+import { DeliveryCarriersPage } from './pages/delivery/DeliveryCarriersPage';
+import { DeliveryTrackingPage } from './pages/delivery/DeliveryTrackingPage';
+import { DeliveryHistoryPage } from './pages/delivery/DeliveryHistoryPage';
+import { ExchangeRequestsPage } from './pages/exchanges/ExchangeRequestsPage';
+import { ExchangeApprovalPage } from './pages/exchanges/ExchangeApprovalPage';
+import { ExchangeCollectingPage } from './pages/exchanges/ExchangeCollectingPage';
+import { ExchangeCollectedPage } from './pages/exchanges/ExchangeCollectedPage';
+import { ExchangePreparingPage } from './pages/exchanges/ExchangePreparingPage';
+import { ExchangeReshipPage } from './pages/exchanges/ExchangeReshipPage';
+import { ExchangeCompletedPage } from './pages/exchanges/ExchangeCompletedPage';
+import { ExchangeRejectedPage } from './pages/exchanges/ExchangeRejectedPage';
+import { ExchangeHistoryPage } from './pages/exchanges/ExchangeHistoryPage';
+import { CancelRequestsPage } from './pages/cancel/CancelRequestsPage';
+import { CancelApprovalPage } from './pages/cancel/CancelApprovalPage';
+import { CancelRejectedPage } from './pages/cancel/CancelRejectedPage';
+import { CancelPartialPage } from './pages/cancel/CancelPartialPage';
+import { CancelCompletedPage } from './pages/cancel/CancelCompletedPage';
+import { CancelHistoryPage } from './pages/cancel/CancelHistoryPage';
+import { ReturnRequestsPage } from './pages/returns/ReturnRequestsPage';
+import { ReturnApprovalPage } from './pages/returns/ReturnApprovalPage';
+import { ReturnCollectingPage } from './pages/returns/ReturnCollectingPage';
+import { ReturnCollectedPage } from './pages/returns/ReturnCollectedPage';
+import { ReturnInspectionPage } from './pages/returns/ReturnInspectionPage';
+import { ReturnCompletedPage } from './pages/returns/ReturnCompletedPage';
+import { ReturnRejectedPage } from './pages/returns/ReturnRejectedPage';
+import { ReturnHistoryPage } from './pages/returns/ReturnHistoryPage';
 import { SellerListPage } from './pages/c2c/sales/SellerListPage';
 import { SalesStatusPage } from './pages/c2c/sales/SalesStatusPage';
 import { SellerProductsPage as UserProductListPage } from './pages/c2c/sales/SellerProductsPage';
@@ -147,7 +191,95 @@ export default function App() {
         <Route path="b2c/product-inquiries/detail" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="b2c/product-inquiries/history" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="b2c/product-inquiries/:id" element={<Navigate to="/cs/product-inquiries" replace />} />
-        <Route path="b2c/*" element={<BusinessModulePage />} />
+        {/* B2C 배송 관리 */}
+        <Route path="b2c/delivery/prep" element={<Navigate to="/delivery/prep" replace />} />
+        <Route path="b2c/delivery/outbound-waiting" element={<Navigate to="/delivery/outbound-waiting" replace />} />
+        <Route path="b2c/delivery/outbound-complete" element={<Navigate to="/delivery/outbound-complete" replace />} />
+        <Route path="b2c/delivery/in-transit" element={<Navigate to="/delivery/in-transit" replace />} />
+        <Route path="b2c/delivery/complete" element={<Navigate to="/delivery/complete" replace />} />
+        <Route path="b2c/delivery/failed" element={<DeliveryFailedPage />} />
+        <Route path="b2c/delivery/hold" element={<DeliveryHoldPage />} />
+        <Route path="b2c/delivery/invoices" element={<DeliveryInvoicesPage />} />
+        <Route path="b2c/delivery/carriers" element={<DeliveryCarriersPage />} />
+        <Route path="b2c/delivery/tracking" element={<DeliveryTrackingPage />} />
+        <Route path="b2c/delivery/history" element={<DeliveryHistoryPage />} />
+
+        {/* 취소 관리 (Cancel Management) */}
+        <Route path="cancel/requests" element={<CancelRequestsPage />} />
+        <Route path="cancel/approval" element={<CancelApprovalPage />} />
+        <Route path="cancel/rejected" element={<CancelRejectedPage />} />
+        <Route path="cancel/partial" element={<CancelPartialPage />} />
+        <Route path="cancel/completed" element={<CancelCompletedPage />} />
+        <Route path="cancel/history" element={<CancelHistoryPage />} />
+
+        {/* B2C 취소 관리 호환 라우트 */}
+        <Route path="b2c/cancel/requests" element={<CancelRequestsPage />} />
+        <Route path="b2c/cancel/approval" element={<CancelApprovalPage />} />
+        <Route path="b2c/cancel/rejected" element={<CancelRejectedPage />} />
+        <Route path="b2c/cancel/partial" element={<CancelPartialPage />} />
+        <Route path="b2c/cancel/completed" element={<CancelCompletedPage />} />
+        <Route path="b2c/cancel/history" element={<CancelHistoryPage />} />
+
+        {/* 반품 관리 (Returns Management) */}
+        <Route path="returns/requests" element={<ReturnRequestsPage />} />
+        <Route path="returns/approval" element={<ReturnApprovalPage />} />
+        <Route path="returns/collecting" element={<ReturnCollectingPage />} />
+        <Route path="returns/collected" element={<ReturnCollectedPage />} />
+        <Route path="returns/inspection" element={<ReturnInspectionPage />} />
+        <Route path="returns/completed" element={<ReturnCompletedPage />} />
+        <Route path="returns/rejected" element={<ReturnRejectedPage />} />
+        <Route path="returns/history" element={<ReturnHistoryPage />} />
+
+        {/* B2C 반품 관리 호환 라우트 */}
+        <Route path="b2c/returns/requests" element={<ReturnRequestsPage />} />
+        <Route path="b2c/returns/approval" element={<ReturnApprovalPage />} />
+        <Route path="b2c/returns/collecting" element={<ReturnCollectingPage />} />
+        <Route path="b2c/returns/collected" element={<ReturnCollectedPage />} />
+        <Route path="b2c/returns/inspection" element={<ReturnInspectionPage />} />
+        <Route path="b2c/returns/completed" element={<ReturnCompletedPage />} />
+        <Route path="b2c/returns/rejected" element={<ReturnRejectedPage />} />
+        <Route path="b2c/returns/history" element={<ReturnHistoryPage />} />
+
+        {/* B2C 교환 관리 */}
+        <Route path="b2c/exchanges/requests" element={<ExchangeRequestsPage />} />
+        <Route path="b2c/exchanges/approval" element={<ExchangeApprovalPage />} />
+        <Route path="b2c/exchanges/collecting" element={<ExchangeCollectingPage />} />
+        <Route path="b2c/exchanges/collected" element={<ExchangeCollectedPage />} />
+        <Route path="b2c/exchanges/preparing" element={<ExchangePreparingPage />} />
+        <Route path="b2c/exchanges/reship" element={<ExchangeReshipPage />} />
+        <Route path="b2c/exchanges/completed" element={<ExchangeCompletedPage />} />
+        <Route path="b2c/exchanges/rejected" element={<ExchangeRejectedPage />} />
+        <Route path="b2c/exchanges/history" element={<ExchangeHistoryPage />} />
+
+        {/* B2C 프로모션/쿠폰/포인트/브랜드/리뷰/재고 서브메뉴 연결 */}
+        <Route path="b2c/promotions/period" element={<PeriodPromotionsPage />} />
+        <Route path="b2c/promotions/product" element={<ProductPromotionsPage />} />
+        <Route path="b2c/promotions/category" element={<CategoryPromotionsPage />} />
+        <Route path="b2c/promotions/cart" element={<CartPromotionsPage />} />
+        <Route path="b2c/promotions/member" element={<MemberPromotionsPage />} />
+        <Route path="b2c/promotions/targets" element={<PromotionTargetsPage />} />
+        <Route path="b2c/promotions/history" element={<PromotionApplicationsPage />} />
+        <Route path="b2c/coupons/automatic" element={<AutomaticCouponsPage />} />
+        <Route path="b2c/coupons/expired" element={<ExpiredCouponsPage />} />
+        <Route path="b2c/coupons/issue" element={<CouponIssuesPage />} />
+        <Route path="b2c/coupons/usage" element={<CouponUsagePage />} />
+        <Route path="b2c/coupons/policy" element={<CouponPolicyPage />} />
+        {/* 구 포인트 하위 라우트 → 포인트 내역으로 리다이렉트 */}
+        <Route path="b2c/points/granted" element={<Navigate to="/points/history" replace />} />
+        <Route path="b2c/points/used" element={<Navigate to="/points/history" replace />} />
+        <Route path="b2c/points/deducted" element={<Navigate to="/points/history" replace />} />
+        <Route path="b2c/points/expired" element={<Navigate to="/points/history" replace />} />
+        <Route path="b2c/points/expiring" element={<Navigate to="/points/expiring" replace />} />
+        <Route path="b2c/points/manual" element={<Navigate to="/points" replace />} />
+        <Route path="b2c/brands" element={<Navigate to="/brands" replace />} />
+        <Route path="b2c/brands/products" element={<BrandProductsPage />} />
+        <Route path="b2c/brands/exposure" element={<BrandExposurePage />} />
+        <Route path="b2c/reviews/*" element={<Navigate to="/reviews" replace />} />
+        <Route path="b2c/inventory/options" element={<InventoryOptionsPage />} />
+        <Route path="b2c/inventory/sold-out" element={<SoldOutProductsPage />} />
+        <Route path="b2c/inventory/safety-stock" element={<SafetyStockPage />} />
+        <Route path="b2c/inventory/alerts" element={<InventoryAlertsPage />} />
+        <Route path="b2c/inventory/*" element={<Navigate to="/inventory/status" replace />} />
         <Route path="c2c/sales/sellers" element={<SellerListPage />} />
         <Route path="c2c/sales/status" element={<SalesStatusPage />} />
         <Route path="c2c/sales/products" element={<Navigate to="/c2c/products/list" replace />} />
@@ -301,7 +433,7 @@ export default function App() {
 
         <Route path="cs/inquiries" element={<CsInquiriesPage />} />
         <Route path="cs/product-inquiries" element={<ProductInquiriesListPage />} />
-        <Route path="cs/product-inquiries/:id" element={<ProductInquiryDetailPage />} />
+        <Route path="cs/product-inquiries/:id" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="cs/inquiry-types" element={<InquiryTypesPage />} />
         <Route path="cs/consultations" element={<ConsultationsPage />} />
         <Route path="cs/templates" element={<ResponseTemplatesPage />} />
@@ -369,6 +501,12 @@ export default function App() {
         <Route path="delivery/outbound-complete" element={<OutboundCompletePage />} />
         <Route path="delivery/in-transit" element={<InTransitPage />} />
         <Route path="delivery/complete" element={<DeliveryCompletePage />} />
+        <Route path="delivery/failed" element={<DeliveryFailedPage />} />
+        <Route path="delivery/hold" element={<DeliveryHoldPage />} />
+        <Route path="delivery/invoices" element={<DeliveryInvoicesPage />} />
+        <Route path="delivery/carriers" element={<DeliveryCarriersPage />} />
+        <Route path="delivery/tracking" element={<DeliveryTrackingPage />} />
+        <Route path="delivery/history" element={<DeliveryHistoryPage />} />
 
         <Route path="promotions" element={<PromotionsListPage />} />
         <Route path="promotions/history" element={<PromotionApplicationsPage />} />
@@ -380,11 +518,13 @@ export default function App() {
 
         <Route path="points" element={<PointsBalancePage />} />
         <Route path="points/history" element={<PointLedgerPage />} />
+        <Route path="points/expiring" element={<PointExpiringPage />} />
         <Route path="points/policy" element={<PointPolicyPage />} />
 
         <Route path="brands" element={<BrandsListPage />} />
 
         <Route path="reviews" element={<ReviewsListPage />} />
+        <Route path="reviews/analytics" element={<ReviewAnalyticsPage />} />
 
         <Route path="cart-conversion" element={<CartConversionPage />} />
 

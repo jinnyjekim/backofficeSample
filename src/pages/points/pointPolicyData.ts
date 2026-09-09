@@ -1,4 +1,5 @@
 export type EarnBasis = '할인 전 상품금액' | '할인 적용 후 상품금액' | '실제 결제금액';
+export type EarnMode = '정률 적립' | '프로모션만 적립' | '미사용';
 export type EarnConfirmTiming = '결제 완료' | '배송 완료' | '구매 확정' | '배송 완료 후 N일';
 export type ValidityType = '지급일로부터 N일' | '소멸 없음';
 export type UsagePriority = '소멸 예정일이 빠른 포인트부터' | '지급일이 빠른 포인트부터';
@@ -24,6 +25,7 @@ export interface PolicyHistoryEntry {
 }
 
 export interface PointPolicy {
+  earnMode: EarnMode;
   purchaseEarnEnabled: boolean;
   earnRate: number;
   earnBasis: EarnBasis;
@@ -55,12 +57,14 @@ export interface PointPolicy {
   roundingUnit: RoundingUnit;
 
   withdrawalPolicy: WithdrawalPolicy;
+  effectiveStartDate: string;
 
   updatedAt: string;
   updatedBy: string;
 }
 
 export const INITIAL_POLICY: PointPolicy = {
+  earnMode: '정률 적립',
   purchaseEarnEnabled: true,
   earnRate: 1,
   earnBasis: '할인 적용 후 상품금액',
@@ -92,12 +96,14 @@ export const INITIAL_POLICY: PointPolicy = {
   roundingUnit: 1,
 
   withdrawalPolicy: '전액 소멸',
+  effectiveStartDate: '2026-08-01',
 
   updatedAt: '2026-08-01',
   updatedBy: 'admin01',
 };
 
 const FIELD_LABELS: { key: keyof PointPolicy; label: string; format: (p: PointPolicy) => string }[] = [
+  { key: 'earnMode', label: '적립 방식', format: (p) => p.earnMode },
   { key: 'purchaseEarnEnabled', label: '구매 적립', format: (p) => (p.purchaseEarnEnabled ? '사용' : '사용 안 함') },
   { key: 'earnRate', label: '기본 적립률', format: (p) => `${p.earnRate}%` },
   { key: 'earnBasis', label: '적립 기준금액', format: (p) => p.earnBasis },
@@ -121,6 +127,7 @@ const FIELD_LABELS: { key: keyof PointPolicy; label: string; format: (p: PointPo
   { key: 'roundingMode', label: '적립 계산 소수점', format: (p) => p.roundingMode },
   { key: 'roundingUnit', label: '절사 단위', format: (p) => `${p.roundingUnit}P` },
   { key: 'withdrawalPolicy', label: '회원 탈퇴 시 잔여 포인트', format: (p) => p.withdrawalPolicy },
+  { key: 'effectiveStartDate', label: '적용 시작일', format: (p) => p.effectiveStartDate },
 ];
 
 export function describeChanges(before: PointPolicy, after: PointPolicy): PolicyChange[] {

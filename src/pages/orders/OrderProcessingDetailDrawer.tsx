@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import styles from './ordersShared.module.css';
-import { fmt, isDelayed, STATUS_META, type ProcessingOrder } from './orderProcessingData';
 import { useOutsideClose } from '../../lib/useOutsideClose';
+import { fmt, isDelayed, STATUS_META, type ProcessingOrder } from './orderProcessingData';
 
 const TABS: [string, string][] = [
   ['summary', '처리요약'],

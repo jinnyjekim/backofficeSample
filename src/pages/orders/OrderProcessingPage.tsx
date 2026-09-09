@@ -144,8 +144,7 @@ export function OrderProcessingPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.scrollArea}>
-        <div className={styles.headTop}>
+      <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
               <div className={styles.title}>주문 처리</div>
@@ -153,7 +152,19 @@ export function OrderProcessingPage() {
             </div>
           </div>
 
-          <div className={styles.quickFilters}>
+          
+
+          <div className={styles.filterBox}>
+            <div className={styles.filterRow1}>
+              
+              <input
+                className={styles.searchInput}
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="주문번호 또는 거래처명"
+              />
+              <button type="button" className={styles.searchBtn}>검색</button>
+            <div className={styles.quickFilters}>
             {FILTER_KEYS.map((k) => {
               const active = filter === k;
               return (
@@ -170,19 +181,6 @@ export function OrderProcessingPage() {
               );
             })}
           </div>
-
-          <div className={styles.filterBox}>
-            <div className={styles.filterRow1}>
-              <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-                <option>전체</option><option>주문번호</option><option>발주번호</option><option>거래처명</option><option>상품명</option>
-              </select></label>
-              <input
-                className={styles.searchInput}
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="주문번호 또는 거래처명"
-              />
-              <button type="button" className={styles.searchBtn}>검색</button>
             </div>
             <div className={styles.filterRow2}>
               <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectXs} defaultValue="거래처 전체">
@@ -192,6 +190,7 @@ export function OrderProcessingPage() {
                 <option>담당자 전체</option><option>admin01</option><option>admin02</option><option>미배정</option>
               </select></label>
               <div className={styles.rowSpacer} />
+              <button type="button" className="detailFilterBtn">상세 필터</button>
               <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
             </div>
           </div>
@@ -207,36 +206,35 @@ export function OrderProcessingPage() {
           </div>
         </div>
 
-        <div className={styles.gridWrap}>
-          <DataGrid
-            columns={GRID_COLUMNS}
-            rows={rows}
-            gridTemplate={GRID_TEMPLATE}
-            minWidth="990px"
-            showPagination
-            pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
-            empty={rows.length === 0}
-            emptyText="현재 처리 대기 중인 주문이 없습니다"
-          />
-        </div>
-
-        {selected && (
-          <OrderProcessingDetailDrawer
-            order={selected}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            onClose={() => setSelectedId(null)}
-            showHoldPanel={showHoldPanel}
-            showCompletePanel={showCompletePanel}
-            onToggleHold={() => setShowHoldPanel((v) => !v)}
-            onToggleComplete={() => setShowCompletePanel((v) => !v)}
-            onStartProcess={startProcess}
-            onResume={resume}
-            onConfirmHold={confirmHold}
-            onConfirmComplete={confirmComplete}
-          />
-        )}
+      <div className={styles.gridWrap}>
+        <DataGrid
+          columns={GRID_COLUMNS}
+          rows={rows}
+          gridTemplate={GRID_TEMPLATE}
+          minWidth="990px"
+          showPagination
+          pages={PAGE_LABELS.map((label) => ({ label, active: page === label, onClick: () => setPage(label) }))}
+          empty={rows.length === 0}
+          emptyText="현재 처리 대기 중인 주문이 없습니다"
+        />
       </div>
+
+      {selected && (
+        <OrderProcessingDetailDrawer
+          order={selected}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          onClose={() => setSelectedId(null)}
+          showHoldPanel={showHoldPanel}
+          showCompletePanel={showCompletePanel}
+          onToggleHold={() => setShowHoldPanel((v) => !v)}
+          onToggleComplete={() => setShowCompletePanel((v) => !v)}
+          onStartProcess={startProcess}
+          onResume={resume}
+          onConfirmHold={confirmHold}
+          onConfirmComplete={confirmComplete}
+        />
+      )}
     </div>
   );
 }

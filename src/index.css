@@ -103,6 +103,13 @@
   line-height: 1.2;
 }
 
+.globalFilterField:has([class*="DatePicker"]),
+.globalFilterField:has([class*="dateRange"]),
+.globalFilterField:has(input[type="date"]) {
+  flex: 0 0 auto !important;
+  max-width: none !important;
+}
+
 .globalFilterField > span {
   overflow: hidden;
   padding-left: 1px;
@@ -124,10 +131,650 @@
   align-items: flex-end !important;
 }
 
+/*
+ * Legacy two-row search filters
+ *
+ * Keep each page's existing fields and filtering behavior, while presenting
+ * the repeated search + secondary-filter structure like the current filter
+ * panel. Pages that already provide a detail-filter control are intentionally
+ * excluded from this compatibility styling.
+ */
+@supports selector(:has(*)) {
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])) {
+    position: relative;
+    overflow: hidden;
+    padding: 10px 10px 10px !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])[data-filter-expanded="true"]:has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])) {
+    padding: 10px 10px 0 !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    > :is([class*="searchRow"], [class*="filterRow1"]) {
+    display: flex !important;
+    min-width: 0;
+    align-items: flex-end !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding-right: 214px !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])[data-filter-expanded="true"]:has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    > :is([class*="searchRow"], [class*="filterRow1"]) {
+    margin: 0 0 10px !important;
+  }
+
+  /*
+   * 1번 형식: 인풋창 내부 우측 돋보기 아이콘 인라인 배치 (전 페이지 공통 적용)
+   */
+  :where(
+    [class*="filterBox"],
+    [class*="filterCard"],
+    [class*="FilterBox"],
+    [class*="filterContainer"],
+    [class*="searchRow"],
+    [class*="filterRow1"],
+    [class*="filterHeadRow"],
+    [class*="filterBar"]
+  )
+    :is([class*="searchInput"], [class*="SearchInput"]) {
+    flex: 0 1 300px !important;
+    min-width: 200px !important;
+    width: 280px !important;
+    max-width: 360px !important;
+    height: 34px !important;
+    padding: 0 40px 0 10px !important;
+    border: 1px solid var(--common-border, #e4e4e7) !important;
+    border-radius: 8px !important;
+    background: var(--common-bg, #ffffff) !important;
+    color: var(--common-text, #18181b) !important;
+    font-size: 12.5px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 검색 필터 영역 내 SearchField 컴포넌트 공통 최소·최대 너비 제어 */
+  :where(
+    [class*="conditionBar"],
+    [class*="searchLine"],
+    [class*="filterZone"],
+    [class*="filterBox"],
+    [class*="filterCard"],
+    [class*="FilterBox"],
+    [class*="filterContainer"]
+  ) :is([class*="SearchField_field"], [class*="searchField"], [class*="field"]) {
+    flex: 0 1 320px !important;
+    min-width: 220px !important;
+    max-width: 360px !important;
+    width: 320px !important;
+  }
+
+  /* SearchField 내부 input의 테두리/배경/반경을 리셋하여 외부 컨테이너 테두리와 겹쳐 두 줄로 보이는 현상 완벽 방지 */
+  :where([class*="SearchField"], [class*="searchField"], [class*="field"], [class*="control"]) input {
+    border: 0 !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    padding: 0 62px 0 10px !important;
+  }
+
+  /* searchRow / filterRow1 내부의 form 태그도 flex 정렬 보장 */
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"], [class*="filterContainer"])
+    :is([class*="searchRow"], [class*="filterRow1"], [class*="filterHeadRow"])
+    form {
+    display: inline-flex !important;
+    align-items: flex-end !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"], [class*="filterContainer"], [class*="searchRow"], [class*="filterRow1"], [class*="filterHeadRow"], [class*="filterBar"], form)
+    :is([class*="searchBtn"], [class*="searchButton"]) {
+    position: relative !important;
+    z-index: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+    height: 34px !important;
+    margin-left: -42px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"], [class*="filterContainer"], [class*="searchRow"], [class*="filterRow1"], [class*="filterHeadRow"], [class*="filterBar"], form)
+    :is([class*="searchBtn"], [class*="searchButton"])::before {
+    content: "" !important;
+    display: block !important;
+    width: 15px !important;
+    height: 15px !important;
+    margin: auto !important;
+    background: var(--common-text-muted, #71717a) !important;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") center / contain no-repeat !important;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"], [class*="filterContainer"], [class*="searchRow"], [class*="filterRow1"], [class*="filterHeadRow"], form)
+    :is([class*="searchBtn"], [class*="searchButton"]):hover::before {
+    background: var(--common-text, #18181b) !important;
+  }
+
+  /* Fixed action buttons on the right of Row 1 (공통 버튼 CommonButton size="md" 규격과 100% 일치) */
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])
+    :is([class*="detailFilterBtn"], [class*="moreFilterBtn"]) {
+    position: absolute;
+    top: 10px !important;
+    right: 90px;
+    z-index: 2;
+    display: inline-flex !important;
+    width: auto !important;
+    min-width: 110px;
+    height: 34px !important;
+    padding: 0 10px !important;
+    border: 1px solid var(--common-border-strong) !important;
+    border-radius: var(--common-radius-md, 8px) !important;
+    background: #ffffff !important;
+    color: var(--common-text-sub) !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color .15s, border-color .15s, color .15s;
+  }
+
+  /* 상세 필터 앞 아이콘: SlidersHorizontal */
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])
+    :is([class*="detailFilterBtn"], [class*="moreFilterBtn"])::before {
+    content: "" !important;
+    display: block !important;
+    flex: 0 0 14px;
+    width: 14px !important;
+    height: 14px !important;
+    background: currentColor !important;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='21' x2='14' y1='4' y2='4'/%3E%3Cline x1='10' x2='3' y1='4' y2='4'/%3E%3Cline x1='21' x2='12' y1='12' y2='12'/%3E%3Cline x1='8' x2='3' y1='12' y2='12'/%3E%3Cline x1='21' x2='16' y1='20' y2='20'/%3E%3Cline x1='12' x2='3' y1='20' y2='20'/%3E%3Cline x1='14' x2='14' y1='2' y2='6'/%3E%3Cline x1='8' x2='8' y1='10' y2='14'/%3E%3Cline x1='16' x2='16' y1='18' y2='22'/%3E%3C/svg%3E") center / contain no-repeat !important;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='21' x2='14' y1='4' y2='4'/%3E%3Cline x1='10' x2='3' y1='4' y2='4'/%3E%3Cline x1='21' x2='12' y1='12' y2='12'/%3E%3Cline x1='8' x2='3' y1='12' y2='12'/%3E%3Cline x1='21' x2='16' y1='20' y2='20'/%3E%3Cline x1='12' x2='3' y1='20' y2='20'/%3E%3Cline x1='14' x2='14' y1='2' y2='6'/%3E%3Cline x1='8' x2='8' y1='10' y2='14'/%3E%3Cline x1='16' x2='16' y1='18' y2='22'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  }
+
+  /* 상세 필터 뒤 아이콘: ChevronDown (접힘 상태) */
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])
+    :is([class*="detailFilterBtn"], [class*="moreFilterBtn"])::after {
+    content: "" !important;
+    display: block !important;
+    flex: 0 0 13px;
+    width: 13px !important;
+    height: 13px !important;
+    background: currentColor !important;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center / contain no-repeat !important;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center / contain no-repeat !important;
+    transition: transform .2s ease;
+  }
+
+  /* 상세 필터 뒤 아이콘: ChevronUp (펼침 상태) */
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])[data-filter-expanded="true"]
+    :is([class*="detailFilterBtn"], [class*="moreFilterBtn"])::after,
+  :is([class*="detailFilterBtn"], [class*="moreFilterBtn"])[aria-expanded="true"]::after {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'/%3E%3C/svg%3E") !important;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'/%3E%3C/svg%3E") !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])
+    :is([class*="detailFilterBtn"], [class*="moreFilterBtn"]):hover {
+    border-color: #9ea6bf !important;
+    background: var(--common-bg-subtle) !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    :is([class*="clearBtn"], [class*="resetBtn"]) {
+    position: absolute;
+    top: 10px !important;
+    right: 10px;
+    z-index: 2;
+    display: inline-flex !important;
+    flex: 0 0 74px;
+    width: 74px !important;
+    min-width: 74px;
+    height: 34px !important;
+    padding: 0 8px !important;
+    border: 1px solid var(--common-border-strong) !important;
+    border-radius: var(--common-radius-md, 8px) !important;
+    background: #ffffff !important;
+    color: var(--common-text-sub) !important;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    opacity: 1 !important;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color .15s, border-color .15s, color .15s;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    :is([class*="clearBtn"], [class*="resetBtn"]):hover {
+    border-color: #9ea6bf !important;
+    background: var(--common-bg-subtle) !important;
+    color: var(--common-text) !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    :is([class*="clearBtn"], [class*="resetBtn"])::before {
+    content: "";
+    display: block;
+    flex: 0 0 13px;
+    width: 13px;
+    height: 13px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  /* Row 2 (Detail Filter Condition Group): Collapsed by default */
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):not([data-filter-expanded="true"])
+    > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]) {
+    display: block !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):not([data-filter-expanded="true"])
+    > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])
+    > :is(label, select, input, [class*="Field"], [class*="field"], [class*="Range"], [class*="group"], [class*="Group"], span:not([class*="Btn"]):not([class*="button"]), div:not([class*="Btn"]):not([class*="button"])) {
+    display: none !important;
+  }
+
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):not([data-filter-expanded="true"])
+    > [class*="advancedFilters"] {
+    display: none !important;
+  }
+
+  /* Row 2: Expanded on detail button click */
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])[data-filter-expanded="true"]
+    > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]) {
+    display: flex !important;
+    min-height: 62px;
+    margin: 0 -10px !important;
+    padding: 10px !important;
+    border-top: 1px solid var(--common-border) !important;
+    background: var(--common-bg-subtle);
+    align-items: flex-end !important;
+    gap: 8px !important;
+    overflow: visible !important;
+  }
+}
+
+@supports selector(:has(*)) {
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="advancedFilters"] {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    left: 690px;
+    height: 52px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent;
+    align-items: flex-end !important;
+    gap: 8px !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow2"] > label:nth-of-type(6)):has(> [class*="advancedFilters"])
+    > [class*="advancedFilters"] {
+    left: 826px;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="advancedFilters"]
+    > label {
+    position: relative;
+    height: 52px;
+    padding-top: 18px;
+    align-items: center;
+    gap: 7px;
+    font-size: 0 !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="advancedFilters"]
+    > label::before {
+    position: absolute;
+    top: 0;
+    left: 1px;
+    color: var(--common-text-muted);
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    > [class*="advancedFilters"]
+    > label:first-child::before {
+    content: "예정일";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    > [class*="advancedFilters"]
+    > label:nth-child(2)::before {
+    content: "담당자";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    > [class*="advancedFilters"]
+    > label:nth-child(3)::before {
+    content: "실제 입고일";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    > [class*="advancedFilters"]
+    > label:nth-child(2) {
+    flex: 0 0 128px;
+    width: 128px;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    > [class*="advancedFilters"]
+    > label:nth-child(2)
+    > select {
+    width: 100%;
+    min-width: 0;
+    height: 34px;
+    padding-right: 28px;
+    border: 1px solid var(--common-border);
+    border-radius: 8px;
+    background-color: var(--common-bg);
+    color: var(--common-text-sub);
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):has(> label:nth-child(3)))
+    > [class*="advancedFilters"]
+    > label:nth-child(1)::before {
+    content: "안전재고";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):has(> label:nth-child(3)))
+    > [class*="advancedFilters"]
+    > label:nth-child(2)::before {
+    content: "판매 가능 최소";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):has(> label:nth-child(3)))
+    > [class*="advancedFilters"]
+    > label:nth-child(3)::before {
+    content: "판매 가능 최대";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):not(:has(> label:nth-child(3))))
+    > [class*="advancedFilters"]
+    > label:nth-child(1)::before {
+    content: "변동일";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):not(:has(> label:nth-child(3))))
+    > [class*="advancedFilters"]
+    > label:nth-child(2)::before {
+    content: "변동 수량";
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    > [class*="advancedFilters"]
+    > label
+    > span {
+    display: inline-flex;
+    height: 34px;
+    align-items: center;
+    color: var(--common-text-muted);
+    font-size: 13px;
+    line-height: 1;
+  }
+}
+
+/* Keep the inventory adjustment processed-date beside the handler filter. */
+@supports selector(:has(*)) {
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    > [class*="advancedFilters"] {
+    position: absolute;
+    bottom: 10px;
+    left: 690px;
+    height: 52px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    > [class*="advancedFilters"]
+    > label {
+    position: relative;
+    height: 52px;
+    padding-top: 18px;
+    align-items: center;
+    gap: 7px;
+    font-size: 0 !important;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    > [class*="advancedFilters"]
+    > label::before {
+    content: "처리일";
+    position: absolute;
+    top: 0;
+    left: 1px;
+    color: var(--common-text-muted);
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  section:has([class*="definitionStrip"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    > [class*="advancedFilters"]
+    > label
+    > span {
+    display: inline-flex;
+    height: 34px;
+    align-items: center;
+    color: var(--common-text-muted);
+    font-size: 13px;
+    line-height: 1;
+  }
+}
+
+@media (max-width: 1000px) {
+  @supports selector(:has(*)) {
+  section:has([class*="definitionStrip"])
+      [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+      > [class*="advancedFilters"] {
+      position: static;
+      height: auto;
+      margin: 0 -10px !important;
+      padding: 10px !important;
+      border-top: 1px solid var(--common-border) !important;
+    }
+  }
+}
+
+@media (max-width: 1300px) {
+  @supports selector(:has(*)) {
+  section:has([class*="definitionStrip"])
+      [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+      > [class*="advancedFilters"] {
+      position: static;
+      height: auto;
+      margin: 0 -10px !important;
+      padding: 10px !important;
+      border-top: 1px solid var(--common-border) !important;
+      background: var(--common-bg-subtle);
+      flex-wrap: wrap;
+    }
+  }
+}
+
 @media (max-width: 720px) {
   .globalFilterField {
     flex: 1 1 140px;
     max-width: none;
+  }
+
+  @supports selector(:has(*)) {
+    :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+      > :is([class*="searchRow"], [class*="filterRow1"]) {
+      flex-wrap: wrap;
+      padding-right: 0;
+    }
+
+    :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+      > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])
+      > :is([class*="clearBtn"], [class*="resetBtn"]) {
+      position: static;
+      margin-left: auto;
+    }
+
+  section:has([class*="definitionStrip"])
+      [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+      > [class*="filterRow1"] {
+      flex-wrap: wrap;
+      padding-right: 0;
+    }
+
+  section:has([class*="definitionStrip"])
+      [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+      > [class*="filterRow2"]
+      > :is([class*="detailFilterBtn"], [class*="resetBtn"]) {
+      position: static;
+    }
+  }
+}
+
+/*
+ * Unified list search + quick-status tabs
+ *
+ * List pages historically rendered the status buttons immediately above the
+ * search panel.  Keep their filtering behavior intact while presenting both
+ * controls as the single toolbar used by the current member-list layout.
+ */
+@supports selector(:has(*)) {
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"])) {
+    display: flex !important;
+    min-width: 0;
+    margin-bottom: 0 !important;
+    padding: 10px 12px !important;
+    border: 1px solid var(--common-border) !important;
+    border-radius: var(--common-radius-lg) !important;
+    background: var(--common-bg) !important;
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+    > :is(form, [class*="filterRow1"]) {
+    order: -1;
+    display: flex !important;
+    flex: 1 1 52%;
+    min-width: 260px;
+    max-width: none;
+    margin: 0 !important;
+    align-items: flex-end !important;
+    gap: 8px !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+    > [class*="quickFilters"] {
+    display: flex !important;
+    flex: 0 1 auto;
+    max-width: 48%;
+    margin: 0 0 0 auto !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  :where([class*="filterHeadRow"]):has(+ :is([class*="filterBox"], [class*="filterCard"])) {
+    border-radius: var(--common-radius-lg) var(--common-radius-lg) 0 0 !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))
+    + :is([class*="filterBox"], [class*="filterCard"]) {
+    margin-top: -1px !important;
+    border-radius: 0 0 var(--common-radius-lg) var(--common-radius-lg) !important;
+  }
+
+  :where([class*="filterHeadRow"], [class*="quickFilters"])
+    > [class*="quickFilters"]::-webkit-scrollbar,
+  :where([class*="quickFilters"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))::-webkit-scrollbar {
+    display: none;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"])
+    > [class*="quickFilters"]
+    > * {
+    flex: none;
+  }
+}
+
+@media (max-width: 980px) {
+  @supports selector(:has(*)) {
+    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"])) {
+      flex-wrap: wrap !important;
+    }
+
+    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+      > :is(form, [class*="filterRow1"]),
+    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+      > [class*="quickFilters"] {
+      flex-basis: 100%;
+      width: 100%;
+      max-width: none;
+      margin-left: 0 !important;
+    }
+
   }
 }
 
@@ -225,3 +872,266 @@ select:not([multiple]) {
 button {
   font: inherit;
 }
+
+/*
+ * Global Filter Layout Enhancement:
+ * 1. Keep search input compact (width ~280px, max 320px) so quickFilters stay directly next to it without space-between.
+ * 2. Keep quickFilters inline and compact next to search input/button.
+ * 3. Push detailFilterBtn (상세 필터) and reset/clear buttons (초기화) to the far right.
+ */
+:where([class*="searchRow"], [class*="filterRow1"], [class*="filterInline"], [class*="filterHeadRow"])
+  > :is([class*="searchInput"], input[type="search"], input[type="text"]):not([class*="date"]) {
+  flex: 0 1 280px !important;
+  width: 280px !important;
+  max-width: 320px !important;
+}
+
+:where([class*="searchRow"], [class*="filterRow1"], [class*="filterInline"], [class*="filterHeadRow"]) > [class*="quickFilters"] {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  margin-bottom: 0 !important;
+  gap: 8px !important;
+  align-items: center !important;
+  padding: 0 !important;
+}
+
+/* Push detail filter and reset/clear buttons to the far right */
+:where([class*="filterRow2"], [class*="filterRow"], [class*="filterRow1"], [class*="searchRow"], [class*="filterHeadRow"])
+  > :is([class*="detailFilterBtn"], [class*="moreFilterBtn"], [class*="detailButton"]) {
+  margin-left: auto !important;
+}
+
+:where([class*="filterRow2"], [class*="filterRow"], [class*="filterRow1"], [class*="searchRow"], [class*="filterHeadRow"]):not(:has(> :is([class*="detailFilterBtn"], [class*="moreFilterBtn"], [class*="detailButton"])))
+  > :is([class*="resetBtn"], [class*="clearBtn"], [class*="resetButton"]):last-child {
+  margin-left: auto !important;
+}
+
+:where([class*="filterRow2"], [class*="filterRow"]):has(> :is([class*="detailFilterBtn"], [class*="moreFilterBtn"], [class*="detailButton"]))
+  > :is([class*="rowSpacer"], [class*="spacer"]) {
+  display: none !important;
+}
+
+/*
+ * Unified search toolbar
+ * [search] [quick status tabs]                         [detail] [reset]
+ */
+@supports selector(:has(*)) {
+  :where([class*="searchRow"], [class*="filterRow1"], [class*="searchLine"], [class*="filterBar"]):has(> [class*="quickFilters"]) {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0;
+    min-height: 34px;
+    margin: 0 !important;
+    align-items: flex-end !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  :where([class*="searchRow"], [class*="filterRow1"], [class*="searchLine"], [class*="filterBar"])
+    > [class*="quickFilters"] {
+    display: inline-flex !important;
+    flex: 0 1 auto !important;
+    min-width: 0;
+    max-width: 100%;
+    height: 34px;
+    margin: 0 !important;
+    padding: 0 !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  :where([class*="searchRow"], [class*="filterRow1"], [class*="searchLine"], [class*="filterBar"])
+    > [class*="quickFilters"]::-webkit-scrollbar {
+    display: none;
+  }
+
+  :where([class*="searchRow"], [class*="filterRow1"], [class*="searchLine"], [class*="filterBar"])
+    > [class*="quickFilters"]
+    > * {
+    flex: none;
+  }
+
+  /* filterHeadRow pages keep the detail controls in the paired filter box. */
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"]):has(+ :is([class*="filterBox"], [class*="filterCard"])) {
+    display: flex !important;
+    min-width: 0;
+    min-height: 56px;
+    margin: 0 !important;
+    padding: 10px 12px !important;
+    border: 1px solid var(--common-border) !important;
+    border-radius: var(--common-radius-lg) !important;
+    background: var(--common-bg) !important;
+    align-items: flex-end !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))
+    > [class*="filterRow1"] {
+    display: flex !important;
+    flex: 1 1 auto;
+    width: 100% !important;
+    min-width: 0;
+    margin: 0 !important;
+    padding-right: 214px !important;
+    align-items: flex-end !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
+    + :is([class*="filterBox"], [class*="filterCard"]):has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"]) {
+    position: relative;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
+    + :is([class*="filterBox"], [class*="filterCard"]):has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"])
+    :is([class*="detailFilterBtn"], [class*="moreFilterBtn"], [class*="clearBtn"], [class*="resetBtn"]) {
+    position: absolute !important;
+    top: -45px !important;
+    z-index: 3;
+    display: inline-flex !important;
+    height: 34px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
+    + :is([class*="filterBox"], [class*="filterCard"]):has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"])
+    :is([class*="detailFilterBtn"], [class*="moreFilterBtn"]) {
+    right: 90px !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
+    + :is([class*="filterBox"], [class*="filterCard"]):has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"])
+    :is([class*="clearBtn"], [class*="resetBtn"]) {
+    right: 10px !important;
+    width: 74px !important;
+    min-width: 74px !important;
+    padding: 0 8px !important;
+    border: 1px solid var(--common-border-strong) !important;
+    border-radius: var(--common-radius-md, 8px) !important;
+    background: #ffffff !important;
+    color: var(--common-text-sub) !important;
+    gap: 4px;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
+    + :is([class*="filterBox"], [class*="filterCard"]):has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"])
+    :is([class*="clearBtn"], [class*="resetBtn"])::before {
+    content: "";
+    display: block;
+    flex: 0 0 13px;
+    width: 13px;
+    height: 13px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
+    + :is([class*="filterBox"], [class*="filterCard"])[data-filter-expanded="true"]:has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"]) {
+    height: auto !important;
+    margin: -1px 0 16px !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"]):has(
+    + :is([class*="filterBox"], [class*="filterCard"])[data-filter-expanded="true"]
+  ) {
+    border-radius: var(--common-radius-lg) var(--common-radius-lg) 0 0 !important;
+  }
+
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
+    + :is([class*="filterBox"], [class*="filterCard"])[data-filter-expanded="true"]
+    > :is([class*="filterRow2"], [class*="filterRow"]) {
+    margin: 0 !important;
+    padding: 10px 12px !important;
+    border: 1px solid var(--common-border) !important;
+    border-radius: 0 0 var(--common-radius-lg) var(--common-radius-lg) !important;
+  }
+}
+
+/* 결과 영역 액션 컨트롤(Excel 다운로드 버튼 & 페이지 크기 셀렉트) 높이 및 정렬 완벽 일치 */
+:where([class*="resultActions"], [class*="tableActions"], [class*="gridActions"])
+  > :is([data-excel-download], [class*="pageSizeSelect"], select) {
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  box-sizing: border-box !important;
+  font-size: 12px !important;
+  border-radius: 7px !important;
+  vertical-align: middle !important;
+}
+
+/* 페이지 헤더 우측 주요 액션 버튼(등록/생성/추가/신규 등) 토큰 검정색 완벽 통일 */
+:where(
+  header,
+  [class*="header"],
+  [class*="Header"],
+  [class*="headTop"],
+  [class*="headRow"],
+  [class*="head"],
+  [class*="Head"],
+  [class*="pageHeader"],
+  [class*="titleRow"],
+  [class*="headerTop"],
+  [class*="top"]
+)
+  :is(
+    [class*="createBtn"],
+    [class*="CreateBtn"],
+    [class*="registerBtn"],
+    [class*="RegisterBtn"],
+    [class*="reviewPrimaryBtn"],
+    [class*="reportBtn"],
+    [class*="addBtn"],
+    [class*="primaryBtn"],
+    [class*="PrimaryBtn"],
+    [class*="primaryButton"]
+  ):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]):not([class*="panel"]):not([class*="dialog"]) {
+  background: var(--common-text, #18181b) !important;
+  color: #ffffff !important;
+}
+
+:where(
+  header,
+  [class*="header"],
+  [class*="Header"],
+  [class*="headTop"],
+  [class*="headRow"],
+  [class*="head"],
+  [class*="Head"],
+  [class*="pageHeader"],
+  [class*="titleRow"],
+  [class*="headerTop"],
+  [class*="top"]
+)
+  :is(
+    [class*="createBtn"],
+    [class*="CreateBtn"],
+    [class*="registerBtn"],
+    [class*="RegisterBtn"],
+    [class*="reviewPrimaryBtn"],
+    [class*="reportBtn"],
+    [class*="addBtn"],
+    [class*="primaryBtn"],
+    [class*="PrimaryBtn"],
+    [class*="primaryButton"]
+  ):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]):not([class*="panel"]):not([class*="dialog"]):hover:not(:disabled) {
+  background: #3f3f46 !important;
+}
+

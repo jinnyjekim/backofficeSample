@@ -1,0 +1,66 @@
+import { useMemo, useState } from 'react';
+import { DataGrid } from '../../components/DataGrid';
+import type { GridColumn, GridRow } from '../../components/DataGrid/types';
+import { CommonButton } from '../../components/common';
+import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { DatePicker } from '../../components/forms/DatePicker';
+import styles from '../delivery/deliveryShared.module.css';
+import { ExchangeDetailDrawer } from './ExchangeDetailDrawer';
+import { EXCHANGE_STAGE_META, INITIAL_EXCHANGES, matchesExchangeKeyword, type ExchangeStage } from './exchangeData';
+
+const COLUMNS: GridColumn[] = [{ label: '교환번호 / 접수일' }, { label: '주문번호' }, { label: '고객명' }, { label: '교환상품 / 사유' }, { label: '처리단계' }, { label: '담당자' }, { label: '택배사 / 송장' }, { label: '최근갱신' }];
+
+export function ExchangeHistoryPage() {
+  const [stage, setStage] = useState<string>('전체'); const [keyword, setKeyword] = useState(''); const [selectedId, setSelectedId] = useState<string | null>(null);
+  const filtered = useMemo(() => INITIAL_EXCHANGES.filter((item) => (stage === '전체' || item.stage === stage) && matchesExchangeKeyword(item, keyword)), [keyword, stage]); const selected = INITIAL_EXCHANGES.find((item) => item.id === selectedId) ?? null;
+  const stages: Array<'전체' | ExchangeStage> = ['전체','교환 요청','교환 승인','상품 회수','회수 완료','교환 상품 준비','재출고','교환 완료','교환 반려'];
+  const rows: GridRow[] = filtered.map((item) => ({ id: item.id, onClick: () => setSelectedId(item.id), cells: [{ kind: 'stack', title: item.id, subtitle: item.requestedAt }, { kind: 'text', text: item.orderId }, { kind: 'text', text: item.member, weight: 600 }, { kind: 'stack', title: item.product, subtitle: item.reason }, { kind: 'badge', text: item.stage, ...EXCHANGE_STAGE_META[item.stage] }, { kind: 'text', text: item.assignee }, { kind: 'stack', title: item.carrier, subtitle: item.trackingNo }, { kind: 'text', text: item.updatedAt, numeric: true }] }));
+  return (
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headerTop}>
+          <div>
+            <div className={styles.title}>교환 이력</div>
+            <div className={styles.subtitle}>교환 접수부터 승인·회수·재출고·완료까지 모든 상태 변경을 조회합니다.</div>
+          </div>
+        </div>
+        
+        <div className={styles.filterCard}>
+          <div className={styles.filterRow1}>
+            
+            <input className={styles.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="교환번호 / 주문번호 / 고객명 / 상품명 / 송장번호"/>
+            <button className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
+          {stages.map((value) => (
+            <CommonButton key={value} variant={stage === value ? 'primary-light' : 'secondary'} size="md" className={`${styles.qfBtn} ${stage === value ? styles.active : ''}`} onClick={() => setStage(value)}>
+              <span className={styles.qfLabel}>{value}</span>
+              <span className={styles.qfCount}>{INITIAL_EXCHANGES.filter((item) => value === '전체' || item.stage === value).length}</span>
+            </CommonButton>
+          ))}
+        </div>
+          </div>
+          <div className={styles.filterRow2}>
+            <label className={styles.dateFilterField}><span>처리일</span><span className={styles.dateRange}><DatePicker defaultValue="2026-09-01"/><span className={styles.dateSeparator}>~</span><DatePicker defaultValue="2026-09-07"/></span></label>
+            <span className={styles.rowSpacer}/>
+            <button type="button" className="detailFilterBtn">상세 필터</button>
+            <button className={styles.resetBtn} onClick={() => { setKeyword(''); setStage('전체'); }}>초기화</button>
+          </div>
+        </div>
+        <div className={styles.resultBar}>
+          <span className={styles.resultLabel}>총 {filtered.length}건 교환 이력</span>
+          <div className={styles.resultActions}><ExcelDownloadButton data-grid-download/>
+            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <option>20개씩 보기</option>
+              <option>50개씩 보기</option>
+            </select></div>
+        </div>
+      </header>
+      <div className={styles.tableWrap}>
+        <DataGrid columns={COLUMNS} rows={rows} gridTemplate="165px 140px 90px minmax(210px,1fr) 110px 100px 150px 130px" minWidth="1095px" empty={!rows.length} emptyText="조건에 맞는 교환 이력이 없습니다." showPagination pages={[{ label: '1', active: true }]}/>
+      </div>
+      {selected && (
+        <ExchangeDetailDrawer item={selected} eyebrow="교환 처리 이력" onClose={() => setSelectedId(null)}/>
+      )}
+    </div>
+  );
+}

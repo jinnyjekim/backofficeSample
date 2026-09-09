@@ -29,6 +29,22 @@
   margin-top: 4px;
 }
 
+.filterHeadRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filterHeadRow > .quickFilters,
+.filterHeadRow > .filterRow1 {
+  margin-bottom: 0;
+}
+.filterRow1 > .quickFilters {
+  margin-bottom: 0;
+}
+
 .quickFilters {
   display: flex;
   gap: 8px;
@@ -81,8 +97,10 @@
 }
 .filterRow1 {
   display: flex;
+  align-items: flex-end;
   gap: 8px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 .filterRow2 {
   display: flex;
@@ -186,6 +204,15 @@
 .resultActions {
   display: flex;
   gap: 8px;
+}
+.pageSizeSelect {
+  height: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  padding: 0 9px;
+  font-size: 12px;
+  color: #52525b;
+  background: #fff;
 }
 
 .tableWrap {

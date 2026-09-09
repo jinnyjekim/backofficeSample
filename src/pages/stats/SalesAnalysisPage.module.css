@@ -156,8 +156,11 @@
 }
 
 .analysisSelect {
-  width: 100%;
-  min-width: 0;
+  flex: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
 }
 
 .filterField select:focus,
@@ -184,6 +187,7 @@
 }
 
 .filterActions {
+  grid-column: -2 / -1;
   justify-content: flex-end;
 }
 
@@ -293,7 +297,10 @@
 .kpiGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-radius: 12px;
+  background: #fff;
 }
 
 .body .kpiGrid + * {
@@ -303,9 +310,11 @@
 .kpiCard {
   min-width: 0;
   padding: 16px;
-  border: 1px solid rgba(0, 0, 0, .08);
-  border-radius: 12px;
-  background: #fff;
+  border-right: 1px solid rgba(0, 0, 0, .08);
+}
+
+.kpiCard:last-child {
+  border-right: 0;
 }
 
 .kpiLabel {
@@ -368,7 +377,7 @@
 
 .secondaryMetrics {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
   overflow: hidden;
   margin: 10px 0 16px;
@@ -1008,6 +1017,10 @@
 }
 
 @media (max-width: 1280px) {
+  .secondaryMetrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .filterGrid {
     grid-template-columns: repeat(3, minmax(150px, 1fr));
   }
@@ -1039,6 +1052,14 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .kpiGrid .kpiCard:nth-child(2) {
+    border-right: 0;
+  }
+
+  .kpiGrid .kpiCard:nth-child(-n + 2) {
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+  }
+
   .insightGrid .card {
     margin-bottom: 0;
   }
@@ -1062,6 +1083,15 @@
   .kpiGrid,
   .insightGrid {
     grid-template-columns: 1fr;
+  }
+
+  .kpiGrid .kpiCard {
+    border-right: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+  }
+
+  .kpiGrid .kpiCard:last-child {
+    border-bottom: 0;
   }
 
   .dateField,
@@ -1103,4 +1133,36 @@
   .dimensionTabs {
     overflow-x: auto;
   }
+}
+
+.resultRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  margin-bottom: 9px;
+}
+
+.resultLabel {
+  font-size: 12.5px;
+  color: #3f3f46;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.resultActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pageSizeSelect {
+  height: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 7px;
+  font-size: 12px;
+  color: #3f3f46;
+  padding: 0 8px;
+  cursor: pointer;
 }

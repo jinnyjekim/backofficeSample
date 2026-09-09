@@ -32,6 +32,19 @@
   margin-bottom: 16px;
 }
 
+.filterHeadRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filterHeadRow > .quickFilters,
+.filterHeadRow > .filterRow1 {
+  margin-bottom: 0;
+}
+
 .quickFilters {
   display: flex;
   gap: 8px;
@@ -86,14 +99,49 @@
 }
 .filterRow1 {
   display: flex;
+  align-items: flex-end;
   gap: 8px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.filterRow1 > .quickFilters {
+  margin-bottom: 0;
 }
 .filterRow2 {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   align-items: center;
+}
+.dateFilterField {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: none;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--common-text-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.dateFilterField > span:first-child {
+  padding-left: 1px;
+}
+.dateRange {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dateSeparator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  font-family: var(--common-font-family);
+  font-size: 13px;
+  line-height: 1;
+  color: var(--common-text-muted);
 }
 .selectSm {
   height: 34px;

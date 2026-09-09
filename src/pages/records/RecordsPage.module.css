@@ -139,18 +139,6 @@
 .stepLabel.step2 {
   margin: 18px 2px 9px;
 }
-.stepNum {
-  width: 17px;
-  height: 17px;
-  border-radius: 5px;
-  background: #e4e4e7;
-  color: #52525b;
-  font-size: 10.5px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .stepTitle {
   font-size: 12.5px;
   font-weight: 700;
@@ -171,6 +159,11 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 11px;
   padding: 10px 12px;
+}
+.conditionBar > :first-child {
+  flex: 0 1 320px;
+  min-width: 220px;
+  max-width: 360px;
 }
 .filterBtn {
   height: 34px;
@@ -301,6 +294,11 @@
   color: #8b8b93;
   font-variant-numeric: tabular-nums;
 }
+.tableCard > [data-datagrid] {
+  flex: 1;
+  border: 0;
+  border-radius: 0;
+}
 
 .tableScroll {
   flex: 1;
@@ -397,3 +395,6 @@
   color: #fff;
   font-weight: 600;
 }
+
+.resultActions { display: flex; gap: 8px; align-items: center; }
+.pageSizeSelect { height: 30px; box-sizing: border-box; padding: 0 9px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 7px; background: #fff; color: #52525b; font-size: 12px; }

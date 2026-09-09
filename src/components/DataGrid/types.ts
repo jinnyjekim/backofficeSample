@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 export type Align = 'left' | 'center' | 'right';
 
 interface BaseCell {
@@ -113,6 +115,11 @@ export interface RowMenuCell extends BaseCell {
   onToggle: () => void;
   items: { label?: string; sep?: boolean; fg?: string; click?: () => void }[];
 }
+export interface CustomCell extends BaseCell {
+  kind: 'custom';
+  content: ReactNode;
+  exportValue?: string;
+}
 
 export type Cell =
   | TextCell
@@ -130,7 +137,8 @@ export type Cell =
   | NoWarnCell
   | NoTagCell
   | ThumbTitleCell
-  | RowMenuCell;
+  | RowMenuCell
+  | CustomCell;
 
 export interface GridRow {
   id: string | number;
@@ -172,6 +180,7 @@ export interface DataGridProps {
   emptyActionClick?: () => void;
   fillHeight?: boolean;
   stickyHeader?: boolean;
+  compact?: boolean;
   showTopBar?: boolean;
   totalLabel?: string;
   actions?: { label: string; onClick: () => void }[];

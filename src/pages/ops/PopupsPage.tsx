@@ -348,13 +348,17 @@ export function PopupsPage() {
             <div className={styles.title}>팝업</div>
             <div className={styles.subtitle}>서비스 화면에 노출되는 팝업의 노출 조건·빈도·우선순위를 관리합니다.</div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button type="button" className={styles.bulkBtn} onClick={openPriorityManage}>우선순위 관리</button>
-            <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ 팝업 등록</button>
-          </div>
+          <button type="button" className={styles.createBtn} onClick={() => openEditor('new')}>＋ 팝업 등록</button>
         </div>
 
-        <div className={styles.quickFilters}>
+        
+
+        <div className={styles.filterBox}>
+          <div className={styles.filterRow1}>
+            
+            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="팝업 관리명, 제목 또는 번호" />
+            <button type="button" className={styles.searchBtn}>검색</button>
+          <div className={styles.quickFilters}>
           {QUICK_FILTER_LABELS.map((k) => {
             const active = filter === k;
             return (
@@ -371,16 +375,6 @@ export function PopupsPage() {
             );
           })}
         </div>
-
-        <div className={styles.filterBox}>
-          <div className={styles.filterRow1}>
-            <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-              <option>전체</option>
-              <option>팝업명</option>
-              <option>팝업번호</option>
-            </select></label>
-            <input className={styles.searchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="팝업 관리명, 제목 또는 번호" />
-            <button type="button" className={styles.searchBtn}>검색</button>
           </div>
           <div className={styles.filterRow2}>
             <label className="globalFilterField"><span>노출화면</span><select aria-label="노출화면" className={styles.selectXs} value={screenFilter} onChange={(e) => setScreenFilter(e.target.value)}>
@@ -390,6 +384,7 @@ export function PopupsPage() {
               ))}
             </select></label>
             <div className={styles.rowSpacer} />
+            <button type="button" className="detailFilterBtn">상세 필터</button>
             <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setScreenFilter('전체'); setQ(''); }}>초기화</button>
           </div>
         </div>
@@ -397,6 +392,7 @@ export function PopupsPage() {
         <div className={styles.resultRow}>
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
+            <button type="button" className={styles.bulkBtn} onClick={openPriorityManage}>우선순위 관리</button>
             <ExcelDownloadButton type="button" data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>

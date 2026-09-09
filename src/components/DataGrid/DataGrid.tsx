@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CommonBadge } from '../common/CommonControls';
 import styles from './DataGrid.module.css';
 import type { Cell, DataGridProps } from './types';
@@ -85,6 +86,8 @@ function cellExportValue(cell: Cell): string {
       return `${cell.title} / ${cell.id}`;
     case 'rowMenu':
       return '';
+    case 'custom':
+      return cell.exportValue ?? '';
     default:
       return '';
   }
@@ -108,6 +111,55 @@ function isSerialColumnLabel(label: string) {
 
 function isStatusColumnLabel(label: string) {
   return label.replace(/\s/g, '').includes('상태');
+}
+
+function RowMenuView({ cell }: { cell: Extract<Cell, { kind: 'rowMenu' }> }) {
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+
+  useLayoutEffect(() => {
+    if (!cell.open) {
+      setPosition(null);
+      return;
+    }
+
+    const updatePosition = () => {
+      const trigger = toggleRef.current;
+      if (!trigger) return;
+      const rect = trigger.getBoundingClientRect();
+      const width = 158;
+      const estimatedHeight = cell.items.reduce((height, item) => height + (item.sep ? 9 : 34), 10);
+      const left = Math.max(8, Math.min(rect.right - width, window.innerWidth - width - 8));
+      const below = rect.bottom + 4;
+      const top = below + estimatedHeight <= window.innerHeight - 8
+        ? below
+        : Math.max(8, rect.top - estimatedHeight - 4);
+      setPosition({ top, left });
+    };
+
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition, true);
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
+    };
+  }, [cell.open, cell.items]);
+
+  return (
+    <div className={styles.rowMenu} onClick={(event) => event.stopPropagation()}>
+      {cell.detailLabel && <button type="button" className={styles.rowMenuDetailBtn} onClick={cell.onDetail}>{cell.detailLabel}</button>}
+      <button ref={toggleRef} type="button" className={styles.rowMenuToggle} onClick={cell.onToggle} aria-haspopup="menu" aria-expanded={cell.open}>⋯</button>
+      {cell.open && position && createPortal(
+        <div className={styles.rowMenuPopover} style={{ top: position.top, left: position.left }} role="menu" onClick={(event) => event.stopPropagation()}>
+          {cell.items.map((item, index) => item.sep
+            ? <div key={index} className={styles.rowMenuSep} />
+            : <button key={index} type="button" role="menuitem" className={styles.rowMenuItem} style={{ color: item.fg }} onClick={item.click}>{item.label}</button>)}
+        </div>,
+        document.body,
+      )}
+    </div>
+  );
 }
 
 function CellView({ cell }: { cell: Cell }) {
@@ -249,31 +301,9 @@ function CellView({ cell }: { cell: Cell }) {
         </div>
       );
     case 'rowMenu':
-      return (
-        <div className={styles.rowMenu} onClick={(e) => e.stopPropagation()}>
-          {cell.detailLabel && (
-            <button type="button" className={styles.rowMenuDetailBtn} onClick={cell.onDetail}>
-              {cell.detailLabel}
-            </button>
-          )}
-          <button type="button" className={styles.rowMenuToggle} onClick={cell.onToggle}>
-            ⋯
-          </button>
-          {cell.open && (
-            <div className={styles.rowMenuPopover}>
-              {cell.items.map((m, i) =>
-                m.sep ? (
-                  <div key={i} className={styles.rowMenuSep} />
-                ) : (
-                  <button key={i} type="button" className={styles.rowMenuItem} style={{ color: m.fg }} onClick={m.click}>
-                    {m.label}
-                  </button>
-                ),
-              )}
-            </div>
-          )}
-        </div>
-      );
+      return <RowMenuView cell={cell} />;
+    case 'custom':
+      return <>{cell.content}</>;
     default:
       return null;
   }
@@ -297,6 +327,7 @@ export function DataGrid({
   emptyActionClick,
   fillHeight,
   stickyHeader,
+  compact,
   showTopBar,
   totalLabel,
   actions,
@@ -369,9 +400,21 @@ export function DataGrid({
   }));
   const displayGridTemplate = withoutGridTracks(gridTemplate, removedManagement, columns.length);
   const template = (effectiveSelectable ? '30px ' : '') + displayGridTemplate;
+  const effectiveRangeLabel = rangeLabel ?? (rows.length > 0 ? `1–${rows.length} / ${rows.length}` : '0–0 / 0');
+  const suppliedPages = pages?.length ? pages : [{ label: '1', active: true }];
+  const hasPrevious = suppliedPages.some((page) => ['‹', '←', '<'].includes(page.label));
+  const hasNext = suppliedPages.some((page) => ['›', '→', '>'].includes(page.label));
+  const numberedPages = suppliedPages.filter((page) => !['‹', '←', '<', '›', '→', '>'].includes(page.label));
+  const activePageIndex = Math.max(0, numberedPages.findIndex((page) => page.active));
+  const effectivePages = [
+    ...(hasPrevious ? [] : [{ label: '‹', onClick: numberedPages[Math.max(0, activePageIndex - 1)]?.onClick }]),
+    ...suppliedPages,
+    ...(hasNext ? [] : [{ label: '›', onClick: numberedPages[Math.min(numberedPages.length - 1, activePageIndex + 1)]?.onClick }]),
+  ];
+  const effectiveShowPagination = showPagination ?? true;
 
   return (
-    <div ref={rootRef} className={`${styles.root} ${fillHeight ? styles.fillHeight : ''}`} data-datagrid>
+    <div ref={rootRef} className={`${styles.root} ${fillHeight ? styles.fillHeight : ''} ${compact ? styles.compact : ''}`} data-datagrid>
       {showTopBar && (
         <div className={styles.topBar}>
           <span className={styles.totalLabel}>{totalLabel}</span>
@@ -392,7 +435,28 @@ export function DataGrid({
           data-datagrid-head
         >
           {effectiveSelectable && (
-            <input type="checkbox" className={styles.checkbox} checked={effectiveAllSelected} onChange={toggleAllRows} aria-label="현재 목록 전체 선택" />
+            <div
+              className={styles.checkCell}
+              onClick={toggleAllRows}
+              role="checkbox"
+              aria-checked={effectiveAllSelected}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault();
+                  toggleAllRows();
+                }
+              }}
+            >
+              <input
+                type="checkbox"
+                className={styles.checkbox}
+                checked={effectiveAllSelected}
+                onChange={() => {}}
+                style={{ pointerEvents: 'none' }}
+                aria-label="현재 목록 전체 선택"
+              />
+            </div>
           )}
           {displayColumns.map((col, i) => {
             const headerAlign = centeredColumnIndexes.has(i) ? 'center' : col.align;
@@ -413,22 +477,58 @@ export function DataGrid({
             key={row.id}
             className={styles.row}
             style={{ minWidth, gridTemplateColumns: template, background: row.bg, boxShadow: row.mark }}
-            onClick={row.onClick}
+            onClick={(e) => {
+              if (effectiveSelectable) {
+                const target = e.target as HTMLElement | null;
+                const isInsideCheckCell = Boolean(target?.closest(`.${styles.checkCell}`));
+                const firstDataCell = e.currentTarget.querySelector(`.${styles.cellWrap}`) as HTMLElement | null;
+                const isLeftOfDataCells = firstDataCell ? e.clientX < firstDataCell.getBoundingClientRect().left : false;
+
+                // 빨간색으로 표시된 체크박스 열 영역(패딩, checkCell, gap 포함)을 누른 경우: 오직 select 동작만 실행하고 드로워 등 다른 동작 차단
+                if (isInsideCheckCell || isLeftOfDataCells) {
+                  toggleRow(row, e);
+                  return;
+                }
+              }
+
+              // 버튼이나 기타 대화형 요소 클릭 시 행 클릭 동작 방지
+              const target = e.target as HTMLElement | null;
+              if (target?.closest('button, a, input, select, textarea, [data-prevent-row-click]')) {
+                return;
+              }
+
+              row.onClick?.(e);
+            }}
             data-datagrid-row
             data-selected={selectedOf(row) ? 'true' : 'false'}
           >
             {effectiveSelectable && (
-              <input
-                type="checkbox"
-                className={styles.checkbox}
-                checked={selectedOf(row)}
-                aria-label={`${row.id} 선택`}
+              <div
+                className={styles.checkCell}
+                role="checkbox"
+                aria-checked={selectedOf(row)}
+                tabIndex={0}
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleRow(row, e);
                 }}
-                onChange={() => {}}
-              />
+                onKeyDown={(e) => {
+                  if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleRow(row, e as unknown as React.MouseEvent);
+                  }
+                }}
+              >
+                <input
+                  type="checkbox"
+                  className={styles.checkbox}
+                  checked={selectedOf(row)}
+                  aria-label={`${row.id} 선택`}
+                  onChange={() => {}}
+                  style={{ pointerEvents: 'none' }}
+                />
+              </div>
             )}
             {row.cells.map((cell, i) => (
               <div key={i} className={`${styles.cellWrap} ${isBadgeCell(cell) ? styles.badgeCellWrap : ''}`} style={{ textAlign: temporalColumnIndexes.has(i) || serialColumnIndexes.has(i) || statusColumnIndexes.has(i) ? 'center' : isBadgeCell(cell) ? undefined : cell.align }} data-datagrid-cell data-export-value={cellExportValue(cell)}>
@@ -451,13 +551,13 @@ export function DataGrid({
         )}
       </div>
 
-      {showPagination && (
-        <div className={`${styles.pager} ${rangeLabel ? styles.spaced : styles.centered}`}>
-          {rangeLabel && <span className={styles.rangeLabel}>{rangeLabel}</span>}
+      {effectiveShowPagination && (
+        <div className={`${styles.pager} ${styles.spaced}`}>
+          <span className={styles.rangeLabel}>{effectiveRangeLabel}</span>
           <div className={styles.pageButtons}>
-            {pages?.map((p) => (
+            {effectivePages.map((p, index) => (
               <button
-                key={p.label}
+                key={`${p.label}-${index}`}
                 type="button"
                 className={`${styles.pageBtn} ${p.active ? styles.active : ''}`}
                 onClick={p.onClick}

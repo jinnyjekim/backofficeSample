@@ -10,6 +10,8 @@ import { buildMemberDetail } from './memberDetail';
 import { MemberExportModal, MemberStatusModal } from './MemberModals';
 import { SearchField } from '../../components/SearchField';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
+import { DataGrid } from '../../components/DataGrid';
+import type { GridRow } from '../../components/DataGrid/types';
 
 const MODES: BusinessMode[] = ['B2C', 'C2C', 'B2B'];
 const PAGE_LABELS = ['‹', '1', '2', '3', '4', '5', '›'];
@@ -234,8 +236,8 @@ export function MembersPage() {
     locked: !!d.req,
     on: d.req || (cols[mode + d.key] ?? d.on),
   })), [cfg, cols, mode]);
-  const gridTemplate = useMemo(() => `28px ${visible.map((d) => d.w).join(' ')} 34px`, [visible]);
-  const minWidthPx = useMemo(() => 28 + visible.reduce((a, d) => a + colMinPx(d.w), 0) + 34, [visible]);
+  const gridTemplate = useMemo(() => `${visible.map((d) => d.w).join(' ')} 34px`, [visible]);
+  const minWidthPx = useMemo(() => 30 + visible.reduce((a, d) => a + colMinPx(d.w), 0) + 34, [visible]);
 
   const openMember = openId ? data.find((r) => r.id === openId) ?? null : null;
   const detail = openMember ? buildMemberDetail(openMember, mode, cfg) : null;
@@ -361,22 +363,7 @@ export function MembersPage() {
       <div className={styles.body}>
         <main className={styles.main}>
           <div className={styles.filterZone}>
-            <nav className={styles.viewNav}>
-              {cfg.tabs.map((t) => (
-                <button
-                  key={t.key}
-                  type="button"
-                  className={`${styles.viewBtn} ${view === t.key ? styles.active : ''}`}
-                  onClick={() => { setView(t.key); setPage(1); setSel([]); }}
-                >
-                  {t.label}
-                  <span className={styles.viewCount}>{data.filter((r) => t.test(r)).length}</span>
-                </button>
-              ))}
-            </nav>
-
-            <div className={styles.stepLabel} style={{ marginTop: 12 }}>
-              <span className={styles.stepNum}>1</span>
+            <div className={styles.stepLabel}>
               <span className={styles.stepTitle}>조건 설정</span>
               <span className={styles.stepHint}>검색어와 조건 칩으로 대상을 좁힙니다 · {cfg.label} 조건 세트</span>
             </div>
@@ -389,6 +376,20 @@ export function MembersPage() {
                 placeholder={cfg.placeholder}
                 shortcutHint="/"
               />
+
+              <nav className={styles.viewNav} aria-label={`${cfg.label} 회원 상태 보기`}>
+                {cfg.tabs.map((t) => (
+                  <button
+                    key={t.key}
+                    type="button"
+                    className={`${styles.viewBtn} ${view === t.key ? styles.active : ''}`}
+                    onClick={() => { setView(t.key); setPage(1); setSel([]); }}
+                  >
+                    {t.label}
+                    <span className={styles.viewCount}>{data.filter((r) => t.test(r)).length}</span>
+                  </button>
+                ))}
+              </nav>
 
               {chips.map((c, i) => (
                 <button key={i} type="button" className={styles.chip} onClick={() => removeChip(i)}>
@@ -427,7 +428,6 @@ export function MembersPage() {
             </div>
 
             <div className={`${styles.stepLabel} ${styles.step2}`}>
-              <span className={styles.stepNum}>2</span>
               <span className={styles.stepTitle}>조건 결과 확인 · 내보내기</span>
               <span className={styles.stepHint}>위 조건에 해당하는 {cfg.unit} 수와 구성을 확인하고 그대로 추출합니다</span>
             </div>
@@ -533,109 +533,52 @@ export function MembersPage() {
 
           <div className={styles.tableCard}>
             <div className={styles.tableHead}>
-              <span className={styles.stepNum}>3</span>
               <span className={styles.stepTitle}>{cfg.unit} 목록 · 개별 작업</span>
               <span className={styles.tableHeadHint}>행을 누르면 상세, 체크하면 일괄 작업</span>
               <div className={styles.spacer} />
               <button type="button" className={styles.sortBtn} onClick={() => setDesc((v) => !v)}>
                 가입일순 {desc ? '↓' : '↑'}
               </button>
-              <span className={styles.tableHeadResult}>조건 결과 {formatNumber(rows.length)}{cfg.unitSuffix}</span>
-            </div>
-
-            <div className={styles.tableScrollOuter}>
-              <div className={styles.tableScroll}>
-                <div className={styles.colHead} style={{ gridTemplateColumns: gridTemplate, minWidth: minWidthPx }}>
-                  <input
-                    type="checkbox"
-                    className={styles.checkbox}
-                    checked={rows.length > 0 && sel.length === rows.length}
-                    onChange={toggleAll}
-                  />
-                  {visible.map((d) => (
-                    <span key={d.key} style={{ textAlign: d.align ?? 'left' }}>{d.label}</span>
-                  ))}
-                  <span />
-                </div>
-
-                <div>
-                  {rows.map((r) => {
-                    const isSel = sel.includes(r.id);
-                    const isOpen = openId === r.id;
-                    return (
-                      <div
-                        key={r.id}
-                        className={styles.row}
-                        style={{
-                          gridTemplateColumns: gridTemplate,
-                          minWidth: minWidthPx,
-                          padding: `${dense ? 5 : 9}px 14px`,
-                          background: isOpen ? '#f8fafc' : isSel ? '#f7f8ff' : 'transparent',
-                          boxShadow: isOpen ? `inset 2px 0 0 ${ACCENT}` : 'none',
-                        }}
-                        onClick={() => { setOpenId(isOpen ? null : r.id); setTab(0); }}
-                      >
-                        <input
-                          type="checkbox"
-                          className={styles.checkbox}
-                          checked={isSel}
-                          onClick={(e) => e.stopPropagation()}
-                          onChange={() => toggleRowSel(r.id)}
-                        />
-                        {visible.map((d) => (
-                          <div key={d.key} style={{ textAlign: d.align ?? 'left', minWidth: 0 }}>
-                            {renderCell(d.key, r, mode, cfg)}
-                          </div>
-                        ))}
-                        <div className={styles.rowMenuWrap} onClick={(e) => e.stopPropagation()}>
-                          <button type="button" className={styles.rowMenuBtn} onClick={() => setMenuOpenId(menuOpenId === r.id ? null : r.id)}>⋯</button>
-                          {menuOpenId === r.id && (
-                            <div className={styles.rowMenuPopover}>
-                              {cfg.rowMenu.map((label) => (
-                                <button
-                                  key={label}
-                                  type="button"
-                                  className={styles.rowMenuItem}
-                                  style={{ color: /정지|중지|상태 변경|제재/.test(label) ? '#b91c1c' : '#3f3f46' }}
-                                  onClick={() => handleRowMenu(label, r)}
-                                >
-                                  {label}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                  {rows.length === 0 && (
-                    <div className={styles.emptyState}>
-                      <div className={styles.emptyText}>조건에 맞는 {cfg.unit}이 없습니다</div>
-                      <button type="button" className={styles.emptyClear} onClick={clearAll}>조건 전체 해제</button>
-                    </div>
-                  )}
-                </div>
+              <span className={styles.tableHeadResult}>총 {formatNumber(rows.length)}{cfg.unitSuffix}</span>
+              <div className={styles.resultActions}>
+                <ExcelDownloadButton type="button" data-grid-download onClick={() => setModal({ kind: 'export' })} />
+                <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+                  <option>20개씩 보기</option>
+                  <option>50개씩 보기</option>
+                </select>
               </div>
             </div>
 
-            <div className={styles.pager}>
-              <span className={styles.rangeLabel}>1–{rows.length} / {formatNumber(TOTAL_MEMBERS)}</span>
-              <div className={styles.pageButtons}>
-                {PAGE_LABELS.map((label) => (
-                  <button
-                    key={label}
-                    type="button"
-                    className={`${styles.pageBtn} ${String(page) === label ? styles.active : ''}`}
-                    onClick={() => {
-                      const p = parseInt(label, 10);
-                      if (p) setPage(p);
-                    }}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <DataGrid
+              columns={[...visible.map((column) => ({ label: column.label, align: column.align })), { label: '' }]}
+              rows={rows.map((row): GridRow => {
+                const isOpen = openId === row.id;
+                return {
+                  id: row.id,
+                  selected: sel.includes(row.id),
+                  onToggleSelect: () => toggleRowSel(row.id),
+                  onClick: () => { setOpenId(isOpen ? null : row.id); setTab(0); },
+                  bg: isOpen ? '#f8fafc' : undefined,
+                  mark: isOpen ? `inset 2px 0 0 ${ACCENT}` : undefined,
+                  cells: [
+                    ...visible.map((column) => ({ kind: 'custom' as const, content: renderCell(column.key, row, mode, cfg), align: column.align, exportValue: String(row.id) })),
+                    { kind: 'rowMenu' as const, open: menuOpenId === row.id, onToggle: () => setMenuOpenId(menuOpenId === row.id ? null : row.id), items: cfg.rowMenu.map((label) => ({ label, fg: /정지|중지|상태 변경|제재/.test(label) ? '#b91c1c' : '#3f3f46', click: () => handleRowMenu(label, row) })) },
+                  ],
+                };
+              })}
+              gridTemplate={gridTemplate}
+              minWidth={`${minWidthPx}px`}
+              compact={dense}
+              selectable
+              allSelected={rows.length > 0 && sel.length === rows.length}
+              onToggleAll={toggleAll}
+              pages={PAGE_LABELS.map((label) => ({ label, active: String(page) === label, onClick: () => { const nextPage = parseInt(label, 10); if (nextPage) setPage(nextPage); } }))}
+              rangeLabel={`1–${rows.length} / ${formatNumber(TOTAL_MEMBERS)}`}
+              empty={rows.length === 0}
+              emptyText={`조건에 맞는 ${cfg.unit}이 없습니다`}
+              emptyActionLabel="조건 전체 해제"
+              emptyActionClick={clearAll}
+            />
           </div>
         </main>
 

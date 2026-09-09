@@ -37,7 +37,7 @@
   padding: 0 16px;
   border: 0;
   border-radius: 9px;
-  background: var(--accent);
+  background: var(--common-text, #18181b);
   color: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -45,7 +45,23 @@
   flex: none;
 }
 .registerBtn:hover {
-  background: var(--accent-hover);
+  background: #3f3f46;
+}
+
+.filterHeadRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filterHeadRow > .quickFilters,
+.filterHeadRow > .filterRow1 {
+  margin-bottom: 0;
+}
+.filterRow1 > .quickFilters {
+  margin-bottom: 0;
 }
 
 .quickFilters {
@@ -104,6 +120,9 @@
   align-items: flex-end;
   gap: 8px;
   margin-bottom: 12px;
+}
+.searchRow > .quickFilters {
+  margin-bottom: 0;
 }
 .scopeSelect {
   height: 34px;

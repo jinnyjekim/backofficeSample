@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import drawer from '../ops/opsDrawerShared.module.css';
-import { useOutsideClose } from '../../lib/useOutsideClose';
 import styles from './RefundPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   ADJUSTMENT_TYPES,
   STATUS_META,
@@ -82,7 +82,7 @@ export function RefundDrawer({
   useOutsideClose(asideRef, onClose);
 
   return (
-    <aside ref={asideRef} className={`${drawer.aside} ${styles.refundDrawer}`} aria-label="환불 상세">
+    <aside ref={asideRef} className={drawer.aside}>
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>

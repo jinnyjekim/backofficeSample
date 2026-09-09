@@ -131,7 +131,19 @@ export function PurchaseOrdersPage() {
             <button type="button" className={styles.registerBtn} onClick={() => setShowRegister(true)}>＋ 발주 등록</button>
           </div>
 
-          <div className={styles.quickFilters}>
+          
+
+          <div className={styles.filterBox}>
+            <div className={styles.filterRow1}>
+              
+              <input
+                className={styles.searchInput}
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="발주번호 또는 거래처명"
+              />
+              <button type="button" className={styles.searchBtn}>검색</button>
+            <div className={styles.quickFilters}>
             {STATUSES.map((st) => {
               const active = filter === st;
               return (
@@ -148,19 +160,6 @@ export function PurchaseOrdersPage() {
               );
             })}
           </div>
-
-          <div className={styles.filterBox}>
-            <div className={styles.filterRow1}>
-              <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm} defaultValue="전체">
-                <option>전체</option><option>발주번호</option><option>거래처명</option><option>상품명</option><option>견적번호</option><option>계약번호</option>
-              </select></label>
-              <input
-                className={styles.searchInput}
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="발주번호 또는 거래처명"
-              />
-              <button type="button" className={styles.searchBtn}>검색</button>
             </div>
             <div className={styles.filterRow2}>
               <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectXs} defaultValue="거래처 전체">
@@ -173,6 +172,7 @@ export function PurchaseOrdersPage() {
                 <option>발주 기준 전체</option><option>견적</option><option>계약</option><option>직접 발주</option>
               </select></label>
               <div className={styles.rowSpacer} />
+              <button type="button" className="detailFilterBtn">상세 필터</button>
               <button type="button" className={styles.resetBtn} onClick={() => { setFilter('전체'); setQ(''); }}>초기화</button>
             </div>
           </div>

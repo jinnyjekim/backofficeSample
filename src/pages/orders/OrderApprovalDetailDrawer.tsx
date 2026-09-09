@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import styles from './ordersShared.module.css';
-import { fmt, STATUS_META, type Approval } from './orderApprovalData';
 import { useOutsideClose } from '../../lib/useOutsideClose';
+import { fmt, STATUS_META, type Approval } from './orderApprovalData';
 
 const TABS: [string, string][] = [
   ['items', '주문 항목'],

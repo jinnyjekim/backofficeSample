@@ -48,7 +48,7 @@ export const INITIAL_BASE_POLICY: BasePolicy = {
   freeShippingTreatment: '기본 배송비만 무료',
   bundleFeeUnit: '배송 그룹당 1회',
   updatedAt: '2026-07-01',
-  updatedBy: 'admin01',
+  updatedBy: '운영 관리자',
 };
 
 export interface SpecialRegion {

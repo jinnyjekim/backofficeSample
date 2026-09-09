@@ -148,7 +148,19 @@ export function QuoteRequestsPage() {
             </button>
           </div>
 
-          <div className={styles.quickFilters}>
+          
+
+          <div className={styles.filterBox}>
+            <div className={styles.filterRow1}>
+              
+              <input
+                className={styles.searchInput}
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="요청번호, 거래처 또는 상품명"
+              />
+              <button type="button" className={styles.searchBtn}>검색</button>
+            <div className={styles.quickFilters}>
             {QUICK_FILTER_KEYS.map((st) => {
               const active = statusFilter === st;
               return (
@@ -165,23 +177,6 @@ export function QuoteRequestsPage() {
               );
             })}
           </div>
-
-          <div className={styles.filterBox}>
-            <div className={styles.filterRow1}>
-              <label className="globalFilterField"><span>검색 범위</span><select aria-label="검색 범위" className={styles.selectSm}>
-                <option>전체</option>
-                <option>요청번호</option>
-                <option>거래처명</option>
-                <option>상품명</option>
-                <option>내부 담당자</option>
-              </select></label>
-              <input
-                className={styles.searchInput}
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="요청번호, 거래처 또는 상품명"
-              />
-              <button type="button" className={styles.searchBtn}>검색</button>
             </div>
             <div className={styles.filterRow2}>
               <label className="globalFilterField"><span>거래처</span><select aria-label="거래처" className={styles.selectXs}>
@@ -203,6 +198,7 @@ export function QuoteRequestsPage() {
                 <option>조건 변경</option>
               </select></label>
               <div className={styles.rowSpacer} />
+              <button type="button" className="detailFilterBtn">상세 필터</button>
               <button type="button" className={styles.resetBtn} onClick={() => { setStatusFilter('전체'); setQ(''); }}>초기화</button>
             </div>
           </div>
