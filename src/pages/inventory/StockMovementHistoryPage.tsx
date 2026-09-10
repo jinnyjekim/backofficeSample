@@ -15,7 +15,7 @@ import {
   type MovementType,
   type StockMovementLog,
 } from "./stockMovementData";
-import { CommonButton, ExcelDownloadButton } from "../../components/common";
+import { CommonButton, CommonInput, ExcelDownloadButton } from "../../components/common";
 
 type Quick =
   | "전체"
@@ -546,39 +546,53 @@ export function StockMovementHistoryPage() {
             <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
             </button>
+            {showAdvanced && (
+              <>
+                <label className={shared.dateFilterField}>
+                  <span>변동일</span>
+                  <span className={shared.dateRange}>
+                    <DatePicker
+                      aria-label="변동일 시작 날짜"
+                      value={dateFrom}
+                      onChange={(event) => setDateFrom(event.target.value)}
+                    />
+                    <span className={shared.dateSeparator}>~</span>
+                    <DatePicker
+                      aria-label="변동일 종료 날짜"
+                      value={dateTo}
+                      onChange={(event) => setDateTo(event.target.value)}
+                    />
+                  </span>
+                </label>
+                <label className={shared.dateFilterField}>
+                  <span>변동 수량</span>
+                  <span className={shared.dateRange}>
+                    <CommonInput.Number
+                      size="md"
+                      clearable={false}
+                      min={0}
+                      style={{ width: 88 }}
+                      value={quantityMin}
+                      onChange={(event) => setQuantityMin(event.target.value)}
+                      placeholder="최소"
+                    />
+                    <span className={shared.dateSeparator}>~</span>
+                    <CommonInput.Number
+                      size="md"
+                      clearable={false}
+                      min={0}
+                      style={{ width: 88 }}
+                      value={quantityMax}
+                      onChange={(event) => setQuantityMax(event.target.value)}
+                      placeholder="최대"
+                    />
+                  </span>
+                </label>
+              </>
+            )}
           </div>
           {showAdvanced && (
-            <div className={styles.advancedFilters}>
-              <label>
-                변동일
-                <DatePicker
-                  value={dateFrom}
-                  onChange={(event) => setDateFrom(event.target.value)}
-                />
-                <span>–</span>
-                <DatePicker
-                  value={dateTo}
-                  onChange={(event) => setDateTo(event.target.value)}
-                />
-              </label>
-              <label>
-                변동 수량
-                <input
-                  type="number"
-                  min="0"
-                  value={quantityMin}
-                  onChange={(event) => setQuantityMin(event.target.value)}
-                  placeholder="최소"
-                />
-                <span>–</span>
-                <input
-                  type="number"
-                  min="0"
-                  value={quantityMax}
-                  onChange={(event) => setQuantityMax(event.target.value)}
-                  placeholder="최대"
-                />
-              </label>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
               <span className={styles.filterHint}>
                 현재고·예약·판매가능 중 가장 큰 절댓값 기준
               </span>

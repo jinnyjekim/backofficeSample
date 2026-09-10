@@ -22,7 +22,8 @@
   --common-radius-md: 8px;
   --common-radius-lg: 12px;
   --common-shadow-popover: 0 10px 30px rgba(0, 0, 0, 0.14);
-  --common-font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --common-font-family:
+    Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --common-input-font-size: 12.5px;
   --common-input-line-height: 1.45;
 
@@ -127,7 +128,12 @@
   font-weight: 400;
 }
 
-:where([class*="filterRow"], [class*="filterGrid"], [class*="filterBar"], [class*="advancedFilter"]) {
+:where(
+  [class*="filterRow"],
+  [class*="filterGrid"],
+  [class*="filterBar"],
+  [class*="advancedFilter"]
+) {
   align-items: flex-end !important;
 }
 
@@ -140,17 +146,39 @@
  * excluded from this compatibility styling.
  */
 @supports selector(:has(*)) {
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])) {
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(
+      > :is([class*="searchRow"], [class*="filterRow1"])
+    ):has(
+      > :is([class*="filterRow2"], [class*="filterRow"]):not(
+          [class*="filterRow1"]
+        )
+    ) {
     position: relative;
     overflow: hidden;
     padding: 10px 10px 10px !important;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])[data-filter-expanded="true"]:has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])) {
+  :where(
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"]
+    )[data-filter-expanded="true"]:has(
+      > :is([class*="searchRow"], [class*="filterRow1"])
+    ):has(
+      > :is([class*="filterRow2"], [class*="filterRow"]):not(
+          [class*="filterRow1"]
+        )
+    ) {
     padding: 10px 10px 0 !important;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(
+      > :is([class*="searchRow"], [class*="filterRow1"])
+    ):has(
+      > :is([class*="filterRow2"], [class*="filterRow"]):not(
+          [class*="filterRow1"]
+        )
+    )
     > :is([class*="searchRow"], [class*="filterRow1"]) {
     display: flex !important;
     min-width: 0;
@@ -160,7 +188,17 @@
     padding-right: 214px !important;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])[data-filter-expanded="true"]:has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+  :where(
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"]
+    )[data-filter-expanded="true"]:has(
+      > :is([class*="searchRow"], [class*="filterRow1"])
+    ):has(
+      > :is([class*="filterRow2"], [class*="filterRow"]):not(
+          [class*="filterRow1"]
+        )
+    )
     > :is([class*="searchRow"], [class*="filterRow1"]) {
     margin: 0 0 10px !important;
   }
@@ -169,20 +207,21 @@
    * 1번 형식: 인풋창 내부 우측 돋보기 아이콘 인라인 배치 (전 페이지 공통 적용)
    */
   :where(
-    [class*="filterBox"],
-    [class*="filterCard"],
-    [class*="FilterBox"],
-    [class*="filterContainer"],
-    [class*="searchRow"],
-    [class*="filterRow1"],
-    [class*="filterHeadRow"],
-    [class*="filterBar"]
-  )
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"],
+      [class*="filterContainer"],
+      [class*="searchRow"],
+      [class*="filterRow1"],
+      [class*="filterHeadRow"],
+      [class*="filterBar"]
+    )
     :is([class*="searchInput"], [class*="SearchInput"]) {
-    flex: 0 1 300px !important;
+    flex: 0 1 auto !important;
     min-width: 200px !important;
-    width: 280px !important;
+    width: auto !important;
     max-width: 360px !important;
+    field-sizing: content;
     height: 34px !important;
     padding: 0 40px 0 10px !important;
     border: 1px solid var(--common-border, #e4e4e7) !important;
@@ -195,22 +234,54 @@
 
   /* 검색 필터 영역 내 SearchField 컴포넌트 공통 최소·최대 너비 제어 */
   :where(
-    [class*="conditionBar"],
-    [class*="searchLine"],
-    [class*="filterZone"],
-    [class*="filterBox"],
-    [class*="filterCard"],
-    [class*="FilterBox"],
-    [class*="filterContainer"]
-  ) :is([class*="SearchField_field"], [class*="searchField"], [class*="SearchField"] [class*="field"]):not([class*="globalFilterField"]):not([class*="globalFilterField"] *) {
-    flex: 0 1 320px !important;
+      [class*="conditionBar"],
+      [class*="searchLine"],
+      [class*="filterZone"],
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"],
+      [class*="filterContainer"]
+    )
+    :is(
+      [class*="SearchField_field"],
+      [class*="searchField"],
+      [class*="SearchField"] [class*="field"]
+    ):not([class*="globalFilterField"]):not([class*="globalFilterField"] *) {
+    flex: 0 1 auto !important;
     min-width: 220px !important;
     max-width: 360px !important;
-    width: 320px !important;
+    width: fit-content !important;
+  }
+
+  :where(
+      [class*="conditionBar"],
+      [class*="searchLine"],
+      [class*="filterZone"],
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"],
+      [class*="filterContainer"]
+    )
+    :is(
+      [class*="SearchField_field"],
+      [class*="searchField"],
+      [class*="SearchField"] [class*="field"]
+    ):not([class*="globalFilterField"]):not([class*="globalFilterField"] *)
+    input {
+    width: auto !important;
+    min-width: 220px !important;
+    max-width: 360px !important;
+    field-sizing: content;
   }
 
   /* SearchField 내부 input의 테두리/배경/반경을 리셋하여 외부 컨테이너 테두리와 겹쳐 두 줄로 보이는 현상 완벽 방지 */
-  :where([class*="SearchField"], [class*="searchField"], [class*="field"], [class*="control"]) input {
+  :where(
+      [class*="SearchField"],
+      [class*="searchField"],
+      [class*="field"],
+      [class*="control"]
+    )
+    input {
     border: 0 !important;
     border-radius: 0 !important;
     outline: none !important;
@@ -223,7 +294,12 @@
   }
 
   /* searchRow / filterRow1 내부의 form 태그도 flex 정렬 보장 */
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"], [class*="filterContainer"])
+  :where(
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"],
+      [class*="filterContainer"]
+    )
     :is([class*="searchRow"], [class*="filterRow1"], [class*="filterHeadRow"])
     form {
     display: inline-flex !important;
@@ -233,7 +309,17 @@
     padding: 0 !important;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"], [class*="filterContainer"], [class*="searchRow"], [class*="filterRow1"], [class*="filterHeadRow"], [class*="filterBar"], form)
+  :where(
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"],
+      [class*="filterContainer"],
+      [class*="searchRow"],
+      [class*="filterRow1"],
+      [class*="filterHeadRow"],
+      [class*="filterBar"],
+      form
+    )
     :is([class*="searchBtn"], [class*="searchButton"]) {
     position: relative !important;
     z-index: 1 !important;
@@ -257,7 +343,17 @@
     outline: none !important;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"], [class*="filterContainer"], [class*="searchRow"], [class*="filterRow1"], [class*="filterHeadRow"], [class*="filterBar"], form)
+  :where(
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"],
+      [class*="filterContainer"],
+      [class*="searchRow"],
+      [class*="filterRow1"],
+      [class*="filterHeadRow"],
+      [class*="filterBar"],
+      form
+    )
     :is([class*="searchBtn"], [class*="searchButton"])::before {
     content: "" !important;
     display: block !important;
@@ -265,11 +361,22 @@
     height: 15px !important;
     margin: auto !important;
     background: var(--common-text-muted, #71717a) !important;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") center / contain no-repeat !important;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") center / contain no-repeat !important;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E")
+      center / contain no-repeat !important;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E")
+      center / contain no-repeat !important;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"], [class*="filterContainer"], [class*="searchRow"], [class*="filterRow1"], [class*="filterHeadRow"], form)
+  :where(
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"],
+      [class*="filterContainer"],
+      [class*="searchRow"],
+      [class*="filterRow1"],
+      [class*="filterHeadRow"],
+      form
+    )
     :is([class*="searchBtn"], [class*="searchButton"]):hover::before {
     background: var(--common-text, #18181b) !important;
   }
@@ -297,7 +404,10 @@
     font-weight: 600 !important;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color .15s, border-color .15s, color .15s;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s,
+      color 0.15s;
   }
 
   /* 상세 필터 앞 아이콘: SlidersHorizontal */
@@ -309,8 +419,10 @@
     width: 14px !important;
     height: 14px !important;
     background: currentColor !important;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='21' x2='14' y1='4' y2='4'/%3E%3Cline x1='10' x2='3' y1='4' y2='4'/%3E%3Cline x1='21' x2='12' y1='12' y2='12'/%3E%3Cline x1='8' x2='3' y1='12' y2='12'/%3E%3Cline x1='21' x2='16' y1='20' y2='20'/%3E%3Cline x1='12' x2='3' y1='20' y2='20'/%3E%3Cline x1='14' x2='14' y1='2' y2='6'/%3E%3Cline x1='8' x2='8' y1='10' y2='14'/%3E%3Cline x1='16' x2='16' y1='18' y2='22'/%3E%3C/svg%3E") center / contain no-repeat !important;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='21' x2='14' y1='4' y2='4'/%3E%3Cline x1='10' x2='3' y1='4' y2='4'/%3E%3Cline x1='21' x2='12' y1='12' y2='12'/%3E%3Cline x1='8' x2='3' y1='12' y2='12'/%3E%3Cline x1='21' x2='16' y1='20' y2='20'/%3E%3Cline x1='12' x2='3' y1='20' y2='20'/%3E%3Cline x1='14' x2='14' y1='2' y2='6'/%3E%3Cline x1='8' x2='8' y1='10' y2='14'/%3E%3Cline x1='16' x2='16' y1='18' y2='22'/%3E%3C/svg%3E") center / contain no-repeat !important;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='21' x2='14' y1='4' y2='4'/%3E%3Cline x1='10' x2='3' y1='4' y2='4'/%3E%3Cline x1='21' x2='12' y1='12' y2='12'/%3E%3Cline x1='8' x2='3' y1='12' y2='12'/%3E%3Cline x1='21' x2='16' y1='20' y2='20'/%3E%3Cline x1='12' x2='3' y1='20' y2='20'/%3E%3Cline x1='14' x2='14' y1='2' y2='6'/%3E%3Cline x1='8' x2='8' y1='10' y2='14'/%3E%3Cline x1='16' x2='16' y1='18' y2='22'/%3E%3C/svg%3E")
+      center / contain no-repeat !important;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='21' x2='14' y1='4' y2='4'/%3E%3Cline x1='10' x2='3' y1='4' y2='4'/%3E%3Cline x1='21' x2='12' y1='12' y2='12'/%3E%3Cline x1='8' x2='3' y1='12' y2='12'/%3E%3Cline x1='21' x2='16' y1='20' y2='20'/%3E%3Cline x1='12' x2='3' y1='20' y2='20'/%3E%3Cline x1='14' x2='14' y1='2' y2='6'/%3E%3Cline x1='8' x2='8' y1='10' y2='14'/%3E%3Cline x1='16' x2='16' y1='18' y2='22'/%3E%3C/svg%3E")
+      center / contain no-repeat !important;
   }
 
   /* 상세 필터 뒤 아이콘: ChevronDown (접힘 상태) */
@@ -322,15 +434,24 @@
     width: 13px !important;
     height: 13px !important;
     background: currentColor !important;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center / contain no-repeat !important;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center / contain no-repeat !important;
-    transition: transform .2s ease;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")
+      center / contain no-repeat !important;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")
+      center / contain no-repeat !important;
+    transition: transform 0.2s ease;
   }
 
   /* 상세 필터 뒤 아이콘: ChevronUp (펼침 상태) */
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])[data-filter-expanded="true"]
+  :where(
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"]
+    )[data-filter-expanded="true"]
     :is([class*="detailFilterBtn"], [class*="moreFilterBtn"])::after,
-  :is([class*="detailFilterBtn"], [class*="moreFilterBtn"])[aria-expanded="true"]::after {
+  :is(
+      [class*="detailFilterBtn"],
+      [class*="moreFilterBtn"]
+    )[aria-expanded="true"]::after {
     -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'/%3E%3C/svg%3E") !important;
     mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'/%3E%3C/svg%3E") !important;
   }
@@ -341,7 +462,13 @@
     background: var(--common-bg-subtle) !important;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(
+      > :is([class*="searchRow"], [class*="filterRow1"])
+    ):has(
+      > :is([class*="filterRow2"], [class*="filterRow"]):not(
+          [class*="filterRow1"]
+        )
+    )
     :is([class*="clearBtn"], [class*="resetBtn"]) {
     position: absolute;
     top: 10px !important;
@@ -366,17 +493,32 @@
     opacity: 1 !important;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color .15s, border-color .15s, color .15s;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s,
+      color 0.15s;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(
+      > :is([class*="searchRow"], [class*="filterRow1"])
+    ):has(
+      > :is([class*="filterRow2"], [class*="filterRow"]):not(
+          [class*="filterRow1"]
+        )
+    )
     :is([class*="clearBtn"], [class*="resetBtn"]):hover {
     border-color: #9ea6bf !important;
     background: var(--common-bg-subtle) !important;
     color: var(--common-text) !important;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):has(
+      > :is([class*="searchRow"], [class*="filterRow1"])
+    ):has(
+      > :is([class*="filterRow2"], [class*="filterRow"]):not(
+          [class*="filterRow1"]
+        )
+    )
     :is([class*="clearBtn"], [class*="resetBtn"])::before {
     content: "";
     display: block;
@@ -384,13 +526,19 @@
     width: 13px;
     height: 13px;
     background: currentColor;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E")
+      center / contain no-repeat;
   }
 
   /* Row 2 (Detail Filter Condition Group): Collapsed by default */
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):not([data-filter-expanded="true"])
-    > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]) {
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):not(
+      [data-filter-expanded="true"]
+    )
+    > :is([class*="filterRow2"], [class*="filterRow"]):not(
+      [class*="filterRow1"]
+    ) {
     display: block !important;
     height: 0 !important;
     min-height: 0 !important;
@@ -402,20 +550,43 @@
     background: transparent !important;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):not([data-filter-expanded="true"])
-    > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])
-    > :is(label, select, input, [class*="Field"], [class*="field"], [class*="Range"], [class*="group"], [class*="Group"], span:not([class*="Btn"]):not([class*="button"]), div:not([class*="Btn"]):not([class*="button"])) {
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):not(
+      [data-filter-expanded="true"]
+    )
+    > :is([class*="filterRow2"], [class*="filterRow"]):not(
+      [class*="filterRow1"]
+    )
+    > :is(
+      label,
+      select,
+      input,
+      [class*="Field"],
+      [class*="field"],
+      [class*="Range"],
+      [class*="group"],
+      [class*="Group"],
+      span:not([class*="Btn"]):not([class*="button"]),
+      div:not([class*="Btn"]):not([class*="button"])
+    ) {
     display: none !important;
   }
 
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):not([data-filter-expanded="true"])
+  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"]):not(
+      [data-filter-expanded="true"]
+    )
     > [class*="advancedFilters"] {
     display: none !important;
   }
 
   /* Row 2: Expanded on detail button click */
-  :where([class*="filterBox"], [class*="filterCard"], [class*="FilterBox"])[data-filter-expanded="true"]
-    > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]) {
+  :where(
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"]
+    )[data-filter-expanded="true"]
+    > :is([class*="filterRow2"], [class*="filterRow"]):not(
+      [class*="filterRow1"]
+    ) {
     display: flex !important;
     min-height: 62px;
     margin: 0 -10px !important;
@@ -446,7 +617,9 @@
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="filterRow2"] > label:nth-of-type(6)):has(> [class*="advancedFilters"])
+    [class*="filterBox"]:has(
+      > [class*="filterRow2"] > label:nth-of-type(6)
+    ):has(> [class*="advancedFilters"])
     > [class*="advancedFilters"] {
     left: 826px;
   }
@@ -477,28 +650,36 @@
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    [class*="filterBox"]:has(
+      > [class*="advancedFilters"]:not(:has(input[type="number"]))
+    )
     > [class*="advancedFilters"]
     > label:first-child::before {
     content: "예정일";
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    [class*="filterBox"]:has(
+      > [class*="advancedFilters"]:not(:has(input[type="number"]))
+    )
     > [class*="advancedFilters"]
     > label:nth-child(2)::before {
     content: "담당자";
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    [class*="filterBox"]:has(
+      > [class*="advancedFilters"]:not(:has(input[type="number"]))
+    )
     > [class*="advancedFilters"]
     > label:nth-child(3)::before {
     content: "실제 입고일";
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    [class*="filterBox"]:has(
+      > [class*="advancedFilters"]:not(:has(input[type="number"]))
+    )
     > [class*="advancedFilters"]
     > label:nth-child(2) {
     flex: 0 0 128px;
@@ -506,7 +687,9 @@
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="advancedFilters"]:not(:has(input[type="number"])))
+    [class*="filterBox"]:has(
+      > [class*="advancedFilters"]:not(:has(input[type="number"]))
+    )
     > [class*="advancedFilters"]
     > label:nth-child(2)
     > select {
@@ -521,35 +704,55 @@
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):has(> label:nth-child(3)))
+    [class*="filterBox"]:has(
+      > [class*="advancedFilters"]:has(input[type="number"]):has(
+          > label:nth-child(3)
+        )
+    )
     > [class*="advancedFilters"]
     > label:nth-child(1)::before {
     content: "안전재고";
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):has(> label:nth-child(3)))
+    [class*="filterBox"]:has(
+      > [class*="advancedFilters"]:has(input[type="number"]):has(
+          > label:nth-child(3)
+        )
+    )
     > [class*="advancedFilters"]
     > label:nth-child(2)::before {
     content: "판매 가능 최소";
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):has(> label:nth-child(3)))
+    [class*="filterBox"]:has(
+      > [class*="advancedFilters"]:has(input[type="number"]):has(
+          > label:nth-child(3)
+        )
+    )
     > [class*="advancedFilters"]
     > label:nth-child(3)::before {
     content: "판매 가능 최대";
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):not(:has(> label:nth-child(3))))
+    [class*="filterBox"]:has(
+      > [class*="advancedFilters"]:has(input[type="number"]):not(
+          :has(> label:nth-child(3))
+        )
+    )
     > [class*="advancedFilters"]
     > label:nth-child(1)::before {
     content: "변동일";
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:has(> [class*="advancedFilters"]:has(input[type="number"]):not(:has(> label:nth-child(3))))
+    [class*="filterBox"]:has(
+      > [class*="advancedFilters"]:has(input[type="number"]):not(
+          :has(> label:nth-child(3))
+        )
+    )
     > [class*="advancedFilters"]
     > label:nth-child(2)::before {
     content: "변동 수량";
@@ -572,7 +775,9 @@
 /* Keep the inventory adjustment processed-date beside the handler filter. */
 @supports selector(:has(*)) {
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(
+      > [class*="advancedFilters"]
+    )
     > [class*="advancedFilters"] {
     position: absolute;
     bottom: 10px;
@@ -585,7 +790,9 @@
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(
+      > [class*="advancedFilters"]
+    )
     > [class*="advancedFilters"]
     > label {
     position: relative;
@@ -597,7 +804,9 @@
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(
+      > [class*="advancedFilters"]
+    )
     > [class*="advancedFilters"]
     > label::before {
     content: "처리일";
@@ -611,7 +820,9 @@
   }
 
   section:has([class*="definitionStrip"])
-    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(
+      > [class*="advancedFilters"]
+    )
     > [class*="advancedFilters"]
     > label
     > span {
@@ -626,8 +837,10 @@
 
 @media (max-width: 1000px) {
   @supports selector(:has(*)) {
-  section:has([class*="definitionStrip"])
-      [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(> [class*="advancedFilters"])
+    section:has([class*="definitionStrip"])
+      [class*="filterBox"]:not(:has([class*="detailFilterBtn"])):has(
+        > [class*="advancedFilters"]
+      )
       > [class*="advancedFilters"] {
       position: static;
       height: auto;
@@ -640,8 +853,10 @@
 
 @media (max-width: 1300px) {
   @supports selector(:has(*)) {
-  section:has([class*="definitionStrip"])
-      [class*="filterBox"]:has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    section:has([class*="definitionStrip"])
+      [class*="filterBox"]:has(
+        > [class*="filterRow2"] [class*="detailFilterBtn"]
+      )
       > [class*="advancedFilters"] {
       position: static;
       height: auto;
@@ -661,28 +876,56 @@
   }
 
   @supports selector(:has(*)) {
-    :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
+    :where([class*="filterBox"], [class*="filterCard"]):not(
+        :has(
+          [class*="detailFilterBtn"],
+          [class*="dashedBtn"],
+          [class*="detailButton"],
+          [class*="moreFilterBtn"]
+        )
+      ):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(
+        > :is([class*="filterRow2"], [class*="filterRow"]):not(
+            [class*="filterRow1"]
+          )
+      )
       > :is([class*="searchRow"], [class*="filterRow1"]) {
       flex-wrap: wrap;
       padding-right: 0;
     }
 
-    :where([class*="filterBox"], [class*="filterCard"]):not(:has([class*="detailFilterBtn"], [class*="dashedBtn"], [class*="detailButton"], [class*="moreFilterBtn"])):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(> :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"]))
-      > :is([class*="filterRow2"], [class*="filterRow"]):not([class*="filterRow1"])
+    :where([class*="filterBox"], [class*="filterCard"]):not(
+        :has(
+          [class*="detailFilterBtn"],
+          [class*="dashedBtn"],
+          [class*="detailButton"],
+          [class*="moreFilterBtn"]
+        )
+      ):has(> :is([class*="searchRow"], [class*="filterRow1"])):has(
+        > :is([class*="filterRow2"], [class*="filterRow"]):not(
+            [class*="filterRow1"]
+          )
+      )
+      > :is([class*="filterRow2"], [class*="filterRow"]):not(
+        [class*="filterRow1"]
+      )
       > :is([class*="clearBtn"], [class*="resetBtn"]) {
       position: static;
       margin-left: auto;
     }
 
-  section:has([class*="definitionStrip"])
-      [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    section:has([class*="definitionStrip"])
+      [class*="filterBox"]:has(> [class*="filterRow1"]):has(
+        > [class*="filterRow2"] [class*="detailFilterBtn"]
+      )
       > [class*="filterRow1"] {
       flex-wrap: wrap;
       padding-right: 0;
     }
 
-  section:has([class*="definitionStrip"])
-      [class*="filterBox"]:has(> [class*="filterRow1"]):has(> [class*="filterRow2"] [class*="detailFilterBtn"])
+    section:has([class*="definitionStrip"])
+      [class*="filterBox"]:has(> [class*="filterRow1"]):has(
+        > [class*="filterRow2"] [class*="detailFilterBtn"]
+      )
       > [class*="filterRow2"]
       > :is([class*="detailFilterBtn"], [class*="resetBtn"]) {
       position: static;
@@ -698,7 +941,9 @@
  * controls as the single toolbar used by the current member-list layout.
  */
 @supports selector(:has(*)) {
-  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"])) {
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(
+      > :is(form, [class*="filterRow1"])
+    ) {
     display: flex !important;
     min-width: 0;
     margin-bottom: 0 !important;
@@ -712,7 +957,9 @@
     flex-wrap: nowrap !important;
   }
 
-  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(
+      > :is(form, [class*="filterRow1"])
+    )
     > :is(form, [class*="filterRow1"]) {
     order: -1;
     display: flex !important;
@@ -724,7 +971,9 @@
     gap: 8px !important;
   }
 
-  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+  :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(
+      > :is(form, [class*="filterRow1"])
+    )
     > [class*="quickFilters"] {
     display: flex !important;
     flex: 0 1 auto;
@@ -736,11 +985,15 @@
     scrollbar-width: none;
   }
 
-  :where([class*="filterHeadRow"]):has(+ :is([class*="filterBox"], [class*="filterCard"])) {
+  :where([class*="filterHeadRow"]):has(
+    + :is([class*="filterBox"], [class*="filterCard"])
+  ) {
     border-radius: var(--common-radius-lg) var(--common-radius-lg) 0 0 !important;
   }
 
-  :where([class*="filterHeadRow"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))
+  :where([class*="filterHeadRow"]):has(
+      + :is([class*="filterBox"], [class*="filterCard"])
+    )
     + :is([class*="filterBox"], [class*="filterCard"]) {
     margin-top: -1px !important;
     border-radius: 0 0 var(--common-radius-lg) var(--common-radius-lg) !important;
@@ -748,7 +1001,9 @@
 
   :where([class*="filterHeadRow"], [class*="quickFilters"])
     > [class*="quickFilters"]::-webkit-scrollbar,
-  :where([class*="quickFilters"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))::-webkit-scrollbar {
+  :where([class*="quickFilters"]):has(
+      + :is([class*="filterBox"], [class*="filterCard"])
+    )::-webkit-scrollbar {
     display: none;
   }
 
@@ -761,24 +1016,31 @@
 
 @media (max-width: 980px) {
   @supports selector(:has(*)) {
-    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"])) {
+    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(
+        > :is(form, [class*="filterRow1"])
+      ) {
       flex-wrap: wrap !important;
     }
 
-    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(
+        > :is(form, [class*="filterRow1"])
+      )
       > :is(form, [class*="filterRow1"]),
-    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(> :is(form, [class*="filterRow1"]))
+    :where([class*="filterHeadRow"]):has(> [class*="quickFilters"]):has(
+        > :is(form, [class*="filterRow1"])
+      )
       > [class*="quickFilters"] {
       flex-basis: 100%;
       width: 100%;
       max-width: none;
       margin-left: 0 !important;
     }
-
   }
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 
@@ -798,7 +1060,10 @@ a:hover {
   color: var(--accent-hover);
 }
 
-input, button, select, textarea {
+input,
+button,
+select,
+textarea {
   font-family: inherit;
 }
 
@@ -879,14 +1144,29 @@ button {
  * 2. Keep quickFilters inline and compact next to search input/button.
  * 3. Push detailFilterBtn (상세 필터) and reset/clear buttons (초기화) to the far right.
  */
-:where([class*="searchRow"], [class*="filterRow1"], [class*="filterInline"], [class*="filterHeadRow"])
-  > :is([class*="searchInput"], input[type="search"], input[type="text"]):not([class*="date"]) {
-  flex: 0 1 280px !important;
-  width: 280px !important;
+:where(
+    [class*="searchRow"],
+    [class*="filterRow1"],
+    [class*="filterInline"],
+    [class*="filterHeadRow"]
+  )
+  > :is([class*="searchInput"], input[type="search"], input[type="text"]):not(
+    [class*="date"]
+  ) {
+  flex: 0 1 auto !important;
+  min-width: 200px !important;
+  width: auto !important;
   max-width: 320px !important;
+  field-sizing: content;
 }
 
-:where([class*="searchRow"], [class*="filterRow1"], [class*="filterInline"], [class*="filterHeadRow"]) > [class*="quickFilters"] {
+:where(
+    [class*="searchRow"],
+    [class*="filterRow1"],
+    [class*="filterInline"],
+    [class*="filterHeadRow"]
+  )
+  > [class*="quickFilters"] {
   display: inline-flex !important;
   flex: 0 0 auto !important;
   margin-bottom: 0 !important;
@@ -896,17 +1176,51 @@ button {
 }
 
 /* Push detail filter and reset/clear buttons to the far right */
-:where([class*="filterRow2"], [class*="filterRow"], [class*="filterRow1"], [class*="searchRow"], [class*="filterHeadRow"])
-  > :is([class*="detailFilterBtn"], [class*="moreFilterBtn"], [class*="detailButton"]) {
+:where(
+    [class*="filterRow2"],
+    [class*="filterRow"],
+    [class*="filterRow1"],
+    [class*="searchRow"],
+    [class*="filterHeadRow"]
+  )
+  > :is(
+    [class*="detailFilterBtn"],
+    [class*="moreFilterBtn"],
+    [class*="detailButton"]
+  ) {
   margin-left: auto !important;
 }
 
-:where([class*="filterRow2"], [class*="filterRow"], [class*="filterRow1"], [class*="searchRow"], [class*="filterHeadRow"]):not(:has(> :is([class*="detailFilterBtn"], [class*="moreFilterBtn"], [class*="detailButton"])))
-  > :is([class*="resetBtn"], [class*="clearBtn"], [class*="resetButton"]):last-child {
+:where(
+    [class*="filterRow2"],
+    [class*="filterRow"],
+    [class*="filterRow1"],
+    [class*="searchRow"],
+    [class*="filterHeadRow"]
+  ):not(
+    :has(
+      > :is(
+        [class*="detailFilterBtn"],
+        [class*="moreFilterBtn"],
+        [class*="detailButton"]
+      )
+    )
+  )
+  > :is(
+    [class*="resetBtn"],
+    [class*="clearBtn"],
+    [class*="resetButton"]
+  ):last-child {
   margin-left: auto !important;
 }
 
-:where([class*="filterRow2"], [class*="filterRow"]):has(> :is([class*="detailFilterBtn"], [class*="moreFilterBtn"], [class*="detailButton"]))
+:where([class*="filterRow2"], [class*="filterRow"]):has(
+    > :is(
+      [class*="detailFilterBtn"],
+      [class*="moreFilterBtn"],
+      [class*="detailButton"]
+    )
+  )
   > :is([class*="rowSpacer"], [class*="spacer"]) {
   display: none !important;
 }
@@ -916,7 +1230,12 @@ button {
  * [search] [quick status tabs]                         [detail] [reset]
  */
 @supports selector(:has(*)) {
-  :where([class*="searchRow"], [class*="filterRow1"], [class*="searchLine"], [class*="filterBar"]):has(> [class*="quickFilters"]) {
+  :where(
+    [class*="searchRow"],
+    [class*="filterRow1"],
+    [class*="searchLine"],
+    [class*="filterBar"]
+  ):has(> [class*="quickFilters"]) {
     display: flex !important;
     width: 100% !important;
     min-width: 0;
@@ -927,7 +1246,12 @@ button {
     flex-wrap: nowrap !important;
   }
 
-  :where([class*="searchRow"], [class*="filterRow1"], [class*="searchLine"], [class*="filterBar"])
+  :where(
+      [class*="searchRow"],
+      [class*="filterRow1"],
+      [class*="searchLine"],
+      [class*="filterBar"]
+    )
     > [class*="quickFilters"] {
     display: inline-flex !important;
     flex: 0 1 auto !important;
@@ -944,19 +1268,31 @@ button {
     scrollbar-width: none;
   }
 
-  :where([class*="searchRow"], [class*="filterRow1"], [class*="searchLine"], [class*="filterBar"])
+  :where(
+      [class*="searchRow"],
+      [class*="filterRow1"],
+      [class*="searchLine"],
+      [class*="filterBar"]
+    )
     > [class*="quickFilters"]::-webkit-scrollbar {
     display: none;
   }
 
-  :where([class*="searchRow"], [class*="filterRow1"], [class*="searchLine"], [class*="filterBar"])
+  :where(
+      [class*="searchRow"],
+      [class*="filterRow1"],
+      [class*="searchLine"],
+      [class*="filterBar"]
+    )
     > [class*="quickFilters"]
     > * {
     flex: none;
   }
 
   /* filterHeadRow pages keep the detail controls in the paired filter box. */
-  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"]):has(+ :is([class*="filterBox"], [class*="filterCard"])) {
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"]):has(
+      + :is([class*="filterBox"], [class*="filterCard"])
+    ) {
     display: flex !important;
     min-width: 0;
     min-height: 56px;
@@ -968,7 +1304,9 @@ button {
     align-items: flex-end !important;
   }
 
-  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"]):has(+ :is([class*="filterBox"], [class*="filterCard"]))
+  :where([class*="filterHeadRow"]):has(> [class*="filterRow1"]):has(
+      + :is([class*="filterBox"], [class*="filterCard"])
+    )
     > [class*="filterRow1"] {
     display: flex !important;
     flex: 1 1 auto;
@@ -982,7 +1320,10 @@ button {
   }
 
   :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
-    + :is([class*="filterBox"], [class*="filterCard"]):has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"]) {
+    + :is([class*="filterBox"], [class*="filterCard"]):has(
+      > :is([class*="filterRow2"], [class*="filterRow"])
+        [class*="detailFilterBtn"]
+    ) {
     position: relative;
     height: 0 !important;
     min-height: 0 !important;
@@ -995,8 +1336,16 @@ button {
   }
 
   :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
-    + :is([class*="filterBox"], [class*="filterCard"]):has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"])
-    :is([class*="detailFilterBtn"], [class*="moreFilterBtn"], [class*="clearBtn"], [class*="resetBtn"]) {
+    + :is([class*="filterBox"], [class*="filterCard"]):has(
+      > :is([class*="filterRow2"], [class*="filterRow"])
+        [class*="detailFilterBtn"]
+    )
+    :is(
+      [class*="detailFilterBtn"],
+      [class*="moreFilterBtn"],
+      [class*="clearBtn"],
+      [class*="resetBtn"]
+    ) {
     position: absolute !important;
     top: -45px !important;
     z-index: 3;
@@ -1008,13 +1357,19 @@ button {
   }
 
   :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
-    + :is([class*="filterBox"], [class*="filterCard"]):has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"])
+    + :is([class*="filterBox"], [class*="filterCard"]):has(
+      > :is([class*="filterRow2"], [class*="filterRow"])
+        [class*="detailFilterBtn"]
+    )
     :is([class*="detailFilterBtn"], [class*="moreFilterBtn"]) {
     right: 90px !important;
   }
 
   :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
-    + :is([class*="filterBox"], [class*="filterCard"]):has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"])
+    + :is([class*="filterBox"], [class*="filterCard"]):has(
+      > :is([class*="filterRow2"], [class*="filterRow"])
+        [class*="detailFilterBtn"]
+    )
     :is([class*="clearBtn"], [class*="resetBtn"]) {
     right: 10px !important;
     width: 74px !important;
@@ -1031,7 +1386,10 @@ button {
   }
 
   :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
-    + :is([class*="filterBox"], [class*="filterCard"]):has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"])
+    + :is([class*="filterBox"], [class*="filterCard"]):has(
+      > :is([class*="filterRow2"], [class*="filterRow"])
+        [class*="detailFilterBtn"]
+    )
     :is([class*="clearBtn"], [class*="resetBtn"])::before {
     content: "";
     display: block;
@@ -1039,24 +1397,38 @@ button {
     width: 13px;
     height: 13px;
     background: currentColor;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E")
+      center / contain no-repeat;
   }
 
   :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
-    + :is([class*="filterBox"], [class*="filterCard"])[data-filter-expanded="true"]:has(> :is([class*="filterRow2"], [class*="filterRow"]) [class*="detailFilterBtn"]) {
+    + :is(
+      [class*="filterBox"],
+      [class*="filterCard"]
+    )[data-filter-expanded="true"]:has(
+      > :is([class*="filterRow2"], [class*="filterRow"])
+        [class*="detailFilterBtn"]
+    ) {
     height: auto !important;
     margin: -1px 0 16px !important;
   }
 
   :where([class*="filterHeadRow"]):has(> [class*="filterRow1"]):has(
-    + :is([class*="filterBox"], [class*="filterCard"])[data-filter-expanded="true"]
-  ) {
+      + :is(
+          [class*="filterBox"],
+          [class*="filterCard"]
+        )[data-filter-expanded="true"]
+    ) {
     border-radius: var(--common-radius-lg) var(--common-radius-lg) 0 0 !important;
   }
 
   :where([class*="filterHeadRow"]):has(> [class*="filterRow1"])
-    + :is([class*="filterBox"], [class*="filterCard"])[data-filter-expanded="true"]
+    + :is(
+      [class*="filterBox"],
+      [class*="filterCard"]
+    )[data-filter-expanded="true"]
     > :is([class*="filterRow2"], [class*="filterRow"]) {
     margin: 0 !important;
     padding: 10px 12px !important;
@@ -1066,7 +1438,11 @@ button {
 }
 
 /* 결과 영역 액션 컨트롤(Excel 다운로드 버튼 & 페이지 크기 셀렉트) 높이 및 정렬 완벽 일치 */
-:where([class*="resultActions"], [class*="tableActions"], [class*="gridActions"])
+:where(
+    [class*="resultActions"],
+    [class*="tableActions"],
+    [class*="gridActions"]
+  )
   > :is([data-excel-download], [class*="pageSizeSelect"], select) {
   height: 30px !important;
   min-height: 30px !important;
@@ -1079,18 +1455,18 @@ button {
 
 /* 페이지 헤더 우측 주요 액션 버튼(등록/생성/추가/신규 등) 토큰 검정색 완벽 통일 */
 :where(
-  header,
-  [class*="header"],
-  [class*="Header"],
-  [class*="headTop"],
-  [class*="headRow"],
-  [class*="head"],
-  [class*="Head"],
-  [class*="pageHeader"],
-  [class*="titleRow"],
-  [class*="headerTop"],
-  [class*="top"]
-)
+    header,
+    [class*="header"],
+    [class*="Header"],
+    [class*="headTop"],
+    [class*="headRow"],
+    [class*="head"],
+    [class*="Head"],
+    [class*="pageHeader"],
+    [class*="titleRow"],
+    [class*="headerTop"],
+    [class*="top"]
+  )
   :is(
     [class*="createBtn"],
     [class*="CreateBtn"],
@@ -1102,24 +1478,26 @@ button {
     [class*="primaryBtn"],
     [class*="PrimaryBtn"],
     [class*="primaryButton"]
-  ):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]):not([class*="panel"]):not([class*="dialog"]) {
+  ):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]):not(
+    [class*="panel"]
+  ):not([class*="dialog"]) {
   background: var(--common-text, #18181b) !important;
   color: #ffffff !important;
 }
 
 :where(
-  header,
-  [class*="header"],
-  [class*="Header"],
-  [class*="headTop"],
-  [class*="headRow"],
-  [class*="head"],
-  [class*="Head"],
-  [class*="pageHeader"],
-  [class*="titleRow"],
-  [class*="headerTop"],
-  [class*="top"]
-)
+    header,
+    [class*="header"],
+    [class*="Header"],
+    [class*="headTop"],
+    [class*="headRow"],
+    [class*="head"],
+    [class*="Head"],
+    [class*="pageHeader"],
+    [class*="titleRow"],
+    [class*="headerTop"],
+    [class*="top"]
+  )
   :is(
     [class*="createBtn"],
     [class*="CreateBtn"],
@@ -1131,7 +1509,8 @@ button {
     [class*="primaryBtn"],
     [class*="PrimaryBtn"],
     [class*="primaryButton"]
-  ):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]):not([class*="panel"]):not([class*="dialog"]):hover:not(:disabled) {
+  ):not([class*="drawer"]):not([class*="modal"]):not([class*="aside"]):not(
+    [class*="panel"]
+  ):not([class*="dialog"]):hover:not(:disabled) {
   background: #3f3f46 !important;
 }
-

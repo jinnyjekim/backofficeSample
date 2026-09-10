@@ -9,7 +9,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from 'react';
-import { ChevronDown, ChevronRight, CircleAlert, Inbox, SearchX } from 'lucide-react';
+import { ChevronDown, ChevronRight, CircleAlert, GripVertical, Inbox, SearchX } from 'lucide-react';
 import { Breadcrumb as M2MBreadcrumb } from 'm2m-uiux-react/Breadcrumb';
 import { Accordion as M2MAccordion } from 'm2m-uiux-react/Accordion';
 import { List as M2MList } from 'm2m-uiux-react/List';
@@ -321,4 +321,160 @@ export interface CommonGridProps { children: ReactNode; columns?: number | strin
 export function CommonGrid({ children, columns = 1, gap = 12, minColumnWidth, align, className }: CommonGridProps) {
   const template = minColumnWidth ? `repeat(auto-fit, minmax(${typeof minColumnWidth === 'number' ? `${minColumnWidth}px` : minColumnWidth}, 1fr))` : typeof columns === 'number' ? `repeat(${columns}, minmax(0, 1fr))` : columns;
   return <M2MGrid columns={template} gap={gap} alignItems={align as 'start' | 'center' | 'end' | 'stretch' | undefined} classNames={cx(styles.commonGrid, className)}>{children}</M2MGrid>;
+}
+
+/**
+ * 드래그앤드롭으로 순서를 바꾸는 목록.
+ * 마우스 드래그와 키보드(항목 포커스 후 방향키) 양쪽으로 정렬할 수 있습니다.
+ */
+export interface CommonSortableListProps<T = string> {
+  items: T[];
+  /** 순서가 바뀐 새 배열을 돌려줍니다. */
+  onChange?: (next: T[]) => void;
+  /** 항목의 React key. 생략하면 문자열/숫자는 값 자체, 객체는 `id`를 씁니다. */
+  itemKey?: (item: T, index: number) => string;
+  /** 기본 렌더링에서 보여줄 라벨. 생략하면 문자열/숫자는 값 자체, 객체는 `label` · `name`을 씁니다. */
+  itemLabel?: (item: T, index: number) => ReactNode;
+  /** 항목 내부를 통째로 그립니다. 지정하면 번호·라벨 대신 이 결과가 들어갑니다. */
+  renderItem?: (item: T, index: number) => ReactNode;
+  /** `horizontal`은 반응형 그리드로 배치합니다. */
+  direction?: 'vertical' | 'horizontal';
+  /** 앞에 순번 배지를 표시합니다. */
+  numbered?: boolean;
+  /** 드래그 손잡이 아이콘 표시 여부. */
+  grip?: boolean;
+  disabled?: boolean;
+  size?: CommonSize;
+  /** `horizontal`일 때 한 항목의 최소 폭. */
+  minItemWidth?: number | string;
+  className?: string;
+  classNames?: CommonClassNames;
+}
+
+export function CommonSortableList<T = string>({
+  items,
+  onChange,
+  itemKey,
+  itemLabel,
+  renderItem,
+  direction = 'vertical',
+  numbered = false,
+  grip = true,
+  disabled = false,
+  size = 'md',
+  minItemWidth,
+  className,
+  classNames,
+}: CommonSortableListProps<T>) {
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
+
+  const keyOf = (item: T, index: number) => {
+    if (itemKey) return itemKey(item, index);
+    if (typeof item === 'string' || typeof item === 'number') return String(item);
+    return String((item as { id?: string | number } | null)?.id ?? index);
+  };
+  const labelOf = (item: T, index: number): ReactNode => {
+    if (itemLabel) return itemLabel(item, index);
+    if (typeof item === 'string' || typeof item === 'number') return String(item);
+    const record = item as { label?: ReactNode; name?: ReactNode } | null;
+    return record?.label ?? record?.name ?? '';
+  };
+
+  const move = (from: number, to: number) => {
+    if (disabled || from === to) return;
+    if (from < 0 || to < 0 || from >= items.length || to >= items.length) return;
+    const next = [...items];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    onChange?.(next);
+  };
+
+  const prevKey = direction === 'horizontal' ? 'ArrowLeft' : 'ArrowUp';
+  const nextKey = direction === 'horizontal' ? 'ArrowRight' : 'ArrowDown';
+
+  const onKeyDown = (event: KeyboardEvent<HTMLLIElement>, index: number) => {
+    if (disabled || (event.key !== prevKey && event.key !== nextKey)) return;
+    const to = index + (event.key === prevKey ? -1 : 1);
+    if (to < 0 || to >= items.length) return;
+    event.preventDefault();
+    const list = event.currentTarget.parentElement;
+    move(index, to);
+    window.requestAnimationFrame(() => (list?.children[to] as HTMLElement | undefined)?.focus());
+  };
+
+  const clearDrag = () => {
+    setDragIndex(null);
+    setOverIndex(null);
+  };
+
+  return (
+    <ol
+      className={cx(
+        direction === 'horizontal' ? styles.sortableHorizontal : styles.sortable,
+        disabled && styles.sortableDisabled,
+        rootClass(classNames),
+        className,
+      )}
+      style={
+        minItemWidth
+          ? ({ '--common-sortable-min': typeof minItemWidth === 'number' ? `${minItemWidth}px` : minItemWidth } as CSSProperties)
+          : undefined
+      }
+    >
+      {items.map((item, index) => (
+        <li
+          key={keyOf(item, index)}
+          className={cx(
+            styles.sortableItem,
+            styles[`size_${size}`],
+            dragIndex === index && styles.sortableItemDragging,
+            overIndex === index && dragIndex !== index && styles.sortableItemOver,
+          )}
+          draggable={!disabled}
+          tabIndex={disabled ? -1 : 0}
+          aria-roledescription="정렬 가능한 항목"
+          aria-label={`${index + 1}번째 항목${disabled ? '' : ', 방향키로 순서를 바꿀 수 있습니다'}`}
+          title={disabled ? undefined : '드래그하거나 방향키로 순서를 바꾸세요'}
+          onKeyDown={(event) => onKeyDown(event, index)}
+          onDragStart={(event) => {
+            if (disabled) {
+              event.preventDefault();
+              return;
+            }
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/plain', String(index));
+            setDragIndex(index);
+            setOverIndex(index);
+          }}
+          onDragEnter={() => {
+            if (dragIndex !== null) setOverIndex(index);
+          }}
+          onDragOver={(event) => {
+            if (disabled || dragIndex === null) return;
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+          }}
+          onDrop={(event) => {
+            event.preventDefault();
+            const transferred = Number(event.dataTransfer.getData('text/plain'));
+            const from = dragIndex ?? (Number.isInteger(transferred) ? transferred : null);
+            if (from !== null) move(from, index);
+            clearDrag();
+          }}
+          onDragEnd={clearDrag}
+        >
+          {grip && <GripVertical className={styles.sortableGrip} size={14} aria-hidden="true" />}
+          {renderItem ? (
+            renderItem(item, index)
+          ) : (
+            <>
+              {numbered && <span className={styles.sortableNum}>{index + 1}</span>}
+              <span className={styles.sortableLabel}>{labelOf(item, index)}</span>
+            </>
+          )}
+        </li>
+      ))}
+    </ol>
+  );
 }

@@ -3,6 +3,10 @@ export type ApprovalNeed = '불필요' | '조건부' | '필요';
 export type CancelTimingBase = '출고 전' | '주문 처리 시작 전' | '주문 확정 전' | '단계별 설정';
 export type PostShipmentAction = '반품 / 회수 절차로 전환' | '관리자 확인' | '요청 차단';
 export type WithdrawPolicy = '허용' | '처리 시작 전까지만 허용' | '불가';
+export type CostBearer = '고객' | '판매자';
+export type AdminApprovalMode = '자동 승인' | '관리자 승인 필요';
+export type ConditionalReviewOwner = '운영 관리자' | 'CS 담당' | '자동 판정';
+export type ConditionalTimeoutAction = '자동 승인' | '자동 반려';
 export type ReasonAudience = '고객' | '관리자';
 
 export const ORDER_STAGES = ['주문 접수', '승인 대기', '주문 확정', '처리중', '배송 준비', '출고 대기', '출고 완료', '배송중', '배송 완료'];
@@ -38,6 +42,22 @@ export interface CancelPolicy {
   autoCancelOrderWhenFullyCancelled: boolean;
   restockOnCancel: boolean;
   notifyOnCancelEvents: boolean;
+  autoRefundRequest: boolean;
+  restoreBenefitsOnCancel: boolean;
+  customerChangeBurden: CostBearer;
+  outOfStockBurden: CostBearer;
+  deliveryDelayBurden: CostBearer;
+  rechargeShippingOnFreeThresholdMiss: boolean;
+  baseShippingFee: number;
+  adminApprovalMode: AdminApprovalMode;
+  autoCancelWaitHours: number;
+  effectiveFrom: string;
+  conditionalReviewOwner: ConditionalReviewOwner;
+  conditionalReviewHours: number;
+  conditionalTimeoutAction: ConditionalTimeoutAction;
+  conditionalStockCheck: boolean;
+  conditionalCsAlert: boolean;
+  conditionalEvidenceRequired: boolean;
 }
 
 export interface LastModified {
@@ -70,6 +90,22 @@ export const INITIAL_POLICY: CancelPolicy = {
   autoCancelOrderWhenFullyCancelled: true,
   restockOnCancel: true,
   notifyOnCancelEvents: true,
+  autoRefundRequest: true,
+  restoreBenefitsOnCancel: true,
+  customerChangeBurden: '고객',
+  outOfStockBurden: '판매자',
+  deliveryDelayBurden: '판매자',
+  rechargeShippingOnFreeThresholdMiss: true,
+  baseShippingFee: 3000,
+  adminApprovalMode: '자동 승인',
+  autoCancelWaitHours: 24,
+  effectiveFrom: '2026-08-10',
+  conditionalReviewOwner: '운영 관리자',
+  conditionalReviewHours: 12,
+  conditionalTimeoutAction: '자동 반려',
+  conditionalStockCheck: true,
+  conditionalCsAlert: true,
+  conditionalEvidenceRequired: false,
 };
 
 export const INITIAL_STAGE_RULES: StageCancelRule[] = [
@@ -181,6 +217,22 @@ const POLICY_FIELD_LABELS: { key: keyof CancelPolicy; label: string; format: (p:
   { key: 'autoCancelOrderWhenFullyCancelled', label: '전량 취소 시 주문 자동 전환', format: (p) => (p.autoCancelOrderWhenFullyCancelled ? '사용' : '사용 안 함') },
   { key: 'restockOnCancel', label: '취소 시 재고 복원', format: (p) => (p.restockOnCancel ? '사용' : '사용 안 함') },
   { key: 'notifyOnCancelEvents', label: '취소 이벤트 알림', format: (p) => (p.notifyOnCancelEvents ? '사용' : '사용 안 함') },
+  { key: 'autoRefundRequest', label: '환불 자동 요청', format: (p) => (p.autoRefundRequest ? '사용' : '사용 안 함') },
+  { key: 'restoreBenefitsOnCancel', label: '포인트·쿠폰 복원', format: (p) => (p.restoreBenefitsOnCancel ? '사용' : '사용 안 함') },
+  { key: 'customerChangeBurden', label: '고객 변심 비용 부담', format: (p) => p.customerChangeBurden },
+  { key: 'outOfStockBurden', label: '상품 품절 비용 부담', format: (p) => p.outOfStockBurden },
+  { key: 'deliveryDelayBurden', label: '배송 지연 비용 부담', format: (p) => p.deliveryDelayBurden },
+  { key: 'rechargeShippingOnFreeThresholdMiss', label: '무료배송 미달 배송비', format: (p) => (p.rechargeShippingOnFreeThresholdMiss ? '재부과' : '재부과 없음') },
+  { key: 'baseShippingFee', label: '기본 배송비', format: (p) => `${p.baseShippingFee.toLocaleString()}원` },
+  { key: 'adminApprovalMode', label: '관리자 승인', format: (p) => p.adminApprovalMode },
+  { key: 'autoCancelWaitHours', label: '자동 취소 처리 대기', format: (p) => `${p.autoCancelWaitHours}시간` },
+  { key: 'effectiveFrom', label: '적용 시작일', format: (p) => p.effectiveFrom },
+  { key: 'conditionalReviewOwner', label: '조건부 판단 주체', format: (p) => p.conditionalReviewOwner },
+  { key: 'conditionalReviewHours', label: '조건부 판단 제한 시간', format: (p) => `${p.conditionalReviewHours}시간` },
+  { key: 'conditionalTimeoutAction', label: '조건부 제한 시간 초과', format: (p) => p.conditionalTimeoutAction },
+  { key: 'conditionalStockCheck', label: '조건부 재고 확인', format: (p) => (p.conditionalStockCheck ? '필요' : '불필요') },
+  { key: 'conditionalCsAlert', label: '조건부 CS 알림', format: (p) => (p.conditionalCsAlert ? '사용' : '사용 안 함') },
+  { key: 'conditionalEvidenceRequired', label: '조건부 판단 근거 기록', format: (p) => (p.conditionalEvidenceRequired ? '필수' : '선택') },
 ];
 
 export function describePolicyChanges(before: CancelPolicy, after: CancelPolicy): FieldDiff[] {

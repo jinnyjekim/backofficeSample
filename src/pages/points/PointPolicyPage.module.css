@@ -15,7 +15,8 @@
 .secondaryButton,.primaryButton { min-width: 58px; border-radius: 8px; font-weight: 700; }
 
 .layout { display: grid; grid-template-columns: minmax(0, 1fr) 440px; align-items: start; gap: 14px; }
-.policyCard,.sideCard { overflow: hidden; border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; }
+.policyCard { border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; }
+.sideCard { overflow: hidden; border: 1px solid #e3e4e8; border-radius: 12px; background: #fff; }
 .policySection { display: grid; grid-template-columns: 207px minmax(0, 1fr); gap: 16px; padding: 18px 10px; border-top: 1px solid #ececef; }
 .policySection:first-child { border-top: 0; }
 .sectionTitleRow { display: flex; align-items: center; gap: 8px; }
@@ -34,8 +35,8 @@
 .ratePresets button { min-width: 42px; padding-inline: 9px; }
 .fieldGrid { display: grid; grid-template-columns: 120px 120px 150px 150px; gap: 16px; }
 .fieldGridThree { display: grid; grid-template-columns: 254px minmax(155px, 1fr); gap: 16px; }
-.calculationGrid { display: grid; grid-template-columns: 160px 152px minmax(300px, 1fr); gap: 16px; }
-.expirationControls { display: grid; grid-template-columns: 160px 87px; gap: 7px; }
+.calculationGrid { display: grid; grid-template-columns: 160px 152px minmax(330px, 1fr); gap: 16px; }
+.expirationControls { display: grid; grid-template-columns: 160px 104px; gap: 7px; }
 .expirationControls > :first-child { min-width: 0; }
 .priorityField { display: flex; flex-direction: column; gap: 7px; }
 .priorityCards { display: grid; width: 155px; grid-template-columns: 155px; gap: 8px; }

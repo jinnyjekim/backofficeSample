@@ -82,7 +82,17 @@ function now() {
   return "2026-08-26 14:20";
 }
 
-export function InboundManagementPage() {
+export interface InboundManagementPageProps {
+  pageTitle?: string;
+  pageSubtitle?: string;
+  headerTabs?: React.ReactNode;
+}
+
+export function InboundManagementPage({
+  pageTitle,
+  pageSubtitle,
+  headerTabs,
+}: InboundManagementPageProps = {}) {
   const [records, setRecords] = useState<InboundRecord[]>(INBOUND_RECORDS);
   const [quick, setQuick] = useState<QuickFilter>("전체");
   const [keyword, setKeyword] = useState("");
@@ -746,10 +756,10 @@ export function InboundManagementPage() {
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>입고 관리</h1>
+            <h1 className={shared.title}>{pageTitle ?? "입고 관리"}</h1>
             <p className={shared.subtitle}>
-              상품 입고 예정과 차수별 검수 결과를 관리하고 정상 수량만 재고에
-              반영합니다.
+              {pageSubtitle ??
+                "상품 입고 예정과 차수별 검수 결과를 관리하고 정상 수량만 재고에 반영합니다."}
             </p>
           </div>
           <button
@@ -760,6 +770,7 @@ export function InboundManagementPage() {
             + 입고 등록
           </button>
         </div>
+        {headerTabs}
         <div className={styles.definitionStrip}>
           입고 예정 ≠ 현재고 · 실제 입고 처리 시 정상 수량만 현재고에 반영 ·
           완료된 입고는 직접 수정하지 않고 반제 이력을 생성
@@ -891,50 +902,61 @@ export function InboundManagementPage() {
             <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
             </button>
+            {showAdvanced && (
+              <>
+                <label className={shared.dateFilterField}>
+                  <span>예정일</span>
+                  <span className={shared.dateRange}>
+                    <DatePicker
+                      aria-label="예정일 시작 날짜"
+                      value={expectedFrom}
+                      onChange={(event) => setExpectedFrom(event.target.value)}
+                    />
+                    <span className={shared.dateSeparator}>~</span>
+                    <DatePicker
+                      aria-label="예정일 종료 날짜"
+                      value={expectedTo}
+                      onChange={(event) => setExpectedTo(event.target.value)}
+                    />
+                  </span>
+                </label>
+                <label className="globalFilterField">
+                  <span>담당자</span>
+                  <select
+                    aria-label="담당자"
+                    className={shared.selectSm}
+                    value={manager}
+                    onChange={(event) => setManager(event.target.value)}
+                  >
+                    <option value="">전체 담당자</option>
+                    {managers.map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className={shared.dateFilterField}>
+                  <span>실제 입고일</span>
+                  <span className={shared.dateRange}>
+                    <DatePicker
+                      aria-label="실제 입고일 시작 날짜"
+                      value={receivedFrom}
+                      onChange={(event) => setReceivedFrom(event.target.value)}
+                    />
+                    <span className={shared.dateSeparator}>~</span>
+                    <DatePicker
+                      aria-label="실제 입고일 종료 날짜"
+                      value={receivedTo}
+                      onChange={(event) => setReceivedTo(event.target.value)}
+                    />
+                  </span>
+                </label>
+              </>
+            )}
           </div>
           {showAdvanced && (
-            <div className={styles.advancedFilters}>
-              <label>
-                예정일
-                <DatePicker
-                  aria-label="예정일 시작 날짜"
-                  value={expectedFrom}
-                  onChange={(event) => setExpectedFrom(event.target.value)}
-                />
-                <span>–</span>
-                <DatePicker
-                  aria-label="예정일 종료 날짜"
-                  value={expectedTo}
-                  onChange={(event) => setExpectedTo(event.target.value)}
-                />
-              </label>
-              <label>
-                담당자
-                <select
-                  aria-label="담당자"
-                  value={manager}
-                  onChange={(event) => setManager(event.target.value)}
-                >
-                  <option value="">전체</option>
-                  {managers.map((value) => (
-                    <option key={value}>{value}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                실제 입고일
-                <DatePicker
-                  aria-label="실제 입고일 시작 날짜"
-                  value={receivedFrom}
-                  onChange={(event) => setReceivedFrom(event.target.value)}
-                />
-                <span>–</span>
-                <DatePicker
-                  aria-label="실제 입고일 종료 날짜"
-                  value={receivedTo}
-                  onChange={(event) => setReceivedTo(event.target.value)}
-                />
-              </label>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
               <span className={styles.filterHint}>
                 입고일은 상세의 차수별 처리 내역에서 확인할 수 있습니다.
               </span>

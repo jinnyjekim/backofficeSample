@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "codex": "^0.2.3",
     "lucide-react": "^1.34.0",
     "m2m-uiux-react": "^1.0.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.2"
+    "react-router-dom": "^7.18.2",
+    "unsnooze": "^1.18.0"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",

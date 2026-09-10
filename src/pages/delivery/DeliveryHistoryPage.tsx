@@ -50,6 +50,7 @@ export function DeliveryHistoryPage() {
   const [keyword, setKeyword] = useState("");
   const [actorRole, setActorRole] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isDetailFilterOpen, setIsDetailFilterOpen] = useState(false);
 
   const filtered = useMemo(() => {
     return items.filter((item) => {
@@ -109,7 +110,7 @@ export function DeliveryHistoryPage() {
       <header className={styles.header}>
         <div className={styles.headerTop}>
           <div>
-            <div className={styles.title}>배송 이력</div>
+            <div className={styles.title}>배송 처리 이력</div>
             <div className={styles.subtitle}>
               출고 이후 배송 완료, 지연 및 예외 처리 과정의 모든 감사(Audit)
               로그를 조회합니다.
@@ -117,7 +118,7 @@ export function DeliveryHistoryPage() {
           </div>
         </div>
 
-        <div className={styles.filterCard}>
+        <div className={styles.filterCard} data-filter-expanded={isDetailFilterOpen ? "true" : "false"}>
           <div className={styles.filterRow1}>
             <input
               className={styles.searchInput}
@@ -174,7 +175,12 @@ export function DeliveryHistoryPage() {
               </div>
             </label>
             <div className={styles.rowSpacer} />
-            <button type="button" className="detailFilterBtn">
+            <button
+              type="button"
+              className="detailFilterBtn"
+              aria-expanded={isDetailFilterOpen}
+              onClick={() => setIsDetailFilterOpen((prev) => !prev)}
+            >
               상세 필터
             </button>
             <button

@@ -85,3 +85,70 @@
 .loading{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--common-primary);font-size:12px}.loading_sm{font-size:10.5px}.loading_lg{font-size:13.5px}.loadingOverlay{position:absolute;inset:0;z-index:20;background:rgba(255,255,255,.78)}.loadingSpinner{width:20px;height:20px;border:2px solid color-mix(in oklch,currentColor 22%,transparent);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite}.loading_sm .loadingSpinner{width:15px;height:15px}.loading_lg .loadingSpinner{width:28px;height:28px}.loadingDots{display:flex;gap:4px}.loadingDots i{width:6px;height:6px;border-radius:50%;background:currentColor;animation:loadingDot .8s ease-in-out infinite alternate}.loadingDots i:nth-child(2){animation-delay:.2s}.loadingDots i:nth-child(3){animation-delay:.4s}@keyframes loadingDot{to{opacity:.25;transform:translateY(-3px)}}.skeletonList{display:grid;width:100%;gap:7px}.skeletonList i{display:block;height:12px;border-radius:5px;background:linear-gradient(90deg,#f0f0f2 25%,#fafafa 50%,#f0f0f2 75%);background-size:200% 100%;animation:skeleton 1.2s linear infinite}.skeletonList i:last-child{width:72%}@keyframes skeleton{to{background-position:-200% 0}}.visuallyHidden{position:absolute;top:0;left:0;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 .progressRoot{display:flex;min-width:0;flex-direction:column;gap:6px}.progressMeta{display:flex;align-items:center;justify-content:space-between;color:var(--common-text-muted);font-size:11px}.progressMeta b{color:var(--common-text-sub);font-variant-numeric:tabular-nums}.progressTrack{overflow:hidden;width:100%;border-radius:999px;background:var(--common-bg-disabled)}.progressFill{display:block;height:100%;border-radius:inherit;transition:width .25s}.progressAnimated{background-image:linear-gradient(45deg,rgba(255,255,255,.2) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.2) 75%,transparent 75%);background-size:20px 20px;animation:progressStripe .7s linear infinite}@keyframes progressStripe{to{background-position:20px 0}}
 .steps{display:flex;margin:0;padding:0;list-style:none}.steps_horizontal>li{position:relative;flex:1}.steps_horizontal>li:not(:last-child):after{position:absolute;top:14px;right:8px;left:38px;height:1px;background:var(--common-border);content:""}.steps_vertical{flex-direction:column;gap:16px}.steps li>button{position:relative;z-index:1;display:flex;align-items:flex-start;gap:9px;padding:0 8px 0 0;border:0;background:transparent;text-align:left}.steps li>button:not(:disabled){cursor:pointer}.stepIcon{display:grid;place-items:center;width:28px;height:28px;flex:none;border:1px solid var(--common-border-strong);border-radius:50%;background:#fff;color:var(--common-text-muted);font-size:10.5px;font-weight:700}.stepBody{display:flex;flex-direction:column;gap:2px;padding-top:2px}.stepBody strong{color:var(--common-text-sub);font-size:11.5px}.stepBody small{color:var(--common-text-muted);font-size:10px}.step_finish .stepIcon{border-color:var(--common-success);background:var(--common-success);color:#fff}.step_process .stepIcon{border-color:var(--common-primary);background:var(--common-primary);color:#fff}.step_error .stepIcon{border-color:var(--common-error);background:var(--common-error);color:#fff}.step_wait{opacity:.65}.confirmAction{display:flex;max-width:420px;flex-direction:column;gap:8px}.confirmAction>strong{color:var(--common-text);font-size:14px}.confirmAction>p{margin:0;color:var(--common-text-muted);font-size:11.5px;line-height:1.5}.confirmAction>div{display:flex;justify-content:flex-end;gap:7px;margin-top:5px}
+
+.sortable{display:flex;flex-direction:column;gap:6px;min-width:0;margin:0;padding:0;list-style:none}
+.sortableHorizontal{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--common-sortable-min,150px)),1fr));gap:8px;align-content:start;min-width:0;margin:0;padding:0;list-style:none}
+.sortableItem{display:flex;align-items:center;gap:8px;min-width:0;height:38px;padding:0 10px 0 8px;border:1px solid var(--common-border);border-radius:var(--common-radius-md);background:#fff;color:var(--common-text);font-family:var(--common-font-family);font-size:12px;font-weight:600;cursor:grab;transition:border-color .15s,box-shadow .15s,opacity .15s}
+.sortableItem:hover{border-color:var(--common-border-strong)}
+.sortableItem:focus-visible{outline:0;border-color:var(--common-primary);box-shadow:0 0 0 3px color-mix(in oklch,var(--common-primary) 12%,transparent)}
+.sortableItem:active{cursor:grabbing}
+.sortableItem.sortableItemDragging{opacity:.45}
+.sortableItem.sortableItemOver{border-color:var(--common-primary);box-shadow:inset 0 0 0 1px var(--common-primary)}
+.sortableItem.size_sm{height:32px;padding:0 8px 0 6px;font-size:11.5px}
+.sortableItem.size_lg{height:44px;padding:0 12px 0 10px;font-size:13px}
+.sortableGrip{flex:none;display:grid;place-items:center;color:var(--common-text-muted)}
+.sortableNum{flex:none;display:flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:5px;background:var(--common-bg-subtle);color:var(--common-text-sub);font-size:10.5px;font-weight:700;font-variant-numeric:tabular-nums}
+.sortableLabel{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sortableDisabled .sortableItem{cursor:default}
+.sortableDisabled .sortableItem:hover{border-color:var(--common-border)}
+.sortableDisabled .sortableGrip{opacity:.35}
+
+/* suffix·clear 버튼은 .bsInputField 안에서 flex 형제로 자리를 차지합니다.
+   패키지가 input 자체에도 우측 패딩 62px를 !important 로 잡아 두어,
+   폭이 좁은 숫자 입력에서는 값이 잘려 보이지 않습니다. 실제 필요한 만큼만 남깁니다. */
+.inputAdapter :global(input.bsInput){padding-right:8px!important}
+
+/* 패키지 체크박스의 숨김 input 은 position:absolute 이면서 left/right 를 px 로 계산해 둡니다.
+   기준 조상(label)이 static 이라 페이지가 컨테이닝 블록이 되고, label 이 좁으면 right 가 음수로
+   잡혀 input 폭이 페이지 전체로 늘어나 가로 스크롤이 생깁니다. 숨김용이므로 1px 로 고정합니다. */
+:global(input.bsCheckboxInput){right:auto!important;width:1px!important;max-width:1px!important}
+
+/* suffix/prefix(원·장·P·% 등)가 패키지 기본값 15px 로 렌더돼 입력값(12.5px)보다 커 보입니다.
+   보조 표기이므로 입력 텍스트보다 한 단계 작게 맞춥니다. */
+.inputAdapter_sm :global(.bsInputAffix){font-size:11px}
+.inputAdapter_md :global(.bsInputAffix){font-size:12px}
+.inputAdapter_lg :global(.bsInputAffix){font-size:12.5px}
+
+/* 날짜 팝업(.bsDatePickerPopup)은 body 로 portal 되지 않고 제자리에 렌더되므로,
+   조상 카드의 overflow:hidden 에 잘립니다. 팝업이 열려 있는 동안에만
+   이를 감싼 조상의 클리핑을 해제합니다(닫히면 자동으로 원복). */
+:global(:has(> * > .bsDatePickerPopup)),
+:global(:has(> * > * > .bsDatePickerPopup)),
+:global(:has(> * > * > * > .bsDatePickerPopup)),
+:global(:has(> * > * > * > * > .bsDatePickerPopup)),
+:global(:has(> * > * > * > * > * > .bsDatePickerPopup)),
+:global(:has(> * > * > * > * > * > * > .bsDatePickerPopup)),
+:global(:has(> * > * > * > * > * > * > * > .bsDatePickerPopup)){overflow:visible!important}
+
+/* DatePicker 팝업 동적 위치(위/아래/왼쪽/오른쪽/가운데) 스마트 배치 스타일 */
+:global(.bsDatePickerPopup[data-placement-y="top"]) {
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.16) !important;
+}
+:global(.bsDatePickerPopup[data-placement-y="bottom"]) {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16) !important;
+}
+:global(.bsDatePickerPopup[data-placement-x="center"]) {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+}
+:global(.bsDatePickerPopup[data-placement-x="right"]) {
+  left: auto !important;
+  right: 0 !important;
+  transform: none !important;
+}
+:global(.bsDatePickerPopup[data-placement-x="left"]) {
+  left: 0 !important;
+  right: auto !important;
+  transform: none !important;
+}

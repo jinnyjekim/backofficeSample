@@ -9,6 +9,7 @@ import {
   DELIVERY_METHODS,
   INITIAL_POLICIES,
   QUICK_FILTERS,
+  REGION_CATEGORIES,
   TEST_ADDRESSES,
   computeAddressShippingPreview,
   computeStatus,
@@ -19,8 +20,10 @@ import {
   matchesQuickFilter,
   newRegionalFeePolicy,
   type DeliveryMethod,
+  type DeliveryAvailability,
   type RegionalFeePolicy,
   type QuickFilter,
+  type RegionCategory,
   type RegionType,
 } from "./regionalShippingFeeData";
 import { CommonButton, showToast } from "../../components/common";
@@ -32,11 +35,13 @@ type ConfirmState = { kind: "delete" | "end"; item: RegionalFeePolicy } | null;
 
 const COLUMNS = [
   { label: "정책명" },
-  { label: "지역유형" },
-  { label: "대상지역" },
-  { label: "추가배송비", align: "right" as const },
-  { label: "배송방법" },
-  { label: "적용기간" },
+  { label: "지역 유형" },
+  { label: "대상 지역" },
+  { label: "배송 여부" },
+  { label: "추가 배송비", align: "right" as const },
+  { label: "배송 방법" },
+  { label: "적용 기간" },
+  { label: "우선순위", align: "right" as const },
   { label: "상태" },
 ];
 
@@ -79,6 +84,8 @@ export function RegionalShippingFeePage() {
   const [keyword, setKeyword] = useState("");
   const [search, setSearch] = useState("");
   const [regionTypeFilter, setRegionTypeFilter] = useState<RegionType | "">("");
+  const [regionCategoryFilter, setRegionCategoryFilter] = useState<RegionCategory | "">("");
+  const [availabilityFilter, setAvailabilityFilter] = useState<DeliveryAvailability | "">("");
   const [methodFilter, setMethodFilter] = useState<DeliveryMethod | "">("");
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
@@ -102,10 +109,12 @@ export function RegionalShippingFeePage() {
         )
           return false;
         if (regionTypeFilter && p.regionType !== regionTypeFilter) return false;
+        if (regionCategoryFilter && p.regionCategory !== regionCategoryFilter) return false;
+        if (availabilityFilter && p.deliveryAvailability !== availabilityFilter) return false;
         if (methodFilter && p.deliveryMethod !== methodFilter) return false;
         return true;
       }),
-    [policies, quickFilter, search, regionTypeFilter, methodFilter, warnings],
+    [policies, quickFilter, search, regionTypeFilter, regionCategoryFilter, availabilityFilter, methodFilter, warnings],
   );
 
   const toastBriefly = (message: string) => {
@@ -115,6 +124,8 @@ export function RegionalShippingFeePage() {
     setKeyword("");
     setSearch("");
     setRegionTypeFilter("");
+    setRegionCategoryFilter("");
+    setAvailabilityFilter("");
     setMethodFilter("");
   };
   const openCreate = () => {
@@ -132,7 +143,7 @@ export function RegionalShippingFeePage() {
       setPolicies((current) => [saved, ...current]);
       setDrawerItem(null);
       setIsNew(false);
-      toastBriefly("지역 추가배송비 정책을 등록했습니다.");
+      toastBriefly("지역 배송 정책을 등록했습니다.");
     } else {
       const previous = policies.find((p) => p.id === item.id);
       const saved =
@@ -209,14 +220,20 @@ export function RegionalShippingFeePage() {
         },
         {
           kind: "badge",
-          text: p.regionType,
-          bg: p.regionType === "우편번호" ? "#eef2ff" : "#eff6ff",
-          fg: p.regionType === "우편번호" ? "#4338ca" : "#2563eb",
+          text: p.regionCategory,
+          bg: p.regionCategory === "제주" ? "#eef2ff" : p.regionCategory === "일반" ? "#f4f4f5" : "#fff7ed",
+          fg: p.regionCategory === "제주" ? "#4338ca" : p.regionCategory === "일반" ? "#71717a" : "#c2410c",
         },
-        { kind: "text", text: fmtRegion(p), size: "12px", color: "#3f3f46" },
+        { kind: "text", text: `${fmtRegion(p)} · ${p.regionType}`, size: "12px", color: "#3f3f46" },
+        {
+          kind: "badge",
+          text: p.deliveryAvailability,
+          bg: p.deliveryAvailability === "가능" ? "#ecfdf5" : "#fef2f2",
+          fg: p.deliveryAvailability === "가능" ? "#047857" : "#dc2626",
+        },
         {
           kind: "text",
-          text: `+${fmtWon(p.extraFee)}`,
+          text: p.deliveryAvailability === "가능" ? `+${fmtWon(p.extraFee)}` : "-",
           size: "12px",
           weight: 600,
           align: "right",
@@ -229,6 +246,7 @@ export function RegionalShippingFeePage() {
           color: "#3f3f46",
         },
         { kind: "text", text: fmtPeriod(p), size: "11px", color: "#71717a" },
+        { kind: "text", text: `${p.priority}`, size: "12px", align: "right", numeric: true },
         { kind: "statusDot", text: status, dot: dotColor.dot, fg: dotColor.fg },
       ],
     };
@@ -242,10 +260,9 @@ export function RegionalShippingFeePage() {
       <header className={shared.header}>
         <div className={shared.headerTop}>
           <div>
-            <div className={shared.title}>지역별 추가 배송비</div>
+            <div className={shared.title}>지역별 배송 정책</div>
             <div className={shared.subtitle}>
-              배송지에 따라 기본 배송비 위에 추가로 부과되는 지역 할증 배송비를
-              관리합니다.
+              행정구역·우편번호별 추가 배송비와 배송 가능 여부를 한 곳에서 관리합니다.
             </div>
           </div>
           {view === "list" && (
@@ -254,7 +271,7 @@ export function RegionalShippingFeePage() {
               className={shared.createBtn}
               onClick={openCreate}
             >
-              + 지역 배송비 등록
+              + 지역 정책 등록
             </button>
           )}
         </div>
@@ -267,7 +284,7 @@ export function RegionalShippingFeePage() {
             className={`${shared.qfBtn} ${view === "list" ? styles.quickActive : ""}`}
             onClick={() => setView("list")}
           >
-            <span className={shared.qfLabel}>정책 목록</span>
+            <span className={shared.qfLabel}>지역 정책 목록</span>
           </CommonButton>
           <CommonButton
             type="button"
@@ -276,7 +293,7 @@ export function RegionalShippingFeePage() {
             className={`${shared.qfBtn} ${view === "preview" ? styles.quickActive : ""}`}
             onClick={() => setView("preview")}
           >
-            <span className={shared.qfLabel}>지역 판정 Preview</span>
+            <span className={shared.qfLabel}>지역 판정 테스트</span>
           </CommonButton>
         </div>
 
@@ -325,7 +342,19 @@ export function RegionalShippingFeePage() {
               </form>
               <div className={shared.filterRow2}>
                 <label className="globalFilterField">
-                  <span>지역유형</span>
+                  <span>지역 유형</span>
+                  <select
+                    aria-label="지역 유형"
+                    className={shared.selectSm}
+                    value={regionCategoryFilter}
+                    onChange={(e) => setRegionCategoryFilter(e.target.value as RegionCategory | "")}
+                  >
+                    <option value="">전체 지역 유형</option>
+                    {REGION_CATEGORIES.map((category) => <option key={category}>{category}</option>)}
+                  </select>
+                </label>
+                <label className="globalFilterField">
+                  <span>지역 지정 방식</span>
                   <select
                     aria-label="지역유형"
                     className={shared.selectSm}
@@ -337,6 +366,19 @@ export function RegionalShippingFeePage() {
                     <option value="">전체 지역유형</option>
                     <option>행정구역</option>
                     <option>우편번호</option>
+                  </select>
+                </label>
+                <label className="globalFilterField">
+                  <span>배송 여부</span>
+                  <select
+                    aria-label="배송 여부"
+                    className={shared.selectSm}
+                    value={availabilityFilter}
+                    onChange={(e) => setAvailabilityFilter(e.target.value as DeliveryAvailability | "")}
+                  >
+                    <option value="">전체 배송 여부</option>
+                    <option>가능</option>
+                    <option>불가</option>
                   </select>
                 </label>
                 <label className="globalFilterField">
@@ -389,8 +431,8 @@ export function RegionalShippingFeePage() {
           <DataGrid
             columns={COLUMNS}
             rows={rows}
-            gridTemplate="1fr 72px 122px 74px 56px 148px 70px"
-            minWidth="950px"
+            gridTemplate="minmax(180px,1fr) 62px 154px 62px 78px 72px 145px 52px 68px"
+            minWidth="1040px"
             empty={filtered.length === 0}
             emptyText={
               quickFilter === "확인 필요"
@@ -426,19 +468,19 @@ export function RegionalShippingFeePage() {
               </div>
               <div className={styles.infoNote}>
                 현재 저장된(적용중인) 정책 기준으로 판정합니다. 기본 배송비는
-                배송 정책 &gt; 기본 배송비 설정을 따릅니다.
+                배송 정책 &gt; 배송비 설정 &gt; 기본 배송비를 따릅니다.
               </div>
             </div>
             <div className={styles.previewCard}>
-              <h3>지역 판정 · 배송비 계산 결과</h3>
+              <h3>배송비 계산 테스트 결과</h3>
               <div
-                className={`${styles.resultHero} ${previewResult.match.tie ? styles.resultHeroWarn : ""}`}
+                className={`${styles.resultHero} ${previewResult.match.tie || !previewResult.deliveryAvailable ? styles.resultHeroWarn : ""}`}
               >
                 <span>
                   {previewAddr.label} ({previewAddr.sido} {previewAddr.sigungu})
                   · {previewAddr.deliveryMethod}
                 </span>
-                <strong>{fmtWon(previewResult.finalFee)}</strong>
+                <strong>{previewResult.deliveryAvailable ? fmtWon(previewResult.finalFee) : "배송 불가"}</strong>
               </div>
               <div className={styles.breakdownTable}>
                 <div className={styles.breakdownRow}>
@@ -478,6 +520,14 @@ export function RegionalShippingFeePage() {
                 <strong>
                   {previewResult.match.matched?.name ?? "매칭된 정책 없음"}
                 </strong>
+              </div>
+              <div className={styles.resultRow}>
+                <span>배송 가능 여부</span>
+                <strong>{previewResult.deliveryAvailable ? "가능" : "불가"}</strong>
+              </div>
+              <div className={styles.resultRow}>
+                <span>판정 근거</span>
+                <strong>{previewResult.match.matched ? `${previewResult.match.matched.regionType} · ${fmtRegion(previewResult.match.matched)}` : "일치하는 지역 정책 없음"}</strong>
               </div>
               <div className={styles.resultRow}>
                 <span>무료배송 적용</span>

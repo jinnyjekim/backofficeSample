@@ -85,14 +85,10 @@ export const NAV_GROUPS: NavGroup[] = [
 
       { key: 'inventory', icon: Boxes, label: '재고 관리', to: '/inventory/status', business: 'B' },
       { key: 'inventory_status', sub: true, label: '재고 현황', to: '/inventory/status', business: 'B' },
-      { key: 'inventory_options', sub: true, label: '옵션별 재고', to: '/b2c/inventory/options', business: 'B' },
-      { key: 'inventory_inbound', sub: true, label: '입고 관리', to: '/inventory/inbound', business: 'B' },
-      { key: 'inventory_outbound', sub: true, label: '출고 관리', to: '/inventory/outbound', business: 'B' },
+      { key: 'inventory_movement', sub: true, label: '입출고 관리', to: '/inventory/movement', business: 'B' },
       { key: 'inventory_adjust', sub: true, label: '재고 조정', to: '/inventory/adjust', business: 'B' },
       { key: 'inventory_history', sub: true, label: '재고 변동 이력', to: '/inventory/history', business: 'B' },
-      { key: 'inventory_soldout', sub: true, label: '품절 상품', to: '/b2c/inventory/sold-out', business: 'B' },
-      { key: 'inventory_safety', sub: true, label: '안전 재고', to: '/b2c/inventory/safety-stock', business: 'B' },
-      { key: 'inventory_alerts', sub: true, label: '재고 알림', to: '/b2c/inventory/alerts', business: 'B' },
+      { key: 'inventory_alerts', sub: true, label: '재고 알림·설정', to: '/inventory/alerts', business: 'B' },
 
       { key: 'quotes', icon: FileEdit, label: '견적 관리', to: '/quotes/requests', business: 'B2B' },
       { key: 'quotes_requests', sub: true, label: '견적 요청', to: '/quotes/requests', business: 'B2B' },
@@ -124,18 +120,11 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'payment_mgmt_external', sub: true, label: 'PG / 외부 거래', to: '/payment-mgmt/external' },
       { key: 'payment_mgmt_history', sub: true, label: '결제 처리 이력', to: '/payment-mgmt/history' },
 
-      { key: 'delivery', icon: Truck, label: '배송 관리', to: '/delivery/prep', business: 'B' },
-      { key: 'delivery_prep', sub: true, label: '배송 준비', to: '/delivery/prep', business: 'B' },
-      { key: 'delivery_outbound_wait', sub: true, label: '출고 대기', to: '/delivery/outbound-waiting', business: 'B' },
-      { key: 'delivery_outbound_done', sub: true, label: '출고 완료', to: '/delivery/outbound-complete', business: 'B' },
-      { key: 'delivery_transit', sub: true, label: '배송중', to: '/delivery/in-transit', business: 'B' },
-      { key: 'delivery_done', sub: true, label: '배송 완료', to: '/delivery/complete', business: 'B' },
-      { key: 'delivery_failed', sub: true, label: '배송 실패', to: '/delivery/failed', business: 'B' },
-      { key: 'delivery_hold', sub: true, label: '배송 보류', to: '/delivery/hold', business: 'B' },
+      { key: 'delivery', icon: Truck, label: '배송 관리', to: '/delivery/list', business: 'B' },
+      { key: 'delivery_list', sub: true, label: '배송 목록', to: '/delivery/list', business: 'B' },
       { key: 'delivery_invoices', sub: true, label: '송장 관리', to: '/delivery/invoices', business: 'B' },
       { key: 'delivery_carriers', sub: true, label: '배송사 관리', to: '/delivery/carriers', business: 'B' },
-      { key: 'delivery_tracking', sub: true, label: '배송 추적', to: '/delivery/tracking', business: 'B' },
-      { key: 'delivery_history', sub: true, label: '배송 이력', to: '/delivery/history', business: 'B' },
+      { key: 'delivery_history', sub: true, label: '배송 처리 이력', to: '/delivery/history', business: 'B' },
 
       { key: 'cancel_mgmt', icon: ShoppingCart, label: '취소 관리', to: '/cancel/requests', business: 'B' },
       { key: 'cancel_requests', sub: true, label: '취소 요청', to: '/cancel/requests', business: 'B' },
@@ -145,15 +134,9 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'cancel_completed', sub: true, label: '취소 완료', to: '/cancel/completed', business: 'B' },
       { key: 'cancel_history', sub: true, label: '취소 이력', to: '/cancel/history', business: 'B' },
 
-      { key: 'return_mgmt', icon: ShoppingBag, label: '반품 관리', to: '/returns/requests', business: 'B' },
-      { key: 'return_requests', sub: true, label: '반품 요청', to: '/returns/requests', business: 'B' },
-      { key: 'return_approval', sub: true, label: '반품 승인', to: '/returns/approval', business: 'B' },
-      { key: 'return_collecting', sub: true, label: '반품 회수', to: '/returns/collecting', business: 'B' },
-      { key: 'return_collected', sub: true, label: '회수 완료', to: '/returns/collected', business: 'B' },
-      { key: 'return_inspection', sub: true, label: '상품 확인', to: '/returns/inspection', business: 'B' },
-      { key: 'return_completed', sub: true, label: '반품 완료', to: '/returns/completed', business: 'B' },
-      { key: 'return_rejected', sub: true, label: '반품 반려', to: '/returns/rejected', business: 'B' },
-      { key: 'return_history', sub: true, label: '반품 이력', to: '/returns/history', business: 'B' },
+      { key: 'return_mgmt', icon: ShoppingBag, label: '반품 관리', to: '/returns/list', business: 'B' },
+      { key: 'return_list', sub: true, label: '반품 목록', to: '/returns/list', business: 'B' },
+      { key: 'return_history', sub: true, label: '반품 처리 이력', to: '/returns/history', business: 'B' },
 
       { key: 'exchange_mgmt', icon: Package, label: '교환 관리', to: '/b2c/exchanges/requests', business: 'B' },
       { key: 'exchange_requests', sub: true, label: '교환 요청', to: '/b2c/exchanges/requests', business: 'B' },
@@ -290,10 +273,8 @@ export const NAV_GROUPS: NavGroup[] = [
 
       { key: 'delivery_policy', icon: Receipt, label: '배송 정책', to: '/delivery-policy/base-fee', business: 'B' },
       { key: 'delivery_policy_base', sub: true, label: '기본 배송비', to: '/delivery-policy/base-fee', business: 'B' },
-      { key: 'delivery_policy_free', sub: true, label: '무료배송 조건', to: '/delivery-policy/free-shipping', business: 'B' },
       { key: 'delivery_policy_region', sub: true, label: '지역별 추가 배송비', to: '/delivery-policy/region-fee', business: 'B' },
       { key: 'delivery_policy_product', sub: true, label: '상품별 배송 정책', to: '/delivery-policy/product', business: 'B' },
-      { key: 'delivery_policy_bundle', sub: true, label: '묶음 배송', to: '/delivery-policy/bundle', business: 'B' },
       { key: 'delivery_policy_remote', sub: true, label: '제주 / 도서산간 정책', to: '/delivery-policy/remote-area', business: 'B' },
       { key: 'delivery_policy_return', sub: true, label: '반품 / 교환 배송비', to: '/delivery-policy/return-exchange', business: 'B' },
     ],
@@ -362,14 +343,15 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   products_moq: ['서비스 관리 · 상품 관리', '최소 주문수량'],
 
   inventory_status: ['서비스 관리 · 재고 관리', '재고 현황'],
-  inventory_options: ['서비스 관리 · 재고 관리', '옵션별 재고'],
-  inventory_inbound: ['서비스 관리 · 재고 관리', '입고 관리'],
-  inventory_outbound: ['서비스 관리 · 재고 관리', '재고 출고'],
+  inventory_movement: ['서비스 관리 · 재고 관리', '입출고 관리'],
   inventory_adjust: ['서비스 관리 · 재고 관리', '재고 조정'],
   inventory_history: ['서비스 관리 · 재고 관리', '재고 변동 이력'],
-  inventory_soldout: ['서비스 관리 · 재고 관리', '품절 상품'],
-  inventory_safety: ['서비스 관리 · 재고 관리', '안전 재고'],
-  inventory_alerts: ['서비스 관리 · 재고 관리', '재고 알림'],
+  inventory_alerts: ['서비스 관리 · 재고 관리', '재고 알림·설정'],
+  inventory_options: ['서비스 관리 · 재고 관리', '재고 현황'],
+  inventory_soldout: ['서비스 관리 · 재고 관리', '재고 현황'],
+  inventory_inbound: ['서비스 관리 · 재고 관리', '입출고 관리'],
+  inventory_outbound: ['서비스 관리 · 재고 관리', '입출고 관리'],
+  inventory_safety: ['서비스 관리 · 재고 관리', '재고 알림·설정'],
 
   quotes_requests: ['서비스 관리 · 견적 관리', '견적 요청'],
   quotes_list: ['서비스 관리 · 견적 관리', '견적서'],
@@ -454,31 +436,33 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   log_system: ['분석 · 시스템 · 로그 / 감사', '시스템 로그'],
   log_security: ['분석 · 시스템 · 로그 / 감사', '보안 로그'],
 
-  delivery_prep: ['서비스 관리 · 배송 관리', '배송 준비'],
-  delivery_outbound_wait: ['서비스 관리 · 배송 관리', '출고 대기'],
-  delivery_outbound_done: ['서비스 관리 · 배송 관리', '출고 완료'],
-  delivery_transit: ['서비스 관리 · 배송 관리', '배송중'],
-  delivery_done: ['서비스 관리 · 배송 관리', '배송 완료'],
-  delivery_failed: ['서비스 관리 · 배송 관리', '배송 실패'],
-  delivery_hold: ['서비스 관리 · 배송 관리', '배송 보류'],
+  delivery_list: ['서비스 관리 · 배송 관리', '배송 목록'],
   delivery_invoices: ['서비스 관리 · 배송 관리', '송장 관리'],
   delivery_carriers: ['서비스 관리 · 배송 관리', '배송사 관리'],
-  delivery_tracking: ['서비스 관리 · 배송 관리', '배송 추적'],
-  delivery_history: ['서비스 관리 · 배송 관리', '배송 이력'],
+  delivery_history: ['서비스 관리 · 배송 관리', '배송 처리 이력'],
+  delivery_prep: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_outbound_wait: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_outbound_done: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_transit: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_done: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_failed: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_hold: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_tracking: ['서비스 관리 · 배송 관리', '배송 목록'],
   cancel_requests: ['서비스 관리 · 취소 관리', '취소 요청'],
   cancel_approval: ['서비스 관리 · 취소 관리', '취소 승인'],
   cancel_rejected: ['서비스 관리 · 취소 관리', '취소 반려'],
   cancel_partial: ['서비스 관리 · 취소 관리', '부분 취소'],
   cancel_completed: ['서비스 관리 · 취소 관리', '취소 완료'],
   cancel_history: ['서비스 관리 · 취소 관리', '취소 이력'],
-  return_requests: ['서비스 관리 · 반품 관리', '반품 요청'],
-  return_approval: ['서비스 관리 · 반품 관리', '반품 승인'],
-  return_collecting: ['서비스 관리 · 반품 관리', '반품 회수'],
-  return_collected: ['서비스 관리 · 반품 관리', '회수 완료'],
-  return_inspection: ['서비스 관리 · 반품 관리', '상품 확인'],
-  return_completed: ['서비스 관리 · 반품 관리', '반품 완료'],
-  return_rejected: ['서비스 관리 · 반품 관리', '반품 반려'],
-  return_history: ['서비스 관리 · 반품 관리', '반품 이력'],
+  return_list: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_history: ['서비스 관리 · 반품 관리', '반품 처리 이력'],
+  return_requests: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_approval: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_collecting: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_collected: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_inspection: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_completed: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_rejected: ['서비스 관리 · 반품 관리', '반품 목록'],
 
   promotions_list: ['서비스 관리 · 프로모션 관리', '프로모션 목록'],
   promotions_history: ['서비스 관리 · 프로모션 관리', '적용 이력'],
@@ -538,12 +522,11 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/products/min-order-qty')) return 'products_moq';
   if (pathname.startsWith('/products')) return 'products_list';
 
-  if (pathname.startsWith('/b2c/inventory/options')) return 'inventory_options';
-  if (pathname.startsWith('/b2c/inventory/sold-out')) return 'inventory_soldout';
-  if (pathname.startsWith('/b2c/inventory/safety-stock')) return 'inventory_safety';
-  if (pathname.startsWith('/b2c/inventory/alerts')) return 'inventory_alerts';
-  if (pathname.startsWith('/inventory/inbound')) return 'inventory_inbound';
-  if (pathname.startsWith('/inventory/outbound')) return 'inventory_outbound';
+  if (pathname.startsWith('/b2c/inventory/options')) return 'inventory_status';
+  if (pathname.startsWith('/b2c/inventory/sold-out')) return 'inventory_status';
+  if (pathname.startsWith('/b2c/inventory/safety-stock')) return 'inventory_alerts';
+  if (pathname.startsWith('/b2c/inventory/alerts') || pathname.startsWith('/inventory/alerts')) return 'inventory_alerts';
+  if (pathname.startsWith('/inventory/movement') || pathname.startsWith('/inventory/inbound') || pathname.startsWith('/inventory/outbound')) return 'inventory_movement';
   if (pathname.startsWith('/inventory/adjust')) return 'inventory_adjust';
   if (pathname.startsWith('/inventory/history')) return 'inventory_history';
   if (pathname.startsWith('/inventory')) return 'inventory_status';
@@ -585,10 +568,8 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/cs/history')) return 'cs_history';
 
   if (pathname.startsWith('/delivery-policy/base-fee')) return 'delivery_policy_base';
-  if (pathname.startsWith('/delivery-policy/free-shipping')) return 'delivery_policy_free';
   if (pathname.startsWith('/delivery-policy/region-fee')) return 'delivery_policy_region';
   if (pathname.startsWith('/delivery-policy/product')) return 'delivery_policy_product';
-  if (pathname.startsWith('/delivery-policy/bundle')) return 'delivery_policy_bundle';
   if (pathname.startsWith('/delivery-policy/remote-area')) return 'delivery_policy_remote';
   if (pathname.startsWith('/delivery-policy/return-exchange')) return 'delivery_policy_return';
 
@@ -624,31 +605,18 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/stats/conversion')) return 'stats_conversion';
   if (pathname.startsWith('/stats/overview')) return 'stats_overview';
 
-  if (pathname.startsWith('/delivery/prep') || pathname.startsWith('/b2c/delivery/prep')) return 'delivery_prep';
-  if (pathname.startsWith('/delivery/outbound-waiting') || pathname.startsWith('/b2c/delivery/outbound-waiting')) return 'delivery_outbound_wait';
-  if (pathname.startsWith('/delivery/outbound-complete') || pathname.startsWith('/b2c/delivery/outbound-complete')) return 'delivery_outbound_done';
-  if (pathname.startsWith('/delivery/in-transit') || pathname.startsWith('/b2c/delivery/in-transit')) return 'delivery_transit';
-  if (pathname.startsWith('/delivery/complete') || pathname.startsWith('/b2c/delivery/complete')) return 'delivery_done';
-  if (pathname.startsWith('/delivery/failed') || pathname.startsWith('/b2c/delivery/failed')) return 'delivery_failed';
-  if (pathname.startsWith('/delivery/hold') || pathname.startsWith('/b2c/delivery/hold')) return 'delivery_hold';
   if (pathname.startsWith('/delivery/invoices') || pathname.startsWith('/b2c/delivery/invoices')) return 'delivery_invoices';
   if (pathname.startsWith('/delivery/carriers') || pathname.startsWith('/b2c/delivery/carriers')) return 'delivery_carriers';
-  if (pathname.startsWith('/delivery/tracking') || pathname.startsWith('/b2c/delivery/tracking')) return 'delivery_tracking';
   if (pathname.startsWith('/delivery/history') || pathname.startsWith('/b2c/delivery/history')) return 'delivery_history';
+  if (pathname.startsWith('/delivery') || pathname.startsWith('/b2c/delivery')) return 'delivery_list';
   if (pathname.startsWith('/cancel/requests') || pathname.startsWith('/b2c/cancel/requests')) return 'cancel_requests';
   if (pathname.startsWith('/cancel/approval') || pathname.startsWith('/b2c/cancel/approval')) return 'cancel_approval';
   if (pathname.startsWith('/cancel/rejected') || pathname.startsWith('/b2c/cancel/rejected')) return 'cancel_rejected';
   if (pathname.startsWith('/cancel/partial') || pathname.startsWith('/b2c/cancel/partial')) return 'cancel_partial';
   if (pathname.startsWith('/cancel/completed') || pathname.startsWith('/b2c/cancel/completed')) return 'cancel_completed';
   if (pathname.startsWith('/cancel/history') || pathname.startsWith('/b2c/cancel/history')) return 'cancel_history';
-  if (pathname.startsWith('/returns/requests') || pathname.startsWith('/b2c/returns/requests')) return 'return_requests';
-  if (pathname.startsWith('/returns/approval') || pathname.startsWith('/b2c/returns/approval')) return 'return_approval';
-  if (pathname.startsWith('/returns/collecting') || pathname.startsWith('/b2c/returns/collecting')) return 'return_collecting';
-  if (pathname.startsWith('/returns/collected') || pathname.startsWith('/b2c/returns/collected')) return 'return_collected';
-  if (pathname.startsWith('/returns/inspection') || pathname.startsWith('/b2c/returns/inspection')) return 'return_inspection';
-  if (pathname.startsWith('/returns/completed') || pathname.startsWith('/b2c/returns/completed')) return 'return_completed';
-  if (pathname.startsWith('/returns/rejected') || pathname.startsWith('/b2c/returns/rejected')) return 'return_rejected';
   if (pathname.startsWith('/returns/history') || pathname.startsWith('/b2c/returns/history')) return 'return_history';
+  if (pathname.startsWith('/returns') || pathname.startsWith('/b2c/returns')) return 'return_list';
 
   if (pathname.startsWith('/promotions/history')) return 'promotions_history';
   if (pathname.startsWith('/promotions')) return 'promotions_list';

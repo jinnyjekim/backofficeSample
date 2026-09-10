@@ -66,7 +66,7 @@
 .viewTabBtn:hover { color: #18181b; }
 .viewTabActive { font-weight: 700; color: #18181b; box-shadow: inset 0 -2px 0 0 var(--accent); }
 
-.body { padding: 0 24px 28px; }
+.body { padding: 0 24px 28px; min-width: 0; overflow-x: clip; }
 
 .warningBanner { display: flex; gap: 11px; padding: 13px 15px; border: 1px solid #f0d9ae; background: #fffaf0; border-radius: 12px; margin-bottom: 14px; }
 .warningIcon { flex: none; width: 18px; height: 18px; border-radius: 50%; background: #e0a53a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-top: 1px; }
@@ -159,6 +159,7 @@
 .dragHandle { color: #a1a1aa; cursor: grab; }
 .methodEditBtn { height: 27px; padding: 0 10px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 6px; background: #fff; color: #3f3f46; font-size: 11px; cursor: pointer; }
 .methodEditBtn:hover { background: #fafafa; }
+.methodEditBtn:disabled { background: #fafafa; color: #a1a1aa; cursor: default; }
 
 .diffTable { border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; overflow: hidden; margin: 12px 0 6px; }
 .diffRow { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 9px 12px; border-top: 1px solid rgba(0, 0, 0, 0.05); font-size: 12px; }
@@ -177,8 +178,143 @@
 .saveDialog { width: min(480px, 92%) !important; }
 .toast { position: fixed; right: 24px; bottom: 24px; z-index: 70; padding: 11px 15px; border-radius: 9px; background: #18181b; color: #fff; font-size: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22); }
 
+.pageRoot {
+  overflow-x: clip;
+}
+
+/* 기본 설정: 배송비 정책과 동일한 단일 카드 + 우측 계산 패널 구조 */
+.policyLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); gap: 14px; align-items: start; }
+.policyMain { min-width: 0; overflow: hidden; display: flex; flex-direction: column; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; }
+.policySection { display: flex; flex-wrap: wrap; gap: 14px 20px; padding: 18px 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
+.policySection:last-child { border-bottom: 0; }
+.sectionDesc { flex: 0 0 190px; min-width: 0; }
+.sectionHead { display: flex; align-items: center; gap: 8px; min-height: 20px; }
+.sectionNum { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 19px; height: 19px; border-radius: 5px; background: #18181b; color: #fff; font-size: 10.5px; font-weight: 700; }
+.sectionHeadTitle { color: #18181b; font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; }
+.sectionDescText { max-width: 190px; margin: 7px 0 0; color: #a1a1aa; font-size: 11.5px; line-height: 1.55; }
+.sectionControls { display: flex; flex: 1 1 320px; flex-direction: column; gap: 14px; min-width: 0; max-width: 920px; container-type: inline-size; }
+.stepBadge { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; background: #eaf8f0; color: #16845b; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+
+.optionGrid { display: flex; flex-wrap: wrap; gap: 8px; }
+.optionGrid > button { min-width: 150px; flex: 1 1 150px; }
+.sectionDivider { display: grid; grid-template-columns: minmax(132px, 160px) repeat(2, minmax(160px, 210px)); gap: 12px; padding-top: 14px; border-top: 1px solid rgba(0, 0, 0, 0.06); }
+@container (max-width: 640px) {
+  .sectionDivider { grid-template-columns: 1fr; }
+}
+.sectionDividerTop { padding-top: 13px; border-top: 1px solid rgba(0, 0, 0, 0.06); }
+.fieldGroup { min-width: 0; }
+.fieldGroupWide { min-width: 0; }
+.fieldBlockLabel { display: flex; align-items: baseline; gap: 6px; margin-bottom: 7px; color: #71717a; font-size: 11.5px; font-weight: 600; }
+.fieldHint { margin-top: 6px; color: #a1a1aa; font-size: 11px; line-height: 1.45; }
+.compactPills { display: flex; flex-wrap: wrap; gap: 6px; }
+.selectControl { width: 100%; min-width: 0; }
+
+.stageRow { display: flex; flex-wrap: wrap; gap: 7px; }
+.stageButtonContent { display: inline-flex; align-items: center; gap: 7px; }
+.stageMark { display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; border: 1px solid rgba(0, 0, 0, 0.12); border-radius: 5px; font-size: 10px; line-height: 1; }
+.switchRow { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 22px; min-height: 34px; }
+
+.expiryGrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 16px; }
+@container (max-width: 660px) {
+  .expiryGrid { grid-template-columns: 1fr; }
+}
+.durationRow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.numberControl { width: 116px; }
+.optionGridCompact { display: flex; flex-wrap: wrap; gap: 8px; }
+.optionGridCompact > button { min-width: 120px; flex: 1 1 120px; }
+.retryGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 115px)) minmax(0, 1fr); gap: 14px 16px; }
+@container (max-width: 520px) {
+  .retryGrid { grid-template-columns: 1fr 1fr; }
+  .retryGrid > .fieldGroupWide { grid-column: 1 / -1; }
+}
+.failureOptions { display: flex; flex-wrap: wrap; gap: 7px; }
+.applyGrid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@container (max-width: 640px) {
+  .applyGrid { grid-template-columns: 1fr; }
+}
+.dateRow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.dateRow .fieldHint { margin-top: 0; white-space: nowrap; }
+.dateControl { width: 190px; flex: 0 0 190px; }
+
+.policySideOuter { min-width: 0; }
+.policySide { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 14px; }
+.sideCard { overflow: hidden; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; }
+.sideHead { padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.sideTitle { color: #18181b; font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+.sideDesc { margin-top: 3px; color: #a1a1aa; font-size: 11.5px; }
+.sideFields { display: flex; flex-direction: column; gap: 12px; padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.sideFieldRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.sideFieldLabel { flex: none; color: #71717a; font-size: 12px; font-weight: 600; }
+.sideFieldControl { display: flex; flex: 0 1 190px; justify-content: flex-end; min-width: 0; }
+.sideFieldControl > * { width: 100%; }
+.resultToggle { display: flex; gap: 3px; }
+.sideBody { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; }
+.sideLine { display: flex; align-items: baseline; gap: 10px; }
+.sideLineLabel { flex: 1; min-width: 0; color: #71717a; font-size: 12px; }
+.sideLineValue { flex: none; color: #18181b; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sideTotalRow { display: flex; align-items: baseline; gap: 10px; padding: 13px 16px; border-top: 1px solid #cfeedd; border-bottom: 1px solid #cfeedd; background: #ebfaf2; }
+.sideTotalLabel { flex: 1; color: #3f5e4e; font-size: 12px; font-weight: 700; }
+.sideTotalValue { color: #18181b; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+.flowDetails { display: flex; flex-direction: column; gap: 6px; padding: 13px 16px; }
+.flowDetailsTitle { margin-bottom: 2px; color: #a1a1aa; font-size: 11px; font-weight: 600; }
+.flowDetailRow { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; color: #71717a; font-size: 12px; }
+.flowDetailRow strong { color: #71717a; font-size: 12px; font-weight: 700; text-align: right; }
+.digestRow { display: flex; align-items: baseline; gap: 10px; padding: 10px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
+.digestLabel { flex: 1; min-width: 0; color: #a1a1aa; font-size: 11.5px; font-weight: 600; }
+.digestValue { flex: none; max-width: 64%; color: #3f3f46; font-size: 12px; font-weight: 600; text-align: right; }
+.sideFootNote { padding: 12px 16px; border-top: 1px solid rgba(0, 0, 0, 0.06); background: #fafafa; color: #8b8b93; font-size: 11px; line-height: 1.6; }
+.previewOnly { max-width: 430px; margin-left: auto; }
+.previewOnly .policySide { position: static; }
+
+.failurePolicyLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); gap: 14px; align-items: start; }
+.failurePolicyMain { min-width: 0; overflow: hidden; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; }
+.failurePolicySection { display: flex; gap: 20px; padding: 18px 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
+.failurePolicySection:last-child { border-bottom: 0; }
+.failureSectionDesc { flex: 0 0 200px; min-width: 0; }
+.failureSectionControls { display: flex; flex: 1; flex-direction: column; gap: 14px; min-width: 0; max-width: 960px; }
+.failureActionOptions { display: flex; flex-wrap: wrap; gap: 8px; }
+.failureActionOptions > button { flex: 0 1 155px; min-width: 155px; }
+.failureDividerFields { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 16px 28px; padding-top: 13px; border-top: 1px solid rgba(0, 0, 0, 0.06); }
+.failureFeatureCard { display: flex; flex-direction: column; align-items: flex-start; width: min(100%, 320px); gap: 3px; padding: 11px 12px; border: 1px solid #7ba8f2; border-radius: 9px; background: #fff; }
+.failureFeatureCard > span { padding-left: 39px; color: #a1a1aa; font-size: 10.5px; }
+.failureInfoNote { margin-top: 14px; padding: 10px 11px; border-radius: 8px; background: #f8fafc; color: #a1a1aa; font-size: 10.5px; line-height: 1.55; }
+.failureSide { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.failureCauseRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 13px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.failureCauseRow > span { color: #71717a; font-size: 11.5px; font-weight: 600; }
+.failureSegmented { display: flex; overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.09); border-radius: 8px; }
+.failureSegmented button { height: 29px; padding: 0 11px; border: 0; border-left: 1px solid rgba(0, 0, 0, 0.06); background: #fff; color: #8b8b93; font-size: 10.5px; cursor: pointer; }
+.failureSegmented button:first-child { border-left: 0; }
+.failureSegmented .failureSegmentActive { background: #fafafa; color: #18181b; font-weight: 700; }
+.retryTimeline { padding: 13px 16px; }
+.retryTimelineRow { position: relative; display: grid; grid-template-columns: 12px 1fr auto; align-items: center; gap: 8px; min-height: 29px; font-size: 11.5px; }
+.retryTimelineRow:not(:last-child)::after { content: ''; position: absolute; left: 5px; top: 20px; bottom: -9px; width: 1px; background: #e4e4e7; }
+.retryTimelineRow strong { color: #52525b; font-size: 11.5px; font-weight: 600; }
+.retryTimelineRow > span:last-child { color: #a1a1aa; font-size: 10.5px; }
+.retryDot { position: relative; z-index: 1; width: 8px; height: 8px; border-radius: 50%; }
+.retryDotFailure { background: #dda02d; }
+.retryDotSuccess { background: #1f9d69; }
+.failureResultBand { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 13px 16px; border-top: 1px solid; border-bottom: 1px solid; font-size: 12px; font-weight: 700; }
+.failureResultBand strong { font-size: 16px; }
+.failureResultSuccess { border-color: #ccebd9; background: #eefbf4; color: #166534; }
+.failureResultPending { border-color: #f1dfb8; background: #fffaf0; color: #9a6818; }
+.failureImpact { display: flex; flex-direction: column; gap: 7px; padding: 12px 16px 14px; }
+.failureImpact > div:not(.flowDetailsTitle) { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; color: #8b8b93; font-size: 11.5px; }
+.failureImpact strong { color: #52525b; font-size: 12px; text-align: right; }
+
+@media (max-width: 1200px) {
+  .policyLayout, .failurePolicyLayout { grid-template-columns: 1fr; }
+  .policySide { position: static; }
+}
+@media (max-width: 900px) {
+  .policySection { flex-direction: column; }
+  .sectionDesc { flex-basis: auto; }
+  .sectionDescText { max-width: none; }
+  .failurePolicySection { flex-direction: column; }
+  .failureSectionDesc { flex-basis: auto; }
+}
 @media (max-width: 960px) {
   .summaryGrid, .cardGrid { grid-template-columns: 1fr; }
   .methodRow { grid-template-columns: 1fr; gap: 4px; }
   .methodHead { display: none; }
+  .previewOnly { max-width: none; }
 }

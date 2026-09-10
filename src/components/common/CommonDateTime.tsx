@@ -5,6 +5,7 @@ import {
 } from "m2m-uiux-react/DatePicker";
 import { TimePicker as M2MTimePicker } from "m2m-uiux-react/TimePicker";
 import { type CommonClassNames, type CommonSize } from "./CommonControls";
+import { useDatePickerPlacement } from "./useDatePickerPlacement";
 import styles from "./common.module.css";
 
 const cx = (...values: Array<string | false | null | undefined>) =>
@@ -147,12 +148,16 @@ export const CommonDatePicker = forwardRef<
         serializeDate(range[0], showTime),
         serializeDate(range[1], showTime),
       ]);
-    } else
+    } else {
       onChange?.(serializeDate(next instanceof Date ? next : null, showTime));
+    }
   };
+
+  const placementRef = useDatePickerPlacement<HTMLSpanElement>();
 
   return (
     <span
+      ref={placementRef}
       className={cx(
         styles.datePickerWrap,
         mode === "range" && styles.dateRangeAdapter,

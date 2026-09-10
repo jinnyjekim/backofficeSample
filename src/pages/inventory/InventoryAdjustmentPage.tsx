@@ -79,6 +79,7 @@ export function InventoryAdjustmentPage() {
   const [handlerFilter, setHandlerFilter] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [targetId, setTargetId] = useState<string | null>(null);
@@ -689,27 +690,35 @@ export function InventoryAdjustmentPage() {
                 ))}
               </select>
             </label>
-            <span className={shared.rowSpacer} />
-            <button type="button" className="detailFilterBtn">
+            <button
+              type="button"
+              className={shared.detailFilterBtn}
+              onClick={() => setShowAdvanced((value) => !value)}
+            >
               상세 필터
             </button>
+            <span className={shared.rowSpacer} />
             <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
             </button>
-          </div>
-          <div className={styles.advancedFilters}>
-            <label>
-              조정일
-              <DatePicker
-                value={dateFrom}
-                onChange={(event) => setDateFrom(event.target.value)}
-              />
-              <span>–</span>
-              <DatePicker
-                value={dateTo}
-                onChange={(event) => setDateTo(event.target.value)}
-              />
-            </label>
+            {showAdvanced && (
+              <label className={shared.dateFilterField}>
+                <span>조정일</span>
+                <span className={shared.dateRange}>
+                  <DatePicker
+                    aria-label="조정일 시작 날짜"
+                    value={dateFrom}
+                    onChange={(event) => setDateFrom(event.target.value)}
+                  />
+                  <span className={shared.dateSeparator}>~</span>
+                  <DatePicker
+                    aria-label="조정일 종료 날짜"
+                    value={dateTo}
+                    onChange={(event) => setDateTo(event.target.value)}
+                  />
+                </span>
+              </label>
+            )}
           </div>
         </div>
       </div>

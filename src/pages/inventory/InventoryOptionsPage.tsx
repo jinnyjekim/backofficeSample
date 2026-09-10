@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridRow } from "../../components/DataGrid/types";
-import { CommonButton, ExcelDownloadButton } from "../../components/common";
+import { CommonButton, CommonInput, ExcelDownloadButton } from "../../components/common";
 import shared from "../ops/opsShared.module.css";
 import drawer from "../ops/opsDrawerShared.module.css";
 import { InventoryDetailDrawer } from "./InventoryDetailDrawer";
@@ -683,41 +683,45 @@ export function InventoryOptionsPage() {
             >
               초기화
             </CommonButton>
+            {showAdvanced && (
+              <>
+                <label className="globalFilterField">
+                  <span>안전재고</span>
+                  <select
+                    className={shared.selectSm}
+                    value={safetyFilter}
+                    onChange={(event) => setSafetyFilter(event.target.value)}
+                  >
+                    <option value="">전체</option>
+                    <option>설정</option>
+                    <option>미설정</option>
+                  </select>
+                </label>
+                <label className="globalFilterField">
+                  <span>판매 가능 최소</span>
+                  <CommonInput.Number
+                    size="md"
+                    clearable={false}
+                    min={0}
+                    value={availableMin}
+                    onChange={(event) => setAvailableMin(event.target.value)}
+                    placeholder="0"
+                  />
+                </label>
+                <label className="globalFilterField">
+                  <span>판매 가능 최대</span>
+                  <CommonInput.Number
+                    size="md"
+                    clearable={false}
+                    min={0}
+                    value={availableMax}
+                    onChange={(event) => setAvailableMax(event.target.value)}
+                    placeholder="100"
+                  />
+                </label>
+              </>
+            )}
           </div>
-          {showAdvanced && (
-            <div className={styles.advancedFilters}>
-              <label>
-                안전재고
-                <select
-                  value={safetyFilter}
-                  onChange={(event) => setSafetyFilter(event.target.value)}
-                >
-                  <option value="">전체</option>
-                  <option>설정</option>
-                  <option>미설정</option>
-                </select>
-              </label>
-              <label>
-                판매 가능 최소
-                <input
-                  type="number"
-                  value={availableMin}
-                  onChange={(event) => setAvailableMin(event.target.value)}
-                  placeholder="0"
-                />
-              </label>
-              <label>
-                판매 가능 최대
-                <input
-                  type="number"
-                  value={availableMax}
-                  onChange={(event) => setAvailableMax(event.target.value)}
-                  placeholder="100"
-                />
-              </label>
-            </div>
-          )}
-        </div>
       </div>
       {selected.length > 0 && (
         <div className={shared.bulkBar}>

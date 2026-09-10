@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridRow } from "../../components/DataGrid/types";
 import shared from "../ops/opsShared.module.css";
@@ -9,6 +10,7 @@ import {
   INVENTORY_PRODUCTS,
   inventoryStatus,
   productRows,
+  skuRows,
   type InventoryProduct,
   type InventorySku,
   type InventoryStatus,
@@ -16,7 +18,7 @@ import {
   type SaleStatus,
   type StockMovement,
 } from "./inventoryData";
-import { CommonButton, ExcelDownloadButton } from "../../components/common";
+import { CommonButton, CommonInput, ExcelDownloadButton } from "../../components/common";
 
 type QuickFilter =
   | "전체"
@@ -91,12 +93,18 @@ function adjustedWarehouses(sku: InventorySku, delta: number) {
 }
 
 export function InventoryStatusPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialView = searchParams.get("view") === "option" ? "option" : "product";
+  const initialQuickFilter = searchParams.get("stockStatus") === "soldout" ? "품절" : "전체";
+  const [viewMode, setViewMode] = useState<"product" | "option">(initialView);
   const [products, setProducts] =
     useState<InventoryProduct[]>(INVENTORY_PRODUCTS);
-  const [quickFilter, setQuickFilter] = useState<QuickFilter>("전체");
+  const [quickFilter, setQuickFilter] = useState<QuickFilter>(initialQuickFilter);
   const [keyword, setKeyword] = useState("");
   const [search, setSearch] = useState("");
-  const [stockStatus, setStockStatus] = useState("");
+  const [stockStatus, setStockStatus] = useState(
+    searchParams.get("stockStatus") === "soldout" ? "품절" : ""
+  );
   const [saleStatus, setSaleStatus] = useState<SaleStatus | "">("");
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
@@ -121,7 +129,10 @@ export function InventoryStatusPage() {
   const [safetyValue, setSafetyValue] = useState("10");
   const [alertEnabled, setAlertEnabled] = useState(true);
   const [toast, setToast] = useState("");
-  const allRows = useMemo(() => productRows(products), [products]);
+  const allRows = useMemo(
+    () => (viewMode === "option" ? skuRows(products) : productRows(products)),
+    [products, viewMode],
+  );
   const allSkus = useMemo(
     () =>
       products.flatMap((product) =>
@@ -562,6 +573,39 @@ export function InventoryStatusPage() {
           완료된 주문 기준 · 음수재고 허용 안 함
         </div>
 
+        <div className={styles.viewToggleRow}>
+          <div className={styles.viewToggle}>
+            <button
+              type="button"
+              className={`${styles.viewToggleBtn} ${viewMode === "product" ? styles.active : ""}`}
+              onClick={() => {
+                setViewMode("product");
+                setSearchParams((prev) => {
+                  const next = new URLSearchParams(prev);
+                  next.set("view", "product");
+                  return next;
+                });
+              }}
+            >
+              상품별 보기
+            </button>
+            <button
+              type="button"
+              className={`${styles.viewToggleBtn} ${viewMode === "option" ? styles.active : ""}`}
+              onClick={() => {
+                setViewMode("option");
+                setSearchParams((prev) => {
+                  const next = new URLSearchParams(prev);
+                  next.set("view", "option");
+                  return next;
+                });
+              }}
+            >
+              옵션별 보기
+            </button>
+          </div>
+        </div>
+
         <div className={shared.filterBox}>
           <form
             className={shared.filterRow1}
@@ -717,9 +761,10 @@ export function InventoryStatusPage() {
                 </label>
                 <label className="globalFilterField">
                   <span>판매 가능 최소</span>
-                  <input
-                    className={shared.dd}
-                    type="number"
+                  <CommonInput.Number
+                    size="md"
+                    clearable={false}
+                    min={0}
                     value={availableMin}
                     onChange={(event) => setAvailableMin(event.target.value)}
                     placeholder="0"
@@ -727,8 +772,10 @@ export function InventoryStatusPage() {
                 </label>
                 <label className="globalFilterField">
                   <span>판매 가능 최대</span>
-                  <input
-                    type="number"
+                  <CommonInput.Number
+                    size="md"
+                    clearable={false}
+                    min={0}
                     value={availableMax}
                     onChange={(event) => setAvailableMax(event.target.value)}
                     placeholder="100"

@@ -242,7 +242,7 @@ export function FreeShippingConditionPage() {
       <header className={shared.header}>
         <div className={shared.headerTop}>
           <div>
-            <div className={shared.title}>무료 배송 조건</div>
+            <div className={shared.title}>무료배송 조건</div>
             <div className={shared.subtitle}>
               어떤 주문이 어떤 조건을 충족했을 때 배송비를 면제할지 관리합니다.
             </div>
@@ -275,7 +275,7 @@ export function FreeShippingConditionPage() {
             className={`${shared.qfBtn} ${view === "preview" ? styles.quickActive : ""}`}
             onClick={() => setView("preview")}
           >
-            <span className={shared.qfLabel}>정책 Preview</span>
+            <span className={shared.qfLabel}>배송비 계산 테스트</span>
           </CommonButton>
         </div>
 
@@ -414,7 +414,7 @@ export function FreeShippingConditionPage() {
               </div>
               <div className={styles.infoNote}>
                 현재 저장된(적용중인) 정책 기준으로 판정합니다. 기본 배송비는
-                배송 정책 &gt; 기본 배송비 설정을 따릅니다.
+                배송 정책 &gt; 배송비 설정 &gt; 기본 배송비를 따릅니다.
               </div>
             </div>
             <div className={styles.previewCard}>

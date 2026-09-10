@@ -298,7 +298,7 @@ export function BundleShippingPage() {
         <div className={shared.headerTop}>
           <div>
             <div className={styles.eyebrow}>배송 정책</div>
-            <div className={shared.title}>묶음 배송</div>
+            <div className={shared.title}>묶음배송 정책</div>
             <div className={shared.subtitle}>
               여러 상품을 함께 주문했을 때 묶음배송과 배송비 계산 기준을
               관리합니다.
@@ -683,7 +683,7 @@ export function BundleShippingPage() {
                 <div className={drawerShared.eyebrow}>
                   묶음 배송 · 배송비 계산 테스트
                 </div>
-                <h2 className={drawerShared.title}>주문 배송비 계산 Preview</h2>
+                <h2 className={drawerShared.title}>배송비 계산 테스트</h2>
               </div>
               <button
                 type="button"
