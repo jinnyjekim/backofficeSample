@@ -138,15 +138,9 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'cancel_completed', sub: true, label: '취소 완료', to: '/cancel/completed', business: 'B' },
       { key: 'cancel_history', sub: true, label: '취소 이력', to: '/cancel/history', business: 'B' },
 
-      { key: 'return_mgmt', icon: ShoppingBag, label: '반품 관리', to: '/returns/requests', business: 'B' },
-      { key: 'return_requests', sub: true, label: '반품 요청', to: '/returns/requests', business: 'B' },
-      { key: 'return_approval', sub: true, label: '반품 승인', to: '/returns/approval', business: 'B' },
-      { key: 'return_collecting', sub: true, label: '반품 회수', to: '/returns/collecting', business: 'B' },
-      { key: 'return_collected', sub: true, label: '회수 완료', to: '/returns/collected', business: 'B' },
-      { key: 'return_inspection', sub: true, label: '상품 확인', to: '/returns/inspection', business: 'B' },
-      { key: 'return_completed', sub: true, label: '반품 완료', to: '/returns/completed', business: 'B' },
-      { key: 'return_rejected', sub: true, label: '반품 반려', to: '/returns/rejected', business: 'B' },
-      { key: 'return_history', sub: true, label: '반품 이력', to: '/returns/history', business: 'B' },
+      { key: 'return_mgmt', icon: ShoppingBag, label: '반품 관리', to: '/returns/list', business: 'B' },
+      { key: 'return_list', sub: true, label: '반품 목록', to: '/returns/list', business: 'B' },
+      { key: 'return_history', sub: true, label: '반품 처리 이력', to: '/returns/history', business: 'B' },
 
       { key: 'exchange_mgmt', icon: Package, label: '교환 관리', to: '/b2c/exchanges/requests', business: 'B' },
       { key: 'exchange_requests', sub: true, label: '교환 요청', to: '/b2c/exchanges/requests', business: 'B' },
@@ -465,14 +459,15 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   cancel_partial: ['서비스 관리 · 취소 관리', '부분 취소'],
   cancel_completed: ['서비스 관리 · 취소 관리', '취소 완료'],
   cancel_history: ['서비스 관리 · 취소 관리', '취소 이력'],
-  return_requests: ['서비스 관리 · 반품 관리', '반품 요청'],
-  return_approval: ['서비스 관리 · 반품 관리', '반품 승인'],
-  return_collecting: ['서비스 관리 · 반품 관리', '반품 회수'],
-  return_collected: ['서비스 관리 · 반품 관리', '회수 완료'],
-  return_inspection: ['서비스 관리 · 반품 관리', '상품 확인'],
-  return_completed: ['서비스 관리 · 반품 관리', '반품 완료'],
-  return_rejected: ['서비스 관리 · 반품 관리', '반품 반려'],
-  return_history: ['서비스 관리 · 반품 관리', '반품 이력'],
+  return_list: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_history: ['서비스 관리 · 반품 관리', '반품 처리 이력'],
+  return_requests: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_approval: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_collecting: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_collected: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_inspection: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_completed: ['서비스 관리 · 반품 관리', '반품 목록'],
+  return_rejected: ['서비스 관리 · 반품 관리', '반품 목록'],
 
   promotions_list: ['서비스 관리 · 프로모션 관리', '프로모션 목록'],
   promotions_history: ['서비스 관리 · 프로모션 관리', '적용 이력'],
@@ -628,14 +623,8 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/cancel/partial') || pathname.startsWith('/b2c/cancel/partial')) return 'cancel_partial';
   if (pathname.startsWith('/cancel/completed') || pathname.startsWith('/b2c/cancel/completed')) return 'cancel_completed';
   if (pathname.startsWith('/cancel/history') || pathname.startsWith('/b2c/cancel/history')) return 'cancel_history';
-  if (pathname.startsWith('/returns/requests') || pathname.startsWith('/b2c/returns/requests')) return 'return_requests';
-  if (pathname.startsWith('/returns/approval') || pathname.startsWith('/b2c/returns/approval')) return 'return_approval';
-  if (pathname.startsWith('/returns/collecting') || pathname.startsWith('/b2c/returns/collecting')) return 'return_collecting';
-  if (pathname.startsWith('/returns/collected') || pathname.startsWith('/b2c/returns/collected')) return 'return_collected';
-  if (pathname.startsWith('/returns/inspection') || pathname.startsWith('/b2c/returns/inspection')) return 'return_inspection';
-  if (pathname.startsWith('/returns/completed') || pathname.startsWith('/b2c/returns/completed')) return 'return_completed';
-  if (pathname.startsWith('/returns/rejected') || pathname.startsWith('/b2c/returns/rejected')) return 'return_rejected';
   if (pathname.startsWith('/returns/history') || pathname.startsWith('/b2c/returns/history')) return 'return_history';
+  if (pathname.startsWith('/returns') || pathname.startsWith('/b2c/returns')) return 'return_list';
 
   if (pathname.startsWith('/promotions/history')) return 'promotions_history';
   if (pathname.startsWith('/promotions')) return 'promotions_list';

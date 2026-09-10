@@ -1,6 +1,8 @@
 .eyebrow { font-size: 11px; color: #a1a1aa; font-weight: 600; margin-bottom: 6px; }
 .headMeta { display: flex; align-items: center; gap: 8px; padding-top: 20px; }
 .headMetaText { font-size: 11.5px; color: #a1a1aa; white-space: nowrap; }
+.pageHead { padding: 12px 16px 0; }
+.pageSubtitle { margin-bottom: 12px; }
 .outlineBtn { height: 34px; padding: 0 15px; border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; border-radius: 8px; font-size: 12.5px; color: #3f3f46; font-weight: 600; cursor: pointer; flex: none; }
 .outlineBtn:hover { background: #fafafa; }
 .darkBtn { height: 34px; padding: 0 16px; border: 0; border-radius: 8px; background: #18181b; color: #fff; font-size: 12.5px; font-weight: 600; cursor: pointer; flex: none; }
@@ -11,7 +13,7 @@
 .viewTabBtn:hover { color: #18181b; }
 .viewTabActive { font-weight: 700; color: #18181b; box-shadow: inset 0 -2px 0 0 var(--accent); }
 
-.body { padding: 0 24px 28px; }
+.body { min-width: 0; padding: 0 16px; overflow-x: clip; }
 
 .warningBanner { display: flex; gap: 11px; padding: 10px 14px; border: 1px solid #f0d9ae; background: #fffaf0; border-radius: 12px; margin-bottom: 14px; }
 .warningIcon { flex: none; width: 18px; height: 18px; border-radius: 50%; background: #e0a53a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-top: 1px; }
@@ -207,21 +209,21 @@
 .policyLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 430px); gap: 14px; align-items: start; }
 .policyMain { min-width: 0; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
 .policySideOuter { min-width: 0; }
-.policySide { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 14px; }
+.policySide { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 12px; }
 
-.policySection { display: flex; flex-wrap: wrap; gap: 14px 20px; padding: 20px 22px; border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
+.policySection { display: flex; flex-wrap: wrap; gap: 12px 20px; padding: 16px 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
 .policySection:last-child { border-bottom: 0; }
 .sectionDesc { flex: 0 1 190px; min-width: 0; }
 .sectionHead { display: flex; align-items: center; gap: 8px; }
 .sectionNum { width: 19px; height: 19px; border-radius: 5px; background: #18181b; color: #fff; font-size: 10.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none; }
 .sectionHeadTitle { font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; }
 .sectionDescText { font-size: 11.5px; color: #a1a1aa; margin-top: 7px; line-height: 1.55; }
-.sectionControls { flex: 1 1 360px; min-width: 0; max-width: 880px; container-type: inline-size; display: flex; flex-direction: column; gap: 14px; }
+.sectionControls { flex: 1 1 360px; min-width: 0; max-width: 900px; container-type: inline-size; display: flex; flex-direction: column; gap: 10px; }
 
-.usageGrid { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+.usageGrid { --common-option-width: 168px; display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
 /* 선택 카드는 CommonButton variant="option" 이 담당합니다 */
 
-.thresholdRow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; background: #fafafa; }
+.thresholdRow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 12px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; background: #fafafa; }
 .thresholdText { flex: 1 1 220px; min-width: 0; }
 .thresholdTitle { font-size: 12.5px; font-weight: 600; }
 .thresholdDesc { font-size: 11.5px; color: #a1a1aa; margin-top: 2px; }
@@ -229,8 +231,11 @@
 .thresholdInput { width: 150px; }
 .thresholdSuffix { font-size: 12px; color: #71717a; white-space: nowrap; }
 
-/* 섹션 필드 그리드 — 세 행이 같은 열 폭·같은 시작점을 공유합니다 */
-.amountRow, .unitRow, .taxRow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 20px; align-items: start; }
+/* 캡처처럼 입력 너비는 값의 성격에 맞추고 남는 영역은 비워 둡니다. */
+.amountRow, .unitRow, .taxRow { display: grid; gap: 14px; align-items: start; }
+.amountRow { grid-template-columns: minmax(280px, 320px) 116px 176px; }
+.unitRow { grid-template-columns: 160px 220px; }
+.taxRow { grid-template-columns: 230px minmax(280px, 360px); }
 @container (max-width: 640px) {
   .amountRow, .unitRow, .taxRow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -241,11 +246,14 @@
 .fieldBlockLabel { display: flex; align-items: baseline; gap: 6px; font-size: 11.5px; color: #71717a; font-weight: 600; margin-bottom: 7px; }
 .fieldBlockHint { font-size: 11px; color: #a1a1aa; font-weight: 400; }
 .fieldInput { width: 100%; }
-.presetRow2 { display: flex; gap: 6px; margin-top: 7px; flex-wrap: wrap; }
-.presetChip2 { min-width: 62px; }
+.baseFeeInputRow { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.baseFeeInput { width: 116px; flex: none; }
+.presetRow2 { display: flex; gap: 6px; margin-top: 0; flex-wrap: nowrap; }
+.presetChip2 { min-width: 52px; }
 
 .unitRow { padding-top: 14px; border-top: 1px solid rgba(0, 0, 0, 0.06); }
 .pillRow2 { display: flex; gap: 6px; flex-wrap: wrap; }
+.unitRow .pillRow2, .taxRow .pillRow2 { flex-wrap: nowrap; }
 .pillItem { flex: 0 1 auto; }
 /* 필드 아래 보조 설명 — 계산 단위 / 적용 시작일이 같은 간격·같은 스타일을 씁니다 */
 .unitHint, .dateHint { font-size: 11px; color: #a1a1aa; line-height: 1.45; }
@@ -253,14 +261,15 @@
 .bundleSwitchRow { display: flex; align-items: center; min-height: 34px; }
 
 /* 날짜 필드는 열 폭을 그대로 채우고, 안내문은 계산 단위 힌트와 같은 자리에 둡니다 */
-.dateRow2 { display: flex; flex-direction: column; align-items: stretch; gap: 7px; min-width: 0; }
-.dateField { width: 100%; }
+.dateRow2 { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.dateField { width: 150px; flex: none; }
+.dateRow2 .dateHint { white-space: nowrap; }
 
 .sideCard { background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; overflow: hidden; }
-.sideHead { padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.sideHead { padding: 10px 14px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
 .sideTitle { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
 .sideDesc { font-size: 11.5px; color: #a1a1aa; margin-top: 3px; }
-.sideFields { padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); display: flex; flex-direction: column; gap: 12px; }
+.sideFields { padding: 10px 14px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); display: flex; flex-direction: column; gap: 8px; }
 .sideFieldRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .sideFieldLabel { font-size: 12px; color: #71717a; font-weight: 600; flex: none; }
 /* 입력 컨트롤은 폭 190px · 높이 34px · 동일 테두리/배경으로 통일합니다 */
@@ -269,25 +278,25 @@
 .sideStepper button { height: 100%; min-width: 34px; border-color: transparent; background: transparent; }
 .sideStepper button:hover:not(:disabled) { border-color: transparent; background: var(--common-bg-subtle); }
 .sideStepperValue { flex: 1; min-width: 0; text-align: center; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.sideBody { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.sideBody { padding: 11px 14px; display: flex; flex-direction: column; gap: 8px; }
 .sideLine { display: flex; align-items: baseline; gap: 10px; }
 .sideLineLabel { flex: 1; min-width: 0; font-size: 12px; color: #71717a; }
 .sideLineValue { flex: none; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; color: #18181b; }
 .sideLineValueMuted { color: #8b8b93; }
 .sideLineValueNeg { color: #b42318; }
-.sideTotalRow { padding: 13px 16px; background: var(--common-bg-subtle); border-top: 1px solid rgba(0, 0, 0, 0.06); border-bottom: 1px solid rgba(0, 0, 0, 0.06); display: flex; align-items: baseline; gap: 10px; }
+.sideTotalRow { padding: 10px 14px; background: var(--common-bg-subtle); border-top: 1px solid rgba(0, 0, 0, 0.06); border-bottom: 1px solid rgba(0, 0, 0, 0.06); display: flex; align-items: baseline; gap: 10px; }
 .sideTotalLabel { flex: 1; font-size: 12px; color: #52525b; font-weight: 700; }
 .sideTotalValue { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.scenarioBox { padding: 13px 16px; display: flex; flex-direction: column; gap: 6px; }
+.scenarioBox { padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; }
 .scenarioBoxTitle { font-size: 11px; font-weight: 600; color: #a1a1aa; margin-bottom: 2px; }
 .scenarioBoxRow { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 12px; color: #71717a; }
 .scenarioBoxRow strong { font-size: 12.5px; font-weight: 700; color: #18181b; font-variant-numeric: tabular-nums; }
 
-.digestRow { display: flex; align-items: baseline; gap: 10px; padding: 10px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
+.digestRow { display: flex; align-items: baseline; gap: 10px; padding: 6px 14px; border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
 .digestRow:last-of-type { border-bottom: 0; }
 .digestLabel { flex: 1; min-width: 0; font-size: 11.5px; color: #a1a1aa; font-weight: 600; }
 .digestValue { flex: none; max-width: 64%; font-size: 12px; font-weight: 600; text-align: right; color: #3f3f46; }
-.sideFootNote { padding: 12px 16px; border-top: 1px solid rgba(0, 0, 0, 0.06); background: var(--common-bg-subtle); font-size: 11px; color: var(--common-text-muted); line-height: 1.6; }
+.sideFootNote { padding: 7px 14px; border-top: 1px solid rgba(0, 0, 0, 0.06); background: var(--common-bg-subtle); font-size: 11px; color: var(--common-text-muted); line-height: 1.45; }
 
 @media (max-width: 1200px) {
   .policyLayout { grid-template-columns: 1fr; }

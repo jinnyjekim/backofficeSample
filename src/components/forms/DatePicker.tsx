@@ -1,5 +1,6 @@
 import { forwardRef, type ChangeEvent, type InputHTMLAttributes } from 'react';
 import { DatePicker as M2MDatePicker, type DatePickerValue } from 'm2m-uiux-react/DatePicker';
+import { useDatePickerPlacement } from '../common/useDatePickerPlacement';
 import styles from './DatePicker.module.css';
 
 export interface DatePickerProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
@@ -57,8 +58,11 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(function
     onChange?.(changeEvent(formatDate(date, mode)));
   };
 
+  const placementRef = useDatePickerPlacement<HTMLSpanElement>();
+
   return (
     <span
+      ref={placementRef}
       className={`${styles.root} ${controlSize === 'sm' ? styles.small : ''} ${mode === 'datetime-local' ? styles.dateTime : ''} ${invalid ? styles.invalid : ''} ${disabled ? styles.disabled : ''} ${className}`}
       style={style}
       aria-label={ariaLabel}

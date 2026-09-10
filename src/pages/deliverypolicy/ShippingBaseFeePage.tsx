@@ -1,15 +1,9 @@
 import { useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './ShippingBaseFeePage.module.css';
 import { CommonBadge, CommonButton, CommonDatePicker, CommonInput, CommonSwitch } from '../../components/common';
 import { useOutsideClose } from '../../lib/useOutsideClose';
-import {
-  INITIAL_POLICIES as INITIAL_FREE_SHIPPING_POLICIES,
-  computeStatus as computeFreeShippingStatus,
-  fmtCondition as fmtFreeShippingCondition,
-} from './freeShippingConditionData';
 import {
   INITIAL_HISTORY,
   INITIAL_LAST_MODIFIED,
@@ -53,7 +47,6 @@ const CALC_UNIT_OPTIONS: { value: CalcUnit; title: string; desc: string }[] = [
 const BASE_FEE_PRESETS = [2500, 3000, 3500];
 
 export function ShippingBaseFeePage() {
-  const navigate = useNavigate();
   const [policy, setPolicy] = useState(INITIAL_POLICY);
   const [history, setHistory] = useState(INITIAL_HISTORY);
   const [lastModified, setLastModified] = useState<LastModified>(INITIAL_LAST_MODIFIED);
@@ -75,14 +68,6 @@ export function ShippingBaseFeePage() {
   useOutsideClose(historyRef, () => setShowHistory(false));
 
   const warnings = useMemo(() => computeWarnings(draftPolicy), [draftPolicy]);
-  const activeFreeShippingPolicies = useMemo(
-    () => INITIAL_FREE_SHIPPING_POLICIES.filter((item) => computeFreeShippingStatus(item) === '적용중'),
-    [],
-  );
-  const primaryFreeShippingPolicy = useMemo(
-    () => [...activeFreeShippingPolicies].sort((a, b) => a.priority - b.priority)[0],
-    [activeFreeShippingPolicies],
-  );
 
   const toastBriefly = (message: string) => {
     setToast(message);
@@ -143,11 +128,24 @@ export function ShippingBaseFeePage() {
   const scenarioBase = Math.max(0, draftPolicy.freeShippingThreshold);
   const scenarioAmounts = [Math.max(0, scenarioBase - 1000), scenarioBase, scenarioBase + 20000];
 
-  const warningFix = (id: string): { label: string; onClick: () => void } | undefined => {
-    if (id === 'usage-mismatch') return { label: '무료배송 켜기', onClick: () => set('freeShippingEnabled', true) };
-    if (id === 'threshold-zero') return { label: '기준금액 수정', onClick: () => set('freeShippingThreshold', 50000) };
-    if (id === 'min-max') return { label: '최대 배송비 초기화', onClick: () => set('maxFee', null) };
-    return undefined;
+  const warningActionLabel = (id: string) => {
+    if (id === 'usage-mismatch') return '무료배송 켜기';
+    if (id === 'threshold-zero') return '기준금액 수정';
+    if (id === 'min-max') return '최대 배송비 초기화';
+    return '';
+  };
+
+  const applyWarningFix = (id: string) => {
+    const current = editing ? draftPolicy : policy;
+    const next = id === 'usage-mismatch'
+      ? { ...current, freeShippingEnabled: true }
+      : id === 'threshold-zero'
+        ? { ...current, freeShippingThreshold: 50000 }
+        : id === 'min-max'
+          ? { ...current, maxFee: null }
+          : current;
+    setDraftPolicy(next);
+    if (!editing) setEditing(true);
   };
 
   const chips: [string, string][] = [
@@ -162,12 +160,12 @@ export function ShippingBaseFeePage() {
 
   return (
     <section className={shared.page}>
-      <div className={shared.headTop}>
+      <div className={`${shared.headTop} ${styles.pageHead}`}>
         <div className={shared.headRow}>
           <div>
             <div className={styles.eyebrow}>배송 정책</div>
             <h1 className={shared.title}>기본 배송비</h1>
-            <p className={shared.subtitle}>별도 상품·거래처·지역 배송비 조건이 없는 주문에 적용되는 전역 기본값입니다.</p>
+            <p className={`${shared.subtitle} ${styles.pageSubtitle}`}>별도 상품·거래처·지역 배송비 조건이 없는 주문에 적용되는 전역 기본값입니다.</p>
           </div>
           <div className={styles.headMeta}>
             <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>
@@ -211,38 +209,9 @@ export function ShippingBaseFeePage() {
                 {warnings.map((w) => <div key={w.id} className={styles.warningItem}>{w.message}</div>)}
               </div>
             </div>
-            {editing && warnings[0] && warningFix(warnings[0].id) && (
-              <CommonButton type="button" variant="secondary" size="sm" className={styles.warningAction} onClick={warningFix(warnings[0].id)!.onClick}>{warningFix(warnings[0].id)!.label}</CommonButton>
+            {warnings[0] && warningActionLabel(warnings[0].id) && (
+              <CommonButton type="button" variant="secondary" size="sm" className={styles.warningAction} onClick={() => applyWarningFix(warnings[0].id)}>{warningActionLabel(warnings[0].id)}</CommonButton>
             )}
-          </div>
-        )}
-
-        {tab === 'basic' && (
-          <div className={styles.summaryCard}>
-            <div className={styles.integrationHead}>
-              <div>
-                <h2>연결 정책 요약</h2>
-                <p>상세 조건은 각 전용 정책 화면에서 관리하며 여기에는 현재 적용값만 표시합니다.</p>
-              </div>
-              <div className={styles.integrationActions}>
-                <CommonButton type="button" variant="secondary" size="sm" onClick={() => navigate('/delivery-policy/free-shipping')}>무료배송 조건 관리</CommonButton>
-                <CommonButton type="button" variant="secondary" size="sm" onClick={() => navigate('/delivery-policy/bundle')}>묶음배송 정책 관리</CommonButton>
-              </div>
-            </div>
-            <div className={styles.summaryGrid}>
-              <div className={styles.summaryTile}>
-                <span className={styles.summaryTileLabel}>적용 중인 무료배송 조건</span>
-                <span className={styles.summaryTileValue}>{activeFreeShippingPolicies.length}개</span>
-              </div>
-              <div className={styles.summaryTile}>
-                <span className={styles.summaryTileLabel}>우선 적용 조건</span>
-                <span className={styles.summaryTileValue}>{primaryFreeShippingPolicy ? `${primaryFreeShippingPolicy.name} · ${fmtFreeShippingCondition(primaryFreeShippingPolicy)}` : '없음'}</span>
-              </div>
-              <div className={styles.summaryTile}>
-                <span className={styles.summaryTileLabel}>묶음배송 계산 방식</span>
-                <span className={styles.summaryTileValue}>{draftPolicy.bundleCalc}</span>
-              </div>
-            </div>
           </div>
         )}
 
@@ -319,17 +288,18 @@ export function ShippingBaseFeePage() {
                     <div className={styles.amountRow}>
                       <div>
                         <div className={styles.fieldBlockLabel}>기본 배송비</div>
-                        <CommonInput.Number
-                          clearable={false}
-                          className={styles.fieldInput}
-                          min={0}
-                          suffix="원"
-                          aria-label="기본 배송비"
-                          disabled={!editing || draftPolicy.usage === '미사용'}
-                          value={draftPolicy.baseFee}
-                          onChange={(e) => set('baseFee', Math.max(0, Number(e.target.value) || 0))}
-                        />
-                        <div className={styles.presetRow2}>
+                        <div className={styles.baseFeeInputRow}>
+                          <CommonInput.Number
+                            clearable={false}
+                            className={`${styles.fieldInput} ${styles.baseFeeInput}`}
+                            min={0}
+                            suffix="원"
+                            aria-label="기본 배송비"
+                            disabled={!editing || draftPolicy.usage === '미사용'}
+                            value={draftPolicy.baseFee}
+                            onChange={(e) => set('baseFee', Math.max(0, Number(e.target.value) || 0))}
+                          />
+                          <div className={styles.presetRow2}>
                           {BASE_FEE_PRESETS.map((v) => (
                             <CommonButton
                               key={v}
@@ -344,6 +314,7 @@ export function ShippingBaseFeePage() {
                               {v.toLocaleString('ko-KR')}
                             </CommonButton>
                           ))}
+                          </div>
                         </div>
                       </div>
                       <div>
@@ -467,7 +438,7 @@ export function ShippingBaseFeePage() {
 
                   <div className={styles.sideCard}>
                     <div className={styles.sideHead}>
-                      <div className={styles.sideTitle}>배송비 계산 테스트</div>
+                      <div className={styles.sideTitle}>계산 미리보기</div>
                       <div className={styles.sideDesc}>현재 설정값으로 즉시 계산됩니다</div>
                     </div>
                     <div className={styles.sideFields}>
@@ -503,7 +474,7 @@ export function ShippingBaseFeePage() {
                       </div>
                       {calcCount > 1 && (
                         <div className={styles.sideLine}>
-                          <span className={styles.sideLineLabel}>묶음배송 · {draftPolicy.bundleCalc} ({calcCount}건)</span>
+                          <span className={styles.sideLineLabel}>묶음배송 · {draftPolicy.bundleCalc.replace('배송비 ', '')} ({calcCount}건)</span>
                           <span className={`${styles.sideLineValue} ${styles.sideLineValueMuted}`}>× {bundleMultiplier}</span>
                         </div>
                       )}

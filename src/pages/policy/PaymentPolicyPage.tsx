@@ -250,7 +250,7 @@ export function PaymentPolicyPage() {
   );
 
   return (
-    <div className={shared.page}>
+    <div className={`${shared.page} ${styles.pageRoot}`}>
       <header className={`${shared.header} ${styles.compactHeader}`}>
         <div className={styles.compactHeaderRow}>
           <div className={shared.quickFilters}>
@@ -260,12 +260,12 @@ export function PaymentPolicyPage() {
                 <CommonButton
                   key={key}
                   type="button"
-                  variant="none"
+                  variant={active ? 'primary-light' : 'secondary'}
                   size="md"
-                  className={`${styles.topTab} ${active ? styles.topTabActive : ''}`}
+                  className={`${shared.qfBtn} ${active ? shared.quickActive : ''}`}
                   onClick={() => setTab(key)}
                 >
-                  {label}
+                  <span className={shared.qfLabel}>{label}</span>
                 </CommonButton>
               );
             })}
@@ -503,6 +503,7 @@ export function PaymentPolicyPage() {
           </>
         )}
 
+        {tab === 'methods' && (
           <>
             <div className={styles.card}>
               <div className={styles.cardHead}>

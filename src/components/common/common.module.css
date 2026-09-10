@@ -129,3 +129,26 @@
 :global(:has(> * > * > * > * > * > .bsDatePickerPopup)),
 :global(:has(> * > * > * > * > * > * > .bsDatePickerPopup)),
 :global(:has(> * > * > * > * > * > * > * > .bsDatePickerPopup)){overflow:visible!important}
+
+/* DatePicker 팝업 동적 위치(위/아래/왼쪽/오른쪽/가운데) 스마트 배치 스타일 */
+:global(.bsDatePickerPopup[data-placement-y="top"]) {
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.16) !important;
+}
+:global(.bsDatePickerPopup[data-placement-y="bottom"]) {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16) !important;
+}
+:global(.bsDatePickerPopup[data-placement-x="center"]) {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+}
+:global(.bsDatePickerPopup[data-placement-x="right"]) {
+  left: auto !important;
+  right: 0 !important;
+  transform: none !important;
+}
+:global(.bsDatePickerPopup[data-placement-x="left"]) {
+  left: 0 !important;
+  right: auto !important;
+  transform: none !important;
+}
