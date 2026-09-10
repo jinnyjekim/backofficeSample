@@ -195,7 +195,7 @@ export function TrafficStatsPage() {
         details={
           <label className="globalFilterField">
             <span>전환 목표</span>
-            <CommonSelect aria-label="전환 목표" size="sm" value={goal} options={CONVERSION_GOALS.map((value) => ({ label: value, value }))} onChange={(value) => setGoal(value as ConversionGoal)} />
+            <CommonSelect aria-label="전환 목표" size="md" value={goal} options={CONVERSION_GOALS.map((value) => ({ label: value, value }))} onChange={(value) => setGoal(value as ConversionGoal)} />
           </label>
         }
         onReset={resetFilters}

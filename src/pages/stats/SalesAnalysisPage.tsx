@@ -1152,7 +1152,7 @@ export function SalesAnalysisPage() {
                 <span>매출 기준</span>
                 <CommonSelect
                   className={styles.analysisSelect}
-                  size="sm"
+                  size="md"
                   value={salesBasis}
                   options={["주문 기준", "결제 완료 기준", "거래 완료 기준", "매출 확정 기준"].map((value) => ({ label: value, value }))}
                   onChange={(value) => setSalesBasis(String(value))}
@@ -1162,7 +1162,7 @@ export function SalesAnalysisPage() {
                 <span>날짜 기준</span>
                 <CommonSelect
                   className={styles.analysisSelect}
-                  size="sm"
+                  size="md"
                   value={dateBasis}
                   options={(mode === "b2b"
                     ? ["주문일", "납품 완료일", "매출 확정일"]
@@ -1177,7 +1177,7 @@ export function SalesAnalysisPage() {
                 <span>금액 기준</span>
                 <CommonSelect
                   className={styles.analysisSelect}
-                  size="sm"
+                  size="md"
                   value={amountBasis}
                   options={["세금 포함", "공급가액"].map((value) => ({ label: value, value }))}
                   onChange={(value) => setAmountBasis(String(value))}
@@ -1187,7 +1187,7 @@ export function SalesAnalysisPage() {
                 <span>거래 상태</span>
                 <CommonSelect
                   className={styles.analysisSelect}
-                  size="sm"
+                  size="md"
                   value={tradeState}
                   options={["정상 거래", "취소·환불 포함", "완료 거래만"].map((value) => ({ label: value, value }))}
                   onChange={(value) => setTradeState(String(value))}
@@ -1197,7 +1197,7 @@ export function SalesAnalysisPage() {
                 <span>판매 채널</span>
                 <CommonSelect
                   className={styles.analysisSelect}
-                  size="sm"
+                  size="md"
                   value={channel}
                   options={["전체 채널", "모바일 앱", "웹", "파트너 포털"].map((value) => ({ label: value, value }))}
                   onChange={(value) => setChannel(String(value))}

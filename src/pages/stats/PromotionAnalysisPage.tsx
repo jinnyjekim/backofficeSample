@@ -638,7 +638,7 @@ export function PromotionAnalysisPage() {
               <span>프로모션 유형</span>
               <CommonSelect
                 className={layout.analysisSelect}
-                size="sm"
+                size="md"
                 value={typeFilter}
                 options={["전체", ...PROMOTION_TYPES].map((value) => ({ label: value, value }))}
                 onChange={(value) => setTypeFilter(String(value))}

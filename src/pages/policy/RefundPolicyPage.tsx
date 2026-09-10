@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { CommonButton, CommonSwitch, showToast } from '../../components/common';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './RefundPolicyPage.module.css';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   INITIAL_HISTORY,
   INITIAL_LAST_MODIFIED,
@@ -34,14 +35,13 @@ import {
   type ShippingPartialPolicy,
 } from './refundPolicyData';
 
-type Tab = 'basic' | 'amount' | 'methods' | 'reasons' | 'preview' | 'history';
+type Tab = 'basic' | 'amount' | 'methods' | 'reasons' | 'preview';
 const TABS: [Tab, string][] = [
   ['basic', '기본 정책'],
   ['amount', '환불 금액'],
   ['methods', '결제수단'],
   ['reasons', '환불 사유'],
   ['preview', '정책 Preview'],
-  ['history', '변경 이력'],
 ];
 
 function signed(n: number): string {
@@ -63,6 +63,7 @@ export function RefundPolicyPage() {
   const [draftPolicy, setDraftPolicy] = useState(policy);
   const [draftMethodRules, setDraftMethodRules] = useState(methodRules);
   const [draftReasons, setDraftReasons] = useState(reasons);
+  const [showHistory, setShowHistory] = useState(false);
   const [reasonSearch, setReasonSearch] = useState('');
   const [dragReasonId, setDragReasonId] = useState<string | null>(null);
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
@@ -71,6 +72,9 @@ export function RefundPolicyPage() {
 
   const [previewOrderId, setPreviewOrderId] = useState(TEST_ORDERS[0].id);
   const [previewScope, setPreviewScope] = useState<RefundScope>('full');
+  const historyRef = useRef<HTMLElement>(null);
+
+  useOutsideClose(historyRef, () => setShowHistory(false));
 
   const warnings = useMemo(
     () => computeWarnings(editing ? draftPolicy : policy, editing ? draftMethodRules : methodRules, editing ? draftReasons : reasons),
@@ -238,15 +242,13 @@ export function RefundPolicyPage() {
           </div>
           <div className={styles.headMeta}>
             {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
+            <CommonButton type="button" variant="secondary" size="md" onClick={() => setShowHistory(true)}>변경 이력</CommonButton>
             {!editing ? (
-              <>
-                <button type="button" className={styles.outlineBtn} onClick={() => setTab('history')}>변경 이력</button>
-                <button type="button" className={styles.darkBtn} onClick={startEdit}>✏️ 정책 수정</button>
-              </>
+              <CommonButton type="button" variant="emphasis" size="md" onClick={startEdit}>수정</CommonButton>
             ) : (
               <>
-                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>수정 취소</button>
-                <button type="button" className={styles.darkBtn} onClick={requestSave}>💾 변경 사항 저장</button>
+                <CommonButton type="button" variant="secondary" size="md" onClick={cancelEdit}>취소</CommonButton>
+                <CommonButton type="button" variant="emphasis" size="md" onClick={requestSave}>저장</CommonButton>
               </>
             )}
           </div>
@@ -698,29 +700,38 @@ export function RefundPolicyPage() {
           </div>
         )}
 
-        {tab === 'history' && (
-          <div className={styles.card}>
-            <div className={styles.cardHead}>
-              <div className={styles.cardTitle}>변경 이력</div>
-              <div className={styles.cardDesc}>정책, 결제수단, 사유 설정 변경 기록입니다.</div>
-            </div>
-            <div className={styles.cardBody}>
-              {history.length === 0 && <div className={styles.infoNote}>변경 이력이 없습니다.</div>}
-              {history.map((h) => (
-                <div key={h.id} className={timeline.timelineItem}>
-                  <span className={timeline.timelineDot} />
-                  <div className={timeline.timelineBody}>
-                    <div className={timeline.timelineRow}><strong className={timeline.timelineTitle}>{h.field}</strong><span className={timeline.timelineWhen}>{h.at}</span></div>
-                    <div className={timeline.timelineDetail}>{h.before} → {h.after} · {h.by}</div>
-                    <div className={timeline.timelineDetail}>사유: {h.reason}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
+      {showHistory && (
+        <aside ref={historyRef} className={timeline.aside} aria-label="환불 정책 변경 이력">
+          <div className={timeline.head}>
+            <div className={timeline.headRow}>
+              <div className={timeline.headBody}>
+                <div className={timeline.eyebrow}>거래 정책 · 환불 정책</div>
+                <div className={timeline.titleRow}><span className={timeline.title}>변경 이력</span></div>
+                <div className={timeline.sub}>정책, 결제수단, 환불 사유 설정의 변경 기록입니다.</div>
+              </div>
+              <CommonButton type="button" variant="ghost" size="sm" className={timeline.closeBtn} onClick={() => setShowHistory(false)}>×</CommonButton>
+            </div>
+          </div>
+          <div className={timeline.scroll}>
+            {history.length === 0 && <div className={timeline.emptyInline}>변경 이력이 없습니다.</div>}
+            {history.map((entry) => (
+              <div key={entry.id} className={timeline.timelineItem}>
+                <span className={timeline.timelineDot} />
+                <div className={timeline.timelineBody}>
+                  <div className={timeline.timelineRow}>
+                    <strong className={timeline.timelineTitle}>{entry.field}</strong>
+                    <span className={timeline.timelineWhen}>{entry.at}</span>
+                  </div>
+                  <div className={timeline.timelineDetail}>{entry.before} → {entry.after}</div>
+                  <div className={timeline.timelineDetail}>{entry.reason} · {entry.by}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
+      )}
 
       {confirmSave && (
         <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmSave(null); }}>

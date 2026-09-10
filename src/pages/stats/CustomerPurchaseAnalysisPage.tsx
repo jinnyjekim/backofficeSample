@@ -691,7 +691,7 @@ export function CustomerPurchaseAnalysisPage({
               <span>고객 유형</span>
               <CommonSelect
                 className={layout.analysisSelect}
-                size="sm"
+                size="md"
                 value={customerType}
                 options={["전체", "신규", "기존"].map((value) => ({ label: value, value }))}
                 onChange={(value) => setCustomerType(String(value))}

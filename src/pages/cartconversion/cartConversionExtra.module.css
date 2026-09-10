@@ -55,26 +55,40 @@
 .detailFilters {
   display: flex;
   align-items: flex-end;
-  gap: 8px;
+  flex-wrap: nowrap;
+  gap: 8px 10px;
   margin: 10px -10px -10px;
   padding: 10px;
   border-top: 1px solid var(--common-border);
   border-radius: 0 0 var(--common-radius-lg) var(--common-radius-lg);
   background: var(--common-bg-subtle);
+  overflow-x: auto;
+}
+
+.detailFilters label,
+.detailFilters :global([class*="filterField"]) {
+  min-width: 115px;
+  flex: 0 0 auto;
+}
+
+.detailFilters :global([class*="selectWrap"]) {
+  min-width: 115px;
+  width: 100%;
 }
 
 .filterField {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
+  min-width: 115px;
   color: var(--common-text-muted);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 600;
   line-height: 1.2;
 }
 
 .filterSelect {
-  width: 160px;
+  width: 140px;
 }
 
 @media (max-width: 1180px) {

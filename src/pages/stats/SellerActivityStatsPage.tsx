@@ -693,7 +693,7 @@ export function SellerActivityStatsPage({
                 <span>세그먼트</span>
                 <CommonSelect
                   className={layout.analysisSelect}
-                  size="sm"
+                  size="md"
                   value={segmentFilter}
                   options={["전체", ...SEGMENTS].map((value) => ({ label: value, value }))}
                   onChange={(value) => setSegmentFilter(value as typeof segmentFilter)}
@@ -703,7 +703,7 @@ export function SellerActivityStatsPage({
                 <span>상태</span>
                 <CommonSelect
                   className={layout.analysisSelect}
-                  size="sm"
+                  size="md"
                   value={statusFilter}
                   options={["전체", "활동중", "휴면"].map((value) => ({ label: value, value }))}
                   onChange={(value) => setStatusFilter(value as typeof statusFilter)}
@@ -713,7 +713,7 @@ export function SellerActivityStatsPage({
                 <span>표본 조건</span>
                 <CommonSelect
                   className={layout.analysisSelect}
-                  size="sm"
+                  size="md"
                   value={minDealsOnly ? "min" : "all"}
                   options={[
                     { label: `전체 ${ENTITY_LABEL[mode]}`, value: "all" },

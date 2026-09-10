@@ -80,8 +80,8 @@
 .summaryCard { background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; padding: 15px 17px 17px; margin-bottom: 14px; }
 .summaryHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .summaryHead h2 { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
-.summaryGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 24px; }
-.summaryTile { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; padding: 9px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+.summaryGrid { display: grid; grid-template-columns: repeat(3, minmax(230px, 300px)); justify-content: start; gap: 0 28px; }
+.summaryTile { display: grid; grid-template-columns: minmax(100px, 120px) max-content; align-items: baseline; justify-content: start; gap: 12px; min-width: 0; padding: 9px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
 .summaryGrid > .summaryTile:nth-last-child(-n+3) { border-bottom: 0; }
 .summaryTileLabel { font-size: 12px; color: #8b8b93; white-space: nowrap; }
 .summaryTileValue { font-size: 13px; font-weight: 700; color: #18181b; text-align: right; font-variant-numeric: tabular-nums; }
@@ -91,7 +91,8 @@
 .cardTitle { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
 .cardDesc { font-size: 11.5px; color: #a1a1aa; margin-top: 3px; }
 .cardBody { padding: 16px 17px 18px; display: flex; flex-direction: column; gap: 14px; }
-.cardGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 20px; }
+.cardGrid { display: grid; grid-template-columns: repeat(2, max-content); justify-content: start; gap: 18px 32px; }
+.cardGrid > div { max-width: 100%; }
 .cardGridFull { grid-column: 1 / -1; }
 .dividerTop { border-top: 1px solid rgba(0, 0, 0, 0.06); padding-top: 14px; }
 
@@ -130,7 +131,7 @@
 .formulaNote em { color: #a1a1aa; font-style: normal; }
 
 /* Preview 탭 */
-.previewGrid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: start; }
+.previewGrid { display: grid; grid-template-columns: minmax(320px, 440px) minmax(480px, 760px); justify-content: start; gap: 14px; align-items: start; }
 .previewCard { background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; overflow: hidden; }
 .previewCardBody { padding: 16px 18px; }
 .orderPick { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }

@@ -364,33 +364,13 @@ export function CancelPolicyPage() {
                 최종 수정 {lastModified.at} · {lastModified.by}
               </span>
             )}
+            <CommonButton type="button" variant="secondary" size="md" onClick={() => setShowHistory(true)}>변경 이력</CommonButton>
             {!editing ? (
-              <>
-                <CommonButton type="button" variant="secondary" size="md" onClick={() => setShowHistory(true)}>변경 이력</CommonButton>
-                <button
-                  type="button"
-                  className={styles.darkBtn}
-                  onClick={startEdit}
-                >
-                  수정
-                </button>
-              </>
+              <CommonButton type="button" variant="emphasis" size="md" onClick={startEdit}>수정</CommonButton>
             ) : (
               <>
-                <button
-                  type="button"
-                  className={styles.outlineBtn}
-                  onClick={cancelEdit}
-                >
-                  수정 취소
-                </button>
-                <button
-                  type="button"
-                  className={styles.darkBtn}
-                  onClick={requestSave}
-                >
-                  저장
-                </button>
+                <CommonButton type="button" variant="secondary" size="md" onClick={cancelEdit}>취소</CommonButton>
+                <CommonButton type="button" variant="emphasis" size="md" onClick={requestSave}>저장</CommonButton>
               </>
             )}
           </div>

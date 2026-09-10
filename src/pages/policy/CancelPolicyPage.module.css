@@ -359,3 +359,31 @@
   .previewDecisionRow { min-width: 570px; }
   .policySentenceRow { align-items: start; padding: 10px 0; }
 }
+
+/* ── 사유 편집 다이얼로그 ── */
+.reasonDialog { width: min(440px, 92%) !important; }
+
+.formField { display: block; margin-bottom: 13px; }
+.formField > span { display: flex; justify-content: space-between; margin-bottom: 5px; color: #52525b; font-size: 12px; }
+.formField small { color: #a1a1aa; font-size: 10.5px; font-weight: 400; }
+.formField input, .formField select, .formField textarea { width: 100%; box-sizing: border-box; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 7px; background: #fff; color: #18181b; font: inherit; font-size: 12.5px; }
+.formField input, .formField select { height: 34px; padding: 0 10px; }
+.formField input:disabled, .formField select:disabled, .formField textarea:disabled { background: #fafafa; color: #71717a; opacity: 1; }
+
+.formGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+
+.toggleField { display: flex; align-items: center; justify-content: space-between; min-height: 33px; margin-bottom: 11px; color: #52525b; font-size: 11.5px; }
+.toggleField > span { display: flex; flex-direction: column; gap: 2px; }
+.toggleField small { color: #a1a1aa; font-size: 10.5px; font-weight: 400; }
+
+.switch { position: relative; width: 38px; height: 21px; padding: 0; border: 0; border-radius: 999px; background: #d4d4d8; cursor: pointer; transition: 0.15s; flex: none; }
+.switch i { position: absolute; top: 3px; left: 3px; width: 15px; height: 15px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: 0.15s; }
+.switchOn { background: var(--accent); }
+.switchOn i { left: 20px; }
+.switch:disabled { opacity: 0.55; cursor: default; }
+
+.formError { padding: 9px 11px; margin-top: 10px; border-radius: 8px; background: #fef2f2; color: #dc2626; font-size: 11.5px; }
+
+.primaryButton, .cancelButton { height: 34px; padding: 0 14px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.primaryButton { border: 0; background: var(--accent); color: #fff; }
+.cancelButton { border: 1px solid rgba(0, 0, 0, 0.1); background: #fff; color: #52525b; }

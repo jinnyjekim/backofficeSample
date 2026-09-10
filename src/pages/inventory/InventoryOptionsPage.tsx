@@ -722,6 +722,7 @@ export function InventoryOptionsPage() {
               </>
             )}
           </div>
+        </div>
       </div>
       {selected.length > 0 && (
         <div className={shared.bulkBar}>
