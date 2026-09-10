@@ -81,7 +81,17 @@ function now() {
   return "2026-08-26 15:10";
 }
 
-export function StockOutboundManagementPage() {
+export interface StockOutboundManagementPageProps {
+  pageTitle?: string;
+  pageSubtitle?: string;
+  headerTabs?: React.ReactNode;
+}
+
+export function StockOutboundManagementPage({
+  pageTitle,
+  pageSubtitle,
+  headerTabs,
+}: StockOutboundManagementPageProps = {}) {
   const [records, setRecords] = useState<StockOutboundRecord[]>(
     STOCK_OUTBOUND_RECORDS,
   );
@@ -691,10 +701,10 @@ export function StockOutboundManagementPage() {
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>재고 출고</h1>
+            <h1 className={shared.title}>{pageTitle ?? "재고 출고"}</h1>
             <p className={shared.subtitle}>
-              창고별 출고 요청과 실제 출고 수량을 확인하고 현재고·예약재고 차감
-              Transaction을 관리합니다.
+              {pageSubtitle ??
+                "창고별 출고 요청과 실제 출고 수량을 확인하고 현재고·예약재고 차감 Transaction을 관리합니다."}
             </p>
           </div>
           <button
@@ -705,6 +715,7 @@ export function StockOutboundManagementPage() {
             + 출고 등록
           </button>
         </div>
+        {headerTabs}
         <div className={styles.definitionStrip}>
           재고 출고: 출고 확정 시 현재고 차감 · 배송 출고: 송장 등록 및 배송사
           인계 · 주문 출고는 예약재고도 같은 수량만큼 해제
@@ -836,33 +847,45 @@ export function StockOutboundManagementPage() {
             <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
             </button>
+            {showAdvanced && (
+              <>
+                <label className={shared.dateFilterField}>
+                  <span>예정일</span>
+                  <span className={shared.dateRange}>
+                    <DatePicker
+                      aria-label="예정일 시작 날짜"
+                      value={expectedFrom}
+                      onChange={(event) => setExpectedFrom(event.target.value)}
+                    />
+                    <span className={shared.dateSeparator}>~</span>
+                    <DatePicker
+                      aria-label="예정일 종료 날짜"
+                      value={expectedTo}
+                      onChange={(event) => setExpectedTo(event.target.value)}
+                    />
+                  </span>
+                </label>
+                <label className="globalFilterField">
+                  <span>담당자</span>
+                  <select
+                    aria-label="담당자"
+                    className={shared.selectSm}
+                    value={manager}
+                    onChange={(event) => setManager(event.target.value)}
+                  >
+                    <option value="">전체 담당자</option>
+                    {managers.map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </>
+            )}
           </div>
           {showAdvanced && (
-            <div className={styles.advancedFilters}>
-              <label>
-                예정일
-                <DatePicker
-                  value={expectedFrom}
-                  onChange={(event) => setExpectedFrom(event.target.value)}
-                />
-                <span>–</span>
-                <DatePicker
-                  value={expectedTo}
-                  onChange={(event) => setExpectedTo(event.target.value)}
-                />
-              </label>
-              <label>
-                담당자
-                <select
-                  value={manager}
-                  onChange={(event) => setManager(event.target.value)}
-                >
-                  <option value="">전체</option>
-                  {managers.map((value) => (
-                    <option key={value}>{value}</option>
-                  ))}
-                </select>
-              </label>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
               <span className={styles.filterHint}>
                 실제 출고일은 차수별 Transaction 기준으로 조회됩니다.
               </span>

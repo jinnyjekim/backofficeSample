@@ -197,11 +197,165 @@
 .reasonDialog { width: min(380px, 92%) !important; }
 .toast { position: fixed; right: 24px; bottom: 24px; z-index: 70; padding: 11px 15px; border-radius: 9px; background: #18181b; color: #fff; font-size: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22); }
 
+.pageRoot { overflow-x: clip; }
+
+.policyLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); gap: 14px; align-items: start; }
+.policyMain { min-width: 0; overflow: hidden; display: flex; flex-direction: column; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; }
+.policySection { display: flex; flex-wrap: wrap; gap: 14px 20px; padding: 18px 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
+.policySection:last-child { border-bottom: 0; }
+.sectionDesc { flex: 0 0 200px; min-width: 0; }
+.sectionHead { display: flex; align-items: center; gap: 8px; min-height: 20px; }
+.sectionNum { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 19px; height: 19px; border-radius: 5px; background: #18181b; color: #fff; font-size: 10.5px; font-weight: 700; }
+.sectionHeadTitle { color: #18181b; font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; }
+.sectionDescText { max-width: 200px; margin: 7px 0 0; color: #a1a1aa; font-size: 11.5px; line-height: 1.55; }
+.sectionNote { margin-top: 14px; padding: 10px 11px; border-radius: 8px; background: #f8fafc; color: #a1a1aa; font-size: 10.5px; line-height: 1.55; }
+.sectionControls { display: flex; flex: 1 1 360px; flex-direction: column; gap: 14px; min-width: 0; max-width: 960px; container-type: inline-size; }
+.sectionDividerTop { padding-top: 13px; border-top: 1px solid rgba(0, 0, 0, 0.06); }
+.fieldGroup { min-width: 0; }
+.fieldBlockLabel { display: flex; align-items: baseline; gap: 6px; margin-bottom: 7px; color: #71717a; font-size: 11.5px; font-weight: 600; }
+.fieldHint { color: #a1a1aa; font-size: 11px; line-height: 1.45; }
+.inlineLabel { display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px; }
+.inlineLabel .fieldBlockLabel { margin-bottom: 0; }
+.compactPills { display: flex; flex-wrap: wrap; gap: 6px; }
+.actorOptions, .timingOptions { display: flex; flex-wrap: wrap; gap: 8px; }
+.actorOptions > button { flex: 0 1 165px; min-width: 165px; }
+.timingOptions > button { flex: 0 1 155px; min-width: 155px; }
+.basicStageRow { display: flex; flex-wrap: wrap; gap: 7px; }
+.stageButtonContent { display: inline-flex; align-items: center; gap: 7px; }
+.stageMark { display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; border: 1px solid rgba(0, 0, 0, 0.12); border-radius: 5px; font-size: 10px; line-height: 1; }
+.timingBottomRow { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 18px 34px; }
+.switchRow { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 22px; min-height: 34px; }
+
+.costTable { width: min(100%, 415px); overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.09); border-radius: 10px; }
+.costRow { display: grid; grid-template-columns: minmax(135px, 1fr) 105px 105px; align-items: center; min-height: 39px; padding: 0 12px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); font-size: 12px; }
+.costRow:last-child { border-bottom: 0; }
+.costRow strong { font-size: 12px; font-weight: 600; }
+.costRow > :nth-child(n+2) { justify-self: center; }
+.costHead { min-height: 34px; background: #fafafa; color: #8b8b93; font-size: 10.5px; font-weight: 600; }
+.costBottomRow { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 14px 18px; }
+.moneyControl { width: 118px; }
+.shortControl { width: 110px; }
+.applyRow { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 14px 18px; }
+.dateRow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.dateControl { width: 165px; flex: 0 0 165px; }
+
+.policySideOuter { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.sideCard { overflow: hidden; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; }
+.sideHead { padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.sideTitle { color: #18181b; font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+.sideSubtitle { margin-top: 3px; color: #a1a1aa; font-size: 11px; }
+.previewInputs { display: flex; flex-direction: column; gap: 10px; padding: 13px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.previewInputRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.previewInputRow > span { flex: none; color: #71717a; font-size: 11.5px; font-weight: 600; }
+.segmented { display: flex; justify-content: flex-end; overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.09); border-radius: 8px; }
+.segmented button { height: 29px; padding: 0 9px; border: 0; border-left: 1px solid rgba(0, 0, 0, 0.06); background: #fff; color: #8b8b93; font-size: 10.5px; cursor: pointer; white-space: nowrap; }
+.segmented button:first-child { border-left: 0; }
+.segmented .segmentActive { background: #fafafa; color: #18181b; font-weight: 700; }
+.previewAmount { width: 132px; }
+.calcRows { display: flex; flex-direction: column; gap: 8px; padding: 13px 16px; }
+.calcRows > div, .routeBlock > div:not(.sideMutedTitle) { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; color: #8b8b93; font-size: 11.5px; }
+.calcRows strong, .routeBlock strong { color: #52525b; font-size: 12px; text-align: right; }
+.resultBand { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 13px 16px; border-top: 1px solid; border-bottom: 1px solid; font-size: 12px; font-weight: 700; }
+.resultBand strong { font-size: 17px; }
+.resultBandOk { border-color: #ccebd9; background: #eefbf4; color: #166534; }
+.resultBandNo { border-color: #f2d6d2; background: #fff5f3; color: #c24135; }
+.routeBlock { display: flex; flex-direction: column; gap: 7px; padding: 12px 16px 14px; }
+.sideMutedTitle { margin-bottom: 2px; color: #a1a1aa; font-size: 10.5px; font-weight: 600; }
+.textRed { color: #dc3f35 !important; }
+.textBlue { color: #2563eb !important; }
+.digestRow { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 10px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
+.digestRow span { flex: 1; min-width: 0; color: #a1a1aa; font-size: 11.5px; font-weight: 600; }
+.digestRow strong { flex: none; max-width: 66%; color: #3f3f46; font-size: 12px; font-weight: 600; text-align: right; }
+.sideFootNote { padding: 12px 16px; border-top: 1px solid rgba(0, 0, 0, 0.06); background: #fafafa; color: #8b8b93; font-size: 11px; line-height: 1.6; }
+
+.stagePolicyLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); gap: 14px; align-items: start; }
+.stagePolicyMain { min-width: 0; overflow: hidden; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; }
+.stagePolicySection { display: flex; gap: 20px; padding: 18px 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
+.stagePolicySection:last-child { border-bottom: 0; }
+.stageSectionDesc { flex: 0 0 200px; min-width: 0; }
+.stageLegend { display: flex; flex-direction: column; gap: 7px; margin-top: 14px; padding: 10px 11px; border-radius: 8px; background: #fafafa; }
+.stageLegend > div { display: flex; align-items: center; gap: 9px; color: #a1a1aa; font-size: 10.5px; }
+.stageMatrixWrap { flex: 1; min-width: 0; }
+.stageMatrix { overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.09); border-radius: 10px; }
+.stageMatrixRow { display: grid; grid-template-columns: minmax(180px, 1.7fr) minmax(110px, 1fr) minmax(110px, 1fr) minmax(90px, .85fr); align-items: center; min-height: 39px; padding: 0 12px; border-bottom: 1px solid rgba(0, 0, 0, 0.055); font-size: 12px; }
+.stageMatrixRow:last-child { border-bottom: 0; }
+.stageMatrixHead { min-height: 34px; background: #fafafa; color: #8b8b93; font-size: 10.5px; font-weight: 600; }
+.stageMatrixPost { background: #fffdf8; }
+.stageMatrixName { display: flex; align-items: center; gap: 8px; color: #27272a; font-weight: 600; }
+.stageMatrixName i { width: 5px; height: 5px; flex: none; border-radius: 50%; background: #d4d4d8; }
+.stageMatrixName .stageDotPost { background: #dfa22f; }
+.stageSelect { width: 100px; }
+.approvalText { color: #71717a; font-size: 11.5px; }
+.conditionControls { display: flex; flex: 1; flex-direction: column; gap: 14px; min-width: 0; }
+.conditionTopRow { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 16px 20px; }
+
+.stagePreviewActor { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 13px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.stagePreviewActor > span { color: #71717a; font-size: 11.5px; font-weight: 600; }
+.stageFlow { padding: 12px 16px; }
+.stageFlowRow { position: relative; display: grid; grid-template-columns: 12px 1fr auto; align-items: center; gap: 8px; min-height: 29px; color: #52525b; font-size: 11.5px; }
+.stageFlowRow:not(:last-child)::after { content: ''; position: absolute; left: 5px; top: 20px; bottom: -9px; width: 1px; background: #e4e4e7; }
+.stageFlowDot { position: relative; z-index: 1; width: 8px; height: 8px; border-radius: 50%; }
+.flowDotOk { background: #21a16b; }
+.flowDotCond { background: #dda02d; }
+.flowDotNo { background: #d4d4d8; }
+.stageResultBand { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 13px 16px; border-top: 1px solid #ccebd9; border-bottom: 1px solid #ccebd9; background: #eefbf4; color: #166534; font-size: 12px; font-weight: 700; }
+.stageResultBand strong { font-size: 17px; }
+.stageFlowSummary { display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 14px; }
+.stageFlowSummary > div:not(.sideMutedTitle) { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; color: #8b8b93; font-size: 11.5px; }
+.stageFlowSummary strong { color: #52525b; font-size: 12px; }
+.textGold { color: #b7791f !important; }
+
+.policyPreviewLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); gap: 14px; align-items: start; }
+.policyPreviewMain { display: flex; min-width: 0; flex-direction: column; gap: 14px; }
+.previewDocumentCard, .previewDecisionCard { overflow: hidden; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; }
+.previewDocumentHead, .previewDecisionHead { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.previewDocumentTitle { color: #18181b; font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+.previewDocumentDesc { margin-top: 3px; color: #a1a1aa; font-size: 11px; }
+.previewDraftBadge, .previewLiveBadge { flex: none; padding: 3px 9px; border-radius: 999px; font-size: 10.5px; font-weight: 700; }
+.previewDraftBadge { border: 1px solid #f0cf8f; background: #fffaf0; color: #9a6818; }
+.previewLiveBadge { border: 1px solid #b9e8cf; background: #eefbf4; color: #16845b; }
+.policySentenceList { padding: 0 16px; }
+.policySentenceRow { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 54px; border-bottom: 1px solid rgba(0, 0, 0, 0.055); }
+.policySentenceRow:last-child { border-bottom: 0; }
+.policySentenceNum { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 5px; background: #f4f4f5; color: #a1a1aa; font-size: 10px; font-weight: 700; }
+.policySentenceRow strong { display: block; margin-bottom: 3px; color: #3f3f46; font-size: 11.5px; font-weight: 700; }
+.policySentenceRow p { margin: 0; color: #71717a; font-size: 11px; line-height: 1.45; }
+.previewRowTag, .previewRowTagWarn { padding: 3px 8px; border-radius: 999px; background: #f4f4f5; color: #71717a; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.previewRowTagWarn { background: #fff8e8; color: #ad741e; }
+.previewDecisionTable { margin: 12px 16px 14px; overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 9px; }
+.previewDecisionRow { display: grid; grid-template-columns: minmax(150px, 1.25fr) minmax(90px, .7fr) minmax(90px, .7fr) minmax(170px, 1fr); align-items: center; min-height: 37px; padding: 0 12px; border-bottom: 1px solid rgba(0, 0, 0, 0.055); color: #71717a; font-size: 11px; }
+.previewDecisionRow:last-child { border-bottom: 0; }
+.previewDecisionRow strong { color: #3f3f46; font-size: 11.5px; font-weight: 600; }
+.previewDecisionTableHead { min-height: 32px; background: #fafafa; color: #8b8b93; font-size: 10.5px; font-weight: 600; }
+.previewDecisionPost { background: #fffdf8; }
+.policyPreviewSide { display: flex; min-width: 0; flex-direction: column; gap: 14px; }
+.customerMessageList { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; }
+.customerMessageList > div { padding: 10px 11px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 8px; background: #fafafa; }
+.customerMessageList span { color: #a1a1aa; font-size: 10.5px; font-weight: 600; }
+.customerMessageList p { margin: 5px 0 0; color: #52525b; font-size: 11.5px; line-height: 1.45; }
+.previewDeployPending, .previewDeployReady { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 13px 16px; border-top: 1px solid; font-size: 12px; font-weight: 700; }
+.previewDeployPending { border-color: #f1dfb8; background: #fff8e8; color: #9a6818; }
+.previewDeployReady { border-color: #ccebd9; background: #eefbf4; color: #166534; }
+.previewDeployPending strong, .previewDeployReady strong { font-size: 15px; }
+
 @media (max-width: 1080px) {
-  .previewGrid { grid-template-columns: 1fr; }
+  .previewGrid, .policyLayout, .stagePolicyLayout, .policyPreviewLayout { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
   .summaryGrid, .cardGrid { grid-template-columns: 1fr; }
   .stageRow, .reasonRow { grid-template-columns: 1fr; gap: 4px; }
   .stageHead, .reasonHead { display: none; }
+  .policySection { flex-direction: column; }
+  .sectionDesc { flex-basis: auto; }
+  .sectionDescText { max-width: none; }
+  .stagePolicySection { flex-direction: column; }
+  .stageSectionDesc { flex-basis: auto; }
+}
+
+@media (max-width: 640px) {
+  .stageMatrix { overflow-x: auto; }
+  .stageMatrixRow { min-width: 610px; }
+  .previewDecisionTable { overflow-x: auto; }
+  .previewDecisionRow { min-width: 570px; }
+  .policySentenceRow { align-items: start; padding: 10px 0; }
 }

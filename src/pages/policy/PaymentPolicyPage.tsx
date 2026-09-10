@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './PaymentPolicyPage.module.css';
-import { CommonButton, CommonDatePicker, CommonInput, CommonSelect, CommonSwitch, showToast } from '../../components/common';
+import { CommonBadge, CommonButton, CommonDatePicker, CommonInput, CommonSelect, CommonSwitch, showToast } from '../../components/common';
 import { PaymentMethodEditDialog } from './PaymentMethodEditDialog';
+import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   INITIAL_HISTORY,
   INITIAL_LAST_MODIFIED,
@@ -18,6 +19,7 @@ import {
   type AmountChangePolicy,
   type ExpiryAction,
   type FailureOrderAction,
+  type FailureNotification,
   type FieldDiff,
   type LastModified,
   type PaymentBasis,
@@ -25,6 +27,8 @@ import {
   type PaymentPolicy,
   type PaymentTiming,
   type PolicyHistoryEntry,
+  type RequeryFailureAction,
+  type RetryLimitAction,
   type ShortagePolicy,
 } from './paymentPolicyData';
 
@@ -42,13 +46,12 @@ const EXPIRY_OPTIONS: Array<{ value: ExpiryAction; title: string; description: s
   { value: '관리자 확인 필요', title: '관리자 확인 대기', description: '보류 상태로 이관' },
 ];
 
-type Tab = 'basic' | 'methods' | 'partial' | 'failure' | 'cancel' | 'preview' | 'history';
+type Tab = 'basic' | 'methods' | 'partial' | 'failure' | 'cancel' | 'preview';
 const TABS: [Tab, string][] = [
   ['basic', '기본 설정'],
   ['methods', '결제수단'],
   ['failure', '실패 · 재시도'],
   ['preview', '정책 Preview'],
-  ['history', '변경 이력'],
 ];
 const SHOW_LEGACY_BASIC_LAYOUT: boolean = false;
 
@@ -63,12 +66,17 @@ export function PaymentPolicyPage() {
   const [editing, setEditing] = useState(false);
   const [draftPolicy, setDraftPolicy] = useState(policy);
   const [draftMethods, setDraftMethods] = useState(methods);
+  const [showHistory, setShowHistory] = useState(false);
   const [methodEditId, setMethodEditId] = useState<string | null>(null);
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
   const [reason, setReason] = useState('');
   const [saveError, setSaveError] = useState('');
   const [previewAmount, setPreviewAmount] = useState(50000);
   const [previewSucceeded, setPreviewSucceeded] = useState(true);
+  const [failurePreviewCause, setFailurePreviewCause] = useState<'한도 초과' | '인증 실패' | 'PG 오류'>('한도 초과');
+  const historyRef = useRef<HTMLElement>(null);
+
+  useOutsideClose(historyRef, () => setShowHistory(false));
 
   const warnings = useMemo(
     () => computeWarnings(editing ? draftPolicy : policy, editing ? draftMethods : methods),
@@ -184,6 +192,18 @@ export function PaymentPolicyPage() {
         : draftPolicy.failureOrderAction === '결제 실패 상태로 전환'
           ? '결제 실패'
           : '결제 대기 유지';
+  const retryAttemptTimes = Array.from(
+    { length: draftPolicy.maxRetryCount + 1 },
+    (_, index) =>
+      index === 0
+        ? 0
+        : Math.round(
+            (draftPolicy.retryLimitMinutes * index) /
+              draftPolicy.maxRetryCount,
+          ),
+  );
+  const failurePreviewSuccess =
+    draftPolicy.retryAllowed && draftPolicy.maxRetryCount > 0;
 
   const policySide = (
     <div className={styles.policySide}>
@@ -251,27 +271,16 @@ export function PaymentPolicyPage() {
 
   return (
     <div className={`${shared.page} ${styles.pageRoot}`}>
-      <header className={`${shared.header} ${styles.compactHeader}`}>
-        <div className={styles.compactHeaderRow}>
-          <div className={shared.quickFilters}>
-            {TABS.map(([key, label]) => {
-              const active = tab === key;
-              return (
-                <CommonButton
-                  key={key}
-                  type="button"
-                  variant={active ? 'primary-light' : 'secondary'}
-                  size="md"
-                  className={`${shared.qfBtn} ${active ? shared.quickActive : ''}`}
-                  onClick={() => setTab(key)}
-                >
-                  <span className={shared.qfLabel}>{label}</span>
-                </CommonButton>
-              );
-            })}
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
+          <div>
+            <div className={styles.eyebrow}>거래 정책</div>
+            <div className={shared.title}>결제 정책</div>
+            <div className={shared.subtitle}>주문 결제 방식과 결제수단, 실패·재시도 및 주문 연계 기준을 설정합니다.</div>
           </div>
           <div className={styles.headMeta}>
             {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
+            <CommonButton type="button" variant="secondary" size="md" onClick={() => setShowHistory(true)}>변경 이력</CommonButton>
             {!editing ? (
               <CommonButton type="button" variant="emphasis" size="md" onClick={startEdit}>수정</CommonButton>
             ) : (
@@ -282,10 +291,27 @@ export function PaymentPolicyPage() {
             )}
           </div>
         </div>
+        <div className={shared.quickFilters}>
+          {TABS.map(([key, label]) => {
+            const active = tab === key;
+            return (
+              <CommonButton
+                key={key}
+                type="button"
+                variant={active ? 'primary-light' : 'secondary'}
+                size="md"
+                className={`${shared.qfBtn} ${active ? shared.quickActive : ''}`}
+                onClick={() => setTab(key)}
+              >
+                <span className={shared.qfLabel}>{label}</span>
+              </CommonButton>
+            );
+          })}
+        </div>
       </header>
 
       <div className={styles.body}>
-        {tab !== 'basic' && tab !== 'preview' && warnings.length > 0 && (
+        {tab !== 'basic' && tab !== 'failure' && tab !== 'preview' && warnings.length > 0 && (
           <div className={styles.warningBanner}>
             <span className={styles.warningIcon}>!</span>
             <div className={styles.warningBody}>
@@ -623,76 +649,175 @@ export function PaymentPolicyPage() {
 
         {tab === 'failure' && (
           <>
-            <div className={styles.card}>
-              <div className={styles.cardHead}>
-                <div className={styles.cardTitle}>결제 실패</div>
-                <div className={styles.cardDesc}>결제 실패 시 주문 처리와, 사용자에게 재시도를 허용할지 정합니다.</div>
-              </div>
-              <div className={styles.cardBody}>
-                <div>
-                  <div className={styles.fieldLabel}>실패 시 주문 상태</div>
-                  <select value={draftPolicy.failureOrderAction} onChange={(e) => set('failureOrderAction', e.target.value as FailureOrderAction)} className={styles.textField} style={{ maxWidth: 260 }}>
-                    <option>유지</option>
-                    <option>결제 실패 상태로 전환</option>
-                    <option>주문 취소</option>
-                  </select>
-                </div>
-
-                <div className={styles.toggleRow}>
-                  <button type="button" className={`${styles.switch} ${draftPolicy.retryAllowed ? styles.switchOn : ''}`} onClick={() => set('retryAllowed', !draftPolicy.retryAllowed)}><i /></button>
-                  <div className={styles.toggleRowText}>
-                    <div className={styles.toggleRowTitle}>사용자 재시도 허용</div>
-                  </div>
-                </div>
-
-                {draftPolicy.retryAllowed && (
-                  <div className={styles.cardGrid}>
-                    <div>
-                      <div className={styles.fieldLabel}>최대 재시도</div>
-                      <input type="number" min="1" className={styles.textField} value={draftPolicy.maxRetryCount} onChange={(e) => set('maxRetryCount', Number(e.target.value))} />
+            <div className={styles.failurePolicyLayout}>
+              <div className={styles.failurePolicyMain}>
+                <section className={styles.failurePolicySection}>
+                  <div className={styles.failureSectionDesc}>
+                    <div className={styles.sectionHead}>
+                      <span className={styles.sectionNum}>1</span>
+                      <span className={styles.sectionHeadTitle}>결제 실패 처리</span>
+                      <CommonBadge type="success-light" size="sm">{draftPolicy.failureOrderAction === '유지' ? '유지' : draftPolicy.failureOrderAction}</CommonBadge>
                     </div>
-                    <div>
-                      <div className={styles.fieldLabel}>재시도 제한시간 <span className={styles.fieldLabelHint}>분</span></div>
-                      <input type="number" min="1" className={styles.textField} value={draftPolicy.retryLimitMinutes} onChange={(e) => set('retryLimitMinutes', Number(e.target.value))} />
+                    <p className={styles.sectionDescText}>결제가 실패했을 때 주문을 어떤 상태로 둘지, 재고 선점을 언제까지 유지할지 정합니다.</p>
+                  </div>
+                  <div className={styles.failureSectionControls}>
+                    <div className={styles.failureActionOptions}>
+                      {([
+                        ['유지', '유지', '주문을 그대로 두고 재결제 대기'],
+                        ['결제 실패 상태로 전환', '결제 대기', '별도 상태로 분리해 관리'],
+                        ['주문 취소', '자동 취소', '선점 시간 경과 후 주문 취소'],
+                      ] as [FailureOrderAction, string, string][]).map(([value, title, description]) => (
+                        <CommonButton key={value} type="button" variant="option" size="md" selected={draftPolicy.failureOrderAction === value} description={description} disabled={!editing} onClick={() => set('failureOrderAction', value)}>{title}</CommonButton>
+                      ))}
+                    </div>
+                    <div className={styles.failureDividerFields}>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>재고 선점 유지</div>
+                        <CommonInput.Number clearable={false} className={styles.numberControl} min={0} suffix="분" value={draftPolicy.stockReservationMinutes} disabled={!editing} aria-label="재고 선점 유지 시간" onChange={(event) => set('stockReservationMinutes', Math.max(0, Number(event.target.value) || 0))} />
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>실패 알림</div>
+                        <div className={styles.compactPills}>
+                          {(['앱 푸시', '문자', '없음'] as FailureNotification[]).map((value) => (
+                            <CommonButton key={value} type="button" variant={draftPolicy.failureNotification === value ? 'emphasis' : 'secondary'} size="md" disabled={!editing} onClick={() => set('failureNotification', value)}>{value}</CommonButton>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                )}
-              </div>
-            </div>
+                </section>
 
-            <div className={styles.card}>
-              <div className={styles.cardHead}>
-                <div className={styles.cardTitle}>결제 상태 재조회</div>
-                <div className={styles.cardDesc}>내부 상태와 PG 상태가 어긋나는 경우 자동 동기화할지 정합니다.</div>
+                <section className={styles.failurePolicySection}>
+                  <div className={styles.failureSectionDesc}>
+                    <div className={styles.sectionHead}>
+                      <span className={styles.sectionNum}>2</span>
+                      <span className={styles.sectionHeadTitle}>사용자 재시도</span>
+                    </div>
+                    <p className={styles.sectionDescText}>고객이 같은 주문으로 결제를 다시 시도할 수 있는 횟수와 제한 시간입니다.</p>
+                  </div>
+                  <div className={styles.failureSectionControls}>
+                    <div className={styles.failureFeatureCard}>
+                      <CommonSwitch size="md" checked={draftPolicy.retryAllowed} label="사용자 재시도 허용" disabled={!editing} onChange={(checked) => set('retryAllowed', checked)} />
+                      <span>재시도를 끄면 실패 후 새 주문으로만 결제할 수 있습니다</span>
+                    </div>
+                    <div className={styles.failureDividerFields}>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>최대 재시도</div>
+                        <CommonInput.Number clearable={false} className={styles.numberControl} min={1} suffix="회" value={draftPolicy.maxRetryCount} disabled={!editing || !draftPolicy.retryAllowed} aria-label="최대 재시도" onChange={(event) => set('maxRetryCount', Math.max(1, Number(event.target.value) || 1))} />
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>재시도 제한시간</div>
+                        <CommonInput.Number clearable={false} className={styles.numberControl} min={1} suffix="분" value={draftPolicy.retryLimitMinutes} disabled={!editing || !draftPolicy.retryAllowed} aria-label="재시도 제한시간" onChange={(event) => set('retryLimitMinutes', Math.max(1, Number(event.target.value) || 1))} />
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>한도 초과 시</div>
+                        <div className={styles.compactPills}>
+                          {(['새 주문으로 안내', '주문 자동 취소'] as RetryLimitAction[]).map((value) => (
+                            <CommonButton key={value} type="button" variant={draftPolicy.retryLimitAction === value ? 'emphasis' : 'secondary'} size="md" disabled={!editing || !draftPolicy.retryAllowed} onClick={() => set('retryLimitAction', value)}>{value}</CommonButton>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className={styles.switchRow}>
+                      <CommonSwitch size="md" checked={draftPolicy.keepFailedPaymentStage} label="실패한 결제수단 그대로 유지" disabled={!editing} onChange={(checked) => set('keepFailedPaymentStage', checked)} />
+                      <CommonSwitch size="md" checked={draftPolicy.blockOrderChangesDuringRetry} label="재시도 중 주문금액 변경 차단" disabled={!editing} onChange={(checked) => set('blockOrderChangesDuringRetry', checked)} />
+                    </div>
+                  </div>
+                </section>
+
+                <section className={styles.failurePolicySection}>
+                  <div className={styles.failureSectionDesc}>
+                    <div className={styles.sectionHead}>
+                      <span className={styles.sectionNum}>3</span>
+                      <span className={styles.sectionHeadTitle}>결제 상태 재조회</span>
+                    </div>
+                    <p className={styles.sectionDescText}>내부 상태와 PG 상태가 어긋나는 경우 자동으로 동기화할지 정합니다.</p>
+                    <div className={styles.failureInfoNote}>중복결제 방지는 시스템 필수 기능으로 항상 사용됩니다. 주문번호·결제 대상금액·진행 중 결제 여부를 자동 검증합니다.</div>
+                  </div>
+                  <div className={styles.failureSectionControls}>
+                    <div className={styles.failureFeatureCard}>
+                      <CommonSwitch size="md" checked={draftPolicy.autoRequery} label="결제 상태 자동 재조회" disabled={!editing} onChange={(checked) => set('autoRequery', checked)} />
+                      <span>불일치가 감지되면 PG 상태 기준으로 동기화합니다</span>
+                    </div>
+                    <div className={styles.failureDividerFields}>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>재조회 횟수</div>
+                        <CommonInput.Number clearable={false} className={styles.numberControl} min={1} suffix="회" value={draftPolicy.requeryMaxCount} disabled={!editing || !draftPolicy.autoRequery} aria-label="재조회 횟수" onChange={(event) => set('requeryMaxCount', Math.max(1, Number(event.target.value) || 1))} />
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>재조회 간격</div>
+                        <CommonInput.Number clearable={false} className={styles.numberControl} min={1} suffix="초" value={draftPolicy.requeryIntervalSeconds} disabled={!editing || !draftPolicy.autoRequery} aria-label="재조회 간격" onChange={(event) => set('requeryIntervalSeconds', Math.max(1, Number(event.target.value) || 1))} />
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>끝까지 불일치일 때</div>
+                        <div className={styles.compactPills}>
+                          {(['관리자 알림', 'PG 상태 우선 적용'] as RequeryFailureAction[]).map((value) => (
+                            <CommonButton key={value} type="button" variant={draftPolicy.requeryFailureAction === value ? 'emphasis' : 'secondary'} size="md" disabled={!editing || !draftPolicy.autoRequery} onClick={() => set('requeryFailureAction', value)}>{value}</CommonButton>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
               </div>
-              <div className={styles.cardBody}>
-                <div className={styles.toggleRow}>
-                  <button type="button" className={`${styles.switch} ${draftPolicy.autoRequery ? styles.switchOn : ''}`} onClick={() => set('autoRequery', !draftPolicy.autoRequery)}><i /></button>
-                  <div className={styles.toggleRowText}>
-                    <div className={styles.toggleRowTitle}>결제 상태 자동 재조회</div>
-                    <div className={styles.toggleRowDesc}>내부 상태와 PG 상태가 어긋나는 경우 자동 동기화합니다.</div>
+
+              <aside className={styles.failureSide}>
+                <div className={styles.sideCard}>
+                  <div className={styles.sideHead}><div className={styles.sideTitle}>실패 시나리오 미리보기</div><div className={styles.sideDesc}>현재 설정으로 고객의 재시도 흐름을 계산합니다</div></div>
+                  <div className={styles.failureCauseRow}>
+                    <span>실패 원인</span>
+                    <div className={styles.failureSegmented}>
+                      {(['한도 초과', '인증 실패', 'PG 오류'] as const).map((cause) => <button key={cause} type="button" className={failurePreviewCause === cause ? styles.failureSegmentActive : ''} onClick={() => setFailurePreviewCause(cause)}>{cause}</button>)}
+                    </div>
+                  </div>
+                  <div className={styles.retryTimeline}>
+                    {retryAttemptTimes.map((minute, index) => {
+                      const success = failurePreviewSuccess && index === retryAttemptTimes.length - 1;
+                      const attemptLabel = index === 0 ? '1차 결제 실패' : success ? (index + 1) + '차 재시도 성공' : (index + 1) + '차 재시도 실패';
+                      return (
+                        <div className={styles.retryTimelineRow} key={index}>
+                          <span className={styles.retryDot + ' ' + (success ? styles.retryDotSuccess : styles.retryDotFailure)} />
+                          <strong>{attemptLabel}{index === 0 ? ' (' + failurePreviewCause + ')' : ''}</strong>
+                          <span>{minute}분</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className={styles.failureResultBand + ' ' + (failurePreviewSuccess ? styles.failureResultSuccess : styles.failureResultPending)}>
+                    <span>최종 처리</span>
+                    <strong>{failurePreviewSuccess ? '재시도 내 결제 완료' : draftPolicy.retryLimitAction}</strong>
+                  </div>
+                  <div className={styles.failureImpact}>
+                    <div className={styles.flowDetailsTitle}>이 설정의 영향</div>
+                    <div><span>고객이 시도할 수 있는 총 횟수</span><strong>{draftPolicy.retryAllowed ? draftPolicy.maxRetryCount + 1 : 1}회</strong></div>
+                    <div><span>재시도 가능 시간</span><strong>{draftPolicy.retryAllowed ? draftPolicy.retryLimitMinutes + '분' : '없음'}</strong></div>
+                    <div><span>재고 선점 유지</span><strong>{draftPolicy.stockReservationMinutes}분</strong></div>
+                    <div><span>상태 재조회</span><strong>{draftPolicy.autoRequery ? draftPolicy.requeryMaxCount + '회 · ' + draftPolicy.requeryIntervalSeconds + '초 간격' : '사용 안 함'}</strong></div>
                   </div>
                 </div>
-                {draftPolicy.autoRequery && (
-                  <div>
-                    <div className={styles.fieldLabel}>재조회 횟수</div>
-                    <input type="number" min="1" className={styles.textField} style={{ width: 120 }} value={draftPolicy.requeryMaxCount} onChange={(e) => set('requeryMaxCount', Number(e.target.value))} />
-                  </div>
-                )}
-                <div className={styles.lockedNote}>중복결제 방지는 시스템 필수 기능으로 항상 사용됩니다. (주문번호·결제대상금액·진행중 결제 여부를 자동 검증)</div>
-              </div>
-            </div>
 
+                <div className={styles.sideCard}>
+                  <div className={styles.sideHead}><div className={styles.sideTitle}>실패 재시도 요약</div></div>
+                  <div className={styles.digestRow}><span className={styles.digestLabel}>실패 시 주문 상태</span><span className={styles.digestValue}>{draftPolicy.failureOrderAction}</span></div>
+                  <div className={styles.digestRow}><span className={styles.digestLabel}>재시도</span><span className={styles.digestValue}>{draftPolicy.retryAllowed ? '최대 ' + draftPolicy.maxRetryCount + '회 · ' + draftPolicy.retryLimitMinutes + '분 내' : '허용 안 함'}</span></div>
+                  <div className={styles.digestRow}><span className={styles.digestLabel}>한도 초과 시</span><span className={styles.digestValue}>{draftPolicy.retryLimitAction}</span></div>
+                  <div className={styles.digestRow}><span className={styles.digestLabel}>재고 선점</span><span className={styles.digestValue}>{draftPolicy.stockReservationMinutes}분 유지</span></div>
+                  <div className={styles.digestRow}><span className={styles.digestLabel}>실패 알림</span><span className={styles.digestValue}>{draftPolicy.failureNotification}</span></div>
+                  <div className={styles.digestRow}><span className={styles.digestLabel}>상태 재조회</span><span className={styles.digestValue}>{draftPolicy.autoRequery ? draftPolicy.requeryMaxCount + '회 · ' + draftPolicy.requeryFailureAction : '사용 안 함'}</span></div>
+                  <div className={styles.digestRow}><span className={styles.digestLabel}>중복결제 방지</span><span className={styles.digestValue}>항상 사용</span></div>
+                  <div className={styles.sideFootNote}>PG 연동과 결제수단별 예외는 결제수단에서, 실패 후 자동 취소 조건은 기본 설정 탭에서 관리합니다.</div>
+                </div>
+              </aside>
+            </div>
             {editing && (
               <div className={styles.footerBar}>
                 <span className={styles.footerNote}>저장하면 신규 주문부터 적용되며, 진행 중인 결제 건에는 영향을 주지 않습니다.</span>
-                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
-                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+                <CommonButton type="button" variant="secondary" size="md" onClick={cancelEdit}>취소</CommonButton>
+                <CommonButton type="button" variant="emphasis" size="md" onClick={requestSave}>저장</CommonButton>
               </div>
             )}
           </>
         )}
-
         {tab === 'cancel' && (
           <>
             <div className={styles.card}>
@@ -745,28 +870,37 @@ export function PaymentPolicyPage() {
           <div className={styles.previewOnly}>{policySide}</div>
         )}
 
-        {tab === 'history' && (
-          <div className={styles.card}>
-            <div className={styles.cardHead}>
-              <div className={styles.cardTitle}>변경 이력</div>
-              <div className={styles.cardDesc}>정책 및 결제수단 설정 변경 기록입니다.</div>
-            </div>
-            <div className={styles.cardBody}>
-              {history.length === 0 && <div className={styles.infoNote}>변경 이력이 없습니다.</div>}
-              {history.map((h) => (
-                <div key={h.id} className={timeline.timelineItem}>
-                  <span className={timeline.timelineDot} />
-                  <div className={timeline.timelineBody}>
-                    <div className={timeline.timelineRow}><strong className={timeline.timelineTitle}>{h.field}</strong><span className={timeline.timelineWhen}>{h.at}</span></div>
-                    <div className={timeline.timelineDetail}>{h.before} → {h.after} · {h.by}</div>
-                    <div className={timeline.timelineDetail}>사유: {h.reason}</div>
-                  </div>
-                </div>
-              ))}
+      </div>
+
+      {showHistory && (
+        <aside ref={historyRef} className={timeline.aside} aria-label="결제 정책 변경 이력">
+          <div className={timeline.head}>
+            <div className={timeline.headRow}>
+              <div className={timeline.headBody}>
+                <div className={timeline.eyebrow}>거래 정책 · 결제 정책</div>
+                <div className={timeline.titleRow}><span className={timeline.title}>변경 이력</span></div>
+              </div>
+              <CommonButton type="button" variant="ghost" size="sm" className={timeline.closeBtn} onClick={() => setShowHistory(false)}>×</CommonButton>
             </div>
           </div>
-        )}
-      </div>
+          <div className={timeline.scroll}>
+            {history.length === 0 && <div className={timeline.emptyInline}>변경 이력이 없습니다.</div>}
+            {history.map((entry) => (
+              <div key={entry.id} className={timeline.timelineItem}>
+                <span className={timeline.timelineDot} />
+                <div className={timeline.timelineBody}>
+                  <div className={timeline.timelineRow}>
+                    <strong className={timeline.timelineTitle}>{entry.field}</strong>
+                    <span className={timeline.timelineWhen}>{entry.at}</span>
+                  </div>
+                  <div className={timeline.timelineDetail}>{entry.before} → {entry.after}</div>
+                  <div className={timeline.timelineDetail}>{entry.reason} · {entry.by}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
+      )}
 
       {methodEditId && (
         <PaymentMethodEditDialog

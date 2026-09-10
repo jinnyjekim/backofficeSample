@@ -3,10 +3,7 @@
 .headMetaText { font-size: 11.5px; color: #a1a1aa; white-space: nowrap; }
 
 /* 탭 — 기본 배송비와 동일한 언더라인 탭 */
-.viewTabs { display: flex; gap: 2px; margin: 0 24px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.08); flex-wrap: wrap; }
-.viewTabBtn { height: 36px; padding: 0 4px; margin-right: 20px; border: 0; background: transparent; font-size: 13px; font-weight: 500; color: #8b8b93; cursor: pointer; box-shadow: none; }
-.viewTabBtn:hover { color: #18181b; }
-.viewTabActive { font-weight: 700; color: #18181b; box-shadow: inset 0 -2px 0 0 var(--accent); }
+.policyTabs { margin: 0 24px 16px; }
 
 /* ── 레이아웃: 단일 카드 + 스티키 사이드바 ───────────────────────── */
 .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 430px); gap: 14px; margin: 0 24px 24px; align-items: start; }
@@ -98,19 +95,53 @@
 .sideFootNote { padding: 12px 16px; border-top: 1px solid rgba(0, 0, 0, 0.06); background: var(--common-bg-subtle); font-size: 11px; color: var(--common-text-muted); line-height: 1.6; }
 .linkBtn { color: var(--accent); background: none; border: 0; padding: 0; font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; }
 
-/* Preview / 변경 이력 탭 */
-.plainCard { background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; margin: 0 24px 24px; }
-.plainCardHead { padding: 15px 17px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
-.plainCardTitle { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
-.plainCardDesc { font-size: 11.5px; color: #a1a1aa; margin-top: 3px; }
-.plainCardBody { padding: 16px 17px 18px; display: flex; flex-direction: column; gap: 14px; }
 .reasonInput { width: 100%; margin-bottom: 16px; }
 
+.policyPreviewLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 430px); gap: 14px; margin: 0 24px 24px; align-items: start; }
+.policyPreviewMain { display: flex; min-width: 0; flex-direction: column; gap: 14px; }
+.previewDocumentCard, .previewOrderCard { overflow: hidden; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; }
+.previewDocumentHead, .previewOrderHead { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 14px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.previewDocumentTitle { color: #18181b; font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+.previewDocumentDesc { margin-top: 3px; color: #a1a1aa; font-size: 11px; }
+.previewDraftBadge, .previewLiveBadge { flex: none; padding: 4px 10px; border-radius: 999px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+.previewDraftBadge { border: 1px solid #f0cf8f; background: #fffaf0; color: #9a6818; }
+.previewLiveBadge { border: 1px solid #b9e8cf; background: #eefbf4; color: #16845b; }
+.policySentenceList { padding: 0 16px; }
+.policySentenceRow { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 66px; border-bottom: 1px solid rgba(0, 0, 0, 0.055); }
+.policySentenceRow:last-child { border-bottom: 0; }
+.policySentenceNum { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 5px; background: #f4f4f5; color: #a1a1aa; font-size: 10px; font-weight: 700; }
+.policySentenceRow strong { display: block; margin-bottom: 4px; color: #3f3f46; font-size: 11.5px; font-weight: 700; }
+.policySentenceRow p { margin: 0; color: #71717a; font-size: 11px; line-height: 1.5; }
+.previewRowTag { padding: 3px 8px; border-radius: 999px; background: #f4f4f5; color: #71717a; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.previewOrderTable { margin: 12px 16px 14px; overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 9px; }
+.previewOrderRow { display: grid; grid-template-columns: 48px minmax(150px, 1fr) minmax(190px, 1.2fr) minmax(100px, .7fr); align-items: center; min-height: 39px; padding: 0 12px; border-bottom: 1px solid rgba(0, 0, 0, 0.055); color: #8b8b93; font-size: 11px; }
+.previewOrderRow:last-child { border-bottom: 0; }
+.previewOrderRow strong { color: #3f3f46; font-size: 11.5px; font-weight: 600; }
+.previewOrderTableHead { min-height: 34px; background: #fafafa; color: #71717a; font-size: 10.5px; font-weight: 600; }
+.previewCountMuted, .previewCountActive { width: fit-content; padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; }
+.previewCountMuted { background: #f4f4f5; color: #a1a1aa; }
+.previewCountActive { background: #eaf8f0; color: #16845b; }
+.policyPreviewSide { display: flex; min-width: 0; flex-direction: column; gap: 14px; }
+.customerMessageList { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; }
+.customerMessageList > div { padding: 10px 11px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 8px; background: #fafafa; }
+.customerMessageList span { color: #a1a1aa; font-size: 10.5px; font-weight: 600; }
+.customerMessageList p { margin: 5px 0 0; color: #52525b; font-size: 11.5px; line-height: 1.45; }
+.previewDeployPending, .previewDeployReady { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 13px 16px; border-top: 1px solid; font-size: 12px; font-weight: 700; }
+.previewDeployPending { border-color: #f1dfb8; background: #fff8e8; color: #9a6818; }
+.previewDeployReady { border-color: #ccebd9; background: #eefbf4; color: #166534; }
+.previewDeployPending strong, .previewDeployReady strong { font-size: 15px; }
+
 @media (max-width: 1200px) {
-  .layout { grid-template-columns: minmax(0, 1fr); }
+  .layout, .policyPreviewLayout { grid-template-columns: minmax(0, 1fr); }
   .sidebar { position: static; }
 }
 @media (max-width: 900px) {
   .section { flex-direction: column; }
   .sectionDesc { flex-basis: auto; }
+}
+
+@media (max-width: 640px) {
+  .previewOrderTable { overflow-x: auto; }
+  .previewOrderRow { min-width: 590px; }
+  .policySentenceRow { align-items: start; padding: 10px 0; }
 }

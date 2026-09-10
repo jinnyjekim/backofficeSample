@@ -85,14 +85,10 @@ export const NAV_GROUPS: NavGroup[] = [
 
       { key: 'inventory', icon: Boxes, label: '재고 관리', to: '/inventory/status', business: 'B' },
       { key: 'inventory_status', sub: true, label: '재고 현황', to: '/inventory/status', business: 'B' },
-      { key: 'inventory_options', sub: true, label: '옵션별 재고', to: '/b2c/inventory/options', business: 'B' },
-      { key: 'inventory_inbound', sub: true, label: '입고 관리', to: '/inventory/inbound', business: 'B' },
-      { key: 'inventory_outbound', sub: true, label: '출고 관리', to: '/inventory/outbound', business: 'B' },
+      { key: 'inventory_movement', sub: true, label: '입출고 관리', to: '/inventory/movement', business: 'B' },
       { key: 'inventory_adjust', sub: true, label: '재고 조정', to: '/inventory/adjust', business: 'B' },
       { key: 'inventory_history', sub: true, label: '재고 변동 이력', to: '/inventory/history', business: 'B' },
-      { key: 'inventory_soldout', sub: true, label: '품절 상품', to: '/b2c/inventory/sold-out', business: 'B' },
-      { key: 'inventory_safety', sub: true, label: '안전 재고', to: '/b2c/inventory/safety-stock', business: 'B' },
-      { key: 'inventory_alerts', sub: true, label: '재고 알림', to: '/b2c/inventory/alerts', business: 'B' },
+      { key: 'inventory_alerts', sub: true, label: '재고 알림·설정', to: '/inventory/alerts', business: 'B' },
 
       { key: 'quotes', icon: FileEdit, label: '견적 관리', to: '/quotes/requests', business: 'B2B' },
       { key: 'quotes_requests', sub: true, label: '견적 요청', to: '/quotes/requests', business: 'B2B' },
@@ -277,10 +273,8 @@ export const NAV_GROUPS: NavGroup[] = [
 
       { key: 'delivery_policy', icon: Receipt, label: '배송 정책', to: '/delivery-policy/base-fee', business: 'B' },
       { key: 'delivery_policy_base', sub: true, label: '기본 배송비', to: '/delivery-policy/base-fee', business: 'B' },
-      { key: 'delivery_policy_free', sub: true, label: '무료배송 조건', to: '/delivery-policy/free-shipping', business: 'B' },
       { key: 'delivery_policy_region', sub: true, label: '지역별 추가 배송비', to: '/delivery-policy/region-fee', business: 'B' },
       { key: 'delivery_policy_product', sub: true, label: '상품별 배송 정책', to: '/delivery-policy/product', business: 'B' },
-      { key: 'delivery_policy_bundle', sub: true, label: '묶음 배송', to: '/delivery-policy/bundle', business: 'B' },
       { key: 'delivery_policy_remote', sub: true, label: '제주 / 도서산간 정책', to: '/delivery-policy/remote-area', business: 'B' },
       { key: 'delivery_policy_return', sub: true, label: '반품 / 교환 배송비', to: '/delivery-policy/return-exchange', business: 'B' },
     ],
@@ -349,14 +343,15 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   products_moq: ['서비스 관리 · 상품 관리', '최소 주문수량'],
 
   inventory_status: ['서비스 관리 · 재고 관리', '재고 현황'],
-  inventory_options: ['서비스 관리 · 재고 관리', '옵션별 재고'],
-  inventory_inbound: ['서비스 관리 · 재고 관리', '입고 관리'],
-  inventory_outbound: ['서비스 관리 · 재고 관리', '재고 출고'],
+  inventory_movement: ['서비스 관리 · 재고 관리', '입출고 관리'],
   inventory_adjust: ['서비스 관리 · 재고 관리', '재고 조정'],
   inventory_history: ['서비스 관리 · 재고 관리', '재고 변동 이력'],
-  inventory_soldout: ['서비스 관리 · 재고 관리', '품절 상품'],
-  inventory_safety: ['서비스 관리 · 재고 관리', '안전 재고'],
-  inventory_alerts: ['서비스 관리 · 재고 관리', '재고 알림'],
+  inventory_alerts: ['서비스 관리 · 재고 관리', '재고 알림·설정'],
+  inventory_options: ['서비스 관리 · 재고 관리', '재고 현황'],
+  inventory_soldout: ['서비스 관리 · 재고 관리', '재고 현황'],
+  inventory_inbound: ['서비스 관리 · 재고 관리', '입출고 관리'],
+  inventory_outbound: ['서비스 관리 · 재고 관리', '입출고 관리'],
+  inventory_safety: ['서비스 관리 · 재고 관리', '재고 알림·설정'],
 
   quotes_requests: ['서비스 관리 · 견적 관리', '견적 요청'],
   quotes_list: ['서비스 관리 · 견적 관리', '견적서'],
@@ -527,12 +522,11 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/products/min-order-qty')) return 'products_moq';
   if (pathname.startsWith('/products')) return 'products_list';
 
-  if (pathname.startsWith('/b2c/inventory/options')) return 'inventory_options';
-  if (pathname.startsWith('/b2c/inventory/sold-out')) return 'inventory_soldout';
-  if (pathname.startsWith('/b2c/inventory/safety-stock')) return 'inventory_safety';
-  if (pathname.startsWith('/b2c/inventory/alerts')) return 'inventory_alerts';
-  if (pathname.startsWith('/inventory/inbound')) return 'inventory_inbound';
-  if (pathname.startsWith('/inventory/outbound')) return 'inventory_outbound';
+  if (pathname.startsWith('/b2c/inventory/options')) return 'inventory_status';
+  if (pathname.startsWith('/b2c/inventory/sold-out')) return 'inventory_status';
+  if (pathname.startsWith('/b2c/inventory/safety-stock')) return 'inventory_alerts';
+  if (pathname.startsWith('/b2c/inventory/alerts') || pathname.startsWith('/inventory/alerts')) return 'inventory_alerts';
+  if (pathname.startsWith('/inventory/movement') || pathname.startsWith('/inventory/inbound') || pathname.startsWith('/inventory/outbound')) return 'inventory_movement';
   if (pathname.startsWith('/inventory/adjust')) return 'inventory_adjust';
   if (pathname.startsWith('/inventory/history')) return 'inventory_history';
   if (pathname.startsWith('/inventory')) return 'inventory_status';
@@ -574,10 +568,8 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/cs/history')) return 'cs_history';
 
   if (pathname.startsWith('/delivery-policy/base-fee')) return 'delivery_policy_base';
-  if (pathname.startsWith('/delivery-policy/free-shipping')) return 'delivery_policy_free';
   if (pathname.startsWith('/delivery-policy/region-fee')) return 'delivery_policy_region';
   if (pathname.startsWith('/delivery-policy/product')) return 'delivery_policy_product';
-  if (pathname.startsWith('/delivery-policy/bundle')) return 'delivery_policy_bundle';
   if (pathname.startsWith('/delivery-policy/remote-area')) return 'delivery_policy_remote';
   if (pathname.startsWith('/delivery-policy/return-exchange')) return 'delivery_policy_return';
 

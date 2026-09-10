@@ -2,6 +2,9 @@ export type PaymentTiming = '선결제' | '후불' | '선결제 + 후불';
 export type PaymentBasis = '최종 주문금액' | '청구 확정금액';
 export type ExpiryAction = '재결제 가능' | '주문 자동 취소' | '관리자 확인 필요';
 export type FailureOrderAction = '유지' | '결제 실패 상태로 전환' | '주문 취소';
+export type FailureNotification = '앱 푸시' | '문자' | '없음';
+export type RetryLimitAction = '새 주문으로 안내' | '주문 자동 취소';
+export type RequeryFailureAction = '관리자 알림' | 'PG 상태 우선 적용';
 export type ShortagePolicy = '부분결제로 처리' | '결제 확인 차단' | '관리자 확인 필요';
 export type AmountChangePolicy = '직접 수정 허용' | '변경 요청 Workflow' | '수정 불가';
 
@@ -47,6 +50,13 @@ export interface PaymentPolicy {
   retryLimitMinutes: number;
   autoRequery: boolean;
   requeryMaxCount: number;
+  stockReservationMinutes: number;
+  failureNotification: FailureNotification;
+  retryLimitAction: RetryLimitAction;
+  keepFailedPaymentStage: boolean;
+  blockOrderChangesDuringRetry: boolean;
+  requeryIntervalSeconds: number;
+  requeryFailureAction: RequeryFailureAction;
 
   cancelEnabled: boolean;
   amountChangePolicy: AmountChangePolicy;
@@ -96,6 +106,13 @@ export const INITIAL_POLICY: PaymentPolicy = {
   retryLimitMinutes: 5,
   autoRequery: true,
   requeryMaxCount: 5,
+  stockReservationMinutes: 30,
+  failureNotification: '앱 푸시',
+  retryLimitAction: '새 주문으로 안내',
+  keepFailedPaymentStage: true,
+  blockOrderChangesDuringRetry: true,
+  requeryIntervalSeconds: 10,
+  requeryFailureAction: 'PG 상태 우선 적용',
 
   cancelEnabled: true,
   amountChangePolicy: '변경 요청 Workflow',
@@ -181,6 +198,13 @@ const POLICY_FIELD_LABELS: { key: keyof PaymentPolicy; label: string; format: (p
   { key: 'retryLimitMinutes', label: '재시도 제한시간', format: (p) => `${p.retryLimitMinutes}분` },
   { key: 'autoRequery', label: '결제 상태 자동 재조회', format: (p) => (p.autoRequery ? '사용' : '사용 안 함') },
   { key: 'requeryMaxCount', label: '재조회 횟수', format: (p) => `${p.requeryMaxCount}회` },
+  { key: 'stockReservationMinutes', label: '실패 후 재고 선점 유지', format: (p) => `${p.stockReservationMinutes}분` },
+  { key: 'failureNotification', label: '결제 실패 알림', format: (p) => p.failureNotification },
+  { key: 'retryLimitAction', label: '재시도 한도 초과 시', format: (p) => p.retryLimitAction },
+  { key: 'keepFailedPaymentStage', label: '실패한 결제수단 유지', format: (p) => (p.keepFailedPaymentStage ? '유지' : '초기화') },
+  { key: 'blockOrderChangesDuringRetry', label: '재시도 중 주문금액 변경', format: (p) => (p.blockOrderChangesDuringRetry ? '차단' : '허용') },
+  { key: 'requeryIntervalSeconds', label: '결제 상태 재조회 간격', format: (p) => `${p.requeryIntervalSeconds}초` },
+  { key: 'requeryFailureAction', label: '재조회 불일치 처리', format: (p) => p.requeryFailureAction },
   { key: 'cancelEnabled', label: '결제 취소 기능', format: (p) => (p.cancelEnabled ? '사용' : '사용 안 함') },
   { key: 'amountChangePolicy', label: '결제 완료 후 금액 변경', format: (p) => p.amountChangePolicy },
   { key: 'manualPaymentEnabled', label: '관리자 수동 결제 등록', format: (p) => (p.manualPaymentEnabled ? '허용' : '불가') },

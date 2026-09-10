@@ -183,9 +183,6 @@
 }
 
 /* 기본 설정: 배송비 정책과 동일한 단일 카드 + 우측 계산 패널 구조 */
-.compactHeader { padding-bottom: 0 !important; }
-.compactHeaderRow { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 48px; }
-.compactHeaderRow .headMeta { padding-top: 0; }
 .policyLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); gap: 14px; align-items: start; }
 .policyMain { min-width: 0; overflow: hidden; display: flex; flex-direction: column; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; }
 .policySection { display: flex; flex-wrap: wrap; gap: 14px 20px; padding: 18px 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
@@ -269,19 +266,55 @@
 .previewOnly { max-width: 430px; margin-left: auto; }
 .previewOnly .policySide { position: static; }
 
+.failurePolicyLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); gap: 14px; align-items: start; }
+.failurePolicyMain { min-width: 0; overflow: hidden; background: #fff; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; }
+.failurePolicySection { display: flex; gap: 20px; padding: 18px 20px; border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
+.failurePolicySection:last-child { border-bottom: 0; }
+.failureSectionDesc { flex: 0 0 200px; min-width: 0; }
+.failureSectionControls { display: flex; flex: 1; flex-direction: column; gap: 14px; min-width: 0; max-width: 960px; }
+.failureActionOptions { display: flex; flex-wrap: wrap; gap: 8px; }
+.failureActionOptions > button { flex: 0 1 155px; min-width: 155px; }
+.failureDividerFields { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 16px 28px; padding-top: 13px; border-top: 1px solid rgba(0, 0, 0, 0.06); }
+.failureFeatureCard { display: flex; flex-direction: column; align-items: flex-start; width: min(100%, 320px); gap: 3px; padding: 11px 12px; border: 1px solid #7ba8f2; border-radius: 9px; background: #fff; }
+.failureFeatureCard > span { padding-left: 39px; color: #a1a1aa; font-size: 10.5px; }
+.failureInfoNote { margin-top: 14px; padding: 10px 11px; border-radius: 8px; background: #f8fafc; color: #a1a1aa; font-size: 10.5px; line-height: 1.55; }
+.failureSide { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.failureCauseRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 13px 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.failureCauseRow > span { color: #71717a; font-size: 11.5px; font-weight: 600; }
+.failureSegmented { display: flex; overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.09); border-radius: 8px; }
+.failureSegmented button { height: 29px; padding: 0 11px; border: 0; border-left: 1px solid rgba(0, 0, 0, 0.06); background: #fff; color: #8b8b93; font-size: 10.5px; cursor: pointer; }
+.failureSegmented button:first-child { border-left: 0; }
+.failureSegmented .failureSegmentActive { background: #fafafa; color: #18181b; font-weight: 700; }
+.retryTimeline { padding: 13px 16px; }
+.retryTimelineRow { position: relative; display: grid; grid-template-columns: 12px 1fr auto; align-items: center; gap: 8px; min-height: 29px; font-size: 11.5px; }
+.retryTimelineRow:not(:last-child)::after { content: ''; position: absolute; left: 5px; top: 20px; bottom: -9px; width: 1px; background: #e4e4e7; }
+.retryTimelineRow strong { color: #52525b; font-size: 11.5px; font-weight: 600; }
+.retryTimelineRow > span:last-child { color: #a1a1aa; font-size: 10.5px; }
+.retryDot { position: relative; z-index: 1; width: 8px; height: 8px; border-radius: 50%; }
+.retryDotFailure { background: #dda02d; }
+.retryDotSuccess { background: #1f9d69; }
+.failureResultBand { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 13px 16px; border-top: 1px solid; border-bottom: 1px solid; font-size: 12px; font-weight: 700; }
+.failureResultBand strong { font-size: 16px; }
+.failureResultSuccess { border-color: #ccebd9; background: #eefbf4; color: #166534; }
+.failureResultPending { border-color: #f1dfb8; background: #fffaf0; color: #9a6818; }
+.failureImpact { display: flex; flex-direction: column; gap: 7px; padding: 12px 16px 14px; }
+.failureImpact > div:not(.flowDetailsTitle) { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; color: #8b8b93; font-size: 11.5px; }
+.failureImpact strong { color: #52525b; font-size: 12px; text-align: right; }
+
 @media (max-width: 1200px) {
-  .policyLayout { grid-template-columns: 1fr; }
+  .policyLayout, .failurePolicyLayout { grid-template-columns: 1fr; }
   .policySide { position: static; }
 }
 @media (max-width: 900px) {
   .policySection { flex-direction: column; }
   .sectionDesc { flex-basis: auto; }
   .sectionDescText { max-width: none; }
+  .failurePolicySection { flex-direction: column; }
+  .failureSectionDesc { flex-basis: auto; }
 }
 @media (max-width: 960px) {
   .summaryGrid, .cardGrid { grid-template-columns: 1fr; }
   .methodRow { grid-template-columns: 1fr; gap: 4px; }
   .methodHead { display: none; }
-  .compactHeaderRow { align-items: flex-start; flex-direction: column-reverse; padding-top: 10px; }
   .previewOnly { max-width: none; }
 }

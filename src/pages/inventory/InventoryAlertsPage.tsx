@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridColumn, GridRow } from "../../components/DataGrid/types";
-import { CommonButton, ExcelDownloadButton } from "../../components/common";
+import { CommonButton, CommonInput, ExcelDownloadButton } from "../../components/common";
 import shared from "../ops/opsShared.module.css";
 import { InventoryDetailDrawer } from "./InventoryDetailDrawer";
 import styles from "./InventoryFocusedPages.module.css";
@@ -65,7 +65,17 @@ function alertMeta(state: ReturnType<typeof alertState>) {
   return { bg: "#f4f4f5", fg: "#71717a" };
 }
 
-export function InventoryAlertsPage() {
+export interface InventoryAlertsPageProps {
+  pageTitle?: string;
+  pageSubtitle?: string;
+  headerTabs?: React.ReactNode;
+}
+
+export function InventoryAlertsPage({
+  pageTitle,
+  pageSubtitle,
+  headerTabs,
+}: InventoryAlertsPageProps = {}) {
   const sourceRows = useMemo(
     () =>
       skuRows().filter(
@@ -101,6 +111,10 @@ export function InventoryAlertsPage() {
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [warehouse, setWarehouse] = useState("");
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [alertStateFilter, setAlertStateFilter] = useState("");
+  const [availableMin, setAvailableMin] = useState("");
+  const [availableMax, setAvailableMax] = useState("");
   const [detailId, setDetailId] = useState<string | null>(null);
 
   const filtered = useMemo(
@@ -119,9 +133,22 @@ export function InventoryAlertsPage() {
           )
         )
           return false;
+        if (alertStateFilter && alertState(row) !== alertStateFilter) return false;
+        if (availableMin && row.available < Number(availableMin)) return false;
+        if (availableMax && row.available > Number(availableMax)) return false;
         return true;
       }),
-    [brand, category, quickFilter, search, sourceRows, warehouse],
+    [
+      brand,
+      category,
+      quickFilter,
+      search,
+      sourceRows,
+      warehouse,
+      alertStateFilter,
+      availableMin,
+      availableMax,
+    ],
   );
 
   const reset = () => {
@@ -131,6 +158,9 @@ export function InventoryAlertsPage() {
     setCategory("");
     setBrand("");
     setWarehouse("");
+    setAlertStateFilter("");
+    setAvailableMin("");
+    setAvailableMax("");
   };
   const detail = sourceRows.find((row) => row.id === detailId) ?? null;
   const rows: GridRow[] = filtered.map((row): GridRow => {
@@ -215,13 +245,14 @@ export function InventoryAlertsPage() {
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>재고 알림</h1>
+            <h1 className={shared.title}>{pageTitle ?? "재고 알림"}</h1>
             <p className={shared.subtitle}>
-              부족 알림을 사용하는 SKU의 임계치 도달 여부와 입고 일정을
-              확인합니다.
+              {pageSubtitle ??
+                "부족 알림을 사용하는 SKU의 임계치 도달 여부와 입고 일정을 확인합니다."}
             </p>
           </div>
         </div>
+        {headerTabs}
         <div className={styles.definitionStrip}>
           알림 발생 = 판매 가능 재고가 안전재고 이하인 상태 · 임계 접근 =
           안전재고의 120% 이내
@@ -316,24 +347,60 @@ export function InventoryAlertsPage() {
                 ))}
               </select>
             </label>
-            <span className={shared.rowSpacer} />
-            <CommonButton
+            <button
               type="button"
-              variant="secondary"
-              size="sm"
               className={shared.detailFilterBtn}
+              onClick={() => setShowAdvanced((value) => !value)}
             >
               상세 필터
-            </CommonButton>
-            <CommonButton
-              type="button"
-              variant="ghost"
-              size="sm"
-              className={shared.resetBtn}
-              onClick={reset}
-            >
+            </button>
+            <span className={shared.rowSpacer} />
+            <button type="button" className={shared.resetBtn} onClick={reset}>
               초기화
-            </CommonButton>
+            </button>
+            {showAdvanced && (
+              <>
+                <label className="globalFilterField">
+                  <span>알림 상태</span>
+                  <select
+                    aria-label="알림 상태"
+                    className={shared.selectSm}
+                    value={alertStateFilter}
+                    onChange={(event) => setAlertStateFilter(event.target.value)}
+                  >
+                    <option value="">전체 알림 상태</option>
+                    <option value="품절 알림">품절 알림</option>
+                    <option value="재고 부족 알림">재고 부족 알림</option>
+                    <option value="임계 접근">임계 접근</option>
+                    <option value="대기">대기</option>
+                  </select>
+                </label>
+                <label className={shared.dateFilterField}>
+                  <span>판매 가능 수량</span>
+                  <span className={shared.dateRange}>
+                    <CommonInput.Number
+                      size="md"
+                      clearable={false}
+                      min={0}
+                      style={{ width: 88 }}
+                      value={availableMin}
+                      onChange={(event) => setAvailableMin(event.target.value)}
+                      placeholder="최소"
+                    />
+                    <span className={shared.dateSeparator}>~</span>
+                    <CommonInput.Number
+                      size="md"
+                      clearable={false}
+                      min={0}
+                      style={{ width: 88 }}
+                      value={availableMax}
+                      onChange={(event) => setAvailableMax(event.target.value)}
+                      placeholder="최대"
+                    />
+                  </span>
+                </label>
+              </>
+            )}
           </div>
         </div>
       </div>

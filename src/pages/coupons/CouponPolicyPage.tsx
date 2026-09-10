@@ -3,7 +3,7 @@ import shared from './shared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
 import styles from './CouponPolicyPage.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
-import { CommonBadge, CommonButton, CommonCheckbox, CommonDatePicker, CommonInput, CommonSortableList, showToast } from '../../components/common';
+import { CommonBadge, CommonButton, CommonCheckbox, CommonDatePicker, CommonInput, CommonSortableList, CommonTabs, showToast } from '../../components/common';
 import {
   INITIAL_POLICY,
   POLICY_HISTORY,
@@ -19,11 +19,9 @@ import {
   type RoundingUnit,
 } from './couponPolicyData';
 
-type Tab = 'basic' | 'stack' | 'cancel' | 'preview';
+type Tab = 'basic' | 'preview';
 const TABS: [Tab, string][] = [
   ['basic', '기본 설정'],
-  ['stack', '중복 · 발급'],
-  ['cancel', '취소 · 환불'],
   ['preview', '정책 Preview'],
 ];
 
@@ -94,6 +92,7 @@ export function CouponPolicyPage() {
   }
 
   const p = editing ? draft : policy;
+  const previewHasUnsavedChanges = editing && describeChanges(policy, draft).length > 0;
 
   const baseAmount = Math.max(0, previewAmount);
   const rawDiscount = Math.round(baseAmount * (previewRate / 100));
@@ -356,8 +355,6 @@ export function CouponPolicyPage() {
 
   const sectionsByTab: Record<Tab, ReactElement[]> = {
     basic: [sectionOrder, sectionStack, sectionMinPurchase, sectionCancel, sectionIssue, sectionCalc],
-    stack: [sectionStack, sectionIssue],
-    cancel: [sectionCancel],
     preview: [],
   };
 
@@ -387,41 +384,108 @@ export function CouponPolicyPage() {
         </div>
       </header>
 
-      <div className={styles.viewTabs}>
-        {TABS.map(([key, label]) => (
-          <button key={key} type="button" className={`${styles.viewTabBtn} ${tab === key ? styles.viewTabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
-        ))}
-        <button type="button" className={styles.viewTabBtn} onClick={() => setShowHistory(true)}>변경 이력</button>
-      </div>
+      <CommonTabs
+        className={styles.policyTabs}
+        items={TABS.map(([key, label]) => ({ key, label }))}
+        value={tab}
+        onChange={(key) => setTab(key as Tab)}
+        type="line"
+        size="md"
+      />
 
       {tab === 'preview' ? (
-        <div className={styles.plainCard}>
-          <div className={styles.plainCardHead}>
-            <div className={styles.plainCardTitle}>정책 Preview</div>
-            <div className={styles.plainCardDesc}>현재 저장된 정책으로 계산한 결과입니다.</div>
+        <div className={styles.policyPreviewLayout}>
+          <div className={styles.policyPreviewMain}>
+            <section className={styles.previewDocumentCard}>
+              <div className={styles.previewDocumentHead}>
+                <div>
+                  <div className={styles.previewDocumentTitle}>적용될 정책 전문</div>
+                  <div className={styles.previewDocumentDesc}>현재 설정이 실제 주문에 어떻게 적용되는지 문장으로 확인합니다. 이 탭은 읽기 전용입니다.</div>
+                </div>
+                <span className={previewHasUnsavedChanges ? styles.previewDraftBadge : styles.previewLiveBadge}>{previewHasUnsavedChanges ? '미저장 초안' : '적용 중 · ' + p.startDate}</span>
+              </div>
+              <div className={styles.policySentenceList}>
+                <div className={styles.policySentenceRow}>
+                  <span className={styles.policySentenceNum}>1</span>
+                  <div><strong>할인 적용 순서</strong><p>{p.discountOrder.join(' → ')} 순으로 적용되며, 앞 단계의 결과 금액이 다음 단계의 기준이 됩니다. 배송비 쿠폰은 마지막에 적용됩니다.</p></div>
+                  <span className={styles.previewRowTag}>정상</span>
+                </div>
+                <div className={styles.policySentenceRow}>
+                  <span className={styles.policySentenceNum}>2</span>
+                  <div><strong>중복 사용</strong><p>{p.allowMultipleCoupons ? '한 주문에서 상품 쿠폰 ' + p.maxProductCoupons + '장, 주문 쿠폰 ' + p.maxOrderCoupons + '장, 배송비 쿠폰 ' + p.maxShippingCoupons + '장까지 조합해 사용할 수 있습니다.' : '한 주문에 쿠폰 1장만 사용할 수 있습니다.'} 동일 쿠폰 여러 장은 {p.allowSameCouponMultiple ? '허용' : '불허'}하며, 프로모션 중복은 {p.promotionStackDefault ? '허용' : '불허'}, 포인트 동시 사용은 {p.pointStackAllowed ? '허용' : '불허'}합니다.</p></div>
+                  <span className={styles.previewRowTag}>{p.allowMultipleCoupons ? '중복 허용' : '1장 제한'}</span>
+                </div>
+                <div className={styles.policySentenceRow}>
+                  <span className={styles.policySentenceNum}>3</span>
+                  <div><strong>구매금액 기준</strong><p>쿠폰의 최소 구매금액은 {p.minPurchaseBasis}으로 판정하며, 배송비는 {p.includeShippingInMin ? '포함합니다.' : '제외합니다.'}</p></div>
+                  <span className={styles.previewRowTag}>판정</span>
+                </div>
+                <div className={styles.policySentenceRow}>
+                  <span className={styles.policySentenceNum}>4</span>
+                  <div><strong>취소 · 반품 처리</strong><p>전체 취소·반품 시 사용한 쿠폰을 {p.fullCancelRestore && p.fullRefundRestore ? '복원하고' : '정책에 따라 처리하고'}, 부분 취소·반품 시 {p.partialCancelRecalculate && p.partialRefundRecalculate ? '잔여 주문 기준으로 재계산합니다.' : '기존 쿠폰 상태를 유지합니다.'} 복원 시 원 유효기간이 지난 쿠폰은 {p.restoreExpiredCoupon ? '원 만료일로 복원합니다.' : '복원하지 않습니다.'}</p></div>
+                  <span className={styles.previewRowTag}>환불</span>
+                </div>
+                <div className={styles.policySentenceRow}>
+                  <span className={styles.policySentenceNum}>5</span>
+                  <div><strong>발급 정책</strong><p>회원당 발급 한도는 ‘{p.memberLimitBasis}’으로 계산하며, 총 한도를 초과하면 {p.blockOnLimitExceeded ? '발급을 차단합니다.' : '관리자 예외 발급을 허용합니다.'}</p></div>
+                  <span className={styles.previewRowTag}>{p.blockOnLimitExceeded ? '차단' : '예외 허용'}</span>
+                </div>
+                <div className={styles.policySentenceRow}>
+                  <span className={styles.policySentenceNum}>6</span>
+                  <div><strong>계산 · 적용</strong><p>정률 할인은 {p.roundingUnit}원 단위로 {p.roundingMode} 처리하고, 할인금액이 결제 대상 금액을 초과하면 {p.maxDiscountHandling}합니다. 주문 쿠폰 할인금액은 {p.allocationMethod}로 배분되며, {p.startDate} 이후 생성된 거래부터 적용됩니다.</p></div>
+                  <span className={styles.previewRowTag}>계산</span>
+                </div>
+              </div>
+            </section>
+
+            <section className={styles.previewOrderCard}>
+              <div className={styles.previewOrderHead}>
+                <div className={styles.previewDocumentTitle}>할인 적용 순서 판정</div>
+                <div className={styles.previewDocumentDesc}>현재 순서대로 각 단계가 이전 금액을 기준으로 계산되는지 보여줍니다.</div>
+              </div>
+              <div className={styles.previewOrderTable}>
+                <div className={styles.previewOrderRow + ' ' + styles.previewOrderTableHead}><span>순서</span><span>적용 단계</span><span>계산 기준</span><span>최대 장수</span></div>
+                {p.discountOrder.map((stage, index) => {
+                  const maxCount = stage === '상품 쿠폰' ? p.maxProductCoupons + '장' : stage === '주문 쿠폰' ? p.maxOrderCoupons + '장' : stage === '배송비 쿠폰' ? p.maxShippingCoupons + '장' : '해당 없음';
+                  const basis = index === 0 ? '최초 상품 판매금액' : stage === '배송비 쿠폰' ? '배송비' : '이전 단계 결과 금액';
+                  return (
+                    <div className={styles.previewOrderRow} key={stage}>
+                      <span>{index + 1}</span>
+                      <strong>{stage}</strong>
+                      <span>{basis}</span>
+                      <span className={maxCount === '해당 없음' ? styles.previewCountMuted : styles.previewCountActive}>{maxCount}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
           </div>
-          <div className={styles.plainCardBody}>
-            <div className={styles.fieldRow}>
-              <div>
-                <div className={styles.fieldLabel}>상품금액</div>
-                <CommonInput.Number clearable={false} className={styles.fieldInput} min={0} suffix="원" aria-label="미리보기 상품금액" value={previewAmount} onChange={(e) => setPreviewAmount(Math.max(0, Number(e.target.value) || 0))} />
+
+          <aside className={styles.policyPreviewSide}>
+            <div className={styles.sideCard}>
+              <div className={styles.sideHead}><div className={styles.sideTitle}>고객 안내 문구</div><div className={styles.sideDesc}>설정에 따라 자동 생성되는 안내입니다</div></div>
+              <div className={styles.customerMessageList}>
+                <div><span>주문서 · 쿠폰 선택</span><p>이 주문에 최대 {usableCount}장까지 쿠폰을 함께 사용할 수 있습니다.</p></div>
+                <div><span>무료 적용 시</span><p>최소 구매금액은 쿠폰 적용 직전 금액 기준으로 판정되며 배송비는 {p.includeShippingInMin ? '포함됩니다.' : '제외됩니다.'}</p></div>
+                <div><span>취소 · 반품 안내</span><p>전체 취소 시 사용한 쿠폰이 {p.fullCancelRestore ? '복원되고' : '복원되지 않으며'}, 부분 취소 시 잔여 금액으로 {p.partialCancelRecalculate ? '재계산됩니다.' : '재계산되지 않습니다.'}</p></div>
               </div>
-              <div>
-                <div className={styles.fieldLabel}>주문 쿠폰 할인율</div>
-                <CommonInput.Number clearable={false} className={styles.fieldInput} min={0} max={100} suffix="%" aria-label="미리보기 할인율" value={previewRate} onChange={(e) => setPreviewRate(Math.min(100, Math.max(0, Number(e.target.value) || 0)))} />
-              </div>
-              <div>
-                <div className={styles.fieldLabel}>결제 예정금액</div>
-                <div className={styles.sideTotalValue}>{won(payable)}</div>
-              </div>
+              <div className={previewHasUnsavedChanges ? styles.previewDeployPending : styles.previewDeployReady}><span>배포 가능 여부</span><strong>{previewHasUnsavedChanges ? '저장 필요' : '배포 가능'}</strong></div>
             </div>
-            <div className={styles.sideBody} style={{ padding: 0 }}>
-              <div className={styles.sideLine}><span className={styles.sideLineLabel}>쿠폰 적용 직전 금액</span><span className={styles.sideLineValue}>{won(baseAmount)}</span></div>
-              <div className={styles.sideLine}><span className={styles.sideLineLabel}>할인율 {previewRate}% 계산</span><span className={styles.sideLineValue}>{won(rawDiscount)}</span></div>
-              <div className={styles.sideLine}><span className={styles.sideLineLabel}>단수 처리 ({p.roundingMode} · {p.roundingUnit}원)</span><span className={`${styles.sideLineValue} ${styles.sideLineValueNeg}`}>-{won(cappedDiscount)}</span></div>
-              <div className={styles.sideLine}><span className={styles.sideLineLabel}>배분 방식 ({p.allocationMethod})</span><span className={`${styles.sideLineValue} ${styles.sideLineValueMuted}`}>주문 쿠폰</span></div>
+
+            <div className={styles.sideCard}>
+              <div className={styles.sideHead}><div className={styles.sideTitle}>전체 설정 요약</div></div>
+              <div className={styles.digestRow}><span className={styles.digestLabel}>적용 순서</span><span className={styles.digestValue}>{p.discountOrder.slice(0, 4).join(' → ')}{p.discountOrder.length > 4 ? ' …' : ''}</span></div>
+              <div className={styles.digestRow}><span className={styles.digestLabel}>중복 사용</span><span className={styles.digestValue}>{p.allowMultipleCoupons ? '상품 ' + p.maxProductCoupons + ' · 주문 ' + p.maxOrderCoupons + ' · 배송비 ' + p.maxShippingCoupons + '장' : '1장만 사용'}</span></div>
+              <div className={styles.digestRow}><span className={styles.digestLabel}>프로모션 / 포인트</span><span className={styles.digestValue}>{p.promotionStackDefault ? '프로모션 허용' : '프로모션 불허'} · {p.pointStackAllowed ? '포인트 허용' : '포인트 불허'}</span></div>
+              <div className={styles.digestRow}><span className={styles.digestLabel}>구매금액 기준</span><span className={styles.digestValue}>{p.minPurchaseBasis}</span></div>
+              <div className={styles.digestRow}><span className={styles.digestLabel}>취소 / 반품</span><span className={styles.digestValue}>전체는 쿠폰 복원 · 부분은 잔여 재계산</span></div>
+              <div className={styles.digestRow}><span className={styles.digestLabel}>만료 쿠폰 복원</span><span className={styles.digestValue}>{p.restoreExpiredCoupon ? '원 만료일로 복원' : '복원하지 않음'}</span></div>
+              <div className={styles.digestRow}><span className={styles.digestLabel}>발급 한도</span><span className={styles.digestValue}>{p.memberLimitBasis}{p.blockOnLimitExceeded ? ' · 초과 시 차단' : ''}</span></div>
+              <div className={styles.digestRow}><span className={styles.digestLabel}>단수 처리</span><span className={styles.digestValue}>{p.roundingMode} · {p.roundingUnit}원</span></div>
+              <div className={styles.digestRow}><span className={styles.digestLabel}>적용 시작</span><span className={styles.digestValue}>{p.startDate}</span></div>
+              <div className={styles.sideFootNote}>저장 시 이 문서가 변경 이력에 스냅샷으로 함께 기록됩니다.</div>
             </div>
-          </div>
+          </aside>
         </div>
       ) : (
         <div className={styles.layout}>

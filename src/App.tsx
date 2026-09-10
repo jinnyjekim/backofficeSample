@@ -55,9 +55,7 @@ import { ExternalTransactionPage } from './pages/paymentmgmt/ExternalTransaction
 import { PaymentAuditPage } from './pages/paymentmgmt/PaymentAuditPage';
 import { ShippingBaseFeePage } from './pages/deliverypolicy/ShippingBaseFeePage';
 import { RegionalShippingFeePage } from './pages/deliverypolicy/RegionalShippingFeePage';
-import { FreeShippingConditionPage } from './pages/deliverypolicy/FreeShippingConditionPage';
 import { ProductShippingPolicyPage } from './pages/deliverypolicy/ProductShippingPolicyPage';
-import { BundleShippingPage } from './pages/deliverypolicy/BundleShippingPage';
 import { ReturnExchangeFeePage } from './pages/deliverypolicy/ReturnExchangeFeePage';
 import { OrderStatusPage } from './pages/policy/OrderStatusPage';
 import { PaymentPolicyPage } from './pages/policy/PaymentPolicyPage';
@@ -87,14 +85,10 @@ import { CommonCodesPage } from './pages/system/CommonCodesPage';
 import { IntegrationManagementPage } from './pages/system/IntegrationManagementPage';
 import { JobManagementPage } from './pages/system/JobManagementPage';
 import { InventoryStatusPage } from './pages/inventory/InventoryStatusPage';
-import { InventoryOptionsPage } from './pages/inventory/InventoryOptionsPage';
-import { SoldOutProductsPage } from './pages/inventory/SoldOutProductsPage';
-import { SafetyStockPage } from './pages/inventory/SafetyStockPage';
-import { InventoryAlertsPage } from './pages/inventory/InventoryAlertsPage';
-import { InboundManagementPage } from './pages/inventory/InboundManagementPage';
-import { StockOutboundManagementPage } from './pages/inventory/StockOutboundManagementPage';
+import { StockMovementManagementPage } from './pages/inventory/StockMovementManagementPage';
 import { InventoryAdjustmentPage } from './pages/inventory/InventoryAdjustmentPage';
 import { StockMovementHistoryPage } from './pages/inventory/StockMovementHistoryPage';
+import { InventoryAlertsConfigPage } from './pages/inventory/InventoryAlertsConfigPage';
 import { PromotionsListPage } from './pages/promotions/PromotionsListPage';
 import { PromotionApplicationsPage } from './pages/promotions/PromotionApplicationsPage';
 import { PeriodPromotionsPage } from './pages/promotions/PeriodPromotionsPage';
@@ -289,10 +283,10 @@ export default function App() {
         <Route path="b2c/brands/products" element={<BrandProductsPage />} />
         <Route path="b2c/brands/exposure" element={<BrandExposurePage />} />
         <Route path="b2c/reviews/*" element={<Navigate to="/reviews" replace />} />
-        <Route path="b2c/inventory/options" element={<InventoryOptionsPage />} />
-        <Route path="b2c/inventory/sold-out" element={<SoldOutProductsPage />} />
-        <Route path="b2c/inventory/safety-stock" element={<SafetyStockPage />} />
-        <Route path="b2c/inventory/alerts" element={<InventoryAlertsPage />} />
+        <Route path="b2c/inventory/options" element={<Navigate to="/inventory/status?view=option" replace />} />
+        <Route path="b2c/inventory/sold-out" element={<Navigate to="/inventory/status?stockStatus=soldout" replace />} />
+        <Route path="b2c/inventory/safety-stock" element={<Navigate to="/inventory/alerts?tab=safety" replace />} />
+        <Route path="b2c/inventory/alerts" element={<Navigate to="/inventory/alerts?tab=history" replace />} />
         <Route path="b2c/inventory/*" element={<Navigate to="/inventory/status" replace />} />
         <Route path="c2c/sales/sellers" element={<SellerListPage />} />
         <Route path="c2c/sales/status" element={<SalesStatusPage />} />
@@ -411,11 +405,14 @@ export default function App() {
         <Route path="products/partner-pricing" element={<PartnerPricingPage />} />
         <Route path="products/min-order-qty" element={<MinOrderQtyPage />} />
 
+        <Route path="inventory" element={<Navigate to="/inventory/status" replace />} />
         <Route path="inventory/status" element={<InventoryStatusPage />} />
-        <Route path="inventory/inbound" element={<InboundManagementPage />} />
-        <Route path="inventory/outbound" element={<StockOutboundManagementPage />} />
+        <Route path="inventory/movement" element={<StockMovementManagementPage />} />
+        <Route path="inventory/inbound" element={<Navigate to="/inventory/movement?tab=inbound" replace />} />
+        <Route path="inventory/outbound" element={<Navigate to="/inventory/movement?tab=outbound" replace />} />
         <Route path="inventory/adjust" element={<InventoryAdjustmentPage />} />
         <Route path="inventory/history" element={<StockMovementHistoryPage />} />
+        <Route path="inventory/alerts" element={<InventoryAlertsConfigPage />} />
 
         <Route path="quotes/requests" element={<QuoteRequestsPage />} />
         <Route path="quotes" element={<QuotesPage />} />
@@ -455,10 +452,10 @@ export default function App() {
         <Route path="cs/history" element={<CsHistoryPage />} />
 
         <Route path="delivery-policy/base-fee" element={<ShippingBaseFeePage />} />
-        <Route path="delivery-policy/free-shipping" element={<FreeShippingConditionPage />} />
+        <Route path="delivery-policy/free-shipping" element={<Navigate to="/delivery-policy/base-fee" replace />} />
         <Route path="delivery-policy/region-fee" element={<RegionalShippingFeePage />} />
         <Route path="delivery-policy/product" element={<ProductShippingPolicyPage />} />
-        <Route path="delivery-policy/bundle" element={<BundleShippingPage />} />
+        <Route path="delivery-policy/bundle" element={<Navigate to="/delivery-policy/base-fee" replace />} />
         <Route path="delivery-policy/remote-area" element={<Navigate to="/delivery-policy/region-fee" replace />} />
         <Route path="delivery-policy/return-exchange" element={<ReturnExchangeFeePage />} />
 
