@@ -204,6 +204,10 @@ export function PaymentPolicyPage() {
   );
   const failurePreviewSuccess =
     draftPolicy.retryAllowed && draftPolicy.maxRetryCount > 0;
+  const previewHasUnsavedChanges = editing && (
+    describePolicyChanges(policy, draftPolicy).length > 0 ||
+    describeMethodChanges(methods, draftMethods).length > 0
+  );
 
   const policySide = (
     <div className={styles.policySide}>
@@ -867,7 +871,107 @@ export function PaymentPolicyPage() {
         )}
 
         {tab === 'preview' && (
-          <div className={styles.previewOnly}>{policySide}</div>
+          <div className={styles.policyPreviewLayout}>
+            <div className={styles.policyPreviewMain}>
+              <section className={styles.previewDocumentCard}>
+                <div className={styles.previewDocumentHead}>
+                  <div>
+                    <div className={styles.previewDocumentTitle}>적용될 정책 전문</div>
+                    <div className={styles.previewDocumentDesc}>현재 설정이 실제 결제 흐름에 어떻게 적용되는지 문장으로 확인합니다. 이 탭은 읽기 전용입니다.</div>
+                  </div>
+                  <span className={previewHasUnsavedChanges ? styles.previewDraftBadge : styles.previewLiveBadge}>
+                    {previewHasUnsavedChanges ? '미저장 초안' : `적용 중 · ${draftPolicy.effectiveFrom}`}
+                  </span>
+                </div>
+
+                <div className={styles.policySentenceList}>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>1</span>
+                    <div><strong>결제 방식</strong><p>‘{draftPolicy.paymentTiming}’ 방식으로 운영하며, 주문별 결제는 {draftPolicy.paymentRequired ? '필수입니다' : '선택입니다'}. 결제가 완료되어야 주문이 다음 단계로 진행됩니다.</p></div>
+                    <span className={styles.previewRowTag}>{draftPolicy.paymentRequired ? '필수 결제' : '선택 결제'}</span>
+                  </div>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>2</span>
+                    <div><strong>결제 기준금액 · 수단</strong><p>결제 대상 금액은 {draftPolicy.paymentBasis} 기준으로 산정하고, 기본 결제수단은 {defaultMethod?.name ?? '지정되지 않음'}입니다. 부분결제는 {draftPolicy.partialPaymentEnabled ? '허용합니다' : '허용하지 않습니다'}.</p></div>
+                    <span className={styles.previewRowTag}>금액</span>
+                  </div>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>3</span>
+                    <div><strong>결제 가능 시점</strong><p>{draftPolicy.paymentAllowedStages.length > 0 ? `${draftPolicy.paymentAllowedStages.join(' · ')} 단계에서 결제를 요청할 수 있으며` : '결제 가능한 주문 단계가 없으며'}, 결제 요청 시 재고를 {draftPolicy.reserveStockOnPayment ? '선점합니다' : '선점하지 않습니다'}.</p></div>
+                    <span className={styles.previewRowTag}>{draftPolicy.paymentAllowedStages.length}개 단계</span>
+                  </div>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>4</span>
+                    <div><strong>결제 세션 유효시간</strong><p>결제 요청 후 {draftPolicy.sessionExpiryMinutes}분 내에 완료해야 하며, 만료되면 {draftPolicy.expiryAction}합니다.</p></div>
+                    <span className={styles.previewRowTag}>세션</span>
+                  </div>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>5</span>
+                    <div><strong>실패 · 재시도</strong><p>결제 실패 시 주문 상태를 ‘{draftPolicy.failureOrderAction}’로 처리하고{draftPolicy.retryAllowed ? `, ${draftPolicy.retryLimitMinutes}분 내 최대 ${draftPolicy.maxRetryCount}회까지 재시도할 수 있습니다.` : ', 재시도는 허용하지 않습니다.'} 모두 실패하면 {draftPolicy.retryLimitAction}합니다.</p></div>
+                    <span className={styles.previewRowTag}>재시도</span>
+                  </div>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>6</span>
+                    <div><strong>운영 처리</strong><p>결제 미완료 주문은 처리 단계로 {draftPolicy.blockProcessingBeforePaid ? '넘어가지 않습니다' : '진행할 수 있습니다'}. 결제 실패 시 고객에게 {draftPolicy.failureNotification === '없음' ? '별도 알림을 보내지 않으며' : `${draftPolicy.failureNotification} 알림을 보내며`}, {draftPolicy.effectiveFrom} 이후 생성된 주문부터 적용됩니다.</p></div>
+                    <span className={styles.previewRowTag}>운영</span>
+                  </div>
+                </div>
+              </section>
+
+              <section className={styles.previewStageCard}>
+                <div className={styles.previewCardHead}>
+                  <div className={styles.previewDocumentTitle}>단계별 결제 판정</div>
+                  <div className={styles.previewDocumentDesc}>주문 단계마다 결제 요청이 가능한지와 그때 적용되는 처리입니다.</div>
+                </div>
+                <div className={styles.previewStageTable}>
+                  <div className={`${styles.previewStageRow} ${styles.previewStageHead}`}>
+                    <span>주문 단계</span><span>결제 요청</span><span>적용 처리</span>
+                  </div>
+                  {PAYMENT_STAGES.map((stage) => {
+                    const allowed = draftPolicy.paymentAllowedStages.includes(stage);
+                    return (
+                      <div className={styles.previewStageRow} key={stage}>
+                        <strong>{stage}</strong>
+                        <span><CommonBadge type={allowed ? 'success-light' : 'secondary'} size="sm">{allowed ? '가능' : '불가'}</CommonBadge></span>
+                        <span>{allowed ? `${draftPolicy.reserveStockOnPayment ? '재고 선점 · ' : ''}${draftPolicy.sessionExpiryMinutes}분 내 완료` : '결제 요청 생성 불가'}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            </div>
+
+            <aside className={styles.policyPreviewSide}>
+              <section className={styles.previewSideCard}>
+                <div className={styles.previewCardHead}>
+                  <div className={styles.previewDocumentTitle}>고객 안내 문구</div>
+                  <div className={styles.previewDocumentDesc}>설정에 따라 자동 생성되는 안내입니다</div>
+                </div>
+                <div className={styles.customerMessageList}>
+                  <div className={styles.customerMessage}><span>주문서 · 결제 단계</span><strong>결제창을 열고 {draftPolicy.sessionExpiryMinutes}분 내 결제를 완료해 주세요.</strong></div>
+                  <div className={styles.customerMessage}><span>결제 만료 안내</span><strong>{draftPolicy.sessionExpiryMinutes}분이 지나면 결제 요청이 만료되며, {draftPolicy.expiryAction}합니다.</strong></div>
+                  <div className={styles.customerMessage}><span>결제 실패 화면</span><strong>{draftPolicy.retryAllowed ? `${draftPolicy.retryLimitMinutes}분 내 다시 시도할 수 있습니다. 최대 ${draftPolicy.maxRetryCount}회까지 재시도됩니다.` : '결제를 다시 진행하려면 고객센터에 문의해 주세요.'}</strong></div>
+                </div>
+                <div className={`${styles.previewDeployBand} ${warnings.length > 0 ? styles.previewDeployWarning : ''}`}>
+                  <span>배포 가능 여부</span><strong>{warnings.length > 0 ? '확인 필요' : '배포 가능'}</strong>
+                </div>
+              </section>
+
+              <section className={styles.previewSideCard}>
+                <div className={styles.previewCardHead}><div className={styles.previewDocumentTitle}>전체 설정 요약</div></div>
+                <div className={styles.previewDigestRow}><span>결제 방식</span><strong>{draftPolicy.paymentTiming}</strong></div>
+                <div className={styles.previewDigestRow}><span>주문별 결제</span><strong>{draftPolicy.paymentRequired ? '필수' : '선택'}</strong></div>
+                <div className={styles.previewDigestRow}><span>기본 결제수단</span><strong>{defaultMethod?.name ?? '없음'}</strong></div>
+                <div className={styles.previewDigestRow}><span>결제 기준금액</span><strong>{draftPolicy.paymentBasis}</strong></div>
+                <div className={styles.previewDigestRow}><span>결제 가능 시점</span><strong>{draftPolicy.paymentAllowedStages.join(' · ') || '없음'}</strong></div>
+                <div className={styles.previewDigestRow}><span>유효시간</span><strong>{draftPolicy.sessionExpiryMinutes}분 · {draftPolicy.expiryAction}</strong></div>
+                <div className={styles.previewDigestRow}><span>실패 재시도</span><strong>{draftPolicy.retryAllowed ? `${draftPolicy.maxRetryCount}회 · ${draftPolicy.retryLimitMinutes}분 간격` : '사용 안 함'}</strong></div>
+                <div className={styles.previewDigestRow}><span>최종 실패 시</span><strong>{draftPolicy.retryLimitAction}</strong></div>
+                <div className={styles.previewDigestRow}><span>적용 시작</span><strong>{draftPolicy.effectiveFrom}</strong></div>
+                <div className={styles.previewSideFoot}>저장 시 이 문서가 변경 이력에 스냅샷으로 함께 기록됩니다.</div>
+              </section>
+            </aside>
+          </div>
         )}
 
       </div>
