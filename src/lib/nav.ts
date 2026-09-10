@@ -124,18 +124,11 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'payment_mgmt_external', sub: true, label: 'PG / 외부 거래', to: '/payment-mgmt/external' },
       { key: 'payment_mgmt_history', sub: true, label: '결제 처리 이력', to: '/payment-mgmt/history' },
 
-      { key: 'delivery', icon: Truck, label: '배송 관리', to: '/delivery/prep', business: 'B' },
-      { key: 'delivery_prep', sub: true, label: '배송 준비', to: '/delivery/prep', business: 'B' },
-      { key: 'delivery_outbound_wait', sub: true, label: '출고 대기', to: '/delivery/outbound-waiting', business: 'B' },
-      { key: 'delivery_outbound_done', sub: true, label: '출고 완료', to: '/delivery/outbound-complete', business: 'B' },
-      { key: 'delivery_transit', sub: true, label: '배송중', to: '/delivery/in-transit', business: 'B' },
-      { key: 'delivery_done', sub: true, label: '배송 완료', to: '/delivery/complete', business: 'B' },
-      { key: 'delivery_failed', sub: true, label: '배송 실패', to: '/delivery/failed', business: 'B' },
-      { key: 'delivery_hold', sub: true, label: '배송 보류', to: '/delivery/hold', business: 'B' },
+      { key: 'delivery', icon: Truck, label: '배송 관리', to: '/delivery/list', business: 'B' },
+      { key: 'delivery_list', sub: true, label: '배송 목록', to: '/delivery/list', business: 'B' },
       { key: 'delivery_invoices', sub: true, label: '송장 관리', to: '/delivery/invoices', business: 'B' },
       { key: 'delivery_carriers', sub: true, label: '배송사 관리', to: '/delivery/carriers', business: 'B' },
-      { key: 'delivery_tracking', sub: true, label: '배송 추적', to: '/delivery/tracking', business: 'B' },
-      { key: 'delivery_history', sub: true, label: '배송 이력', to: '/delivery/history', business: 'B' },
+      { key: 'delivery_history', sub: true, label: '배송 처리 이력', to: '/delivery/history', business: 'B' },
 
       { key: 'cancel_mgmt', icon: ShoppingCart, label: '취소 관리', to: '/cancel/requests', business: 'B' },
       { key: 'cancel_requests', sub: true, label: '취소 요청', to: '/cancel/requests', business: 'B' },
@@ -454,17 +447,18 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   log_system: ['분석 · 시스템 · 로그 / 감사', '시스템 로그'],
   log_security: ['분석 · 시스템 · 로그 / 감사', '보안 로그'],
 
-  delivery_prep: ['서비스 관리 · 배송 관리', '배송 준비'],
-  delivery_outbound_wait: ['서비스 관리 · 배송 관리', '출고 대기'],
-  delivery_outbound_done: ['서비스 관리 · 배송 관리', '출고 완료'],
-  delivery_transit: ['서비스 관리 · 배송 관리', '배송중'],
-  delivery_done: ['서비스 관리 · 배송 관리', '배송 완료'],
-  delivery_failed: ['서비스 관리 · 배송 관리', '배송 실패'],
-  delivery_hold: ['서비스 관리 · 배송 관리', '배송 보류'],
+  delivery_list: ['서비스 관리 · 배송 관리', '배송 목록'],
   delivery_invoices: ['서비스 관리 · 배송 관리', '송장 관리'],
   delivery_carriers: ['서비스 관리 · 배송 관리', '배송사 관리'],
-  delivery_tracking: ['서비스 관리 · 배송 관리', '배송 추적'],
-  delivery_history: ['서비스 관리 · 배송 관리', '배송 이력'],
+  delivery_history: ['서비스 관리 · 배송 관리', '배송 처리 이력'],
+  delivery_prep: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_outbound_wait: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_outbound_done: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_transit: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_done: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_failed: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_hold: ['서비스 관리 · 배송 관리', '배송 목록'],
+  delivery_tracking: ['서비스 관리 · 배송 관리', '배송 목록'],
   cancel_requests: ['서비스 관리 · 취소 관리', '취소 요청'],
   cancel_approval: ['서비스 관리 · 취소 관리', '취소 승인'],
   cancel_rejected: ['서비스 관리 · 취소 관리', '취소 반려'],
@@ -624,17 +618,10 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/stats/conversion')) return 'stats_conversion';
   if (pathname.startsWith('/stats/overview')) return 'stats_overview';
 
-  if (pathname.startsWith('/delivery/prep') || pathname.startsWith('/b2c/delivery/prep')) return 'delivery_prep';
-  if (pathname.startsWith('/delivery/outbound-waiting') || pathname.startsWith('/b2c/delivery/outbound-waiting')) return 'delivery_outbound_wait';
-  if (pathname.startsWith('/delivery/outbound-complete') || pathname.startsWith('/b2c/delivery/outbound-complete')) return 'delivery_outbound_done';
-  if (pathname.startsWith('/delivery/in-transit') || pathname.startsWith('/b2c/delivery/in-transit')) return 'delivery_transit';
-  if (pathname.startsWith('/delivery/complete') || pathname.startsWith('/b2c/delivery/complete')) return 'delivery_done';
-  if (pathname.startsWith('/delivery/failed') || pathname.startsWith('/b2c/delivery/failed')) return 'delivery_failed';
-  if (pathname.startsWith('/delivery/hold') || pathname.startsWith('/b2c/delivery/hold')) return 'delivery_hold';
   if (pathname.startsWith('/delivery/invoices') || pathname.startsWith('/b2c/delivery/invoices')) return 'delivery_invoices';
   if (pathname.startsWith('/delivery/carriers') || pathname.startsWith('/b2c/delivery/carriers')) return 'delivery_carriers';
-  if (pathname.startsWith('/delivery/tracking') || pathname.startsWith('/b2c/delivery/tracking')) return 'delivery_tracking';
   if (pathname.startsWith('/delivery/history') || pathname.startsWith('/b2c/delivery/history')) return 'delivery_history';
+  if (pathname.startsWith('/delivery') || pathname.startsWith('/b2c/delivery')) return 'delivery_list';
   if (pathname.startsWith('/cancel/requests') || pathname.startsWith('/b2c/cancel/requests')) return 'cancel_requests';
   if (pathname.startsWith('/cancel/approval') || pathname.startsWith('/b2c/cancel/approval')) return 'cancel_approval';
   if (pathname.startsWith('/cancel/rejected') || pathname.startsWith('/b2c/cancel/rejected')) return 'cancel_rejected';

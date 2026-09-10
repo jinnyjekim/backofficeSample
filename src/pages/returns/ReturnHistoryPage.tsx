@@ -1,75 +1,130 @@
 import { useMemo, useState } from "react";
-import styles from "../delivery/deliveryShared.module.css";
+import shared from "../coupons/shared.module.css";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridColumn, GridRow } from "../../components/DataGrid/types";
 import { DetailDrawer } from "../c2c/sales/SalesActivityShared";
 import drawer from "../ops/opsDrawerShared.module.css";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
-import { CommonButton } from "../../components/common";
 import { DatePicker } from "../../components/forms/DatePicker";
-import { INITIAL_RETURNS, STAGE_META, type ReturnItem } from "./returnsData";
+import {
+  INITIAL_RETURNS,
+  STAGE_META,
+  type ReturnItem,
+} from "./returnsData";
 
-const GRID_TEMPLATE = "140px 140px 90px minmax(180px, 1fr) 100px 110px 120px";
+interface FlattenedAuditItem {
+  id: string; // 고유 키
+  returnId: string;
+  orderId: string;
+  member: string;
+  when: string;
+  actor: string;
+  action: string;
+  prevStage?: string;
+  nextStage: string;
+  note: string;
+  feeInfo?: string;
+  rawItem: ReturnItem;
+}
+
+const GRID_TEMPLATE =
+  "125px 125px 125px 80px 105px 130px minmax(200px, 1fr) 130px";
+
 const GRID_COLUMNS: GridColumn[] = [
+  { label: "처리 일시" },
   { label: "반품번호" },
   { label: "주문번호" },
   { label: "고객명" },
-  { label: "반품상품" },
-  { label: "진행단계" },
-  { label: "담당자" },
-  { label: "최근갱신" },
+  { label: "담당자(작업자)" },
+  { label: "상태 변경" },
+  { label: "처리 내용 및 사유" },
+  { label: "배송비/환불 변경" },
 ];
-
-const QUICK_FILTERS = [
-  "전체",
-  "반품 요청",
-  "반품 승인",
-  "반품 회수",
-  "회수 완료",
-  "상품 확인",
-  "반품 완료",
-  "반품 반려",
-] as const;
 
 export function ReturnHistoryPage() {
   const [items] = useState<ReturnItem[]>(INITIAL_RETURNS);
-  const [filter, setFilter] = useState<string>("전체");
   const [keyword, setKeyword] = useState("");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [isDetailFilterOpen, setIsDetailFilterOpen] = useState(false);
+  const [selectedActor, setSelectedActor] = useState("");
+  const [selectedNextStage, setSelectedNextStage] = useState("");
+  const [selectedLog, setSelectedLog] = useState<FlattenedAuditItem | null>(null);
+
+  // 모든 반품 건의 감사 로그를 플랫 리스트로 변환
+  const allLogs: FlattenedAuditItem[] = useMemo(() => {
+    const list: FlattenedAuditItem[] = [];
+    items.forEach((item) => {
+      item.auditLogs.forEach((log, index) => {
+        list.push({
+          id: `${item.id}-${index}`,
+          returnId: item.id,
+          orderId: item.orderId,
+          member: item.member,
+          when: log.when,
+          actor: log.actor,
+          action: log.action,
+          prevStage: log.prevStage,
+          nextStage: log.nextStage,
+          note: log.note,
+          feeInfo: log.feeInfo,
+          rawItem: item,
+        });
+      });
+    });
+    // 최신 일시 순 정렬
+    return list.sort((a, b) => b.when.localeCompare(a.when));
+  }, [items]);
 
   const filtered = useMemo(() => {
-    return items.filter((item) => {
-      const matchQuick = filter === "전체" || item.stage === filter;
-      const matchKey =
-        !keyword ||
-        `${item.id} ${item.orderId} ${item.member} ${item.product} ${item.assignee}`
-          .toLowerCase()
-          .includes(keyword.toLowerCase());
-      return matchQuick && matchKey;
+    return allLogs.filter((log) => {
+      if (selectedActor && !log.actor.includes(selectedActor)) {
+        return false;
+      }
+      if (selectedNextStage && log.nextStage !== selectedNextStage) {
+        return false;
+      }
+      if (search) {
+        const query = search.toLowerCase();
+        const text =
+          `${log.returnId} ${log.orderId} ${log.member} ${log.actor} ${log.action} ${log.note} ${log.feeInfo || ""}`.toLowerCase();
+        if (!text.includes(query)) return false;
+      }
+      return true;
     });
-  }, [items, filter, keyword]);
+  }, [allLogs, selectedActor, selectedNextStage, search]);
 
-  const selected = selectedId
-    ? (items.find((item) => item.id === selectedId) ?? null)
-    : null;
+  const resetFilters = () => {
+    setKeyword("");
+    setSearch("");
+    setSelectedActor("");
+    setSelectedNextStage("");
+  };
 
   const rows: GridRow[] = filtered.map((item) => {
-    const sm = STAGE_META[item.stage] ?? { bg: "#f4f4f5", fg: "#52525b" };
-    const latestDate =
-      item.completedAt ||
-      item.rejectedAt ||
-      item.inspectedAt ||
-      item.collectedAt ||
-      item.approvedAt ||
-      item.requestedAt;
+    const smNext = STAGE_META[item.nextStage as keyof typeof STAGE_META] || {
+      bg: "#f4f4f5",
+      fg: "#52525b",
+    };
+
+    const stageChangeText = item.prevStage
+      ? `${item.prevStage} → ${item.nextStage}`
+      : item.nextStage;
+
     return {
       id: item.id,
-      onClick: () => setSelectedId(item.id),
+      onClick: () => setSelectedLog(item),
       cells: [
         {
           kind: "text",
-          text: item.id,
-          color: "#18181b",
+          text: item.when,
+          color: "#71717a",
+          size: "11.5px",
+          numeric: true,
+        },
+        {
+          kind: "text",
+          text: item.returnId,
+          color: "#0284c7",
           size: "12px",
           weight: 600,
         },
@@ -87,101 +142,142 @@ export function ReturnHistoryPage() {
           size: "12.5px",
           weight: 600,
         },
-        { kind: "text", text: item.product, color: "#18181b", size: "12px" },
-        { kind: "badge", text: item.stage, bg: sm.bg, fg: sm.fg },
-        { kind: "text", text: item.assignee, color: "#52525b", size: "12px" },
         {
           kind: "text",
-          text: latestDate,
-          color: "#71717a",
+          text: item.actor,
+          color: "#52525b",
+          size: "12px",
+        },
+        {
+          kind: "badge",
+          text: stageChangeText,
+          bg: smNext.bg,
+          fg: smNext.fg,
+        },
+        {
+          kind: "text",
+          text: item.note,
+          color: "#18181b",
+          size: "12px",
+        },
+        {
+          kind: "text",
+          text: item.feeInfo || "-",
+          color: item.feeInfo ? "#059669" : "#a1a1aa",
           size: "11.5px",
-          numeric: true,
         },
       ],
     };
   });
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.headerTop}>
+    <div className={shared.page}>
+      {/* 상단 헤더 */}
+      <header className={shared.header}>
+        <div className={shared.headerTop}>
           <div>
-            <div className={styles.title}>반품 이력</div>
-            <div className={styles.subtitle}>
-              반품 신청 접수부터 수거, 실물 검수, 최종 환불 및 반려까지의 전체
-              처리 이력을 조회합니다.
+            <div className={shared.title}>반품 처리 이력</div>
+            <div className={shared.subtitle}>
+              누가 언제 어떤 반품 건의 상태, 사유, 배송비를 변경했는지 전체 처리 감사 로그를 조회합니다.
             </div>
           </div>
         </div>
 
-        <div className={styles.filterCard}>
-          <div className={styles.filterRow1}>
+        {/* 쿠폰 목록 표준 필터 카드 */}
+        <div
+          className={shared.filterCard}
+          data-filter-expanded={isDetailFilterOpen ? "true" : "false"}
+        >
+          <form
+            className={shared.filterRow1}
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSearch(keyword.trim());
+            }}
+          >
             <input
-              className={styles.searchInput}
+              className={shared.searchInput}
+              placeholder="반품번호 / 주문번호 / 고객명 / 작업자 / 처리사유 검색"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              placeholder="반품번호 / 주문번호 / 고객명 / 상품명 / 담당자"
             />
-            <button type="button" className={styles.searchBtn}>
+            <button type="submit" className={shared.searchBtn}>
               검색
             </button>
-            <div className={styles.quickFilters}>
-              {QUICK_FILTERS.map((k) => {
-                const active = filter === k;
-                const count = items.filter(
-                  (item) => k === "전체" || item.stage === k,
-                ).length;
-                return (
-                  <CommonButton
-                    key={k}
-                    variant={active ? "primary-light" : "secondary"}
-                    size="md"
-                    className={`${styles.qfBtn} ${active ? styles.active : ""}`}
-                    onClick={() => setFilter(k)}
-                  >
-                    <span className={styles.qfLabel}>{k}</span>
-                    <span className={styles.qfCount}>{count}</span>
-                  </CommonButton>
-                );
-              })}
-            </div>
-          </div>
-          <div className={styles.filterRow2}>
-            <label className={styles.dateFilterField}>
-              <span>조회기간</span>
-              <div className={styles.dateRange}>
-                <DatePicker defaultValue="2026-08-20" />
-                <span className={styles.dateSeparator}>~</span>
-                <DatePicker defaultValue="2026-08-27" />
-              </div>
+          </form>
+
+          <div className={shared.filterRow2}>
+            <label className="globalFilterField">
+              <span>작업자</span>
+              <select
+                aria-label="작업자"
+                className={shared.selectSm}
+                value={selectedActor}
+                onChange={(e) => setSelectedActor(e.target.value)}
+              >
+                <option value="">작업자 전체</option>
+                <option value="운영">운영담당자</option>
+                <option value="검수">검수팀</option>
+                <option value="고객">고객(신청/철회)</option>
+                <option value="택배사">택배사 / 물류센터</option>
+                <option value="시스템">시스템 / PG</option>
+              </select>
             </label>
-            <div className={styles.rowSpacer} />
-            <button type="button" className="detailFilterBtn">
+
+            <label className="globalFilterField">
+              <span>변경 후 상태</span>
+              <select
+                aria-label="변경 후 상태"
+                className={shared.selectSm}
+                value={selectedNextStage}
+                onChange={(e) => setSelectedNextStage(e.target.value)}
+              >
+                <option value="">상태 전체</option>
+                <option value="요청">요청</option>
+                <option value="승인">승인</option>
+                <option value="회수 중">회수 중</option>
+                <option value="회수 완료">회수 완료</option>
+                <option value="검수 중">검수 중</option>
+                <option value="완료">완료</option>
+                <option value="반려">반려</option>
+                <option value="철회">철회</option>
+              </select>
+            </label>
+
+            <label className={shared.dateFilterField}>
+              <span>처리일</span>
+              <span className={shared.dateRange}>
+                <DatePicker defaultValue="2026-08-01" />
+                <span className={shared.dateSeparator}>~</span>
+                <DatePicker defaultValue="2026-08-31" />
+              </span>
+            </label>
+
+            <span className={shared.spacer} />
+
+            <button
+              type="button"
+              className="detailFilterBtn"
+              aria-expanded={isDetailFilterOpen}
+              onClick={() => setIsDetailFilterOpen(!isDetailFilterOpen)}
+            >
               상세 필터
             </button>
             <button
               type="button"
-              className={styles.resetBtn}
-              onClick={() => {
-                setFilter("전체");
-                setKeyword("");
-              }}
+              className={shared.clearBtn}
+              onClick={resetFilters}
             >
               초기화
             </button>
           </div>
         </div>
 
-        <div className={styles.resultBar}>
-          <span
-            className={styles.resultLabel}
-          >{`총 ${filtered.length}건`}</span>
-          <div className={styles.resultActions}>
+        <div className={shared.resultBar}>
+          <span className={shared.resultLabel}>{`총 ${filtered.length}건 `}</span>
+          <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select
-              className={styles.pageSizeSelect}
-              defaultValue="20개씩 보기"
-            >
+            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
             </select>
@@ -189,79 +285,62 @@ export function ReturnHistoryPage() {
         </div>
       </header>
 
-      <div className={styles.tableWrap}>
+      {/* 그리드 */}
+      <div className={shared.tableWrap}>
         <DataGrid
           columns={GRID_COLUMNS}
           rows={rows}
           gridTemplate={GRID_TEMPLATE}
-          minWidth="990px"
+          minWidth="1050px"
           showPagination
           pages={[{ label: "1", active: true }]}
           empty={rows.length === 0}
-          emptyText="조건에 해당하는 반품 이력이 없습니다."
+          emptyText="조회된 처리 이력이 없습니다."
         />
       </div>
 
-      {selected && (
+      {/* 이력 상세 드로어 */}
+      {selectedLog && (
         <DetailDrawer
-          eyebrow={`반품 감사 이력 · ${selected.id}`}
-          title={`${selected.product}`}
-          status={selected.stage}
-          statusMeta={STAGE_META[selected.stage]}
-          subtitle={`${selected.orderId} · ${selected.member} 님`}
-          onClose={() => setSelectedId(null)}
+          eyebrow={`이력 상세 · ${selectedLog.returnId}`}
+          title={`${selectedLog.action} (${selectedLog.when})`}
+          status={selectedLog.nextStage}
+          statusMeta={STAGE_META[selectedLog.nextStage] || { bg: "#f4f4f5", fg: "#52525b" }}
+          subtitle={`작업자: ${selectedLog.actor} · 주문번호: ${selectedLog.orderId}`}
+          onClose={() => setSelectedLog(null)}
           stats={[
-            { label: "진행 단계", value: selected.stage },
-            { label: "담당자", value: selected.assignee },
-            {
-              label: "환불 금액",
-              value: `${selected.refundAmount.toLocaleString()}원`,
-            },
+            { label: "처리 일시", value: selectedLog.when },
+            { label: "작업자", value: selectedLog.actor },
+            { label: "상태 변동", value: selectedLog.prevStage ? `${selectedLog.prevStage} → ${selectedLog.nextStage}` : selectedLog.nextStage },
+            { label: "배송비/환불", value: selectedLog.feeInfo || "변동 없음" },
           ]}
           fields={[
-            {
-              label: "반품 사유",
-              value: `${selected.reasonCategory} - ${selected.reasonDetail}`,
-            },
-            { label: "회수 송장번호", value: selected.returnInvoiceNo },
-            { label: "신청 일시", value: selected.requestedAt },
-            { label: "최종 상태", value: selected.stage },
+            { label: "반품번호", value: selectedLog.returnId },
+            { label: "주문번호", value: selectedLog.orderId },
+            { label: "신청고객", value: `${selectedLog.member} (${selectedLog.rawItem.phone})` },
+            { label: "반품상품", value: `${selectedLog.rawItem.product} (${selectedLog.rawItem.quantity}개)` },
+            { label: "현재 반품상태", value: selectedLog.rawItem.stage },
+            { label: "처리 사유 및 내용", value: selectedLog.note },
           ]}
         >
-          <div className={drawer.sectionTitleLoose}>
-            상태 변경 감사 타임라인
-          </div>
+          <div className={drawer.sectionTitleLoose}>상세 처리 내용 및 비고</div>
           <div
             style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
-              marginBottom: "16px",
+              fontSize: "13px",
+              lineHeight: 1.6,
+              color: "#334155",
+              background: "#f8fafc",
+              padding: "12px 14px",
+              borderRadius: "8px",
+              border: "1px solid #e2e8f0",
             }}
           >
-            {selected.history.map((h, idx) => (
-              <div
-                key={idx}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  fontSize: "12px",
-                }}
-              >
-                <span
-                  style={{
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    background: "var(--accent)",
-                  }}
-                />
-                <strong style={{ minWidth: "150px" }}>{h.title}</strong>
-                <span style={{ color: "#71717a" }}>{h.when}</span>
-                {h.by && <span style={{ color: "#a1a1aa" }}>({h.by})</span>}
+            {selectedLog.note}
+            {selectedLog.feeInfo && (
+              <div style={{ marginTop: "8px", color: "#059669", fontWeight: 600 }}>
+                • {selectedLog.feeInfo}
               </div>
-            ))}
+            )}
           </div>
         </DetailDrawer>
       )}

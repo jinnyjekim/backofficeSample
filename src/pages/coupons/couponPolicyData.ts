@@ -7,7 +7,7 @@ export type AllocationMethod = '상품 판매금액 비례' | '상품 수량 비
 
 export const TODAY = '2026-08-26';
 
-export const DEFAULT_DISCOUNT_ORDER = ['상품 쿠폰', '상품 프로모션', '주문 프로모션', '주문 쿠폰', '포인트', '배송비 쿠폰'];
+export const DEFAULT_DISCOUNT_ORDER = ['상품 프로모션', '상품 쿠폰', '주문 프로모션', '주문 쿠폰', '포인트', '배송비 쿠폰'];
 
 export interface PolicyChange {
   field: string;
@@ -52,6 +52,8 @@ export interface CouponPolicy {
   maxDiscountHandling: MaxDiscountHandling;
   allocationMethod: AllocationMethod;
 
+  startDate: string;
+
   updatedAt: string;
   updatedBy: string;
 }
@@ -85,8 +87,10 @@ export const INITIAL_POLICY: CouponPolicy = {
   maxDiscountHandling: '결제 대상 금액까지 할인',
   allocationMethod: '상품 판매금액 비례',
 
+  startDate: '2026-08-20',
+
   updatedAt: '2026-08-20',
-  updatedBy: 'admin01',
+  updatedBy: '운영 관리자',
 };
 
 const FIELD_LABELS: { key: keyof CouponPolicy; label: string; format: (p: CouponPolicy) => string }[] = [
@@ -111,6 +115,7 @@ const FIELD_LABELS: { key: keyof CouponPolicy; label: string; format: (p: Coupon
   { key: 'roundingUnit', label: '계산 단위', format: (p) => `${p.roundingUnit}원` },
   { key: 'maxDiscountHandling', label: '할인금액이 결제 대상 금액을 초과하는 경우', format: (p) => p.maxDiscountHandling },
   { key: 'allocationMethod', label: '주문 쿠폰 할인 배분 방식', format: (p) => p.allocationMethod },
+  { key: 'startDate', label: '적용 시작일', format: (p) => p.startDate },
 ];
 
 export function describeChanges(before: CouponPolicy, after: CouponPolicy): PolicyChange[] {

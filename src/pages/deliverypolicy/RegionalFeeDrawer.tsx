@@ -4,12 +4,15 @@ import styles from './RegionalShippingFeePage.module.css';
 import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   DELIVERY_METHODS,
+  REGION_CATEGORIES,
   SIDO_OPTIONS,
   computeStatus,
   fmtWon,
   type DeliveryMethod,
+  type DeliveryAvailability,
   type FreeShippingTreatment,
   type RegionalFeePolicy,
+  type RegionCategory,
   type RegionType,
 } from './regionalShippingFeeData';
 
@@ -64,17 +67,17 @@ export function RegionalFeeDrawer({ initial, isNew, startEditing = false, issues
   useOutsideClose(asideRef, onClose);
 
   return (
-    <aside ref={asideRef} className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="지역별 추가 배송비 상세">
+    <aside ref={asideRef} className={`${drawer.aside} ${styles.feeDrawer}`} aria-label="지역별 배송 정책 상세">
       <div className={drawer.head}>
         <div className={drawer.headRow}>
           <div className={drawer.headBody}>
-            <div className={drawer.eyebrow}>{isNew ? '신규 지역 추가배송비' : draft.code}</div>
+            <div className={drawer.eyebrow}>{isNew ? '신규 지역 배송 정책' : draft.code}</div>
             <div className={drawer.titleRow}>
-              <h2 className={drawer.title}>{isNew ? '지역 추가배송비 등록' : draft.name}</h2>
+              <h2 className={drawer.title}>{isNew ? '지역 배송 정책 등록' : draft.name}</h2>
               {!isNew && <span className={drawer.badge} style={{ background: statusColor.bg, color: statusColor.fg }}>{status}</span>}
               {!isNew && issues.length > 0 && <span className={drawer.badge} style={{ background: '#fffbeb', color: '#b45309' }}>⚠ 설정 확인</span>}
             </div>
-            {!isNew && <div className={drawer.sub}>+{fmtWon(draft.extraFee)} · 사용 {draft.usageCount.toLocaleString()}건 · 최근 수정 {draft.updatedAt} · {draft.updatedBy}</div>}
+            {!isNew && <div className={drawer.sub}>{draft.deliveryAvailability === '가능' ? `+${fmtWon(draft.extraFee)}` : '배송 불가'} · 사용 {draft.usageCount.toLocaleString()}건 · 최근 수정 {draft.updatedAt} · {draft.updatedBy}</div>}
           </div>
           <button type="button" className={drawer.closeBtn} onClick={onClose}>✕</button>
         </div>
@@ -86,7 +89,7 @@ export function RegionalFeeDrawer({ initial, isNew, startEditing = false, issues
           </div>
         )}
         <div className={drawer.tabs}>
-          {([['basic', '기본 정보'], ['region', '지역 조건'], ['fee', '배송비 조건'], ['history', '변경 이력']] as [Tab, string][]).map(([key, label]) => (
+          {([['basic', '기본 정보'], ['region', '지역 조건'], ['fee', '배송 조건'], ['history', '변경 이력']] as [Tab, string][]).map(([key, label]) => (
             <button key={key} type="button" className={`${drawer.tabBtn} ${tab === key ? drawer.tabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
           ))}
         </div>
@@ -148,6 +151,14 @@ export function RegionalFeeDrawer({ initial, isNew, startEditing = false, issues
           <section className={styles.formSection}>
             <h3>지역 지정</h3>
             <label className={styles.formField}>
+              <span>지역 유형 *</span>
+              <div className={styles.radioGroup}>
+                {REGION_CATEGORIES.map((v: RegionCategory) => (
+                  <label key={v}><input type="radio" disabled={!editing} checked={draft.regionCategory === v} onChange={() => set('regionCategory', v)} />{v}</label>
+                ))}
+              </div>
+            </label>
+            <label className={styles.formField}>
               <span>지역 지정 방식 *</span>
               <div className={styles.radioGroup}>
                 {(['행정구역', '우편번호'] as RegionType[]).map((v) => (
@@ -191,10 +202,26 @@ export function RegionalFeeDrawer({ initial, isNew, startEditing = false, issues
 
         {tab === 'fee' && (
           <section className={styles.formSection}>
-            <h3>추가 배송비</h3>
+            <h3>배송 가능 여부 · 추가 배송비</h3>
+            <label className={styles.formField}>
+              <span>배송 가능 여부</span>
+              <div className={styles.radioGroup}>
+                {(['가능', '불가'] as DeliveryAvailability[]).map((v) => (
+                  <label key={v}>
+                    <input
+                      type="radio"
+                      disabled={!editing}
+                      checked={draft.deliveryAvailability === v}
+                      onChange={() => setDraft((current) => ({ ...current, deliveryAvailability: v, extraFee: v === '불가' ? 0 : current.extraFee }))}
+                    />
+                    {v}
+                  </label>
+                ))}
+              </div>
+            </label>
             <label className={styles.formField}>
               <span>추가 배송비 * (원)</span>
-              <input type="number" min={0} disabled={!editing} value={draft.extraFee} onChange={(e) => set('extraFee', Math.max(0, Number(e.target.value) || 0))} />
+              <input type="number" min={0} disabled={!editing || draft.deliveryAvailability === '불가'} value={draft.extraFee} onChange={(e) => set('extraFee', Math.max(0, Number(e.target.value) || 0))} />
             </label>
             <label className={styles.formField}>
               <span>적용 배송방법</span>
@@ -212,7 +239,7 @@ export function RegionalFeeDrawer({ initial, isNew, startEditing = false, issues
                 ))}
               </div>
             </label>
-            <div className={styles.infoNote}>기본 배송비 무료배송 조건은 <b>배송 정책 &gt; 기본 배송비</b>에서 관리합니다. 이 설정은 무료배송이 적용된 주문에서 이 지역 추가비까지 함께 면제할지만 결정합니다.</div>
+            <div className={styles.infoNote}>무료배송 조건은 <b>배송 정책 &gt; 배송비 설정 &gt; 무료배송 조건</b>에서 관리합니다. 이 설정은 무료배송 주문에서 지역 추가비까지 면제할지 결정하며, 배송 불가 지역에는 배송비를 계산하지 않습니다.</div>
           </section>
         )}
 

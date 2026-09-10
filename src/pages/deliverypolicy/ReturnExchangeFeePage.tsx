@@ -29,9 +29,9 @@ type Tab = 'basic' | 'free' | 'remote' | 'exception' | 'preview' | 'history';
 const TABS: [Tab, string][] = [
   ['basic', '기본 정책'],
   ['free', '무료배송 · 부분반품'],
-  ['remote', '제주 · 도서산간'],
+  ['remote', '지역 추가비'],
   ['exception', '상품별 예외'],
-  ['preview', '계산 Preview'],
+  ['preview', '배송비 계산 테스트'],
   ['history', '변경 이력'],
 ];
 
@@ -104,7 +104,7 @@ export function ReturnExchangeFeePage() {
         <div className={shared.headerTop}>
           <div>
             <div className={styles.eyebrow}>배송 정책</div>
-            <div className={shared.title}>반품 / 교환 배송비</div>
+            <div className={shared.title}>반품·교환 배송비</div>
             <div className={shared.subtitle}>반품 및 교환 시 적용되는 배송비 기준을 관리합니다.</div>
           </div>
           <div className={styles.headMeta}>
@@ -269,7 +269,7 @@ export function ReturnExchangeFeePage() {
                   <button type="button" disabled={!editing} className={`${styles.switch} ${draftPolicy.partialReturnFreeShippingRecalc ? styles.switchOn : ''}`} onClick={() => set('partialReturnFreeShippingRecalc', !draftPolicy.partialReturnFreeShippingRecalc)}><i /></button>
                   <div className={styles.toggleRowText}>
                     <div className={styles.toggleRowTitle}>부분 반품 후 무료배송 조건 미충족 시 최초 배송비 재부과</div>
-                    <div className={styles.toggleRowDesc}>무료배송 기준 금액은 배송 정책 &gt; 기본 배송비 설정을 따릅니다.</div>
+                    <div className={styles.toggleRowDesc}>무료배송 기준 금액은 배송 정책 &gt; 배송비 설정 &gt; 무료배송 조건을 따릅니다.</div>
                   </div>
                 </div>
               </div>
@@ -290,7 +290,7 @@ export function ReturnExchangeFeePage() {
             <div className={styles.card}>
               <div className={styles.cardHead}>
                 <div className={styles.cardTitle}>제주 / 도서산간 지역 추가비</div>
-                <div className={styles.cardDesc}>제주/도서산간 지역 추가 배송비 금액은 배송 정책 &gt; 제주/도서산간 정책의 기본 정책을 그대로 사용합니다. 반품은 회수 시 1회, 교환은 회수·재배송 각각 부과됩니다.</div>
+                <div className={styles.cardDesc}>회수·재배송 지역 추가비는 배송 정책 &gt; 지역별 배송 정책의 지역 목록을 공유합니다. 반품은 회수 시 1회, 교환은 회수·재배송 각각 부과됩니다.</div>
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.pillGroup}>
@@ -403,7 +403,7 @@ export function ReturnExchangeFeePage() {
       {confirmSave && (
         <div className={shared.dialogOverlay} onMouseDown={(e) => { if (e.target === e.currentTarget) setConfirmSave(null); }}>
           <div className={`${shared.dialogBox} ${styles.saveDialog}`}>
-            <h2 className={shared.dialogTitle}>반품 / 교환 배송비 정책 변경 확인</h2>
+            <h2 className={shared.dialogTitle}>반품·교환 배송비 정책 변경 확인</h2>
             <p className={shared.dialogBody}>변경 사항은 적용 시작일부터 신규 반품/교환 신청부터 적용됩니다. 이미 접수된 반품/교환의 배송비는 신청 시점 정책으로 유지됩니다.</p>
             <div className={styles.diffTable}>
               {confirmSave.map((d, i) => (

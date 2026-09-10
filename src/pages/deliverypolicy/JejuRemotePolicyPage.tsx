@@ -644,7 +644,7 @@ export function JejuRemotePolicyPage() {
                 <div className={drawerShared.eyebrow}>
                   제주 / 도서산간 정책 · 배송비 계산 테스트
                 </div>
-                <h2 className={drawerShared.title}>배송비 계산 Preview</h2>
+                <h2 className={drawerShared.title}>배송비 계산 테스트</h2>
               </div>
               <button
                 type="button"

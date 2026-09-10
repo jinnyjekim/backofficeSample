@@ -58,7 +58,6 @@ import { RegionalShippingFeePage } from './pages/deliverypolicy/RegionalShipping
 import { FreeShippingConditionPage } from './pages/deliverypolicy/FreeShippingConditionPage';
 import { ProductShippingPolicyPage } from './pages/deliverypolicy/ProductShippingPolicyPage';
 import { BundleShippingPage } from './pages/deliverypolicy/BundleShippingPage';
-import { JejuRemotePolicyPage } from './pages/deliverypolicy/JejuRemotePolicyPage';
 import { ReturnExchangeFeePage } from './pages/deliverypolicy/ReturnExchangeFeePage';
 import { OrderStatusPage } from './pages/policy/OrderStatusPage';
 import { PaymentPolicyPage } from './pages/policy/PaymentPolicyPage';
@@ -126,16 +125,9 @@ import { ProductInquiriesListPage } from './pages/cs/ProductInquiriesListPage';
 import { CartConversionPage } from './pages/cartconversion/CartConversionPage';
 import { SystemLogPage } from './pages/logs/SystemLogPage';
 import { SecurityLogPage } from './pages/logs/SecurityLogPage';
-import { DeliveryPrepPage } from './pages/delivery/DeliveryPrepPage';
-import { OutboundWaitingPage } from './pages/delivery/OutboundWaitingPage';
-import { OutboundCompletePage } from './pages/delivery/OutboundCompletePage';
-import { InTransitPage } from './pages/delivery/InTransitPage';
-import { DeliveryCompletePage } from './pages/delivery/DeliveryCompletePage';
-import { DeliveryFailedPage } from './pages/delivery/DeliveryFailedPage';
-import { DeliveryHoldPage } from './pages/delivery/DeliveryHoldPage';
+import { DeliveryListPage } from './pages/delivery/DeliveryListPage';
 import { DeliveryInvoicesPage } from './pages/delivery/DeliveryInvoicesPage';
 import { DeliveryCarriersPage } from './pages/delivery/DeliveryCarriersPage';
-import { DeliveryTrackingPage } from './pages/delivery/DeliveryTrackingPage';
 import { DeliveryHistoryPage } from './pages/delivery/DeliveryHistoryPage';
 import { ExchangeRequestsPage } from './pages/exchanges/ExchangeRequestsPage';
 import { ExchangeApprovalPage } from './pages/exchanges/ExchangeApprovalPage';
@@ -152,13 +144,7 @@ import { CancelRejectedPage } from './pages/cancel/CancelRejectedPage';
 import { CancelPartialPage } from './pages/cancel/CancelPartialPage';
 import { CancelCompletedPage } from './pages/cancel/CancelCompletedPage';
 import { CancelHistoryPage } from './pages/cancel/CancelHistoryPage';
-import { ReturnRequestsPage } from './pages/returns/ReturnRequestsPage';
-import { ReturnApprovalPage } from './pages/returns/ReturnApprovalPage';
-import { ReturnCollectingPage } from './pages/returns/ReturnCollectingPage';
-import { ReturnCollectedPage } from './pages/returns/ReturnCollectedPage';
-import { ReturnInspectionPage } from './pages/returns/ReturnInspectionPage';
-import { ReturnCompletedPage } from './pages/returns/ReturnCompletedPage';
-import { ReturnRejectedPage } from './pages/returns/ReturnRejectedPage';
+import { ReturnListPage } from './pages/returns/ReturnListPage';
 import { ReturnHistoryPage } from './pages/returns/ReturnHistoryPage';
 import { SellerListPage } from './pages/c2c/sales/SellerListPage';
 import { SalesStatusPage } from './pages/c2c/sales/SalesStatusPage';
@@ -194,18 +180,37 @@ export default function App() {
         <Route path="b2c/product-inquiries/detail" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="b2c/product-inquiries/history" element={<Navigate to="/cs/product-inquiries" replace />} />
         <Route path="b2c/product-inquiries/:id" element={<Navigate to="/cs/product-inquiries" replace />} />
-        {/* B2C 배송 관리 */}
-        <Route path="b2c/delivery/prep" element={<Navigate to="/delivery/prep" replace />} />
-        <Route path="b2c/delivery/outbound-waiting" element={<Navigate to="/delivery/outbound-waiting" replace />} />
-        <Route path="b2c/delivery/outbound-complete" element={<Navigate to="/delivery/outbound-complete" replace />} />
-        <Route path="b2c/delivery/in-transit" element={<Navigate to="/delivery/in-transit" replace />} />
-        <Route path="b2c/delivery/complete" element={<Navigate to="/delivery/complete" replace />} />
-        <Route path="b2c/delivery/failed" element={<DeliveryFailedPage />} />
-        <Route path="b2c/delivery/hold" element={<DeliveryHoldPage />} />
+        {/* 배송 관리 (Delivery Management) - 4개 통합 메뉴 */}
+        <Route path="delivery" element={<DeliveryListPage />} />
+        <Route path="delivery/list" element={<DeliveryListPage />} />
+        <Route path="delivery/invoices" element={<DeliveryInvoicesPage />} />
+        <Route path="delivery/carriers" element={<DeliveryCarriersPage />} />
+        <Route path="delivery/history" element={<DeliveryHistoryPage />} />
+
+        {/* 기존 세부 상태/기능 경로 호환 연결 */}
+        <Route path="delivery/prep" element={<DeliveryListPage />} />
+        <Route path="delivery/outbound-waiting" element={<DeliveryListPage />} />
+        <Route path="delivery/outbound-complete" element={<DeliveryListPage />} />
+        <Route path="delivery/in-transit" element={<DeliveryListPage />} />
+        <Route path="delivery/complete" element={<DeliveryListPage />} />
+        <Route path="delivery/failed" element={<DeliveryListPage />} />
+        <Route path="delivery/hold" element={<DeliveryListPage />} />
+        <Route path="delivery/tracking" element={<DeliveryListPage />} />
+
+        {/* B2C 배송 관리 호환 라우트 */}
+        <Route path="b2c/delivery" element={<DeliveryListPage />} />
+        <Route path="b2c/delivery/list" element={<DeliveryListPage />} />
         <Route path="b2c/delivery/invoices" element={<DeliveryInvoicesPage />} />
         <Route path="b2c/delivery/carriers" element={<DeliveryCarriersPage />} />
-        <Route path="b2c/delivery/tracking" element={<DeliveryTrackingPage />} />
         <Route path="b2c/delivery/history" element={<DeliveryHistoryPage />} />
+        <Route path="b2c/delivery/prep" element={<DeliveryListPage />} />
+        <Route path="b2c/delivery/outbound-waiting" element={<DeliveryListPage />} />
+        <Route path="b2c/delivery/outbound-complete" element={<DeliveryListPage />} />
+        <Route path="b2c/delivery/in-transit" element={<DeliveryListPage />} />
+        <Route path="b2c/delivery/complete" element={<DeliveryListPage />} />
+        <Route path="b2c/delivery/failed" element={<DeliveryListPage />} />
+        <Route path="b2c/delivery/hold" element={<DeliveryListPage />} />
+        <Route path="b2c/delivery/tracking" element={<DeliveryListPage />} />
 
         {/* 취소 관리 (Cancel Management) */}
         <Route path="cancel/requests" element={<CancelRequestsPage />} />
@@ -223,25 +228,31 @@ export default function App() {
         <Route path="b2c/cancel/completed" element={<CancelCompletedPage />} />
         <Route path="b2c/cancel/history" element={<CancelHistoryPage />} />
 
-        {/* 반품 관리 (Returns Management) */}
-        <Route path="returns/requests" element={<ReturnRequestsPage />} />
-        <Route path="returns/approval" element={<ReturnApprovalPage />} />
-        <Route path="returns/collecting" element={<ReturnCollectingPage />} />
-        <Route path="returns/collected" element={<ReturnCollectedPage />} />
-        <Route path="returns/inspection" element={<ReturnInspectionPage />} />
-        <Route path="returns/completed" element={<ReturnCompletedPage />} />
-        <Route path="returns/rejected" element={<ReturnRejectedPage />} />
+        {/* 반품 관리 (Returns Management) - 2개 통합 메뉴 */}
+        <Route path="returns" element={<ReturnListPage />} />
+        <Route path="returns/list" element={<ReturnListPage />} />
         <Route path="returns/history" element={<ReturnHistoryPage />} />
 
+        {/* 기존 세부 경로 호환 연결 */}
+        <Route path="returns/requests" element={<ReturnListPage />} />
+        <Route path="returns/approval" element={<ReturnListPage />} />
+        <Route path="returns/collecting" element={<ReturnListPage />} />
+        <Route path="returns/collected" element={<ReturnListPage />} />
+        <Route path="returns/inspection" element={<ReturnListPage />} />
+        <Route path="returns/completed" element={<ReturnListPage />} />
+        <Route path="returns/rejected" element={<ReturnListPage />} />
+
         {/* B2C 반품 관리 호환 라우트 */}
-        <Route path="b2c/returns/requests" element={<ReturnRequestsPage />} />
-        <Route path="b2c/returns/approval" element={<ReturnApprovalPage />} />
-        <Route path="b2c/returns/collecting" element={<ReturnCollectingPage />} />
-        <Route path="b2c/returns/collected" element={<ReturnCollectedPage />} />
-        <Route path="b2c/returns/inspection" element={<ReturnInspectionPage />} />
-        <Route path="b2c/returns/completed" element={<ReturnCompletedPage />} />
-        <Route path="b2c/returns/rejected" element={<ReturnRejectedPage />} />
+        <Route path="b2c/returns" element={<ReturnListPage />} />
+        <Route path="b2c/returns/list" element={<ReturnListPage />} />
         <Route path="b2c/returns/history" element={<ReturnHistoryPage />} />
+        <Route path="b2c/returns/requests" element={<ReturnListPage />} />
+        <Route path="b2c/returns/approval" element={<ReturnListPage />} />
+        <Route path="b2c/returns/collecting" element={<ReturnListPage />} />
+        <Route path="b2c/returns/collected" element={<ReturnListPage />} />
+        <Route path="b2c/returns/inspection" element={<ReturnListPage />} />
+        <Route path="b2c/returns/completed" element={<ReturnListPage />} />
+        <Route path="b2c/returns/rejected" element={<ReturnListPage />} />
 
         {/* B2C 교환 관리 */}
         <Route path="b2c/exchanges/requests" element={<ExchangeRequestsPage />} />
@@ -448,7 +459,7 @@ export default function App() {
         <Route path="delivery-policy/region-fee" element={<RegionalShippingFeePage />} />
         <Route path="delivery-policy/product" element={<ProductShippingPolicyPage />} />
         <Route path="delivery-policy/bundle" element={<BundleShippingPage />} />
-        <Route path="delivery-policy/remote-area" element={<JejuRemotePolicyPage />} />
+        <Route path="delivery-policy/remote-area" element={<Navigate to="/delivery-policy/region-fee" replace />} />
         <Route path="delivery-policy/return-exchange" element={<ReturnExchangeFeePage />} />
 
         <Route path="ops/notices" element={<NoticesPage />} />
@@ -499,17 +510,7 @@ export default function App() {
         <Route path="c2c/stats/proceeds" element={<SellerProceedsStatsPage />} />
         <Route path="stats/*" element={<BusinessModulePage />} />
 
-        <Route path="delivery/prep" element={<DeliveryPrepPage />} />
-        <Route path="delivery/outbound-waiting" element={<OutboundWaitingPage />} />
-        <Route path="delivery/outbound-complete" element={<OutboundCompletePage />} />
-        <Route path="delivery/in-transit" element={<InTransitPage />} />
-        <Route path="delivery/complete" element={<DeliveryCompletePage />} />
-        <Route path="delivery/failed" element={<DeliveryFailedPage />} />
-        <Route path="delivery/hold" element={<DeliveryHoldPage />} />
-        <Route path="delivery/invoices" element={<DeliveryInvoicesPage />} />
-        <Route path="delivery/carriers" element={<DeliveryCarriersPage />} />
-        <Route path="delivery/tracking" element={<DeliveryTrackingPage />} />
-        <Route path="delivery/history" element={<DeliveryHistoryPage />} />
+
 
         <Route path="promotions" element={<PromotionsListPage />} />
         <Route path="promotions/history" element={<PromotionApplicationsPage />} />

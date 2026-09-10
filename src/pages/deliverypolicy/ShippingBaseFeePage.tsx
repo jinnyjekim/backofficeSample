@@ -1,9 +1,15 @@
 import { useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './ShippingBaseFeePage.module.css';
 import { CommonBadge, CommonButton, CommonDatePicker, CommonInput, CommonSwitch } from '../../components/common';
 import { useOutsideClose } from '../../lib/useOutsideClose';
+import {
+  INITIAL_POLICIES as INITIAL_FREE_SHIPPING_POLICIES,
+  computeStatus as computeFreeShippingStatus,
+  fmtCondition as fmtFreeShippingCondition,
+} from './freeShippingConditionData';
 import {
   INITIAL_HISTORY,
   INITIAL_LAST_MODIFIED,
@@ -32,7 +38,7 @@ const TABS: [Tab, string][] = [
   ['basic', '기본 설정'],
   ['free', '무료배송'],
   ['bundle', '묶음 · 분할배송'],
-  ['preview', '정책 Preview'],
+  ['preview', '배송비 계산 테스트'],
 ];
 
 const USAGE_OPTIONS: { value: ShippingUsage; title: string; desc: string }[] = [
@@ -47,6 +53,7 @@ const CALC_UNIT_OPTIONS: { value: CalcUnit; title: string; desc: string }[] = [
 const BASE_FEE_PRESETS = [2500, 3000, 3500];
 
 export function ShippingBaseFeePage() {
+  const navigate = useNavigate();
   const [policy, setPolicy] = useState(INITIAL_POLICY);
   const [history, setHistory] = useState(INITIAL_HISTORY);
   const [lastModified, setLastModified] = useState<LastModified>(INITIAL_LAST_MODIFIED);
@@ -68,6 +75,14 @@ export function ShippingBaseFeePage() {
   useOutsideClose(historyRef, () => setShowHistory(false));
 
   const warnings = useMemo(() => computeWarnings(draftPolicy), [draftPolicy]);
+  const activeFreeShippingPolicies = useMemo(
+    () => INITIAL_FREE_SHIPPING_POLICIES.filter((item) => computeFreeShippingStatus(item) === '적용중'),
+    [],
+  );
+  const primaryFreeShippingPolicy = useMemo(
+    () => [...activeFreeShippingPolicies].sort((a, b) => a.priority - b.priority)[0],
+    [activeFreeShippingPolicies],
+  );
 
   const toastBriefly = (message: string) => {
     setToast(message);
@@ -199,6 +214,35 @@ export function ShippingBaseFeePage() {
             {editing && warnings[0] && warningFix(warnings[0].id) && (
               <CommonButton type="button" variant="secondary" size="sm" className={styles.warningAction} onClick={warningFix(warnings[0].id)!.onClick}>{warningFix(warnings[0].id)!.label}</CommonButton>
             )}
+          </div>
+        )}
+
+        {tab === 'basic' && (
+          <div className={styles.summaryCard}>
+            <div className={styles.integrationHead}>
+              <div>
+                <h2>연결 정책 요약</h2>
+                <p>상세 조건은 각 전용 정책 화면에서 관리하며 여기에는 현재 적용값만 표시합니다.</p>
+              </div>
+              <div className={styles.integrationActions}>
+                <CommonButton type="button" variant="secondary" size="sm" onClick={() => navigate('/delivery-policy/free-shipping')}>무료배송 조건 관리</CommonButton>
+                <CommonButton type="button" variant="secondary" size="sm" onClick={() => navigate('/delivery-policy/bundle')}>묶음배송 정책 관리</CommonButton>
+              </div>
+            </div>
+            <div className={styles.summaryGrid}>
+              <div className={styles.summaryTile}>
+                <span className={styles.summaryTileLabel}>적용 중인 무료배송 조건</span>
+                <span className={styles.summaryTileValue}>{activeFreeShippingPolicies.length}개</span>
+              </div>
+              <div className={styles.summaryTile}>
+                <span className={styles.summaryTileLabel}>우선 적용 조건</span>
+                <span className={styles.summaryTileValue}>{primaryFreeShippingPolicy ? `${primaryFreeShippingPolicy.name} · ${fmtFreeShippingCondition(primaryFreeShippingPolicy)}` : '없음'}</span>
+              </div>
+              <div className={styles.summaryTile}>
+                <span className={styles.summaryTileLabel}>묶음배송 계산 방식</span>
+                <span className={styles.summaryTileValue}>{draftPolicy.bundleCalc}</span>
+              </div>
+            </div>
           </div>
         )}
 
@@ -378,7 +422,7 @@ export function ShippingBaseFeePage() {
                   </div>
                   <div className={styles.sectionControls}>
                     <div className={styles.taxRow}>
-                      <div className={styles.fieldSpan2}>
+                      <div>
                         <div className={styles.fieldBlockLabel}>배송비 과세 구분</div>
                         <div className={styles.pillRow2}>
                           {(['과세', '비과세', '세금 정책에 따름'] as TaxTreatment[]).map((v) => (
@@ -423,7 +467,7 @@ export function ShippingBaseFeePage() {
 
                   <div className={styles.sideCard}>
                     <div className={styles.sideHead}>
-                      <div className={styles.sideTitle}>계산 미리보기</div>
+                      <div className={styles.sideTitle}>배송비 계산 테스트</div>
                       <div className={styles.sideDesc}>현재 설정값으로 즉시 계산됩니다</div>
                     </div>
                     <div className={styles.sideFields}>
@@ -499,7 +543,7 @@ export function ShippingBaseFeePage() {
                       </div>
                     ))}
                     <div className={styles.sideFootNote}>
-                      지역별 추가 배송비와 상품·거래처별 Override는 각각 <button type="button" className={styles.linkBtn} onClick={() => window.location.assign('/delivery-policy/region-fee')}>지역 추가 배송비</button>, 상품/거래처 상세에서 관리합니다.
+                      지역별 추가비와 배송 가능 여부는 <button type="button" className={styles.linkBtn} onClick={() => window.location.assign('/delivery-policy/region-fee')}>지역별 배송 정책</button>에서, 상품별 예외는 상품별 배송 정책에서 관리합니다.
                     </div>
                   </div>
 

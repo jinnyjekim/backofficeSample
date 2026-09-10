@@ -26,10 +26,13 @@ export interface PaymentPolicy {
   paymentRequired: boolean;
   paymentTiming: PaymentTiming;
   paymentAllowedStages: string[];
+  reserveStockOnPayment: boolean;
   paymentBasis: PaymentBasis;
   sessionExpiryMinutes: number;
   expiryAction: ExpiryAction;
   blockProcessingBeforePaid: boolean;
+  notifyAssigneeOnFailure: boolean;
+  effectiveFrom: string;
 
   partialPaymentEnabled: boolean;
   minPartialAmount: number;
@@ -72,10 +75,13 @@ export const INITIAL_POLICY: PaymentPolicy = {
   paymentRequired: true,
   paymentTiming: '선결제 + 후불',
   paymentAllowedStages: ['확정'],
+  reserveStockOnPayment: true,
   paymentBasis: '최종 주문금액',
   sessionExpiryMinutes: 30,
   expiryAction: '재결제 가능',
   blockProcessingBeforePaid: true,
+  notifyAssigneeOnFailure: true,
+  effectiveFrom: '2026-08-28',
 
   partialPaymentEnabled: true,
   minPartialAmount: 10000,
@@ -86,8 +92,8 @@ export const INITIAL_POLICY: PaymentPolicy = {
 
   failureOrderAction: '유지',
   retryAllowed: true,
-  maxRetryCount: 5,
-  retryLimitMinutes: 10,
+  maxRetryCount: 3,
+  retryLimitMinutes: 5,
   autoRequery: true,
   requeryMaxCount: 5,
 
@@ -156,10 +162,13 @@ const POLICY_FIELD_LABELS: { key: keyof PaymentPolicy; label: string; format: (p
   { key: 'paymentRequired', label: '결제 필요 여부', format: (p) => (p.paymentRequired ? '결제 필요' : '결제 없이 주문 가능') },
   { key: 'paymentTiming', label: '결제 방식', format: (p) => p.paymentTiming },
   { key: 'paymentAllowedStages', label: '결제 가능 시점', format: (p) => p.paymentAllowedStages.join(', ') || '없음' },
+  { key: 'reserveStockOnPayment', label: '결제 시 재고 선점', format: (p) => (p.reserveStockOnPayment ? '사용' : '사용 안 함') },
   { key: 'paymentBasis', label: '결제 기준금액', format: (p) => p.paymentBasis },
   { key: 'sessionExpiryMinutes', label: '결제 유효시간', format: (p) => `${p.sessionExpiryMinutes}분` },
   { key: 'expiryAction', label: '유효시간 만료 후', format: (p) => p.expiryAction },
   { key: 'blockProcessingBeforePaid', label: '결제 완료 전 주문 처리', format: (p) => (p.blockProcessingBeforePaid ? '불가' : '허용') },
+  { key: 'notifyAssigneeOnFailure', label: '결제 실패 담당자 알림', format: (p) => (p.notifyAssigneeOnFailure ? '사용' : '사용 안 함') },
+  { key: 'effectiveFrom', label: '적용 시작일', format: (p) => p.effectiveFrom },
   { key: 'partialPaymentEnabled', label: '부분결제', format: (p) => (p.partialPaymentEnabled ? '허용' : '불가') },
   { key: 'minPartialAmount', label: '최소 1회 결제금액', format: (p) => fmtWon(p.minPartialAmount) },
   { key: 'minPartialRatioPct', label: '최소 결제 비율', format: (p) => `${p.minPartialRatioPct}%` },

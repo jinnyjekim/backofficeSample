@@ -78,7 +78,7 @@ export function ProductShippingPolicyDrawer({ product, initial, startEditing = f
           <button type="button" className={drawer.actionLink} onClick={() => setEditing((current) => !current)}>{editing ? '수정 취소' : '수정'}</button>
         </div>
         <div className={drawer.tabs}>
-          {([['basic', '기본 정보'], ['fee', '배송비 · 지역'], ['bundle', '묶음 · 반품/교환'], ['preview', '계산 Preview'], ['history', '변경 이력']] as [Tab, string][]).map(([key, label]) => (
+          {([['basic', '기본 정보'], ['fee', '배송비 · 지역'], ['bundle', '묶음 · 반품/교환'], ['preview', '배송비 계산 테스트'], ['history', '변경 이력']] as [Tab, string][]).map(([key, label]) => (
             <button key={key} type="button" className={`${drawer.tabBtn} ${tab === key ? drawer.tabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
           ))}
         </div>
@@ -99,7 +99,7 @@ export function ProductShippingPolicyDrawer({ product, initial, startEditing = f
                 <label><input type="radio" disabled={!editing} checked={!draft.usesOverride} onChange={() => set('usesOverride', false)} />기본 배송 정책 사용</label>
                 <label><input type="radio" disabled={!editing} checked={draft.usesOverride} onChange={() => set('usesOverride', true)} />상품별 배송 정책 사용</label>
               </div>
-              <div className={styles.infoNote}>기본 배송 정책 사용 시 이 상품은 배송 정책 &gt; 기본 배송비의 현재 설정(기본 배송비 {fmtWon(BASE_SHIPPING_POLICY.baseFee)})을 그대로 따릅니다.</div>
+              <div className={styles.infoNote}>기본 배송 정책 사용 시 이 상품은 배송 정책 &gt; 배송비 설정 &gt; 기본 배송비의 현재 설정({fmtWon(BASE_SHIPPING_POLICY.baseFee)})을 그대로 따릅니다.</div>
             </section>
             {draft.usesOverride && (
               <section className={styles.formSection}>
@@ -181,7 +181,7 @@ export function ProductShippingPolicyDrawer({ product, initial, startEditing = f
                     <input type="number" min={0} disabled={!editing} value={draft.regionalFeeOverrideAmount} onChange={(e) => set('regionalFeeOverrideAmount', Math.max(0, Number(e.target.value) || 0))} />
                   </label>
                 )}
-                <div className={styles.infoNote}>지역별 추가 배송비의 세부 정책(시/도, 우편번호 등)은 배송 정책 &gt; 지역별 추가 배송비에서 관리합니다. 여기서는 이 상품이 그 정책을 따를지, 별도 금액을 쓸지만 결정합니다.</div>
+                <div className={styles.infoNote}>지역 정책의 대상 지역·배송 가능 여부·추가비는 배송 정책 &gt; 지역별 배송 정책에서 관리합니다. 여기서는 이 상품이 기본 정책을 따를지 별도 금액을 쓸지만 결정합니다.</div>
               </section>
             </>
           ) : <div className={styles.infoNote}>기본 배송 정책을 사용 중입니다. 배송비·지역비 설정을 변경하려면 '기본 정보' 탭에서 상품별 배송 정책 사용으로 전환해 주세요.</div>
@@ -210,7 +210,7 @@ export function ProductShippingPolicyDrawer({ product, initial, startEditing = f
                 </label>
               </section>
               <section className={styles.formSection}>
-                <h3>반품 / 교환 배송비</h3>
+                <h3>반품·교환 배송비</h3>
                 <div className={styles.radioGroup}>
                   {(['기본 정책 사용', '상품별 설정'] as ReturnFeePolicyMode[]).map((v) => (
                     <label key={v}><input type="radio" disabled={!editing} checked={draft.returnFeePolicy === v} onChange={() => set('returnFeePolicy', v)} />{v}</label>
@@ -236,7 +236,7 @@ export function ProductShippingPolicyDrawer({ product, initial, startEditing = f
 
         {tab === 'preview' && (
           <section className={styles.formSection}>
-            <h3>배송비 계산 Preview</h3>
+            <h3>배송비 계산 테스트</h3>
             <div className={styles.orderPick}>
               {CALC_SCENARIOS.map((s) => (
                 <button key={s.id} type="button" className={`${styles.orderOption} ${scenarioId === s.id ? styles.orderOptionActive : ''}`} onClick={() => setScenarioId(s.id)}>

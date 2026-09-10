@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './PaymentPolicyPage.module.css';
-import { CommonButton, showToast } from '../../components/common';
+import { CommonButton, CommonDatePicker, CommonInput, CommonSelect, CommonSwitch, showToast } from '../../components/common';
 import { PaymentMethodEditDialog } from './PaymentMethodEditDialog';
 import {
   INITIAL_HISTORY,
@@ -28,17 +28,29 @@ import {
   type ShortagePolicy,
 } from './paymentPolicyData';
 
-const TTL_PRESETS = ['15', '30', '60'];
+const TTL_PRESETS = [15, 30, 60];
 
-type Tab = 'basic' | 'methods' | 'partial' | 'failure' | 'cancel' | 'history';
+const PAYMENT_TIMING_OPTIONS: Array<{ value: PaymentTiming; description: string }> = [
+  { value: '선결제', description: '주문 확정 전 대금 수납' },
+  { value: '후불', description: '처리 완료 후 청구' },
+  { value: '선결제 + 후불', description: '주문별로 선택 가능' },
+];
+
+const EXPIRY_OPTIONS: Array<{ value: ExpiryAction; title: string; description: string }> = [
+  { value: '재결제 가능', title: '재결제 가능', description: '주문 유지 · 재시도 허용' },
+  { value: '주문 자동 취소', title: '주문 자동 취소', description: '만료 즉시 취소 처리' },
+  { value: '관리자 확인 필요', title: '관리자 확인 대기', description: '보류 상태로 이관' },
+];
+
+type Tab = 'basic' | 'methods' | 'partial' | 'failure' | 'cancel' | 'preview' | 'history';
 const TABS: [Tab, string][] = [
-  ['basic', '기본 정책'],
+  ['basic', '기본 설정'],
   ['methods', '결제수단'],
-  ['partial', '금액 / 부분결제'],
-  ['failure', '실패 / 재시도'],
-  ['cancel', '취소 연계'],
+  ['failure', '실패 · 재시도'],
+  ['preview', '정책 Preview'],
   ['history', '변경 이력'],
 ];
+const SHOW_LEGACY_BASIC_LAYOUT: boolean = false;
 
 export function PaymentPolicyPage() {
   const navigate = useNavigate();
@@ -55,6 +67,8 @@ export function PaymentPolicyPage() {
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
   const [reason, setReason] = useState('');
   const [saveError, setSaveError] = useState('');
+  const [previewAmount, setPreviewAmount] = useState(50000);
+  const [previewSucceeded, setPreviewSucceeded] = useState(true);
 
   const warnings = useMemo(
     () => computeWarnings(editing ? draftPolicy : policy, editing ? draftMethods : methods),
@@ -67,13 +81,7 @@ export function PaymentPolicyPage() {
   };
 
   const set = <K extends keyof PaymentPolicy>(key: K, value: PaymentPolicy[K]) => {
-    if (!editing) {
-      setDraftPolicy({ ...policy, [key]: value });
-      setDraftMethods(methods);
-      setEditing(true);
-      toastBriefly('정책 수정 모드로 전환되었습니다.');
-      return;
-    }
+    if (!editing) return;
     setDraftPolicy((current) => ({ ...current, [key]: value }));
   };
 
@@ -122,21 +130,18 @@ export function PaymentPolicyPage() {
   };
 
   const toggleStage = (stage: string) => {
-    if (!editing) {
-      const currentList = policy.paymentAllowedStages;
-      const nextList = currentList.includes(stage) ? currentList.filter((s) => s !== stage) : [...currentList, stage];
-      setDraftPolicy({ ...policy, paymentAllowedStages: nextList });
-      setDraftMethods(methods);
-      setEditing(true);
-      toastBriefly('정책 수정 모드로 전환되었습니다.');
-      return;
-    }
+    if (!editing) return;
     setDraftPolicy((current) => ({
       ...current,
       paymentAllowedStages: current.paymentAllowedStages.includes(stage)
         ? current.paymentAllowedStages.filter((s) => s !== stage)
         : [...current.paymentAllowedStages, stage],
     }));
+  };
+
+  const setDefaultMethod = (methodId: string) => {
+    if (!editing) return;
+    setDraftMethods((current) => current.map((method) => ({ ...method, isDefault: method.id === methodId })));
   };
 
   const moveMethod = (item: PaymentMethod, direction: -1 | 1) => {
@@ -170,71 +175,117 @@ export function PaymentPolicyPage() {
 
   const activeCount = (editing ? draftMethods : methods).filter((m) => m.active).length;
   const defaultMethod = (editing ? draftMethods : methods).find((m) => m.isDefault);
+  const previewFinalState = !draftPolicy.paymentRequired
+    ? '결제 없이 완료'
+    : previewSucceeded
+      ? '결제 완료'
+      : draftPolicy.failureOrderAction === '주문 취소'
+        ? '주문 자동 취소'
+        : draftPolicy.failureOrderAction === '결제 실패 상태로 전환'
+          ? '결제 실패'
+          : '결제 대기 유지';
+
+  const policySide = (
+    <div className={styles.policySide}>
+      <div className={styles.sideCard}>
+        <div className={styles.sideHead}>
+          <div className={styles.sideTitle}>결제 흐름 미리보기</div>
+          <div className={styles.sideDesc}>현재 설정값으로 즉시 계산됩니다</div>
+        </div>
+        <div className={styles.sideFields}>
+          <div className={styles.sideFieldRow}>
+            <span className={styles.sideFieldLabel}>주문금액</span>
+            <div className={styles.sideFieldControl}>
+              <CommonInput.Number
+                clearable={false}
+                min={0}
+                suffix="원"
+                aria-label="미리보기 주문금액"
+                value={previewAmount}
+                onChange={(event) => setPreviewAmount(Math.max(0, Number(event.target.value) || 0))}
+              />
+            </div>
+          </div>
+          <div className={styles.sideFieldRow}>
+            <span className={styles.sideFieldLabel}>결제 시도 결과</span>
+            <div className={styles.resultToggle}>
+              <CommonButton type="button" variant={previewSucceeded ? 'emphasis' : 'secondary'} size="sm" onClick={() => setPreviewSucceeded(true)}>성공</CommonButton>
+              <CommonButton type="button" variant={!previewSucceeded ? 'emphasis' : 'secondary'} size="sm" onClick={() => setPreviewSucceeded(false)}>실패</CommonButton>
+            </div>
+          </div>
+        </div>
+        <div className={styles.sideBody}>
+          <div className={styles.sideLine}><span className={styles.sideLineLabel}>결제 대기 없음</span><span className={styles.sideLineValue}>—</span></div>
+          <div className={styles.sideLine}>
+            <span className={styles.sideLineLabel}>{previewSucceeded ? '주문 결제 완료 처리' : '결제 실패 처리'}</span>
+            <span className={styles.sideLineValue}>{fmtWon(previewAmount)}</span>
+          </div>
+        </div>
+        <div className={styles.sideTotalRow}>
+          <span className={styles.sideTotalLabel}>최종 주문 상태</span>
+          <span className={styles.sideTotalValue}>{previewFinalState}</span>
+        </div>
+        <div className={styles.flowDetails}>
+          <div className={styles.flowDetailsTitle}>이 주문에 적용되는 조건</div>
+          <div className={styles.flowDetailRow}><span>결제 가능 단계 수</span><strong>{draftPolicy.paymentAllowedStages.length}개</strong></div>
+          <div className={styles.flowDetailRow}><span>재시도 포함 최대 소요</span><strong>{draftPolicy.retryAllowed ? `${draftPolicy.retryLimitMinutes * draftPolicy.maxRetryCount}분` : '재시도 없음'}</strong></div>
+          <div className={styles.flowDetailRow}><span>처리 차단</span><strong>{draftPolicy.blockProcessingBeforePaid ? '결제 완료 전 차단' : '차단 안 함'}</strong></div>
+        </div>
+      </div>
+
+      <div className={styles.sideCard}>
+        <div className={styles.sideHead}><div className={styles.sideTitle}>현재 정책 요약</div></div>
+        <div className={styles.digestRow}><span className={styles.digestLabel}>결제 방식</span><span className={styles.digestValue}>{draftPolicy.paymentTiming}</span></div>
+        <div className={styles.digestRow}><span className={styles.digestLabel}>주문별 결제</span><span className={styles.digestValue}>{draftPolicy.paymentRequired ? '필수' : '선택'}</span></div>
+        <div className={styles.digestRow}><span className={styles.digestLabel}>기본 결제수단</span><span className={styles.digestValue}>{defaultMethod?.name ?? '없음'}</span></div>
+        <div className={styles.digestRow}><span className={styles.digestLabel}>결제 기준금액</span><span className={styles.digestValue}>{draftPolicy.paymentBasis}</span></div>
+        <div className={styles.digestRow}><span className={styles.digestLabel}>결제 가능 시점</span><span className={styles.digestValue}>{draftPolicy.paymentAllowedStages.join(' · ') || '없음'}</span></div>
+        <div className={styles.digestRow}><span className={styles.digestLabel}>유효시간</span><span className={styles.digestValue}>{draftPolicy.sessionExpiryMinutes}분 · {draftPolicy.expiryAction}</span></div>
+        <div className={styles.digestRow}><span className={styles.digestLabel}>실패 재시도</span><span className={styles.digestValue}>{draftPolicy.retryAllowed ? `${draftPolicy.maxRetryCount}회 · ${draftPolicy.retryLimitMinutes}분 간격` : '사용 안 함'}</span></div>
+        <div className={styles.digestRow}><span className={styles.digestLabel}>최종 실패 시</span><span className={styles.digestValue}>{draftPolicy.failureOrderAction}</span></div>
+        <div className={styles.digestRow}><span className={styles.digestLabel}>적용 시작</span><span className={styles.digestValue}>{draftPolicy.effectiveFrom}</span></div>
+        <div className={styles.sideFootNote}>결제수단별 한도와 부분결제 조건은 결제수단 관리에서, 취소·환불 연계는 각 정책에서 관리합니다.</div>
+      </div>
+    </div>
+  );
 
   return (
     <div className={shared.page}>
-      <header className={shared.header}>
-        <div className={shared.headerTop}>
-          <div>
-            <div className={styles.eyebrow}>거래 정책</div>
-            <div className={shared.title}>결제 정책</div>
-            <div className={shared.subtitle}>서비스의 결제 방식과 처리 규칙을 설정합니다.</div>
+      <header className={`${shared.header} ${styles.compactHeader}`}>
+        <div className={styles.compactHeaderRow}>
+          <div className={shared.quickFilters}>
+            {TABS.map(([key, label]) => {
+              const active = tab === key;
+              return (
+                <CommonButton
+                  key={key}
+                  type="button"
+                  variant="none"
+                  size="md"
+                  className={`${styles.topTab} ${active ? styles.topTabActive : ''}`}
+                  onClick={() => setTab(key)}
+                >
+                  {label}
+                </CommonButton>
+              );
+            })}
           </div>
           <div className={styles.headMeta}>
             {!editing && <span className={styles.headMetaText}>최종 수정 {lastModified.at} · {lastModified.by}</span>}
             {!editing ? (
-              <>
-                <button type="button" className={styles.outlineBtn} onClick={() => setTab('history')}>변경 이력</button>
-                <button type="button" className={styles.darkBtn} onClick={startEdit}>✏️ 정책 수정</button>
-              </>
+              <CommonButton type="button" variant="emphasis" size="md" onClick={startEdit}>수정</CommonButton>
             ) : (
               <>
-                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>수정 취소</button>
-                <button type="button" className={styles.darkBtn} onClick={requestSave}>💾 변경 사항 저장</button>
+                <CommonButton type="button" variant="secondary" size="md" onClick={cancelEdit}>취소</CommonButton>
+                <CommonButton type="button" variant="emphasis" size="md" onClick={requestSave}>저장</CommonButton>
               </>
             )}
           </div>
         </div>
-
-        <div className={`${styles.modeBanner} ${editing ? styles.modeBannerEdit : styles.modeBannerRead}`}>
-          <div className={styles.modeBannerLeft}>
-            <span className={`${styles.modeTag} ${editing ? styles.modeTagEdit : styles.modeTagRead}`}>
-              {editing ? '수정 모드' : '조회 모드'}
-            </span>
-            <span>
-              {editing
-                ? '정책을 편집 중입니다. 변경을 마치면 [변경 사항 저장] 버튼을 눌러 확정하세요.'
-                : '현재 적용 중인 정책입니다. 버튼이나 스위치를 클릭하면 즉시 수정 모드로 전환됩니다.'}
-            </span>
-          </div>
-          {!editing && (
-            <button type="button" className={styles.modeActionBtn} onClick={startEdit}>
-              정책 수정 시작
-            </button>
-          )}
-        </div>
-
-        <div className={shared.quickFilters}>
-          {TABS.map(([key, label]) => {
-            const active = tab === key;
-            return (
-              <CommonButton
-                key={key}
-                type="button"
-                variant={active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${shared.qfBtn} ${active ? shared.quickActive : ''}`}
-                onClick={() => setTab(key)}
-              >
-                <span className={shared.qfLabel}>{label}</span>
-              </CommonButton>
-            );
-          })}
-        </div>
       </header>
 
       <div className={styles.body}>
-        {warnings.length > 0 && (
+        {tab !== 'basic' && tab !== 'preview' && warnings.length > 0 && (
           <div className={styles.warningBanner}>
             <span className={styles.warningIcon}>!</span>
             <div className={styles.warningBody}>
@@ -243,129 +294,215 @@ export function PaymentPolicyPage() {
                 {warnings.map((w) => <div key={w.id} className={styles.warningItem}>{w.message}</div>)}
               </div>
             </div>
-            <button type="button" className={styles.warningActionBtn} onClick={() => setTab('partial')}>금액 탭에서 확인</button>
+            <button type="button" className={styles.warningActionBtn} onClick={() => setTab('methods')}>결제수단에서 확인</button>
           </div>
         )}
 
         {tab === 'basic' && (
           <>
-            <div className={styles.summaryCard}>
-              <div className={styles.summaryHead}><h2>현재 정책 요약</h2></div>
-              <div className={styles.summaryGrid}>
-                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>결제 방식</div><div className={styles.summaryTileValue}>{policy.paymentTiming}</div></div>
-                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>기본 결제수단</div><div className={styles.summaryTileValue}>{defaultMethod?.name ?? '없음'}</div></div>
-                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>사용중 결제수단</div><div className={styles.summaryTileValue}>{activeCount}개</div></div>
-                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>부분결제</div><div className={styles.summaryTileValue}>{policy.partialPaymentEnabled ? '허용' : '불가'}</div></div>
-                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>결제 유효시간</div><div className={styles.summaryTileValue}>{policy.sessionExpiryMinutes}분</div></div>
-                <div className={styles.summaryTile}><div className={styles.summaryTileLabel}>결제 가능 시점</div><div className={styles.summaryTileValue}>{policy.paymentAllowedStages.length}개 단계</div></div>
-              </div>
-            </div>
-
-            <div className={styles.card}>
-              <div className={styles.cardHead}>
-                <div className={styles.cardTitle}>결제 필요 여부 · 방식</div>
-                <div className={styles.cardDesc}>주문이 결제를 거쳐야 하는지와, 어느 단계에서 결제를 받을지 정합니다.</div>
-              </div>
-              <div className={styles.cardBody}>
-                <div className={styles.toggleRow}>
-                  <button type="button" className={`${styles.switch} ${draftPolicy.paymentRequired ? styles.switchOn : ''}`} onClick={() => set('paymentRequired', !draftPolicy.paymentRequired)}><i /></button>
-                  <div className={styles.toggleRowText}>
-                    <div className={styles.toggleRowTitle}>주문별 결제 필요</div>
-                    <div className={styles.toggleRowDesc}>끄면 주문이 결제 없이 완료 처리됩니다.</div>
+            <div className={styles.policyLayout}>
+              <div className={styles.policyMain}>
+                <section className={styles.policySection}>
+                  <div className={styles.sectionDesc}>
+                    <div className={styles.sectionHead}>
+                      <span className={styles.sectionNum}>1</span>
+                      <span className={styles.sectionHeadTitle}>결제 방식</span>
+                    </div>
+                    <p className={styles.sectionDescText}>주문이 결제를 거쳐야 하는지, 어느 시점에 대금을 받을지 먼저 정합니다. 아래 설정은 이 선택에 따라 달라집니다.</p>
                   </div>
-                </div>
-
-                <div className={`${styles.cardGrid} ${styles.dividerTop}`}>
-                  <div>
-                    <div className={styles.fieldLabel}>기본 결제 방식</div>
-                    <div className={styles.pillGroup}>
-                      {(['선결제', '후불', '선결제 + 후불'] as PaymentTiming[]).map((v) => (
-                        <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.paymentTiming === v ? styles.pillBtnOn : ''}`} onClick={() => set('paymentTiming', v)}>{v}</button>
+                  <div className={styles.sectionControls}>
+                    <div className={styles.optionGrid}>
+                      {PAYMENT_TIMING_OPTIONS.map((option) => (
+                        <CommonButton
+                          key={option.value}
+                          type="button"
+                          variant="option"
+                          size="md"
+                          selected={draftPolicy.paymentTiming === option.value}
+                          description={option.description}
+                          disabled={!editing}
+                          onClick={() => set('paymentTiming', option.value)}
+                        >
+                          {option.value}
+                        </CommonButton>
                       ))}
                     </div>
-                  </div>
-
-                  <div>
-                    <div className={styles.fieldLabel}>결제 기준금액</div>
-                    <div className={styles.pillGroup}>
-                      {(['최종 주문금액', '청구 확정금액'] as PaymentBasis[]).map((v) => (
-                        <button key={v} type="button" className={`${styles.pillBtn} ${draftPolicy.paymentBasis === v ? styles.pillBtnOn : ''}`} onClick={() => set('paymentBasis', v)}>{v}</button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className={styles.cardGridFull}>
-                    <div className={styles.fieldLabel}>결제 가능 시점 <span className={styles.fieldLabelHint}>주문 Lifecycle 단계 · 복수 선택</span></div>
-                    <div className={styles.pillGroup}>
-                      {PAYMENT_STAGES.map((s) => {
-                        const on = draftPolicy.paymentAllowedStages.includes(s);
-                        return (
-                          <button key={s} type="button" className={`${styles.stageBtn} ${on ? styles.stageBtnOn : ''}`} onClick={() => toggleStage(s)}>
-                            <span className={`${styles.stageCheck} ${on ? styles.stageCheckOn : ''}`}>{on ? '✓' : ''}</span>
-                            <span className={`${styles.stageLabel} ${on ? styles.stageLabelOn : ''}`}>{s}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.card}>
-              <div className={styles.cardHead}>
-                <div className={styles.cardTitle}>결제 유효시간</div>
-                <div className={styles.cardDesc}>결제 요청 후 완료까지 허용할 시간과 만료 이후 동작입니다.</div>
-              </div>
-              <div className={styles.cardBody}>
-                <div className={styles.cardGrid}>
-                  <div>
-                    <div className={styles.fieldLabel}>결제 세션 유효시간</div>
-                    <div className={styles.ttlRow}>
-                      <input type="number" min="0" className={styles.ttlInput} value={draftPolicy.sessionExpiryMinutes} onChange={(e) => set('sessionExpiryMinutes', Number(e.target.value))} />
-                      <span className={styles.ttlUnit}>분</span>
-                      <div className={styles.ttlPresets}>
-                        {TTL_PRESETS.map((v) => {
-                          const on = String(draftPolicy.sessionExpiryMinutes) === v;
-                          return (
-                            <button key={v} type="button" className={`${styles.presetBtn} ${on ? styles.presetBtnOn : ''}`} onClick={() => set('sessionExpiryMinutes', Number(v))}>{v}분</button>
-                          );
-                        })}
+                    <div className={styles.sectionDivider}>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>주문별 결제</div>
+                        <div className={styles.compactPills}>
+                          <CommonButton type="button" variant={draftPolicy.paymentRequired ? 'emphasis' : 'secondary'} size="md" disabled={!editing} onClick={() => set('paymentRequired', true)}>필수</CommonButton>
+                          <CommonButton type="button" variant={!draftPolicy.paymentRequired ? 'emphasis' : 'secondary'} size="md" disabled={!editing} onClick={() => set('paymentRequired', false)}>선택</CommonButton>
+                        </div>
+                        <div className={styles.fieldHint}>결제 없이 주문 완료 처리 가능 여부</div>
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>기본 결제수단</div>
+                        <CommonSelect
+                          className={styles.selectControl}
+                          options={sortedMethods.filter((method) => method.active).map((method) => ({ label: method.name, value: method.id }))}
+                          value={defaultMethod?.id ?? ''}
+                          disabled={!editing}
+                          aria-label="기본 결제수단"
+                          onChange={(value) => setDefaultMethod(String(value))}
+                        />
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>결제 기준금액</div>
+                        <CommonSelect
+                          className={styles.selectControl}
+                          options={(['최종 주문금액', '청구 확정금액'] as PaymentBasis[]).map((value) => ({ label: value, value }))}
+                          value={draftPolicy.paymentBasis}
+                          disabled={!editing}
+                          aria-label="결제 기준금액"
+                          onChange={(value) => set('paymentBasis', String(value) as PaymentBasis)}
+                        />
                       </div>
                     </div>
                   </div>
+                </section>
 
-                  <div>
-                    <div className={styles.fieldLabel}>유효시간 만료 후</div>
-                    <select value={draftPolicy.expiryAction} onChange={(e) => set('expiryAction', e.target.value as ExpiryAction)} className={styles.ttlInput} style={{ width: '100%' }}>
-                      <option>재결제 가능</option>
-                      <option>주문 자동 취소</option>
-                      <option>관리자 확인 필요</option>
-                    </select>
+                <section className={styles.policySection}>
+                  <div className={styles.sectionDesc}>
+                    <div className={styles.sectionHead}>
+                      <span className={styles.sectionNum}>2</span>
+                      <span className={styles.sectionHeadTitle}>결제 가능 시점</span>
+                      <span className={styles.stepBadge}>{draftPolicy.paymentAllowedStages.length}개 단계</span>
+                    </div>
+                    <p className={styles.sectionDescText}>주문 Lifecycle 중 결제를 받을 수 있는 단계를 복수로 지정합니다.</p>
                   </div>
-                </div>
+                  <div className={styles.sectionControls}>
+                    <div className={styles.stageRow}>
+                      {PAYMENT_STAGES.map((stage) => {
+                        const selected = draftPolicy.paymentAllowedStages.includes(stage);
+                        return (
+                          <CommonButton
+                            key={stage}
+                            type="button"
+                            variant={selected ? 'primary-light' : 'secondary'}
+                            size="md"
+                            selected={selected}
+                            disabled={!editing}
+                            onClick={() => toggleStage(stage)}
+                          >
+                            <span className={styles.stageButtonContent}><span className={styles.stageMark}>{selected ? '✓' : ''}</span>{stage}</span>
+                          </CommonButton>
+                        );
+                      })}
+                    </div>
+                    <div className={`${styles.switchRow} ${styles.sectionDividerTop}`}>
+                      <CommonSwitch size="md" checked={draftPolicy.reserveStockOnPayment} label="결제 시 재고 선점" disabled={!editing} onChange={(checked) => set('reserveStockOnPayment', checked)} />
+                      <CommonSwitch size="md" checked={draftPolicy.partialPaymentEnabled} label="부분결제 허용" disabled={!editing} onChange={(checked) => set('partialPaymentEnabled', checked)} />
+                    </div>
+                  </div>
+                </section>
 
-                <div className={`${styles.toggleRow} ${styles.dividerTop}`}>
-                  <button type="button" className={`${styles.switch} ${draftPolicy.blockProcessingBeforePaid ? styles.switchOn : ''}`} onClick={() => set('blockProcessingBeforePaid', !draftPolicy.blockProcessingBeforePaid)}><i /></button>
-                  <div className={styles.toggleRowText}>
-                    <div className={styles.toggleRowTitle}>결제 완료 전 주문 처리 차단</div>
-                    <div className={styles.toggleRowDesc}>선결제 정책에서 결제 확인 전 처리 진행을 막습니다.</div>
+                <section className={styles.policySection}>
+                  <div className={styles.sectionDesc}>
+                    <div className={styles.sectionHead}>
+                      <span className={styles.sectionNum}>3</span>
+                      <span className={styles.sectionHeadTitle}>결제 유효시간</span>
+                    </div>
+                    <p className={styles.sectionDescText}>결제 요청 후 완료까지 허용할 시간과 만료 이후 동작입니다.</p>
                   </div>
-                </div>
+                  <div className={styles.sectionControls}>
+                    <div className={styles.expiryGrid}>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>결제 세션 유효시간</div>
+                        <div className={styles.durationRow}>
+                          <CommonInput.Number clearable={false} className={styles.numberControl} min={1} suffix="분" aria-label="결제 세션 유효시간" disabled={!editing} value={draftPolicy.sessionExpiryMinutes} onChange={(event) => set('sessionExpiryMinutes', Math.max(1, Number(event.target.value) || 1))} />
+                          <div className={styles.compactPills}>
+                            {TTL_PRESETS.map((value) => (
+                              <CommonButton key={value} type="button" variant={draftPolicy.sessionExpiryMinutes === value ? 'emphasis' : 'secondary'} size="sm" disabled={!editing} onClick={() => set('sessionExpiryMinutes', value)}>{value}분</CommonButton>
+                            ))}
+                          </div>
+                        </div>
+                        <div className={styles.fieldHint}>요청 후 {draftPolicy.sessionExpiryMinutes}분 내 완료 필요</div>
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>유효시간 만료 후</div>
+                        <div className={styles.optionGridCompact}>
+                          {EXPIRY_OPTIONS.map((option) => (
+                            <CommonButton key={option.value} type="button" variant="option" size="md" selected={draftPolicy.expiryAction === option.value} description={option.description} disabled={!editing} onClick={() => set('expiryAction', option.value)}>{option.title}</CommonButton>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section className={styles.policySection}>
+                  <div className={styles.sectionDesc}>
+                    <div className={styles.sectionHead}>
+                      <span className={styles.sectionNum}>4</span>
+                      <span className={styles.sectionHeadTitle}>실패 · 재시도</span>
+                    </div>
+                    <p className={styles.sectionDescText}>결제가 실패했을 때 몇 번까지, 얼마 간격으로 다시 시도할지 정합니다.</p>
+                  </div>
+                  <div className={styles.sectionControls}>
+                    <div className={styles.retryGrid}>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>재시도 횟수</div>
+                        <CommonInput.Number clearable={false} className={styles.numberControl} min={1} suffix="회" aria-label="재시도 횟수" disabled={!editing || !draftPolicy.retryAllowed} value={draftPolicy.maxRetryCount} onChange={(event) => set('maxRetryCount', Math.max(1, Number(event.target.value) || 1))} />
+                        <div className={styles.fieldHint}>0이면 재시도 없음</div>
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>재시도 간격</div>
+                        <CommonInput.Number clearable={false} className={styles.numberControl} min={1} suffix="분" aria-label="재시도 간격" disabled={!editing || !draftPolicy.retryAllowed} value={draftPolicy.retryLimitMinutes} onChange={(event) => set('retryLimitMinutes', Math.max(1, Number(event.target.value) || 1))} />
+                        <div className={styles.fieldHint}>실패 후 대기 시간</div>
+                      </div>
+                      <div className={styles.fieldGroupWide}>
+                        <div className={styles.fieldBlockLabel}>최종 실패 시</div>
+                        <div className={styles.failureOptions}>
+                          <CommonButton type="button" variant={draftPolicy.failureOrderAction === '주문 취소' ? 'emphasis' : 'secondary'} size="md" disabled={!editing} onClick={() => set('failureOrderAction', '주문 취소')}>주문 자동 취소</CommonButton>
+                          <CommonButton type="button" variant={draftPolicy.failureOrderAction === '유지' ? 'emphasis' : 'secondary'} size="md" disabled={!editing} onClick={() => set('failureOrderAction', '유지')}>결제 대기 유지</CommonButton>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section className={styles.policySection}>
+                  <div className={styles.sectionDesc}>
+                    <div className={styles.sectionHead}>
+                      <span className={styles.sectionNum}>5</span>
+                      <span className={styles.sectionHeadTitle}>주문 연계 · 적용</span>
+                    </div>
+                    <p className={styles.sectionDescText}>결제 상태가 주문 처리에 어떻게 반영되는지와 이 정책이 발효되는 날짜입니다.</p>
+                  </div>
+                  <div className={styles.sectionControls}>
+                    <div className={styles.applyGrid}>
+                      <div className={styles.fieldGroupWide}>
+                        <div className={styles.fieldBlockLabel}>주문 처리 연계</div>
+                        <div className={styles.switchRow}>
+                          <CommonSwitch size="md" checked={draftPolicy.blockProcessingBeforePaid} label="결제 완료 전 주문 처리 차단" disabled={!editing} onChange={(checked) => set('blockProcessingBeforePaid', checked)} />
+                          <CommonSwitch size="md" checked={draftPolicy.notifyAssigneeOnFailure} label="결제 실패 시 담당자 알림" disabled={!editing} onChange={(checked) => set('notifyAssigneeOnFailure', checked)} />
+                        </div>
+                      </div>
+                      <div className={styles.fieldGroup}>
+                        <div className={styles.fieldBlockLabel}>적용 시작일</div>
+                        <div className={styles.dateRow}>
+                          <CommonDatePicker size="md" clearable={false} className={styles.dateControl} value={draftPolicy.effectiveFrom} aria-label="적용 시작일" disabled={!editing} onChange={(value) => { if (!Array.isArray(value) && value) set('effectiveFrom', value); }} />
+                          <span className={styles.fieldHint}>이 날짜 이후 생성 주문부터</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
               </div>
-            </div>
 
+              <aside className={styles.policySideOuter}>{policySide}</aside>
+            </div>
             {editing && (
               <div className={styles.footerBar}>
                 <span className={styles.footerNote}>저장하면 신규 주문부터 적용되며, 진행 중인 결제 건에는 영향을 주지 않습니다.</span>
-                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
-                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+                <CommonButton type="button" variant="secondary" size="md" onClick={cancelEdit}>취소</CommonButton>
+                <CommonButton type="button" variant="emphasis" size="md" onClick={requestSave}>저장</CommonButton>
               </div>
             )}
           </>
         )}
 
-        {tab === 'methods' && (
           <>
             <div className={styles.card}>
               <div className={styles.cardHead}>
@@ -601,6 +738,10 @@ export function PaymentPolicyPage() {
               </div>
             )}
           </>
+        )}
+
+        {tab === 'preview' && (
+          <div className={styles.previewOnly}>{policySide}</div>
         )}
 
         {tab === 'history' && (
