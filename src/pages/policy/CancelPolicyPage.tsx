@@ -86,6 +86,8 @@ export function CancelPolicyPage() {
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
   const [reason, setReason] = useState("");
   const [saveError, setSaveError] = useState("");
+  const [dragReasonId, setDragReasonId] = useState<string | null>(null);
+  const [dragOverReasonId, setDragOverReasonId] = useState<string | null>(null);
 
   const [basicPreviewStage, setBasicPreviewStage] = useState("처리");
   const [basicPreviewReason, setBasicPreviewReason] = useState<
@@ -268,21 +270,39 @@ export function CancelPolicyPage() {
       setDraftReasons(nextReasons);
     }
   };
-  const moveReason = (item: CancelReason, direction: -1 | 1) => {
+  const reorderReason = (draggedId: string, targetId: string) => {
+    if (draggedId === targetId) return;
     const currentReasons = editing ? draftReasons : reasons;
-    const siblings = currentReasons
-      .filter((r) => r.audience === item.audience)
+    const draggedItem = currentReasons.find((r) => r.id === draggedId);
+    const targetItem = currentReasons.find((r) => r.id === targetId);
+    if (
+      !draggedItem ||
+      !targetItem ||
+      draggedItem.audience !== targetItem.audience
+    ) {
+      return;
+    }
+
+    const audience = draggedItem.audience;
+    const audienceReasons = currentReasons
+      .filter((r) => r.audience === audience)
+      .slice()
       .sort((a, b) => a.order - b.order);
-    const index = siblings.findIndex((r) => r.id === item.id);
-    const swap = siblings[index + direction];
-    if (!swap) return;
+
+    const fromIndex = audienceReasons.findIndex((r) => r.id === draggedId);
+    const toIndex = audienceReasons.findIndex((r) => r.id === targetId);
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    const [moved] = audienceReasons.splice(fromIndex, 1);
+    audienceReasons.splice(toIndex, 0, moved);
+
+    const reindexedMap = new Map(audienceReasons.map((r, i) => [r.id, i + 1]));
     const updated = currentReasons.map((r) =>
-      r.id === item.id
-        ? { ...r, order: swap.order }
-        : r.id === swap.id
-          ? { ...r, order: item.order }
-          : r,
+      r.audience === audience && reindexedMap.has(r.id)
+        ? { ...r, order: reindexedMap.get(r.id)! }
+        : r,
     );
+
     if (!editing) {
       setDraftPolicy(policy);
       setDraftStageRules(stageRules);
@@ -1317,6 +1337,7 @@ export function CancelPolicyPage() {
             <div className={styles.infoNote}>
               고객 노출용 사유와 관리자 전용 사유를 분리해서 관리합니다.
               '기타'처럼 자유 서술이 필요한 사유는 상세 입력 필수로 설정하세요.
+              항목을 마우스로 드래그하여 노출 순서를 자유롭게 변경할 수 있습니다.
             </div>
 
             <div className={styles.card}>
@@ -1328,63 +1349,105 @@ export function CancelPolicyPage() {
                   <div className={`${styles.reasonRow} ${styles.reasonHead}`}>
                     <span />
                     <span>사유명</span>
-                    <span>노출</span>
-                    <span />
+                    <span className={styles.reasonStatusCol}>노출</span>
                     <span />
                   </div>
-                  {customerReasons.map((r) => (
-                    <div key={r.id} className={styles.reasonRow}>
-                      <span className={styles.dragHandle}>☰</span>
-                      <span>
-                        {r.label}
-                        {r.requiresDetail && (
-                          <span className={styles.detailTag}>상세필수</span>
-                        )}
-                      </span>
-                      <span style={{ color: r.active ? "#059669" : "#a1a1aa" }}>
-                        {r.active ? "노출" : "비노출"}
-                      </span>
-                      <span style={{ display: "flex", gap: 4 }}>
-                        <button
-                          type="button"
-                          className={styles.smallBtn}
-                          onClick={() => moveReason(r, -1)}
+                  {customerReasons.map((r) => {
+                    const isDragging = dragReasonId === r.id;
+                    const isDragOver =
+                      dragOverReasonId === r.id && dragReasonId !== r.id;
+                    return (
+                      <div
+                        key={r.id}
+                        className={`${styles.reasonRow} ${styles.reasonRowDraggable} ${
+                          isDragging ? styles.reasonRowDragging : ""
+                        } ${isDragOver ? styles.reasonRowDragOver : ""}`}
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData("text/plain", r.id);
+                          e.dataTransfer.effectAllowed = "move";
+                          setDragReasonId(r.id);
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.dataTransfer.dropEffect = "move";
+                          if (dragOverReasonId !== r.id) {
+                            setDragOverReasonId(r.id);
+                          }
+                        }}
+                        onDragLeave={() => {
+                          if (dragOverReasonId === r.id) {
+                            setDragOverReasonId(null);
+                          }
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const sourceId =
+                            dragReasonId ||
+                            e.dataTransfer.getData("text/plain");
+                          if (sourceId) {
+                            reorderReason(sourceId, r.id);
+                          }
+                          setDragReasonId(null);
+                          setDragOverReasonId(null);
+                        }}
+                        onDragEnd={() => {
+                          setDragReasonId(null);
+                          setDragOverReasonId(null);
+                        }}
+                      >
+                        <span
+                          className={styles.dragHandle}
+                          title="드래그하여 순서 변경"
                         >
-                          ↑
-                        </button>
-                        <button
-                          type="button"
-                          className={styles.smallBtn}
-                          onClick={() => moveReason(r, 1)}
-                        >
-                          ↓
-                        </button>
-                      </span>
-                      <span style={{ display: "flex", gap: 4 }}>
-                        <button
-                          type="button"
-                          className={styles.smallBtn}
-                          onClick={() => {
-                            if (!editing) {
-                              setDraftPolicy(policy);
-                              setDraftStageRules(stageRules);
-                              setDraftReasons(reasons);
-                            }
-                            setReasonEditId(r.id);
+                          ☰
+                        </span>
+                        <span>
+                          {r.label}
+                          {r.requiresDetail && (
+                            <span className={styles.detailTag}>상세필수</span>
+                          )}
+                        </span>
+                        <span className={styles.reasonStatusCol}>
+                          <CommonBadge
+                            type={r.active ? "success-light" : "secondary"}
+                            size="sm"
+                          >
+                            {r.active ? "노출" : "비노출"}
+                          </CommonBadge>
+                        </span>
+                        <span
+                          style={{
+                            display: "flex",
+                            gap: 4,
+                            justifyContent: "flex-end",
                           }}
                         >
-                          {editing ? "수정" : "상세/수정"}
-                        </button>
-                        <button
-                          type="button"
-                          className={styles.smallBtn}
-                          onClick={() => removeReason(r.id)}
-                        >
-                          삭제
-                        </button>
-                      </span>
-                    </div>
-                  ))}
+                          <button
+                            type="button"
+                            className={styles.smallBtn}
+                            onClick={() => {
+                              if (!editing) {
+                                setDraftPolicy(policy);
+                                setDraftStageRules(stageRules);
+                                setDraftReasons(reasons);
+                              }
+                              setReasonEditId(r.id);
+                            }}
+                          >
+                            상세/수정
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.smallBtn}
+                            onClick={() => removeReason(r.id)}
+                          >
+                            삭제
+                          </button>
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
                 <button
                   type="button"
@@ -1405,63 +1468,105 @@ export function CancelPolicyPage() {
                   <div className={`${styles.reasonRow} ${styles.reasonHead}`}>
                     <span />
                     <span>사유명</span>
-                    <span>노출</span>
-                    <span />
+                    <span className={styles.reasonStatusCol}>노출</span>
                     <span />
                   </div>
-                  {adminReasons.map((r) => (
-                    <div key={r.id} className={styles.reasonRow}>
-                      <span className={styles.dragHandle}>☰</span>
-                      <span>
-                        {r.label}
-                        {r.requiresDetail && (
-                          <span className={styles.detailTag}>상세필수</span>
-                        )}
-                      </span>
-                      <span style={{ color: r.active ? "#059669" : "#a1a1aa" }}>
-                        {r.active ? "노출" : "비노출"}
-                      </span>
-                      <span style={{ display: "flex", gap: 4 }}>
-                        <button
-                          type="button"
-                          className={styles.smallBtn}
-                          onClick={() => moveReason(r, -1)}
+                  {adminReasons.map((r) => {
+                    const isDragging = dragReasonId === r.id;
+                    const isDragOver =
+                      dragOverReasonId === r.id && dragReasonId !== r.id;
+                    return (
+                      <div
+                        key={r.id}
+                        className={`${styles.reasonRow} ${styles.reasonRowDraggable} ${
+                          isDragging ? styles.reasonRowDragging : ""
+                        } ${isDragOver ? styles.reasonRowDragOver : ""}`}
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData("text/plain", r.id);
+                          e.dataTransfer.effectAllowed = "move";
+                          setDragReasonId(r.id);
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.dataTransfer.dropEffect = "move";
+                          if (dragOverReasonId !== r.id) {
+                            setDragOverReasonId(r.id);
+                          }
+                        }}
+                        onDragLeave={() => {
+                          if (dragOverReasonId === r.id) {
+                            setDragOverReasonId(null);
+                          }
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const sourceId =
+                            dragReasonId ||
+                            e.dataTransfer.getData("text/plain");
+                          if (sourceId) {
+                            reorderReason(sourceId, r.id);
+                          }
+                          setDragReasonId(null);
+                          setDragOverReasonId(null);
+                        }}
+                        onDragEnd={() => {
+                          setDragReasonId(null);
+                          setDragOverReasonId(null);
+                        }}
+                      >
+                        <span
+                          className={styles.dragHandle}
+                          title="드래그하여 순서 변경"
                         >
-                          ↑
-                        </button>
-                        <button
-                          type="button"
-                          className={styles.smallBtn}
-                          onClick={() => moveReason(r, 1)}
-                        >
-                          ↓
-                        </button>
-                      </span>
-                      <span style={{ display: "flex", gap: 4 }}>
-                        <button
-                          type="button"
-                          className={styles.smallBtn}
-                          onClick={() => {
-                            if (!editing) {
-                              setDraftPolicy(policy);
-                              setDraftStageRules(stageRules);
-                              setDraftReasons(reasons);
-                            }
-                            setReasonEditId(r.id);
+                          ☰
+                        </span>
+                        <span>
+                          {r.label}
+                          {r.requiresDetail && (
+                            <span className={styles.detailTag}>상세필수</span>
+                          )}
+                        </span>
+                        <span className={styles.reasonStatusCol}>
+                          <CommonBadge
+                            type={r.active ? "success-light" : "secondary"}
+                            size="sm"
+                          >
+                            {r.active ? "노출" : "비노출"}
+                          </CommonBadge>
+                        </span>
+                        <span
+                          style={{
+                            display: "flex",
+                            gap: 4,
+                            justifyContent: "flex-end",
                           }}
                         >
-                          {editing ? "수정" : "상세/수정"}
-                        </button>
-                        <button
-                          type="button"
-                          className={styles.smallBtn}
-                          onClick={() => removeReason(r.id)}
-                        >
-                          삭제
-                        </button>
-                      </span>
-                    </div>
-                  ))}
+                          <button
+                            type="button"
+                            className={styles.smallBtn}
+                            onClick={() => {
+                              if (!editing) {
+                                setDraftPolicy(policy);
+                                setDraftStageRules(stageRules);
+                                setDraftReasons(reasons);
+                              }
+                              setReasonEditId(r.id);
+                            }}
+                          >
+                            상세/수정
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.smallBtn}
+                            onClick={() => removeReason(r.id)}
+                          >
+                            삭제
+                          </button>
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
                 <button
                   type="button"

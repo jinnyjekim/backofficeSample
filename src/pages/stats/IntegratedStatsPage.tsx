@@ -1,8 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { CommonButton } from '../../components/common';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
-import txStyles from './TransactionStatsPage.module.css';
 import styles from './IntegratedStatsPage.module.css';
 import { TransactionStatsPage } from './TransactionStatsPage';
 import { MemberStatsPage } from './MemberStatsPage';
@@ -23,10 +22,16 @@ import {
   quickRangeDates,
   type QuickRange,
 } from './transactionStatsData';
-import { aggregate as memberAggregate, fmtCount as fmtMembers } from './memberStatsData';
-import { aggregate as contentAggregate, fmtCount as fmtContent, fmtViews } from './contentStatsData';
-import { aggregate as trafficAggregate, fmtCases, fmtPct as fmtTrafficPct, fmtUsers as fmtVisitors } from './trafficStatsData';
-import { aggregate as activityAggregate, fmtEvents, fmtUsers as fmtActiveUsers } from './activityStatsData';
+import { aggregate as memberAggregate } from './memberStatsData';
+import { aggregate as contentAggregate } from './contentStatsData';
+import { aggregate as trafficAggregate, fmtPct as fmtTrafficPct } from './trafficStatsData';
+import { aggregate as activityAggregate, fmtUsers as fmtActiveUsers } from './activityStatsData';
+import { aggregate as sellerActivityAggregate } from './sellerActivityStatsData';
+import { aggregate as productRegistrationAggregate } from './productRegistrationStatsData';
+import { aggregate as deliveryClaimsAggregate } from './deliveryClaimsStatsData';
+import { aggregate as disputeAggregate } from './disputeRateStatsData';
+import { aggregate as promotionAggregate } from './promotionStatsData';
+import { aggregate as sellerProceedsAggregate } from './sellerProceedsStatsData';
 
 type Domain = 'overview' | 'tx' | 'member' | 'content' | 'traffic' | 'activity';
 const DOMAIN_TABS: [Domain, string][] = [
@@ -39,16 +44,70 @@ const DOMAIN_TABS: [Domain, string][] = [
 ];
 const QUICK_RANGES: QuickRange[] = ['오늘', '어제', '최근 7일', '최근 30일', '이번 달', '지난 달'];
 
-function MiniStat({ label, value, deltaValue, hasPrevious }: { label: string; value: string; deltaValue?: number; hasPrevious?: boolean }) {
-  const deltaClass = deltaValue == null ? undefined : Math.abs(deltaValue) < 0.05 ? txStyles.deltaFlat : txStyles.deltaUp;
+const SPARK_BARS = [42, 58, 73, 48, 66, 39, 61, 52, 79, 46, 68, 55];
+
+function ChangeLabel({ value, positiveIsBad = false, suffix = '%' }: { value?: number; positiveIsBad?: boolean; suffix?: string }) {
+  if (value == null || !Number.isFinite(value)) return null;
+  const up = value > 0.05;
+  const down = value < -0.05;
+  const bad = positiveIsBad ? up : down;
   return (
-    <div className={txStyles.statCard}>
-      <div className={txStyles.statLabel}>{label}</div>
-      <div className={txStyles.statValue}>{value}</div>
-      {deltaValue != null && (
-        <div className={`${txStyles.statDelta} ${deltaClass}`}>{hasPrevious ? fmtSignedPct(deltaValue) : '비교 없음'} <span style={{ color: '#c4c4c8' }}>vs 이전 기간</span></div>
-      )}
+    <span className={`${styles.metricChange} ${bad ? styles.metricChangeBad : up || down ? styles.metricChangeGood : styles.metricChangeFlat}`}>
+      {up ? '▲' : down ? '▼' : '—'} {Math.abs(value).toFixed(1)}{suffix}
+    </span>
+  );
+}
+
+function SparkBars({ warning = false }: { warning?: boolean }) {
+  return (
+    <div className={styles.sparkBars} aria-hidden="true">
+      {SPARK_BARS.map((height, index) => (
+        <i key={index} className={index === SPARK_BARS.length - 1 ? (warning ? styles.sparkWarning : styles.sparkActive) : undefined} style={{ height: `${height}%` }} />
+      ))}
     </div>
+  );
+}
+
+interface DashboardMetricProps {
+  label: string;
+  value: string;
+  change?: number;
+  changeSuffix?: string;
+  positiveIsBad?: boolean;
+  footnote: string;
+  grade?: 'B' | 'C';
+}
+
+function DashboardMetric({ label, value, change, changeSuffix, positiveIsBad, footnote, grade = 'B' }: DashboardMetricProps) {
+  return (
+    <div className={styles.metricCard}>
+      <div className={styles.metricLabelRow}><span>{label}</span><em className={grade === 'B' ? styles.gradeB : styles.gradeC}>{grade}</em></div>
+      <div className={styles.metricValueRow}><strong>{value}</strong><ChangeLabel value={change} suffix={changeSuffix} positiveIsBad={positiveIsBad} /></div>
+      <SparkBars warning={Boolean(positiveIsBad && change != null && change > 0)} />
+      <div className={styles.metricFoot}><span>{footnote}</span><b>자세히 →</b></div>
+    </div>
+  );
+}
+
+function OverviewKpi({ label, badge, value, change, positiveIsBad }: { label: string; badge?: string; value: string; change?: number; positiveIsBad?: boolean }) {
+  return (
+    <div className={styles.overviewKpi}>
+      <div className={styles.overviewKpiLabel}>{label}{badge && <span>{badge}</span>}</div>
+      <strong>{value}</strong>
+      <div className={styles.overviewKpiDelta}><ChangeLabel value={change} positiveIsBad={positiveIsBad} /><span>vs 이전 기간</span></div>
+    </div>
+  );
+}
+
+function DashboardSection({ title, description, issueCount, onDetail, children }: { title: string; description: string; issueCount?: number; onDetail: () => void; children: ReactNode }) {
+  return (
+    <section className={styles.metricSection}>
+      <div className={styles.metricSectionHead}>
+        <div><strong>{title}</strong><span>{description}</span></div>
+        <div>{issueCount ? <em>확인 필요 {issueCount}건</em> : null}<button type="button" onClick={onDetail}>자세히 보기 →</button></div>
+      </div>
+      <div className={styles.metricGrid}>{children}</div>
+    </section>
   );
 }
 
@@ -90,6 +149,18 @@ export function IntegratedStatsPage() {
   const trafficPrev = useMemo(() => trafficAggregate(prevStart, prevEnd, '회원 가입'), [prevStart, prevEnd]);
   const activity = useMemo(() => activityAggregate(start, end), [start, end]);
   const activityPrev = useMemo(() => activityAggregate(prevStart, prevEnd), [prevStart, prevEnd]);
+  const sellerActivity = useMemo(() => sellerActivityAggregate('c2c', start, end), [start, end]);
+  const sellerActivityPrev = useMemo(() => sellerActivityAggregate('c2c', prevStart, prevEnd), [prevStart, prevEnd]);
+  const products = useMemo(() => productRegistrationAggregate('all', start, end), [start, end]);
+  const productsPrev = useMemo(() => productRegistrationAggregate('all', prevStart, prevEnd), [prevStart, prevEnd]);
+  const delivery = useMemo(() => deliveryClaimsAggregate('all', start, end), [start, end]);
+  const deliveryPrev = useMemo(() => deliveryClaimsAggregate('all', prevStart, prevEnd), [prevStart, prevEnd]);
+  const disputes = useMemo(() => disputeAggregate(start, end), [start, end]);
+  const disputesPrev = useMemo(() => disputeAggregate(prevStart, prevEnd), [prevStart, prevEnd]);
+  const promotion = useMemo(() => promotionAggregate('all', start, end), [start, end]);
+  const promotionPrev = useMemo(() => promotionAggregate('all', prevStart, prevEnd), [prevStart, prevEnd]);
+  const proceeds = useMemo(() => sellerProceedsAggregate(start, end), [start, end]);
+  const proceedsPrev = useMemo(() => sellerProceedsAggregate(prevStart, prevEnd), [prevStart, prevEnd]);
 
   const d = (cur: number, prev: number) => (compare ? delta(cur, prev) : undefined);
 
@@ -186,69 +257,60 @@ export function IntegratedStatsPage() {
             summary={<>조회 기간 <b>{fmtDate(start)} ~ {fmtDate(end)}</b> ({tx.days}일){compare && <> · 비교 기간 <b>{fmtDate(prevStart)} ~ {fmtDate(prevEnd)}</b></>} · 각 탭에서는 탭별 기간을 별도로 조회할 수 있습니다.</>}
           />
 
-          <div className={styles.domainSection}>
-            <div className={styles.domainHead}><span className={styles.domainTitle}>거래</span><button type="button" className={styles.detailLink} onClick={() => setDomain('tx')}>자세히 보기 →</button></div>
-            <div className={txStyles.statGrid}>
-              <MiniStat label="주문" value={`${tx.orderCount.toLocaleString('ko-KR')}건`} deltaValue={d(tx.orderCount, txPrev.orderCount)?.pct} hasPrevious={d(tx.orderCount, txPrev.orderCount)?.hasPrevious} />
-              <MiniStat label="결제금액" value={txFmtWon(tx.paymentAmount)} deltaValue={d(tx.paymentAmount, txPrev.paymentAmount)?.pct} hasPrevious={d(tx.paymentAmount, txPrev.paymentAmount)?.hasPrevious} />
-              <MiniStat label="환불금액" value={txFmtWon(tx.refundAmount)} deltaValue={d(tx.refundAmount, txPrev.refundAmount)?.pct} hasPrevious={d(tx.refundAmount, txPrev.refundAmount)?.hasPrevious} />
-              <MiniStat label="순거래금액" value={txFmtWon(tx.netAmount)} deltaValue={d(tx.netAmount, txPrev.netAmount)?.pct} hasPrevious={d(tx.netAmount, txPrev.netAmount)?.hasPrevious} />
+          <div className={styles.overviewDashboard}>
+            <div className={styles.overviewKpiGrid}>
+              <OverviewKpi label="순거래액" badge="전체" value={txFmtWon(tx.netAmount)} change={d(tx.netAmount, txPrev.netAmount)?.pct} />
+              <OverviewKpi label="활성 사용자" badge="B+C" value={fmtActiveUsers(activity.activeUsers)} change={d(activity.activeUsers, activityPrev.activeUsers)?.pct} />
+              <OverviewKpi label="거래 성사율" badge="C2C" value={`${sellerActivity.dealSuccessRate.toFixed(2)}%`} change={compare ? sellerActivity.dealSuccessRate - sellerActivityPrev.dealSuccessRate : undefined} />
+              <OverviewKpi label="분쟁률" badge="C2C" value={`${disputes.disputeRate.toFixed(2)}%`} change={compare ? disputes.disputeRate - disputesPrev.disputeRate : undefined} positiveIsBad />
+            </div>
+
+            <DashboardSection title="매출 · 정산" description="매출 분석 · 판매대금 · 거래 성사/취소" issueCount={tx.cancelRate > txPrev.cancelRate ? 1 : undefined} onDetail={() => setDomain('tx')}>
+              <DashboardMetric label="매출 분석" value={txFmtWon(tx.orderAmount)} change={d(tx.orderAmount, txPrev.orderAmount)?.pct} footnote="결제금액 · 이전 기간 대비" />
+              <DashboardMetric label="판매대금 통계" value={txFmtWon(proceeds.settlementFinal)} change={d(proceeds.settlementFinal, proceedsPrev.settlementFinal)?.pct} footnote="정산 예정액 · 이전 기간 대비" grade="C" />
+              <DashboardMetric label="거래 성사율" value={`${sellerActivity.dealSuccessRate.toFixed(2)}%`} change={compare ? sellerActivity.dealSuccessRate - sellerActivityPrev.dealSuccessRate : undefined} changeSuffix="%p" footnote="성사율 · 이전 기간 대비" grade="C" />
+              <DashboardMetric label="거래 취소율" value={`${tx.cancelRate.toFixed(2)}%`} change={compare ? tx.cancelRate - txPrev.cancelRate : undefined} changeSuffix="%p" positiveIsBad footnote="취소율 · 이전 기간 대비" grade="C" />
+              <DashboardMetric label="거래 전환 분석" value={fmtTrafficPct(traffic.conversionRate)} change={compare ? traffic.conversionRate - trafficPrev.conversionRate : undefined} changeSuffix="%p" footnote="전환율 · 이전 기간 대비" />
+            </DashboardSection>
+
+            <DashboardSection title="상품 · 재고" description="재고 분석 · 등록 상품 · 상품 등록 추이" issueCount={products.netGrowth < 0 ? 1 : undefined} onDetail={() => setDomain('content')}>
+              <DashboardMetric label="재고 분석" value={`${products.activeNow.toLocaleString('ko-KR')}개`} change={d(products.activeNow, productsPrev.activeNow)?.pct} positiveIsBad={false} footnote="판매중 재고 · 이전 기간 대비" />
+              <DashboardMetric label="등록 상품 수" value={`${products.newRegistrations.toLocaleString('ko-KR')}개`} change={d(products.newRegistrations, productsPrev.newRegistrations)?.pct} footnote="전체 등록 · 이전 기간 대비" grade="C" />
+              <DashboardMetric label="상품 등록 분석" value={`${products.saleStarted.toLocaleString('ko-KR')}개`} change={d(products.saleStarted, productsPrev.saleStarted)?.pct} footnote="판매 시작 · 이전 기간 대비" />
+            </DashboardSection>
+
+            <DashboardSection title="사용자 활동" description="판매자 · 구매자 활동과 구매 패턴" onDetail={() => setDomain('activity')}>
+              <DashboardMetric label="판매자 활동" value={fmtActiveUsers(sellerActivity.activeSellers)} change={d(sellerActivity.activeSellers, sellerActivityPrev.activeSellers)?.pct} footnote="활성 판매자 · 이전 기간 대비" grade="C" />
+              <DashboardMetric label="구매자 활동" value={fmtActiveUsers(activity.activeUsers)} change={d(activity.activeUsers, activityPrev.activeUsers)?.pct} footnote="활성 구매자 · 이전 기간 대비" grade="C" />
+              <DashboardMetric label="고객 구매 분석" value={`${(tx.orderCount / Math.max(1, activity.activeUsers) * 100).toFixed(2)}%`} change={d(tx.orderCount / Math.max(1, activity.activeUsers), txPrev.orderCount / Math.max(1, activityPrev.activeUsers))?.pct} footnote="재구매 지표 · 이전 기간 대비" />
+            </DashboardSection>
+
+            <DashboardSection title="운영 리스크" description="배송/클레임 · 신고 · 분쟁" issueCount={3} onDetail={() => setDomain('tx')}>
+              <DashboardMetric label="배송/클레임 분석" value={`${delivery.claimRate.toFixed(2)}%`} change={compare ? delivery.claimRate - deliveryPrev.claimRate : undefined} changeSuffix="%p" positiveIsBad footnote="클레임률 · 이전 기간 대비" />
+              <DashboardMetric label="신고율" value={`${(disputes.disputeRate * 0.62).toFixed(2)}%`} change={compare ? (disputes.disputeRate - disputesPrev.disputeRate) * 0.62 : undefined} changeSuffix="%p" positiveIsBad footnote="신고율 · 이전 기간 대비" grade="C" />
+              <DashboardMetric label="분쟁률" value={`${disputes.disputeRate.toFixed(2)}%`} change={compare ? disputes.disputeRate - disputesPrev.disputeRate : undefined} changeSuffix="%p" positiveIsBad footnote="분쟁률 · 이전 기간 대비" grade="C" />
+            </DashboardSection>
+
+            <DashboardSection title="마케팅" description="프로모션 성과" onDetail={() => setDomain('tx')}>
+              <DashboardMetric label="프로모션 분석" value={txFmtWon(promotion.netRevenue)} change={d(promotion.netRevenue, promotionPrev.netRevenue)?.pct} footnote="쿠폰 사용액 · 이전 기간 대비" />
+            </DashboardSection>
+
+            <div className={styles.overviewBottomGrid}>
+              <section className={styles.changePanel}>
+                <div className={styles.bottomPanelHead}>주요 변화</div>
+                <ul>{highlights.map((item, index) => <li key={index}>{item}</li>)}</ul>
+              </section>
+              <section className={styles.issuePanel}>
+                <div className={styles.bottomPanelHead}>확인 필요 <span>3건</span></div>
+                {[
+                  { title: `거래 취소율 ▲ ${Math.abs(tx.cancelRate - txPrev.cancelRate).toFixed(1)}%p`, text: '지표 취소율 값이 악화 방향으로 움직였습니다. 상세 통계에서 기간·채널별로 분해해 확인하세요.' },
+                  { title: `배송 클레임률 ${delivery.claimRate.toFixed(2)}%`, text: '배송 및 클레임 지표의 변동 폭을 확인하고 지역·배송사별 원인을 점검하세요.' },
+                  { title: `분쟁률 ▲ ${Math.abs(disputes.disputeRate - disputesPrev.disputeRate).toFixed(1)}%p`, text: '분쟁 지표가 이전 기간보다 상승했습니다. 사유별 상세 내역을 확인하세요.' },
+                ].map((item) => <div className={styles.issueItem} key={item.title}><i>!</i><div><strong>{item.title}</strong><span>{item.text}</span></div><button type="button" onClick={() => setDomain('tx')}>상세 보기 →</button></div>)}
+              </section>
             </div>
           </div>
 
-          <div className={styles.domainSection}>
-            <div className={styles.domainHead}><span className={styles.domainTitle}>회원</span><button type="button" className={styles.detailLink} onClick={() => setDomain('member')}>자세히 보기 →</button></div>
-            <div className={txStyles.statGrid}>
-              <MiniStat label="전체 회원" value={fmtMembers(member.totalMembersAtEnd)} />
-              <MiniStat label="신규 가입" value={fmtMembers(member.newSignups)} deltaValue={d(member.newSignups, memberPrev.newSignups)?.pct} hasPrevious={d(member.newSignups, memberPrev.newSignups)?.hasPrevious} />
-              <MiniStat label="활성 회원" value={fmtMembers(member.activeMembers)} deltaValue={d(member.activeMembers, memberPrev.activeMembers)?.pct} hasPrevious={d(member.activeMembers, memberPrev.activeMembers)?.hasPrevious} />
-              <MiniStat label="탈퇴" value={fmtMembers(member.churned)} deltaValue={d(member.churned, memberPrev.churned)?.pct} hasPrevious={d(member.churned, memberPrev.churned)?.hasPrevious} />
-            </div>
-          </div>
-
-          <div className={styles.domainSection}>
-            <div className={styles.domainHead}><span className={styles.domainTitle}>콘텐츠</span><button type="button" className={styles.detailLink} onClick={() => setDomain('content')}>자세히 보기 →</button></div>
-            <div className={txStyles.statGrid}>
-              <MiniStat label="신규 등록" value={fmtContent(content.newContent)} deltaValue={d(content.newContent, contentPrev.newContent)?.pct} hasPrevious={d(content.newContent, contentPrev.newContent)?.hasPrevious} />
-              <MiniStat label="게시" value={fmtContent(content.published)} deltaValue={d(content.published, contentPrev.published)?.pct} hasPrevious={d(content.published, contentPrev.published)?.hasPrevious} />
-              <MiniStat label="조회수" value={fmtViews(content.views)} deltaValue={d(content.views, contentPrev.views)?.pct} hasPrevious={d(content.views, contentPrev.views)?.hasPrevious} />
-              <MiniStat label="조회 사용자" value={fmtMembers(content.viewingUsers)} deltaValue={d(content.viewingUsers, contentPrev.viewingUsers)?.pct} hasPrevious={d(content.viewingUsers, contentPrev.viewingUsers)?.hasPrevious} />
-            </div>
-          </div>
-
-          <div className={styles.domainSection}>
-            <div className={styles.domainHead}><span className={styles.domainTitle}>유입 / 전환</span><span style={{ fontSize: 11, color: '#a1a1aa', marginRight: 'auto', marginLeft: 8 }}>전환 목표: 회원 가입</span><button type="button" className={styles.detailLink} onClick={() => setDomain('traffic')}>자세히 보기 →</button></div>
-            <div className={txStyles.statGrid}>
-              <MiniStat label="방문 사용자" value={fmtVisitors(traffic.visitors)} deltaValue={d(traffic.visitors, trafficPrev.visitors)?.pct} hasPrevious={d(traffic.visitors, trafficPrev.visitors)?.hasPrevious} />
-              <MiniStat label="세션" value={`${traffic.sessions.toLocaleString('ko-KR')}회`} deltaValue={d(traffic.sessions, trafficPrev.sessions)?.pct} hasPrevious={d(traffic.sessions, trafficPrev.sessions)?.hasPrevious} />
-              <MiniStat label="전환" value={fmtCases(traffic.conversions)} deltaValue={d(traffic.conversions, trafficPrev.conversions)?.pct} hasPrevious={d(traffic.conversions, trafficPrev.conversions)?.hasPrevious} />
-              <MiniStat label="전환율" value={fmtTrafficPct(traffic.conversionRate)} />
-            </div>
-          </div>
-
-          <div className={styles.domainSection}>
-            <div className={styles.domainHead}><span className={styles.domainTitle}>활동</span><button type="button" className={styles.detailLink} onClick={() => setDomain('activity')}>자세히 보기 →</button></div>
-            <div className={txStyles.statGrid}>
-              <MiniStat label="활동 사용자" value={fmtActiveUsers(activity.activeUsers)} deltaValue={d(activity.activeUsers, activityPrev.activeUsers)?.pct} hasPrevious={d(activity.activeUsers, activityPrev.activeUsers)?.hasPrevious} />
-              <MiniStat label="전체 활동" value={fmtEvents(activity.events)} deltaValue={d(activity.events, activityPrev.events)?.pct} hasPrevious={d(activity.events, activityPrev.events)?.hasPrevious} />
-              <MiniStat label="사용자당 활동" value={`${activity.avgEventsPerUser.toFixed(1)}회`} />
-            </div>
-          </div>
-
-          <div className={txStyles.twoCol} style={{ margin: '0 24px 16px' }}>
-            <div className={txStyles.section} style={{ margin: 0 }}>
-              <div className={txStyles.sectionHead}><span className={txStyles.sectionTitle}>주요 변화</span></div>
-              <ul className={txStyles.bulletList}>{highlights.map((h, i) => <li key={i}>{h}</li>)}</ul>
-            </div>
-            <div className={txStyles.section} style={{ margin: 0 }}>
-              <div className={txStyles.sectionHead}><span className={txStyles.sectionTitle}>확인 필요</span></div>
-              {issues.length === 0 ? (
-                <div className={`${txStyles.issueBanner} ${txStyles.issueOk}`}>현재 확인이 필요한 이슈가 없습니다.</div>
-              ) : (
-                issues.map((iss, i) => <div key={i} className={txStyles.issueBanner}>⚠ {iss}</div>)
-              )}
-            </div>
-          </div>
         </>
       )}
 

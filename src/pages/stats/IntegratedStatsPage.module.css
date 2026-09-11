@@ -16,3 +16,67 @@
 
 .embedWrap { margin: 0 24px 16px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; overflow: hidden; }
 .embedWrap :global(section) { min-height: 0 !important; }
+
+.overviewDashboard { display: flex; flex-direction: column; gap: 14px; margin: 0 24px 20px; }
+.overviewKpiGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.overviewKpi { min-width: 0; padding: 15px 16px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; background: #fff; }
+.overviewKpiLabel { display: flex; align-items: center; gap: 6px; color: #71717a; font-size: 11px; font-weight: 600; }
+.overviewKpiLabel span { padding: 2px 6px; border-radius: 999px; background: #f4f4f5; color: #a1a1aa; font-size: 9px; }
+.overviewKpi > strong { display: block; margin-top: 7px; color: #18181b; font-size: 20px; line-height: 1.1; letter-spacing: -0.025em; font-variant-numeric: tabular-nums; }
+.overviewKpiDelta { display: flex; align-items: center; gap: 5px; min-height: 16px; margin-top: 6px; }
+.overviewKpiDelta > span:last-child { color: #c4c4c8; font-size: 9.5px; }
+
+.metricSection { overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; background: #fff; }
+.metricSectionHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 42px; padding: 0 14px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.metricSectionHead > div { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.metricSectionHead strong { color: #18181b; font-size: 12.5px; }
+.metricSectionHead span { color: #a1a1aa; font-size: 10px; }
+.metricSectionHead em { padding: 3px 8px; border: 1px solid #efd69c; border-radius: 999px; background: #fff8e8; color: #996515; font-size: 9.5px; font-style: normal; font-weight: 700; white-space: nowrap; }
+.metricSectionHead button { padding: 0; border: 0; background: transparent; color: var(--accent); font-size: 10.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.metricGrid { display: flex; align-items: stretch; min-height: 110px; overflow-x: auto; }
+.metricCard { flex: 0 0 205px; min-width: 0; padding: 12px 13px 10px; border-right: 1px solid rgba(0, 0, 0, 0.06); }
+.metricLabelRow { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #71717a; font-size: 10.5px; font-weight: 600; }
+.metricLabelRow em { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 3px; font-size: 8px; font-style: normal; }
+.gradeB { background: #dbeafe; color: #2563eb; }
+.gradeC { background: #f3e8ff; color: #9333ea; }
+.metricValueRow { display: flex; align-items: baseline; gap: 6px; margin-top: 7px; }
+.metricValueRow strong { overflow: hidden; color: #18181b; font-size: 17px; line-height: 1; letter-spacing: -0.02em; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.metricChange { flex: none; font-size: 9.5px; font-weight: 700; }
+.metricChangeGood { color: #16845b; }
+.metricChangeBad { color: #dc2626; }
+.metricChangeFlat { color: #a1a1aa; }
+.sparkBars { display: flex; align-items: flex-end; gap: 3px; height: 25px; margin-top: 8px; }
+.sparkBars i { flex: 1; min-width: 3px; border-radius: 2px 2px 0 0; background: #e4e4e7; }
+.sparkBars .sparkActive { background: #2f6fc8; }
+.sparkBars .sparkWarning { background: #e0a53a; }
+.metricFoot { display: flex; justify-content: space-between; gap: 8px; margin-top: 7px; color: #a1a1aa; font-size: 8.5px; }
+.metricFoot span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.metricFoot b { flex: none; color: #2f6fc8; font-weight: 600; }
+
+.overviewBottomGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.changePanel, .issuePanel { overflow: hidden; min-height: 190px; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 12px; background: #fff; }
+.bottomPanelHead { padding: 12px 14px; border-bottom: 1px solid rgba(0, 0, 0, 0.06); color: #18181b; font-size: 12px; font-weight: 700; }
+.bottomPanelHead span { margin-left: 6px; padding: 2px 7px; border-radius: 999px; background: #fff4d9; color: #a66b00; font-size: 9px; }
+.changePanel ul { margin: 0; padding: 12px 28px; }
+.changePanel li { padding: 5px 0; color: #71717a; font-size: 10.5px; line-height: 1.5; }
+.changePanel li::marker { color: #d9a23b; }
+.issuePanel { padding-bottom: 10px; }
+.issueItem { display: grid; grid-template-columns: 17px minmax(0, 1fr) auto; align-items: center; gap: 9px; margin: 9px 12px 0; padding: 10px 11px; border: 1px solid #efd69c; border-radius: 9px; background: #fffaf0; }
+.issueItem > i { display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; border-radius: 50%; background: #e0a53a; color: #fff; font-size: 9px; font-style: normal; font-weight: 800; }
+.issueItem > div { min-width: 0; }
+.issueItem strong, .issueItem span { display: block; }
+.issueItem strong { color: #8a5a12; font-size: 10px; }
+.issueItem span { margin-top: 2px; color: #a47a38; font-size: 8.5px; line-height: 1.4; }
+.issueItem button { border: 0; background: transparent; color: #996515; font-size: 9px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+@media (max-width: 1100px) {
+  .overviewKpiGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .overviewBottomGrid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .overviewDashboard { margin-inline: 14px; }
+  .overviewKpiGrid { grid-template-columns: 1fr; }
+  .metricSectionHead { align-items: flex-start; padding-block: 10px; }
+  .metricSectionHead > div:first-child { align-items: flex-start; flex-direction: column; gap: 3px; }
+  .issueItem { grid-template-columns: 17px minmax(0, 1fr); }
+  .issueItem button { grid-column: 2; justify-self: start; }
+}
