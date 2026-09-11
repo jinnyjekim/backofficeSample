@@ -467,7 +467,7 @@ export function ProductRegistrationStatsPage({
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>상품 등록 분석</h1>
+            <h1 className={shared.title}>{defaultMode === "c2c" ? "등록 상품 수" : "상품 등록 분석"}</h1>
             <p className={shared.subtitle}>
               상품이 얼마나 새로 등록되고, 현재 실제 판매 가능한 상품은 얼마나
               되는지 분석합니다.

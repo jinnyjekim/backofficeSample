@@ -13,7 +13,6 @@ import {
   CommonSelect,
 } from "../../components/common";
 import styles from "../cartconversion/cartConversionExtra.module.css";
-import summaryStyles from "./TransactionStatsPage.module.css";
 
 interface StatisticsFilterToolbarProps {
   range?: string;
@@ -172,7 +171,7 @@ export function StatisticsFilterToolbar({
       {expanded && details && (
         <div className={styles.detailFilters}>{details}</div>
       )}
-      {summary && <div className={summaryStyles.periodInfo}>{summary}</div>}
+      {summary && <div className={styles.periodSummary}>{summary}</div>}
     </div>
   );
 }

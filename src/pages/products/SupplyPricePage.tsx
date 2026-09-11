@@ -130,7 +130,7 @@ export function SupplyPricePage() {
       <div className={styles.top}>
         <div className={styles.titleRow}>
           <div>
-            <div className={styles.title}>공급가 관리</div>
+            <div className={styles.title}>공급가</div>
             <div className={styles.subtitle}>상품별 공급 기준가와 거래처별 적용 단가를 관리합니다.</div>
           </div>
           <div className={styles.headerActions}>

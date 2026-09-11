@@ -140,7 +140,7 @@ export function QuoteRequestsPage() {
         <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
-              <div className={styles.title}>견적 요청 관리</div>
+              <div className={styles.title}>견적 요청</div>
               <div className={styles.subtitle}>거래처의 견적 요청을 접수하고 처리 상태를 관리합니다.</div>
             </div>
             <button type="button" className={styles.registerBtn} onClick={() => { setShowRegister(true); setSelectedId(null); }}>

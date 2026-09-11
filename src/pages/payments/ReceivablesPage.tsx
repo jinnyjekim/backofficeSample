@@ -160,7 +160,7 @@ export function ReceivablesPage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div style={{ marginBottom: 16 }}>
-          <div className={styles.title}>미수금 관리</div>
+          <div className={styles.title}>미수금</div>
           <div className={styles.subtitle}>거래처별 미수 잔액과 연체 현황을 관리합니다.</div>
         </div>
 

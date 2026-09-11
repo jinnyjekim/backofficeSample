@@ -590,7 +590,7 @@ export function EventsPage() {
       <header className={shared.header}>
         <div className={shared.headerTop}>
           <div>
-            <div className={shared.title}>이벤트 관리</div>
+            <div className={shared.title}>이벤트</div>
             <div className={shared.subtitle}>
               서비스에서 진행하는 이벤트 콘텐츠와 참여·혜택·노출 현황을
               관리합니다.

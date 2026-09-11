@@ -8,117 +8,115 @@ import styles from '../delivery/deliveryShared.module.css';
 import drawer from '../ops/opsDrawerShared.module.css';
 import { ExchangeDetailDrawer } from './ExchangeDetailDrawer';
 import {
-  formatWon,
   INITIAL_EXCHANGES,
   matchesExchangeKeyword,
   type ExchangeItem,
+  type HoldReason,
 } from './exchangeData';
+
+const HOLD_REASONS: Array<'전체' | HoldReason> = [
+  '전체',
+  '재고 부족',
+  '고객 연락 두절',
+  '배송비 미입금',
+  '기타',
+];
 
 const COLUMNS: GridColumn[] = [
   { label: '교환번호' },
   { label: '주문번호' },
-  { label: '신청고객' },
-  { label: '교환사유' },
-  { label: '상품 / 옵션 변경' },
-  { label: '교환금액', align: 'right' },
-  { label: '재고 상태' },
-  { label: '신청일시' },
+  { label: '고객명 / 연락처' },
+  { label: '교환 상품 / 희망 옵션' },
+  { label: '보류 사유' },
+  { label: '보류 상세 및 메모' },
+  { label: '담당자' },
+  { label: '보류 일시' },
 ];
 
-export function ExchangeRequestsPage() {
+export function ExchangeHoldPage() {
   const [items, setItems] = useState<ExchangeItem[]>(INITIAL_EXCHANGES);
-  const [reason, setReason] = useState('전체');
+  const [selectedReason, setSelectedReason] = useState<'전체' | HoldReason>('전체');
   const [keyword, setKeyword] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const requests = useMemo(
-    () => items.filter((item) => item.stage === '교환 요청'),
+  const holdItems = useMemo(
+    () => items.filter((item) => item.stage === '교환 보류'),
     [items]
   );
 
-  const filtered = useMemo(
-    () =>
-      requests.filter(
-        (item) =>
-          (reason === '전체' || item.reason.includes(reason)) &&
-          matchesExchangeKeyword(item, keyword)
-      ),
-    [keyword, reason, requests]
-  );
+  const filtered = useMemo(() => {
+    return holdItems.filter((item) => {
+      if (selectedReason !== '전체' && item.holdReason !== selectedReason) return false;
+      return matchesExchangeKeyword(item, keyword);
+    });
+  }, [holdItems, keyword, selectedReason]);
 
   const selected = items.find((item) => item.id === selectedId) ?? null;
 
-  // 승인 시: 바로 회수 단계(회수 중)로 인계
-  const approveExchange = () => {
+  // 1) 보류 해제 -> 재출고(출고 준비) 단계로 재진입
+  const releaseHold = () => {
     if (!selected) return;
     setItems((current) =>
       current.map((item) =>
         item.id === selected.id
           ? {
               ...item,
-              stage: '회수 중' as const,
-              carrier: 'CJ대한통운',
-              trackingNo: `C-260907-${Math.floor(1000 + Math.random() * 9000)}`,
-              assignee: 'admin01',
-              inspection: '회수 기사 방문 예정',
-              updatedAt: '2026-09-07 11:30',
+              stage: '출고 준비',
+              stockStatus: '보류 해제 (출고 준비 중)',
+              holdMemo: `[보류 해제 완료] ${item.holdMemo || ''}`,
+              updatedAt: '2026-09-07 16:00',
             }
           : item
       )
     );
     showToast({
-      message: `${selected.id} 건을 교환 승인하여 [회수·검수] 단계로 인계했습니다. (CJ대한통운 수거 지시)`,
+      message: `${selected.id} 건의 보류가 해제되어 [재출고 - 출고 준비] 단계로 복귀했습니다.`,
       type: 'success',
     });
     setSelectedId(null);
   };
 
-  // 반려 시: 교환 이력(반려)으로 종결
-  const rejectExchange = () => {
+  // 2) 교환 반려 (원상복구 불가 시 반려 종결)
+  const rejectHold = () => {
     if (!selected) return;
     setItems((current) =>
       current.map((item) =>
         item.id === selected.id
           ? {
               ...item,
-              stage: '교환 반려' as const,
-              assignee: 'admin01',
-              rejectedAt: '2026-09-07 11:30',
-              stockStatus: '교환 반려 종결',
-              updatedAt: '2026-09-07 11:30',
+              stage: '교환 반려',
+              rejectedAt: '2026-09-07 16:00',
+              stockStatus: '보류 건 최종 반려',
+              updatedAt: '2026-09-07 16:00',
             }
           : item
       )
     );
     showToast({
-      message: `${selected.id} 건을 교환 반려 처리하여 [교환 이력]으로 이동했습니다.`,
-      type: 'info',
+      message: `${selected.id} 건을 교환 반려 처리하여 [교환 이력]으로 보냈습니다.`,
+      type: 'danger',
     });
     setSelectedId(null);
   };
 
-  // 보류 처리: 교환 보류 메뉴로 이동
-  const holdExchange = () => {
+  // 3) 고객 재연락 메모 갱신
+  const recordContact = () => {
     if (!selected) return;
     setItems((current) =>
       current.map((item) =>
         item.id === selected.id
           ? {
               ...item,
-              stage: '교환 보류' as const,
-              holdReason: '재고 부족',
-              holdMemo: '요청 옵션 임시 품절로 인한 출고 보류 (공급처 입고 확인 중)',
-              assignee: 'admin01',
-              updatedAt: '2026-09-07 11:30',
+              updatedAt: '2026-09-07 16:10',
+              holdMemo: `${item.holdMemo || ''} (09/07 16:10 고객 재안내 알림톡 발송 완료)`,
             }
           : item
       )
     );
     showToast({
-      message: `${selected.id} 건을 [교환 보류] 처리했습니다. (재고 부족)`,
-      type: 'warning',
+      message: `${selected.id} 고객 알림톡 재발송 및 안내 이력을 등록했습니다.`,
+      type: 'info',
     });
-    setSelectedId(null);
   };
 
   const rows: GridRow[] = filtered.map((item) => ({
@@ -127,27 +125,28 @@ export function ExchangeRequestsPage() {
     cells: [
       { kind: 'text', text: item.id, weight: 600 },
       { kind: 'text', text: item.orderId },
-      { kind: 'text', text: item.member, weight: 600 },
-      { kind: 'text', text: item.reason },
+      {
+        kind: 'stack',
+        title: item.member,
+        subtitle: item.phone || '-',
+      },
       {
         kind: 'stack',
         title: item.product,
         subtitle: `${item.optionBefore} → ${item.optionAfter}`,
       },
       {
-        kind: 'text',
-        text: formatWon(item.amount),
-        align: 'right',
-        numeric: true,
-        weight: 600,
+        kind: 'badge',
+        text: item.holdReason || '보류',
+        bg: '#fffbeb',
+        fg: '#b45309',
       },
       {
-        kind: 'badge',
-        text: item.stockStatus,
-        bg: item.stockStatus.includes('가능') ? '#ecfdf5' : '#fffbeb',
-        fg: item.stockStatus.includes('가능') ? '#047857' : '#b45309',
+        kind: 'text',
+        text: item.holdMemo || '사유 확인 대기',
       },
-      { kind: 'text', text: item.requestedAt, numeric: true },
+      { kind: 'text', text: item.assignee },
+      { kind: 'text', text: item.updatedAt, numeric: true },
     ],
   }));
 
@@ -156,9 +155,9 @@ export function ExchangeRequestsPage() {
       <header className={styles.header}>
         <div className={styles.headerTop}>
           <div>
-            <div className={styles.title}>교환 요청</div>
+            <div className={styles.title}>교환 보류</div>
             <div className={styles.subtitle}>
-              고객이 신청한 신규 교환 건을 심사하여 승인(회수 지시), 반려 또는 보류 처리합니다.
+              재고 부족, 고객 연락 두절, 배송비 미입금 등 처리가 멈춘 건을 모니터링하고 사유 해소 시 업무에 복귀시킵니다.
             </div>
           </div>
         </div>
@@ -169,33 +168,35 @@ export function ExchangeRequestsPage() {
               className={styles.searchInput}
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
-              placeholder="교환번호 / 주문번호 / 고객명 / 상품명"
+              placeholder="교환번호 / 주문번호 / 고객명 / 연락처 / 보류메모"
             />
             <button className={styles.searchBtn}>검색</button>
+
+            {/* 사유별 탭: 전체 | 재고 부족 | 고객 연락 두절 | 배송비 미입금 | 기타 */}
             <div className={styles.quickFilters}>
-              {['전체', '사이즈', '색상', '불량'].map((value) => (
-                <CommonButton
-                  key={value}
-                  variant={reason === value ? 'primary-light' : 'secondary'}
-                  size="md"
-                  className={`${styles.qfBtn} ${reason === value ? styles.active : ''}`}
-                  onClick={() => setReason(value)}
-                >
-                  <span className={styles.qfLabel}>{value}</span>
-                  <span className={styles.qfCount}>
-                    {
-                      requests.filter(
-                        (item) => value === '전체' || item.reason.includes(value)
-                      ).length
-                    }
-                  </span>
-                </CommonButton>
-              ))}
+              {HOLD_REASONS.map((reason) => {
+                const count = holdItems.filter(
+                  (item) => reason === '전체' || item.holdReason === reason
+                ).length;
+                return (
+                  <CommonButton
+                    key={reason}
+                    variant={selectedReason === reason ? 'primary-light' : 'secondary'}
+                    size="md"
+                    className={`${styles.qfBtn} ${selectedReason === reason ? styles.active : ''}`}
+                    onClick={() => setSelectedReason(reason)}
+                  >
+                    <span className={styles.qfLabel}>{reason}</span>
+                    <span className={styles.qfCount}>{count}</span>
+                  </CommonButton>
+                );
+              })}
             </div>
           </div>
+
           <div className={styles.filterRow2}>
             <label className={styles.dateFilterField}>
-              <span>신청일</span>
+              <span>보류일</span>
               <span className={styles.dateRange}>
                 <DatePicker defaultValue="2026-09-01" />
                 <span className={styles.dateSeparator}>~</span>
@@ -209,7 +210,7 @@ export function ExchangeRequestsPage() {
             <button
               className={styles.resetBtn}
               onClick={() => {
-                setReason('전체');
+                setSelectedReason('전체');
                 setKeyword('');
               }}
             >
@@ -219,7 +220,7 @@ export function ExchangeRequestsPage() {
         </div>
 
         <div className={styles.resultBar}>
-          <span className={styles.resultLabel}>신규 요청 {filtered.length}건 대기 중</span>
+          <span className={styles.resultLabel}>총 {filtered.length}건 보류 진행 중</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton data-grid-download />
             <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
@@ -234,10 +235,10 @@ export function ExchangeRequestsPage() {
         <DataGrid
           columns={COLUMNS}
           rows={rows}
-          gridTemplate="130px 140px 90px 120px minmax(200px,1fr) 100px 130px 130px"
-          minWidth="1040px"
+          gridTemplate="130px 140px 120px minmax(200px,1.2fr) 110px minmax(220px,1.8fr) 85px 130px"
+          minWidth="1135px"
           empty={!rows.length}
-          emptyText="접수된 교환 요청이 없습니다."
+          emptyText="보류 중인 교환 건이 없습니다."
           showPagination
           pages={[{ label: '1', active: true }]}
         />
@@ -246,30 +247,30 @@ export function ExchangeRequestsPage() {
       {selected && (
         <ExchangeDetailDrawer
           item={selected}
-          eyebrow="교환 요청 심사"
+          eyebrow="교환 보류 상세"
           onClose={() => setSelectedId(null)}
           actions={
             <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
               <button
                 className={drawer.primaryBtn}
-                style={{ flex: 1 }}
-                onClick={approveExchange}
+                style={{ flex: 1.2 }}
+                onClick={releaseHold}
               >
-                교환 승인 (회수 지시)
+                보류 해제 (재출고 준비로 복귀)
               </button>
               <button
                 className={drawer.secondaryBtn}
                 style={{ flex: 0.8 }}
-                onClick={holdExchange}
+                onClick={recordContact}
               >
-                교환 보류
+                고객 알림 재발송
               </button>
               <button
                 className={drawer.dangerBtn}
                 style={{ flex: 0.8 }}
-                onClick={rejectExchange}
+                onClick={rejectHold}
               >
-                교환 반려
+                교환 반려 종결
               </button>
             </div>
           }

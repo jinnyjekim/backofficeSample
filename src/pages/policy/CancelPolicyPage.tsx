@@ -1340,6 +1340,7 @@ export function CancelPolicyPage() {
               항목을 마우스로 드래그하여 노출 순서를 자유롭게 변경할 수 있습니다.
             </div>
 
+            <div className={styles.reasonGrid}>
             <div className={styles.card}>
               <div className={styles.cardHead}>
                 <div className={styles.cardTitle}>고객 취소 사유</div>
@@ -1461,7 +1462,7 @@ export function CancelPolicyPage() {
 
             <div className={styles.card}>
               <div className={styles.cardHead}>
-                <div className={styles.cardTitle}>관리자 취소 사유</div>
+                <div className={styles.cardTitle}>관리자 사유</div>
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.reasonList}>
@@ -1576,6 +1577,7 @@ export function CancelPolicyPage() {
                   + 관리자 사유 추가
                 </button>
               </div>
+            </div>
             </div>
 
             {editing && (

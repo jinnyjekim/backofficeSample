@@ -178,7 +178,7 @@ export function PaymentsPage() {
       <header className={styles.header}>
         <div className={styles.headerTop}>
           <div>
-            <div className={styles.title}>결제 관리</div>
+            <div className={styles.title}>결제</div>
             <div className={styles.subtitle}>거래처의 결제 및 입금 내역을 조회하고 주문·청구 건과 연결합니다.</div>
           </div>
           <button type="button" className={styles.primaryBtn} onClick={() => { setSelectedId(null); setShowRegister(true); }}>+ 결제 등록</button>

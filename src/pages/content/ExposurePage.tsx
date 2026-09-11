@@ -8,6 +8,7 @@ import { CONTENT_ITEMS } from '../../data/content';
 import { ACCENT } from '../../lib/theme';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType } from './contentBusiness';
+import { SearchField } from '../../components/SearchField';
 
 interface RowDraft {
   on: boolean;
@@ -317,7 +318,14 @@ export function ExposurePage() {
         <div className={styles.areaCol}>
           <div className={styles.areaColHead}>
             <div className={styles.areaColTitle}>{businessMode === 'B2C' ? '쇼핑 노출 영역' : businessMode === 'C2C' ? '탐색 / 커뮤니티 영역' : '거래처 포털 영역'}</div>
-            <input className={styles.areaSearch} value={aq} onChange={(e) => setAq(e.target.value)} placeholder="영역 검색" />
+            <SearchField
+              className={styles.areaSearchField}
+              value={aq}
+              onValueChange={setAq}
+              placeholder="영역 검색"
+              shortcutHint="/"
+              aria-label="노출 영역 검색"
+            />
           </div>
           <div className={styles.areaList}>
             {areaFlat.map(({ a, depth }) => {

@@ -124,7 +124,7 @@ export function QuoteApprovalPage() {
         <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
-              <div className={styles.title}>견적 승인</div>
+              <div className={styles.title}>승인</div>
               <div className={styles.subtitle}>승인 요청된 견적서를 검토하고 승인 또는 반려합니다.</div>
             </div>
           </div>

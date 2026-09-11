@@ -195,7 +195,7 @@ export function CompaniesPage() {
       <div className={styles.main}>
         <div className={styles.head}>
           <div>
-            <div className={styles.title}>회사 관리</div>
+            <div className={styles.title}>회사</div>
             <div className={styles.subtitle}>
               등록된 거래처 회사와 거래 상태를 관리합니다.
             </div>

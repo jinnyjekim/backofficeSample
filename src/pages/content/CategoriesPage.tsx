@@ -10,6 +10,7 @@ import {
   type ContentTaxonomyScope,
 } from "./contentBusiness";
 import { CommonButton } from "../../components/common";
+import { SearchField } from "../../components/SearchField";
 
 interface Draft {
   name: string;
@@ -537,15 +538,14 @@ export function CategoriesPage() {
       <div className={styles.body}>
         <div className={styles.tree}>
           <div className={styles.treeSearch}>
-            <div className={styles.treeSearchBox}>
-              <span style={{ color: "#a1a1aa", fontSize: 12.5 }}>⌕</span>
-              <input
-                className={styles.treeSearchInput}
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="카테고리명 · 코드 검색"
-              />
-            </div>
+            <SearchField
+              className={styles.treeSearchField}
+              value={q}
+              onValueChange={setQ}
+              placeholder="카테고리명 · 코드 검색"
+              shortcutHint="/"
+              aria-label="카테고리 검색"
+            />
           </div>
 
           <div className={styles.treeList}>

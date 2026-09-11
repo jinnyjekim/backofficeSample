@@ -147,7 +147,7 @@ export function OrderProcessingPage() {
       <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
-              <div className={styles.title}>주문 처리</div>
+              <div className={styles.title}>처리</div>
               <div className={styles.subtitle}>확정된 주문의 작업 진행 상태와 이행 현황을 관리합니다.</div>
             </div>
           </div>

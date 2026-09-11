@@ -64,7 +64,7 @@ export function ContractsPage() {
     <div className={styles.page}>
       <div className={styles.headerRow}>
         <div>
-          <div className={styles.title}>계약 관리</div>
+          <div className={styles.title}>계약</div>
           <div className={styles.subtitle}>거래처와 체결한 계약 및 거래 조건을 관리합니다.</div>
         </div>
         <button type="button" className={styles.registerBtn}>+ 계약 등록</button>

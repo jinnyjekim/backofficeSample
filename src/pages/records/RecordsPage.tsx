@@ -8,8 +8,7 @@ import { RecordDetailDrawer } from './RecordDetailDrawer';
 import { SanctionModal, type SanctionSubmit } from './SanctionModal';
 import { SANCTION_LEVEL, type SanctionMode } from './sanctionOptions';
 import { formatNumber } from '../../lib/theme';
-import { SearchField } from '../../components/SearchField';
-import { CommonButton } from '../../components/common';
+import { CommonButton, CommonInput } from '../../components/common';
 import { DataGrid } from '../../components/DataGrid';
 import type { GridRow } from '../../components/DataGrid/types';
 
@@ -44,10 +43,58 @@ export function RecordsPage({ kind }: Props) {
   const [banData, setBanData] = useState<BanMember[]>(BAN_MEMBERS);
   const [modal, setModal] = useState<ModalState | null>(null);
 
+  // 상세 필터 상태
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [leftType, setLeftType] = useState('전체');
+  const [leftFollowUp, setLeftFollowUp] = useState('전체');
+  const [leftData, setLeftData] = useState('전체');
+  const [banState, setBanState] = useState('전체');
+  const [banHow, setBanHow] = useState('전체');
+  const [extraRole, setExtraRole] = useState('전체');
+
   const isLeft = kind === 'left';
+  const hasExtraFilter = isLeft
+    ? leftType !== '전체' || leftFollowUp !== '전체' || leftData !== '전체' || extraRole !== '전체'
+    : banState !== '전체' || banHow !== '전체' || extraRole !== '전체';
+
+  const filteredLeftSource = useMemo(() => {
+    return LEFT_MEMBERS.filter((r) => {
+      if (leftType !== '전체' && r.type !== leftType) return false;
+      if (leftFollowUp !== '전체' && r.followUp !== leftFollowUp) return false;
+      if (leftData !== '전체' && r.data !== leftData) return false;
+      if (extraRole !== '전체') {
+        if (mode === 'B2C' && r.grade !== extraRole) return false;
+        if (mode === 'C2C') {
+          if (extraRole === 'buyer' && !r.buyer) return false;
+          if (extraRole === 'seller' && !r.seller) return false;
+          if (extraRole === 'both' && (!r.buyer || !r.seller)) return false;
+        }
+        if (mode === 'B2B' && r.role !== extraRole) return false;
+      }
+      return true;
+    });
+  }, [leftType, leftFollowUp, leftData, extraRole, mode]);
+
+  const filteredBanSource = useMemo(() => {
+    return banData.filter((r) => {
+      if (banState !== '전체' && r.state !== banState) return false;
+      if (banHow !== '전체' && r.how !== banHow) return false;
+      if (extraRole !== '전체') {
+        if (mode === 'B2C' && r.grade !== extraRole) return false;
+        if (mode === 'C2C') {
+          if (extraRole === 'buyer' && !r.buyer) return false;
+          if (extraRole === 'seller' && !r.seller) return false;
+          if (extraRole === 'both' && (!r.buyer || !r.seller)) return false;
+        }
+        if (mode === 'B2B' && r.role !== extraRole) return false;
+      }
+      return true;
+    });
+  }, [banData, banState, banHow, extraRole, mode]);
+
   const rec = useMemo(
-    () => (isLeft ? buildLeftView(LEFT_MEMBERS, filter, query, mode) : buildBanView(banData, filter, query, mode)),
-    [isLeft, filter, query, mode, banData],
+    () => (isLeft ? buildLeftView(filteredLeftSource, filter, query, mode) : buildBanView(filteredBanSource, filter, query, mode)),
+    [isLeft, filter, query, mode, filteredLeftSource, filteredBanSource],
   );
 
   const openRow = openId != null
@@ -64,6 +111,25 @@ export function RecordsPage({ kind }: Props) {
     setQuery('');
     setOpenId(null);
     setPage(1);
+    setLeftType('전체');
+    setLeftFollowUp('전체');
+    setLeftData('전체');
+    setBanState('전체');
+    setBanHow('전체');
+    setExtraRole('전체');
+  }
+
+  function clearAll() {
+    setQuery('');
+    setFilter('전체');
+    setPage(1);
+    setLeftType('전체');
+    setLeftFollowUp('전체');
+    setLeftData('전체');
+    setBanState('전체');
+    setBanHow('전체');
+    setExtraRole('전체');
+    setDetailOpen(false);
   }
 
   function applySanction(result: SanctionSubmit) {
@@ -197,29 +263,234 @@ export function RecordsPage({ kind }: Props) {
 
       <div className={styles.body}>
         <div className={styles.filterZone}>
-          <div className={styles.stepLabel}>
-            <span className={styles.stepTitle}>조건 설정</span>
-            <span className={styles.stepHint}>{rec.filterHint}</span>
-          </div>
-
-          <div className={styles.conditionBar}>
-            <SearchField
-              value={query}
-              onValueChange={setQuery}
-              placeholder={rec.placeholder}
-            />
-            {rec.filters.map((f) => (
-              <CommonButton
-                key={f.label}
-                variant={f.active ? 'primary-light' : 'secondary'}
-                size="md"
-                className={`${styles.filterBtn} ${f.active ? styles.active : ''}`}
-                onClick={() => setFilter(f.label)}
-              >
-                {f.label}
-                <span className={styles.filterCount}>{f.count}</span>
+          <div className={styles.filterBox} data-filter-expanded={detailOpen}>
+            <div className={styles.searchRow}>
+              <CommonInput.Search
+                className={styles.searchInput}
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); setPage(1); }}
+                placeholder={rec.placeholder}
+                clearable
+                onClear={() => { setQuery(''); setPage(1); }}
+              />
+              <CommonButton type="button" variant="emphasis" size="md" className={styles.searchBtn} onClick={() => setPage(1)}>
+                검색
               </CommonButton>
-            ))}
+
+              <div className={styles.quickFilters}>
+                {rec.filters.map((f) => (
+                  <CommonButton
+                    key={f.label}
+                    variant={f.active ? 'primary-light' : 'secondary'}
+                    size="md"
+                    className={`${styles.quickFilterBtn} ${f.active ? styles.active : ''}`}
+                    onClick={() => { setFilter(f.label); setPage(1); }}
+                  >
+                    <span className={styles.quickFilterLabel}>{f.label}</span>
+                    <span className={styles.quickFilterCount}>{f.count}</span>
+                  </CommonButton>
+                ))}
+              </div>
+
+              <div className={styles.spacer} />
+
+              <CommonButton
+                type="button"
+                variant="secondary"
+                size="md"
+                className="detailFilterBtn"
+                aria-expanded={detailOpen}
+                onClick={() => setDetailOpen((v) => !v)}
+              >
+                상세 필터
+              </CommonButton>
+
+              <CommonButton type="button" variant="ghost" size="md" className={styles.clearBtn} onClick={clearAll}>
+                초기화
+              </CommonButton>
+            </div>
+
+            {detailOpen && (
+              <div className={styles.filterRow}>
+                {isLeft ? (
+                  <>
+                    <label className="globalFilterField">
+                      <span>탈퇴 유형</span>
+                      <select
+                        aria-label="탈퇴 유형"
+                        className={styles.smallSelect}
+                        value={leftType}
+                        onChange={(e) => { setLeftType(e.target.value); setPage(1); }}
+                      >
+                        <option value="전체">전체</option>
+                        <option value="직접탈퇴">직접탈퇴</option>
+                        <option value="관리자처리">관리자처리</option>
+                      </select>
+                    </label>
+
+                    <label className="globalFilterField">
+                      <span>후속 조치</span>
+                      <select
+                        aria-label="후속 조치"
+                        className={styles.smallSelect}
+                        value={leftFollowUp}
+                        onChange={(e) => { setLeftFollowUp(e.target.value); setPage(1); }}
+                      >
+                        <option value="전체">전체</option>
+                        <option value="완료">완료</option>
+                        <option value="확인필요">확인필요</option>
+                      </select>
+                    </label>
+
+                    <label className="globalFilterField">
+                      <span>데이터 보관</span>
+                      <select
+                        aria-label="데이터 보관"
+                        className={styles.smallSelect}
+                        value={leftData}
+                        onChange={(e) => { setLeftData(e.target.value); setPage(1); }}
+                      >
+                        <option value="전체">전체</option>
+                        <option value="보관중">보관중</option>
+                        <option value="파기완료">파기완료</option>
+                      </select>
+                    </label>
+
+                    {mode === 'B2C' && (
+                      <label className="globalFilterField">
+                        <span>고객 등급</span>
+                        <select
+                          aria-label="고객 등급"
+                          className={styles.smallSelect}
+                          value={extraRole}
+                          onChange={(e) => { setExtraRole(e.target.value); setPage(1); }}
+                        >
+                          <option value="전체">전체</option>
+                          <option value="Gold">Gold</option>
+                          <option value="Normal">Normal</option>
+                        </select>
+                      </label>
+                    )}
+
+                    {mode === 'C2C' && (
+                      <label className="globalFilterField">
+                        <span>이용 역할</span>
+                        <select
+                          aria-label="이용 역할"
+                          className={styles.smallSelect}
+                          value={extraRole}
+                          onChange={(e) => { setExtraRole(e.target.value); setPage(1); }}
+                        >
+                          <option value="전체">전체</option>
+                          <option value="buyer">구매 이용</option>
+                          <option value="seller">판매 이용</option>
+                          <option value="both">구매·판매</option>
+                        </select>
+                      </label>
+                    )}
+
+                    {mode === 'B2B' && (
+                      <label className="globalFilterField">
+                        <span>소속 권한</span>
+                        <select
+                          aria-label="소속 권한"
+                          className={styles.smallSelect}
+                          value={extraRole}
+                          onChange={(e) => { setExtraRole(e.target.value); setPage(1); }}
+                        >
+                          <option value="전체">전체</option>
+                          <option value="관리자">관리자</option>
+                          <option value="승인 담당자">승인 담당자</option>
+                          <option value="일반 사용자">일반 사용자</option>
+                        </select>
+                      </label>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <label className="globalFilterField">
+                      <span>제재 상태</span>
+                      <select
+                        aria-label="제재 상태"
+                        className={styles.smallSelect}
+                        value={banState}
+                        onChange={(e) => { setBanState(e.target.value); setPage(1); }}
+                      >
+                        <option value="전체">전체</option>
+                        <option value="제재중">제재중</option>
+                        <option value="만료">만료</option>
+                        <option value="해제">해제</option>
+                      </select>
+                    </label>
+
+                    <label className="globalFilterField">
+                      <span>처리 방식</span>
+                      <select
+                        aria-label="처리 방식"
+                        className={styles.smallSelect}
+                        value={banHow}
+                        onChange={(e) => { setBanHow(e.target.value); setPage(1); }}
+                      >
+                        <option value="전체">전체</option>
+                        <option value="관리자 직접">관리자 직접</option>
+                        <option value="신고 처리">신고 처리</option>
+                        <option value="자동 탐지">자동 탐지</option>
+                      </select>
+                    </label>
+
+                    {mode === 'B2C' && (
+                      <label className="globalFilterField">
+                        <span>고객 등급</span>
+                        <select
+                          aria-label="고객 등급"
+                          className={styles.smallSelect}
+                          value={extraRole}
+                          onChange={(e) => { setExtraRole(e.target.value); setPage(1); }}
+                        >
+                          <option value="전체">전체</option>
+                          <option value="Gold">Gold</option>
+                          <option value="Normal">Normal</option>
+                        </select>
+                      </label>
+                    )}
+
+                    {mode === 'C2C' && (
+                      <label className="globalFilterField">
+                        <span>이용 역할</span>
+                        <select
+                          aria-label="이용 역할"
+                          className={styles.smallSelect}
+                          value={extraRole}
+                          onChange={(e) => { setExtraRole(e.target.value); setPage(1); }}
+                        >
+                          <option value="전체">전체</option>
+                          <option value="buyer">구매 이용</option>
+                          <option value="seller">판매 이용</option>
+                          <option value="both">구매·판매</option>
+                        </select>
+                      </label>
+                    )}
+
+                    {mode === 'B2B' && (
+                      <label className="globalFilterField">
+                        <span>소속 권한</span>
+                        <select
+                          aria-label="소속 권한"
+                          className={styles.smallSelect}
+                          value={extraRole}
+                          onChange={(e) => { setExtraRole(e.target.value); setPage(1); }}
+                        >
+                          <option value="전체">전체</option>
+                          <option value="관리자">관리자</option>
+                          <option value="승인 담당자">승인 담당자</option>
+                          <option value="일반 사용자">일반 사용자</option>
+                        </select>
+                      </label>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           <div className={`${styles.stepLabel} ${styles.step2}`}>

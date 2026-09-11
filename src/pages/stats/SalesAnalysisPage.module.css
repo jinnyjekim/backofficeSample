@@ -136,7 +136,7 @@
 
 .filterField {
   display: flex;
-  min-width: 115px;
+  min-width: 140px;
   flex: 0 0 auto;
   flex-direction: column;
   gap: 5px;
@@ -164,7 +164,7 @@
 .analysisSelect {
   flex: none !important;
   width: 100% !important;
-  min-width: 115px !important;
+  min-width: 140px !important;
   max-width: none !important;
   height: auto !important;
 }

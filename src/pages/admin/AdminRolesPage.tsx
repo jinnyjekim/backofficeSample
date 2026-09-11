@@ -1,9 +1,20 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import sh from '../content/contentShared.module.css';
+import tabShared from '../ops/opsShared.module.css';
 import styles from './RolesPage.module.css';
 import { ACCENT } from '../../lib/theme';
 import { ADMINS } from './adminData';
+import {
+  CommonBadge,
+  CommonButton,
+  CommonCheckbox,
+  CommonFormField,
+  CommonInput,
+  CommonSelect,
+  CommonSwitch,
+  CommonTextarea,
+} from '../../components/common';
 import {
   MENU_TREE,
   PERM_KEYS,
@@ -60,6 +71,7 @@ export function AdminRolesPage() {
   const [err, setErr] = useState('');
   const [createModal, setCreateModal] = useState<{ name: string; code: string; mode: 'new' | 'copy'; copyFrom: string } | null>(null);
   const [pendingNav, setPendingNav] = useState<string | null>(null);
+  const [landingMenus, setLandingMenus] = useState<Record<string, string>>({});
 
   const toastBriefly = (message: string) => {
     setToast(message);
@@ -182,7 +194,7 @@ export function AdminRolesPage() {
     setRoles((prev) =>
       prev.map((r) =>
         r.id === cur.id
-          ? { ...r, name: effectiveDraft.name.trim(), description: effectiveDraft.description, active: effectiveDraft.active, permissions: effectiveDraft.permissions, history: [...r.history, history('권한 및 정보 수정')] }
+          ? { ...r, name: effectiveDraft.name.trim(), code: effectiveDraft.code.trim(), description: effectiveDraft.description, active: effectiveDraft.active, permissions: effectiveDraft.permissions, history: [...r.history, history('권한 및 정보 수정')] }
           : r,
       ),
     );
@@ -315,6 +327,13 @@ export function AdminRolesPage() {
   }
 
   const emptyAll = filteredRoles.length === 0;
+  const totalMenuCount = MENU_TREE.reduce((count, group) => count + group.children.length, 0);
+  const accessibleMenuCount = effectiveDraft
+    ? Object.values(effectiveDraft.permissions).filter((permission) => permission.access).length
+    : 0;
+  const writableMenuCount = effectiveDraft
+    ? Object.values(effectiveDraft.permissions).filter((permission) => permission.create || permission.edit || permission.delete).length
+    : 0;
 
   return (
     <div className={sh.page} onClick={() => { if (menuId) setMenuId(null); }}>
@@ -381,32 +400,31 @@ export function AdminRolesPage() {
 
       {toast && <div className={sh.toast}>{toast}</div>}
 
-      <header className={sh.header}>
+      <header className={`${sh.header} ${styles.pageHeader}`}>
         <div>
+          <div className={styles.headerEyebrow}>관리자</div>
           <div className={sh.headerTitle}>역할 및 권한 관리</div>
-          <div className={sh.headerSub}>관리자 역할을 생성하고 메뉴 및 기능별 접근 권한을 설정합니다.</div>
+          <div className={sh.headerSub}>관리자 역할을 만들고 메뉴·기능별 접근 권한을 설정합니다. 한 관리자에게는 하나의 역할만 부여됩니다.</div>
         </div>
-        <div className={sh.headerSpacer} />
-        <button type="button" className={sh.primaryBtn} onClick={openCreate}>＋ 역할 추가</button>
       </header>
 
       <div className={styles.body}>
         <div className={styles.list}>
           <div className={styles.listSearch}>
-            <div className={styles.listSearchBox}>
-              <span style={{ color: '#a1a1aa', fontSize: 12.5 }}>⌕</span>
-              <input className={styles.listSearchInput} value={q} onChange={(e) => setQ(e.target.value)} placeholder="역할 검색" />
-            </div>
+            <CommonInput.Search className={styles.roleSearch} value={q} onChange={(e) => setQ(e.target.value)} placeholder="역할명, 역할 코드 검색" clearable onClear={() => setQ('')} />
           </div>
           <div className={styles.listItems}>
             {filteredRoles.map((r) => {
               const count = assignedCount(r.id, ADMINS);
               return (
                 <div key={r.id} className={`${styles.roleRow} ${selId === r.id ? styles.roleRowActive : ''}`} onClick={() => select(r.id)}>
-                  <div className={styles.roleNameCol}>
-                    <span className={styles.roleName} style={{ fontWeight: selId === r.id ? 700 : 500, color: r.active ? '#18181b' : '#a1a1aa' }}>{r.name}</span>
-                    {r.isSystem && <span title="시스템 역할">🔒</span>}
-                    {!r.active && <span className={styles.roleInactive}>미사용</span>}
+                  <div className={styles.roleMain}>
+                    <div className={styles.roleNameCol}>
+                      <span className={styles.roleName} style={{ fontWeight: selId === r.id ? 700 : 500, color: r.active ? '#18181b' : '#a1a1aa' }}>{r.name}</span>
+                      {r.isSystem && <CommonBadge type="secondary" size="sm">SYSTEM</CommonBadge>}
+                      {!r.active && <CommonBadge type="ghost" size="sm">미사용</CommonBadge>}
+                    </div>
+                    <div className={styles.roleMeta}>{r.code} · 메뉴 {Object.values(r.permissions).filter((permission) => permission.access).length}개</div>
                   </div>
                   <span className={styles.roleCount}>{count}명</span>
                   <button type="button" className={styles.roleMoreBtn} onClick={(e) => { e.stopPropagation(); setMenuId(menuId === r.id ? null : r.id); }}>⋯</button>
@@ -417,9 +435,18 @@ export function AdminRolesPage() {
                         <>
                           <div className={sh.moreMenuSep} />
                           <button type="button" className={sh.moreMenuItem} onClick={(e) => { e.stopPropagation(); askDeactivate(r); }}>{r.active ? '미사용 처리' : '사용 처리'}</button>
-                          <button type="button" className={sh.moreMenuItem} style={{ color: '#b91c1c' }} onClick={(e) => { e.stopPropagation(); askDelete(r); }}>삭제</button>
                         </>
                       )}
+                      <div className={sh.moreMenuSep} />
+                      <button
+                        type="button"
+                        className={`${sh.moreMenuItem} ${styles.deleteMenuItem}`}
+                        disabled={r.isSystem}
+                        title={r.isSystem ? '시스템 역할은 삭제할 수 없습니다.' : undefined}
+                        onClick={(e) => { e.stopPropagation(); if (!r.isSystem) askDelete(r); }}
+                      >
+                        역할 삭제
+                      </button>
                     </div>
                   )}
                 </div>
@@ -432,78 +459,126 @@ export function AdminRolesPage() {
               </div>
             )}
           </div>
+          <div className={styles.listFooter}>총 {roles.length}개 역할 · 시스템 역할 {roles.filter((role) => role.isSystem).length}개</div>
         </div>
 
         <div className={styles.panel}>
           {cur && effectiveDraft && (
             <>
               <div className={styles.panelHead}>
-                <div className={styles.panelHeadTitle}>
-                  {cur.name}
-                  {cur.isSystem && <span className={styles.sysBadge}>SYSTEM ROLE</span>}
+                <div>
+                  <div className={styles.panelHeadTitle}>
+                    {cur.name}
+                    {cur.isSystem && <CommonBadge type="secondary" size="sm">시스템 역할</CommonBadge>}
+                    <CommonBadge type={effectiveDraft.active ? 'success-light' : 'ghost'} size="sm">{effectiveDraft.active ? '사용' : '미사용'}</CommonBadge>
+                  </div>
+                  <div className={styles.panelHeadSub}>{cur.code} · 최종 수정 {cur.history.at(-1)?.at?.slice(0, 10) ?? TODAY}</div>
                 </div>
-                <div className={styles.panelHeadSub}>{cur.code}</div>
+                <div className={styles.panelHeadActions}>
+                  <span className={styles.headerMeta}>역할 {roles.length}개 · 관리자 {ADMINS.length}명</span>
+                  <CommonButton variant="secondary" size="sm" onClick={() => toastBriefly('권한 비교 기능을 준비 중입니다.')}>권한 비교</CommonButton>
+                  <CommonButton variant="emphasis" size="sm" onClick={openCreate}>역할 추가</CommonButton>
+                </div>
               </div>
 
               <div className={styles.panelTabs}>
-                <div className={sh.quickFilters} style={{ marginBottom: 0 }}>
-                  {([['basic', '기본 정보'], ['perm', '권한 설정'], ['history', '변경 이력']] as const).map(([key, label]) => (
-                    <button key={key} type="button" className={`${sh.qfBtn} ${tab === key ? sh.active : ''}`} onClick={() => setTab(key)}>
-                      <span className={sh.qfLabel}>{label}</span>
-                    </button>
-                  ))}
+                <div className={tabShared.quickFilters}>
+                  {([['basic', '기본 정보'], ['perm', '권한 설정'], ['history', '변경 이력']] as const).map(([key, label]) => {
+                    const active = tab === key;
+                    return (
+                      <CommonButton
+                        key={key}
+                        type="button"
+                        variant={active ? 'primary-light' : 'secondary'}
+                        size="md"
+                        className={`${tabShared.qfBtn} ${active ? tabShared.quickActive : ''}`}
+                        onClick={() => setTab(key)}
+                      >
+                        <span className={tabShared.qfLabel}>{label}</span>
+                      </CommonButton>
+                    );
+                  })}
                 </div>
               </div>
 
               <div className={styles.panelBody}>
                 {cur.isSystem && (
-                  <div className={sh.warnBox}>
-                    <div className={sh.warnBoxTitle}>🔒 시스템 역할</div>
-                    <div className={sh.warnBoxBody}>이 역할은 시스템 기본 역할로 이름, 설명, 권한을 수정할 수 없습니다.</div>
+                  <div className={styles.systemNotice}>
+                    <span className={styles.noticeIcon}>!</span>
+                    <div>
+                      <div className={styles.noticeTitle}>시스템 역할</div>
+                      <div className={styles.noticeBody}>이 역할은 시스템 기본 역할로 이름·설명·권한을 수정할 수 없습니다. 다르게 쓰려면 역할을 복제해 사용하세요.</div>
+                    </div>
                   </div>
                 )}
 
-                <div className={sh.metaRow} style={{ flexShrink: 0 }}>
-                  <div className={sh.metaCell}>
-                    <div className={sh.metaCellLabel}>사용 여부</div>
-                    <div className={sh.metaCellValue}>{effectiveDraft.active ? '사용' : '미사용'}</div>
+                <div className={styles.roleStats}>
+                  <div className={styles.statCell}>
+                    <div className={styles.statLabel}>사용 여부</div>
+                    <div className={styles.statValue}>{effectiveDraft.active ? '사용' : '미사용'}</div>
+                    <div className={styles.statHint}>로그인 시 권한이 적용됩니다</div>
                   </div>
-                  <div className={sh.metaCell}>
-                    <div className={sh.metaCellLabel}>배정 관리자</div>
-                    <div className={sh.metaCellValue}>{assignedCount(cur.id, ADMINS)}명</div>
+                  <div className={styles.statCell}>
+                    <div className={styles.statLabel}>배정 관리자</div>
+                    <div className={styles.statValue}>{assignedCount(cur.id, ADMINS)}명</div>
+                    <div className={styles.statHint}>한 관리자당 역할 1개</div>
                   </div>
-                  <div className={sh.metaCell}>
-                    <div className={sh.metaCellLabel}>접근 가능 메뉴</div>
-                    <div className={sh.metaCellValue}>{Object.values(effectiveDraft.permissions).filter((p) => p.access).length} / {MENU_TREE.reduce((n, g) => n + g.children.length, 0)}개</div>
+                  <div className={styles.statCell}>
+                    <div className={styles.statLabel}>접근 가능 메뉴</div>
+                    <div className={styles.statValue}>{accessibleMenuCount} / {totalMenuCount}개</div>
+                    <div className={styles.statHint}>조회 권한이 있는 메뉴 수</div>
+                  </div>
+                  <div className={styles.statCell}>
+                    <div className={styles.statLabel}>쓰기 권한 메뉴</div>
+                    <div className={styles.statValue}>{writableMenuCount}개</div>
+                    <div className={styles.statHint}>등록·수정·삭제 중 하나 이상</div>
                   </div>
                 </div>
 
                 {tab === 'basic' && (
-                  <>
-                    <div className={sh.formField}>
-                      <span className={sh.formFieldLabel}>역할명 <span className={sh.required}>*</span></span>
-                      <input className={sh.formInput} value={effectiveDraft.name} disabled={cur.isSystem} onChange={(e) => setD({ name: e.target.value })} />
+                  <div className={styles.basicForm}>
+                    <div className={styles.nameCodeRow}>
+                      <CommonFormField label="역할명" required className={styles.nameField}>
+                        <CommonInput value={effectiveDraft.name} disabled={cur.isSystem} onChange={(e) => setD({ name: e.target.value })} />
+                      </CommonFormField>
+                      <CommonFormField label="역할 코드" className={styles.codeField}>
+                        <CommonInput value={effectiveDraft.code} disabled={cur.isSystem} onChange={(e) => setD({ code: e.target.value })} />
+                      </CommonFormField>
                     </div>
 
-                    <div className={sh.formField}>
-                      <span className={sh.formFieldLabel}>설명</span>
-                      <textarea className={sh.formTextarea} value={effectiveDraft.description} disabled={cur.isSystem} onChange={(e) => setD({ description: e.target.value })} placeholder="이 역할이 담당하는 업무를 간단히 설명하세요." />
+                    <CommonFormField label="설명">
+                      <CommonTextarea rows={3} resize="vertical" value={effectiveDraft.description} disabled={cur.isSystem} onChange={(e) => setD({ description: e.target.value })} placeholder="이 역할이 담당하는 업무를 간단히 설명하세요." />
+                    </CommonFormField>
+
+                    <div className={styles.settingRow}>
+                      <CommonFormField label="사용 여부" helper="이 역할의 관리자는 정상적으로 로그인합니다.">
+                        <CommonSwitch
+                          checked={effectiveDraft.active}
+                          disabled={cur.isSystem}
+                          label={effectiveDraft.active ? '사용' : '미사용'}
+                          onChange={(checked) => { if (checked) setD({ active: true }); else askDeactivate(cur); }}
+                        />
+                      </CommonFormField>
+                      <CommonFormField label="기본 랜딩 메뉴">
+                        <CommonSelect
+                          className={styles.landingSelect}
+                          value={landingMenus[cur.id] ?? 'dashboard'}
+                          disabled={cur.isSystem}
+                          options={[{ value: 'dashboard', label: '대시보드' }, { value: 'orders', label: '주문 관리' }, { value: 'members', label: '회원 관리' }]}
+                          onChange={(value) => setLandingMenus((current) => ({ ...current, [cur.id]: String(value) }))}
+                        />
+                      </CommonFormField>
                     </div>
 
-                    <div className={sh.formField}>
-                      <span className={sh.formFieldLabel}>사용 여부</span>
-                      <div className={sh.useToggleRow}>
-                        <button type="button" className={sh.useToggleBtn} style={{ border: `1px solid ${effectiveDraft.active ? ACCENT : 'rgba(0,0,0,.12)'}`, background: effectiveDraft.active ? ACCENT : '#fff', color: effectiveDraft.active ? '#fff' : '#52525b' }} disabled={cur.isSystem} onClick={() => setD({ active: true })}>사용</button>
-                        <button type="button" className={sh.useToggleBtn} style={{ border: `1px solid ${!effectiveDraft.active ? '#18181b' : 'rgba(0,0,0,.12)'}`, background: !effectiveDraft.active ? '#18181b' : '#fff', color: !effectiveDraft.active ? '#fff' : '#52525b' }} disabled={cur.isSystem} onClick={() => { if (!cur.isSystem) askDeactivate(cur); }}>미사용</button>
+                    <div className={styles.assignedCard}>
+                      <div>
+                        <div className={styles.assignedLabel}>배정 관리자</div>
+                        <div className={styles.assignedHint}>권한을 변경하면 배정된 관리자에게 즉시 적용됩니다.</div>
                       </div>
+                      <strong>{assignedCount(cur.id, ADMINS)}명</strong>
+                      <CommonButton variant="secondary" size="sm" onClick={() => navigate(`/admin?role=${cur.id}`)}>관리자 목록 보기</CommonButton>
                     </div>
-
-                    <div className={sh.linkedCard}>
-                      <div className={sh.linkedCardLabel}>배정 관리자</div>
-                      <span className={sh.linkedCardValue}>{assignedCount(cur.id, ADMINS)}명</span>
-                      <button type="button" className={sh.selBtn} onClick={() => navigate(`/admin?role=${cur.id}`)}>관리자 목록 보기</button>
-                    </div>
-                  </>
+                  </div>
                 )}
 
                 {tab === 'perm' && (
@@ -526,9 +601,7 @@ export function AdminRolesPage() {
                         return (
                           <div key={g.id} className={styles.permGroup}>
                             <div className={styles.permGroupHead}>
-                              <label className={`${styles.permCheck} ${cur.isSystem ? styles.permCheckDisabled : ''}`}>
-                                <input type="checkbox" checked={gs === 'all'} ref={(el) => { if (el) el.indeterminate = gs === 'partial'; }} disabled={cur.isSystem} onChange={() => toggleGroup(g.id)} />
-                              </label>
+                              <CommonCheckbox size="sm" checked={gs === 'all'} indeterminate={gs === 'partial'} disabled={cur.isSystem} onChange={() => toggleGroup(g.id)} />
                               <span className={styles.permGroupLabel}>{g.label}</span>
                               {!cur.isSystem && <button type="button" className={styles.permMiniBtn} onClick={() => groupSelectAll(g.id)}>모두 선택</button>}
                             </div>
@@ -536,16 +609,10 @@ export function AdminRolesPage() {
                               const p = effectiveDraft.permissions[c.id];
                               return (
                                 <div key={c.id} className={styles.permLeafRow}>
-                                  <label className={`${styles.permCheck} ${cur.isSystem ? styles.permCheckDisabled : ''}`}>
-                                    <input type="checkbox" checked={p.access} disabled={cur.isSystem} onChange={() => toggleLeafAccess(c.id)} />
-                                    메뉴 접근
-                                  </label>
+                                  <CommonCheckbox className={styles.permCheck} size="sm" checked={p.access} disabled={cur.isSystem} onChange={() => toggleLeafAccess(c.id)}>메뉴 접근</CommonCheckbox>
                                   <span className={styles.permLeafLabel}>{c.label}</span>
                                   {PERM_KEYS.map((key) => (
-                                    <label key={key} className={`${styles.permCheck} ${!p.access || cur.isSystem ? styles.permCheckDisabled : ''}`}>
-                                      <input type="checkbox" checked={p[key]} disabled={!p.access || cur.isSystem} onChange={() => togglePerm(c.id, key)} />
-                                      {PERM_LABELS[key]}
-                                    </label>
+                                    <CommonCheckbox key={key} className={styles.permCheck} size="sm" checked={p[key]} disabled={!p.access || cur.isSystem} onChange={() => togglePerm(c.id, key)}>{PERM_LABELS[key]}</CommonCheckbox>
                                   ))}
                                 </div>
                               );
@@ -576,10 +643,9 @@ export function AdminRolesPage() {
               </div>
 
               <div className={styles.panelFooter}>
-                {!cur.isSystem && <button type="button" className={sh.dangerBtn} onClick={() => askDelete(cur)}>삭제</button>}
                 <div className={sh.modalActionsSpacer} />
-                <button type="button" className={sh.ghostBtn} onClick={() => { setDraft(null); setErr(''); }} disabled={!dirty}>취소</button>
-                <button type="button" className={sh.solidBtn} style={{ background: dirty ? ACCENT : '#e4e4e7', color: dirty ? '#fff' : '#a1a1aa' }} onClick={() => { if (dirty) doSave(); }}>변경사항 저장</button>
+                <CommonButton variant="secondary" size="sm" onClick={() => { setDraft(null); setErr(''); }} disabled={!dirty || cur.isSystem}>취소</CommonButton>
+                <CommonButton variant="emphasis" size="sm" onClick={() => { if (dirty) doSave(); }} disabled={!dirty || cur.isSystem}>변경사항 저장</CommonButton>
               </div>
             </>
           )}

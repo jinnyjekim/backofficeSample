@@ -207,7 +207,7 @@ export function ProductsListPage() {
       <div className={styles.top}>
         <div className={styles.titleRow}>
           <div>
-            <div className={styles.title}>상품 관리</div>
+            <div className={styles.title}>상품 목록</div>
             <div className={styles.subtitle}>
               거래에 사용되는 상품과 판매 조건을 관리합니다.
             </div>

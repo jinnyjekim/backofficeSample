@@ -138,26 +138,17 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'return_list', sub: true, label: '반품 목록', to: '/returns/list', business: 'B' },
       { key: 'return_history', sub: true, label: '반품 처리 이력', to: '/returns/history', business: 'B' },
 
-      { key: 'exchange_mgmt', icon: Package, label: '교환 관리', to: '/b2c/exchanges/requests', business: 'B' },
-      { key: 'exchange_requests', sub: true, label: '교환 요청', to: '/b2c/exchanges/requests', business: 'B' },
-      { key: 'exchange_approval', sub: true, label: '교환 승인', to: '/b2c/exchanges/approval', business: 'B' },
-      { key: 'exchange_collecting', sub: true, label: '상품 회수', to: '/b2c/exchanges/collecting', business: 'B' },
-      { key: 'exchange_collected', sub: true, label: '회수 완료', to: '/b2c/exchanges/collected', business: 'B' },
-      { key: 'exchange_preparing', sub: true, label: '교환 상품 준비', to: '/b2c/exchanges/preparing', business: 'B' },
-      { key: 'exchange_reship', sub: true, label: '재출고', to: '/b2c/exchanges/reship', business: 'B' },
-      { key: 'exchange_completed', sub: true, label: '교환 완료', to: '/b2c/exchanges/completed', business: 'B' },
-      { key: 'exchange_rejected', sub: true, label: '교환 반려', to: '/b2c/exchanges/rejected', business: 'B' },
-      { key: 'exchange_history', sub: true, label: '교환 이력', to: '/b2c/exchanges/history', business: 'B' },
+      { key: 'exchange_mgmt', icon: Package, label: '교환 관리', to: '/b2c/exchanges/requests', business: 'B', badge: '12' },
+      { key: 'exchange_requests', sub: true, label: '교환 요청', to: '/b2c/exchanges/requests', business: 'B', badge: '3' },
+      { key: 'exchange_collection', sub: true, label: '회수·검수', to: '/b2c/exchanges/collection', business: 'B', badge: '4' },
+      { key: 'exchange_reship', sub: true, label: '재출고', to: '/b2c/exchanges/reship', business: 'B', badge: '2' },
+      { key: 'exchange_hold', sub: true, label: '교환 보류', to: '/b2c/exchanges/hold', business: 'B', badge: '3' },
+      { key: 'exchange_history', sub: true, label: '교환 이력', to: '/b2c/exchanges/history' },
 
-      { key: 'promotions', icon: Percent, label: '프로모션 관리', to: '/promotions', business: 'B' },
-      { key: 'promotions_list', sub: true, label: '프로모션 목록', to: '/promotions', business: 'B' },
-      { key: 'promotions_period', sub: true, label: '기간 할인', to: '/b2c/promotions/period', business: 'B' },
-      { key: 'promotions_product', sub: true, label: '상품 할인', to: '/b2c/promotions/product', business: 'B' },
-      { key: 'promotions_category', sub: true, label: '카테고리 할인', to: '/b2c/promotions/category', business: 'B' },
-      { key: 'promotions_cart', sub: true, label: '장바구니 할인', to: '/b2c/promotions/cart', business: 'B' },
-      { key: 'promotions_member', sub: true, label: '회원 할인', to: '/b2c/promotions/member', business: 'B' },
-      { key: 'promotions_targets', sub: true, label: '프로모션 대상 관리', to: '/b2c/promotions/targets', business: 'B' },
-      { key: 'promotions_history', sub: true, label: '프로모션 적용 이력', to: '/promotions/history', business: 'B' },
+      { key: 'promotions', icon: Percent, label: '프로모션 관리', to: '/promotions', business: 'B', badge: '12' },
+      { key: 'promotions_list', sub: true, label: '프로모션 목록', to: '/promotions', business: 'B', badge: '8' },
+      { key: 'promotions_stack', sub: true, label: '중복 할인 설정', to: '/promotions/stack', business: 'B' },
+      { key: 'promotions_history', sub: true, label: '프로모션 적용 이력', to: '/promotions/history' },
 
       { key: 'coupons', icon: Ticket, label: '쿠폰 관리', to: '/coupons', business: 'B' },
       { key: 'coupons_list', sub: true, label: '쿠폰 목록', to: '/coupons', business: 'B' },
@@ -618,8 +609,9 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/returns/history') || pathname.startsWith('/b2c/returns/history')) return 'return_history';
   if (pathname.startsWith('/returns') || pathname.startsWith('/b2c/returns')) return 'return_list';
 
-  if (pathname.startsWith('/promotions/history')) return 'promotions_history';
-  if (pathname.startsWith('/promotions')) return 'promotions_list';
+  if (pathname.startsWith('/promotions/history') || pathname.startsWith('/b2c/promotions/history')) return 'promotions_history';
+  if (pathname.startsWith('/promotions/stack') || pathname.startsWith('/b2c/promotions/stack')) return 'promotions_stack';
+  if (pathname.startsWith('/promotions') || pathname.startsWith('/b2c/promotions')) return 'promotions_list';
 
   if (pathname.startsWith('/coupons/issue') || pathname.startsWith('/b2c/coupons/issue')) return 'coupons_issue';
   if (pathname.startsWith('/coupons/usage') || pathname.startsWith('/b2c/coupons/usage')) return 'coupons_usage';

@@ -57,6 +57,8 @@ export function SettlementPolicyPage() {
   const [saveError, setSaveError] = useState("");
 
   const [previewTargetId, setPreviewTargetId] = useState(TEST_TARGETS[0].id);
+  const [basicPreviewGross, setBasicPreviewGross] = useState(1500000);
+  const [basicPreviewRefund, setBasicPreviewRefund] = useState(120000);
   const historyRef = useRef<HTMLElement>(null);
 
   useOutsideClose(historyRef, () => setShowHistory(false));
@@ -74,12 +76,7 @@ export function SettlementPolicyPage() {
     key: K,
     value: SettlementPolicy[K],
   ) => {
-    if (!editing) {
-      setDraftPolicy({ ...policy, [key]: value });
-      setEditing(true);
-      toastBriefly("정산 정책 수정 모드로 전환되었습니다.");
-      return;
-    }
+    if (!editing) return;
     setDraftPolicy((current) => ({ ...current, [key]: value }));
   };
 
@@ -126,8 +123,15 @@ export function SettlementPolicyPage() {
     toastBriefly("정산 정책을 저장했습니다.");
   };
 
+  const previewPolicy = editing ? draftPolicy : policy;
+  const previewHasUnsavedChanges =
+    editing && describePolicyChanges(policy, draftPolicy).length > 0;
+
   const previewTarget = TEST_TARGETS.find((t) => t.id === previewTargetId)!;
-  const previewBreakdown = computeSettlementBreakdown(previewTarget, policy);
+  const previewBreakdown = computeSettlementBreakdown(
+    previewTarget,
+    previewPolicy,
+  );
 
   const heroClass =
     previewBreakdown.status === "지급 대상"
@@ -135,6 +139,15 @@ export function SettlementPolicyPage() {
       : previewBreakdown.status.startsWith("마이너스")
         ? `${styles.resultHero} ${styles.resultHeroNeg}`
         : `${styles.resultHero} ${styles.resultHeroWarn}`;
+
+  const basicPreviewFee = Math.round(
+    Math.max(0, basicPreviewGross - basicPreviewRefund) * 0.12,
+  );
+  const basicPreviewFeeTax = Math.round(basicPreviewFee * 0.1);
+  const basicPreviewPayout = Math.max(
+    0,
+    basicPreviewGross - basicPreviewRefund - basicPreviewFee - basicPreviewFeeTax,
+  );
 
   return (
     <div className={shared.page}>
@@ -191,7 +204,7 @@ export function SettlementPolicyPage() {
             <span>
               {editing
                 ? "정책을 편집 중입니다. 변경을 마치면 [변경 사항 저장] 버튼을 눌러 확정하세요."
-                : "현재 적용 중인 정책입니다. 버튼이나 스위치를 클릭하면 즉시 수정 모드로 전환됩니다."}
+                : "현재 적용 중인 정책입니다. 정책을 변경하려면 [수정] 버튼을 눌러 수정 모드로 전환하세요."}
             </span>
           </div>
           {!editing && (
@@ -253,6 +266,7 @@ export function SettlementPolicyPage() {
         {/* ── 기본 정책 ── */}
         {tab === "basic" && (
           <>
+            <div className={styles.basicPolicyLayout}>
             <div className={styles.summaryCard}>
               <div className={styles.summaryHead}>
                 <h2>현재 정책 요약</h2>
@@ -296,9 +310,67 @@ export function SettlementPolicyPage() {
                     {policy.confirmMode}
                   </div>
                 </div>
+                <div className={styles.summaryTile}>
+                  <div className={styles.summaryTileLabel}>정산 기준일</div>
+                  <div className={styles.summaryTileValue}>{policy.dateBasis}</div>
+                </div>
+                <div className={styles.summaryTile}>
+                  <div className={styles.summaryTileLabel}>수수료</div>
+                  <div className={styles.summaryTileValue}>12%</div>
+                </div>
+                <div className={styles.summaryTile}>
+                  <div className={styles.summaryTileLabel}>최소 지급액</div>
+                  <div className={styles.summaryTileValue}>
+                    {fmtWon(policy.minPayoutAmount)} · 미달 시 이월
+                  </div>
+                </div>
+              </div>
+              <div className={styles.basicSummaryFoot}>
+                대상별 수수료율과 지급 주기 예외는 계약 관리에서 확인합니다.
               </div>
             </div>
 
+            <aside className={`${styles.basicSideCard} ${styles.basicTimelineCard}`}>
+              <div className={styles.basicSideHead}>
+                <strong>정산 회차 타임라인</strong>
+                <span>월 1회 · 매월 말일 마감 · 익월 15일 지급 기준 예시</span>
+              </div>
+              <div className={styles.settlementTimeline}>
+                {[
+                  ["거래 발생", "배송 완료 시점을 지난 거래만 정산 대상에 포함", "08-01 ~ 08-31", "active"],
+                  ["정산 마감", "매월 말일 기준 · 마감 후 3일간 수정 가능", "08-31", "active"],
+                  ["정산건 생성", policy.creationTiming, "09-01 02:00", "active"],
+                  ["정산 확정", policy.confirmMode, "09-01 ~ 09-02", "active"],
+                  ["지급", `익월 ${policy.payDayOfMonth || "말"}일 · 휴일이면 ${policy.holidayPolicy}`, "09-15", "done"],
+                ].map(([title, description, date, state]) => (
+                  <div className={styles.settlementTimelineItem} key={title}>
+                    <i className={state === "done" ? styles.timelineDone : ""} />
+                    <div><strong>{title}</strong><span>{description}</span></div>
+                    <time>{date}</time>
+                  </div>
+                ))}
+              </div>
+            </aside>
+
+            <aside className={`${styles.basicSideCard} ${styles.basicCalculatorCard}`}>
+              <div className={styles.basicSideHead}>
+                <strong>정산금액 계산 미리보기</strong>
+                <span>현재 설정값으로 즉시 계산됩니다</span>
+              </div>
+              <div className={styles.basicCalculatorInputs}>
+                <label><span>회차 거래액</span><span className={styles.basicMoneyInput}><input type="number" min={0} value={basicPreviewGross} onChange={(event) => setBasicPreviewGross(Math.max(0, Number(event.target.value) || 0))} /><em>원</em></span></label>
+                <label><span>환불액</span><span className={styles.basicMoneyInput}><input type="number" min={0} value={basicPreviewRefund} onChange={(event) => setBasicPreviewRefund(Math.max(0, Number(event.target.value) || 0))} /><em>원</em></span></label>
+              </div>
+              <div className={styles.basicCalculationRows}>
+                <div><span>회차 거래액</span><strong>{fmtWon(basicPreviewGross)}</strong></div>
+                <div><span>환불 차감 (완료 건)</span><strong>-{fmtWon(basicPreviewRefund)}</strong></div>
+                <div><span>수수료 12%</span><strong>-{fmtWon(basicPreviewFee)}</strong></div>
+                <div><span>수수료 부가세 10%</span><strong>-{fmtWon(basicPreviewFeeTax)}</strong></div>
+              </div>
+              <div className={styles.basicCalculationTotal}><span>지급 예정 금액</span><strong>{fmtWon(basicPreviewPayout)}</strong></div>
+            </aside>
+
+            <fieldset className={styles.tabCardGrid} disabled={!editing}>
             <div className={styles.card}>
               <div className={styles.cardHead}>
                 <div className={styles.cardTitle}>정산 사용</div>
@@ -438,6 +510,8 @@ export function SettlementPolicyPage() {
                 </div>
               </div>
             </div>
+            </fieldset>
+            </div>
 
             {editing && (
               <div className={styles.footerBar}>
@@ -467,6 +541,7 @@ export function SettlementPolicyPage() {
         {/* ── 주기 · 마감 ── */}
         {tab === "cycle" && (
           <>
+            <fieldset className={styles.tabCardGrid} disabled={!editing}>
             <div className={styles.card}>
               <div className={styles.cardHead}>
                 <div className={styles.cardTitle}>정산 주기</div>
@@ -638,6 +713,7 @@ export function SettlementPolicyPage() {
                 </div>
               </div>
             </div>
+            </fieldset>
 
             {editing && (
               <div className={styles.footerBar}>
@@ -667,6 +743,7 @@ export function SettlementPolicyPage() {
         {/* ── 정산 금액 ── */}
         {tab === "amount" && (
           <>
+            <fieldset className={styles.tabCardGrid} disabled={!editing}>
             <div className={styles.card}>
               <div className={styles.cardHead}>
                 <div className={styles.cardTitle}>정산금액 구성</div>
@@ -910,6 +987,7 @@ export function SettlementPolicyPage() {
                 </div>
               </div>
             </div>
+            </fieldset>
 
             {editing && (
               <div className={styles.footerBar}>
@@ -939,6 +1017,7 @@ export function SettlementPolicyPage() {
         {/* ── 확정 · 이월 ── */}
         {tab === "confirm" && (
           <>
+            <fieldset className={styles.tabCardGrid} disabled={!editing}>
             <div className={styles.card}>
               <div className={styles.cardHead}>
                 <div className={styles.cardTitle}>정산 확정</div>
@@ -1215,6 +1294,7 @@ export function SettlementPolicyPage() {
                 </div>
               </div>
             </div>
+            </fieldset>
 
             {editing && (
               <div className={styles.footerBar}>
@@ -1242,109 +1322,360 @@ export function SettlementPolicyPage() {
         )}
 
         {/* ── 정책 Preview ── */}
-        {tab === "preview" && (
-          <div className={styles.previewGrid}>
-            <div className={styles.previewCard}>
-              <div className={styles.cardHead}>
-                <div className={styles.cardTitle}>테스트 정산 대상 선택</div>
-                <div className={styles.cardDesc}>
-                  현재 저장된(적용중인) 정책 기준으로 계산합니다.
-                </div>
-              </div>
-              <div className={styles.previewCardBody}>
-                <div className={styles.orderPick}>
-                  {TEST_TARGETS.map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      className={`${styles.orderOption} ${previewTargetId === t.id ? styles.orderOptionActive : ""}`}
-                      onClick={() => setPreviewTargetId(t.id)}
-                    >
-                      <span>
-                        <strong>{t.name}</strong> · {t.period}
-                      </span>
-                      <span>{t.txCount}건</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className={styles.previewCard}>
-              <div className={styles.cardHead}>
-                <div className={styles.cardTitle}>정산 예상 결과</div>
-              </div>
-              <div className={styles.previewCardBody}>
-                <div className={heroClass}>
-                  <span>
-                    {previewTarget.id} · {previewTarget.name} ·{" "}
-                    {previewTarget.period}
-                  </span>
-                  <strong>{previewBreakdown.status}</strong>
-                </div>
-                <div className={styles.breakdownTable}>
-                  {previewBreakdown.items.map((item, i) => (
-                    <div key={i} className={styles.breakdownRow}>
-                      <span>{item.label}</span>
-                      <span
-                        className={
-                          item.amount < 0
-                            ? styles.breakdownNeg
-                            : styles.breakdownPos
-                        }
-                      >
-                        {signed(item.amount)}
-                      </span>
+        {tab === "preview" && (() => {
+          const closeText =
+            previewPolicy.cycle === "매일"
+              ? "매일 24:00"
+              : previewPolicy.cycle === "주 1회"
+                ? "매주 일요일"
+                : previewPolicy.closingDayOfMonth === 0
+                  ? "매월 말일"
+                  : `매월 ${previewPolicy.closingDayOfMonth}일`;
+
+          const payText =
+            previewPolicy.cycle === "월 1회"
+              ? `매월 ${previewPolicy.payDayOfMonth}일`
+              : `마감 후 ${previewPolicy.payOffsetDays}영업일`;
+
+          return (
+          <div className={styles.policyPreviewLayout}>
+            <div className={styles.policyPreviewMain}>
+              {/* 카드 1: 적용될 정책 전문 */}
+              <section className={styles.previewDocumentCard}>
+                <div className={styles.previewDocumentHead}>
+                  <div>
+                    <div className={styles.previewDocumentTitle}>적용될 정책 전문</div>
+                    <div className={styles.previewDocumentDesc}>
+                      현재 정산 정책 설정이 실제 정산 및 지급에 어떻게 적용되는지 문장으로 확인합니다. 이 탭은 읽기 전용입니다.
                     </div>
-                  ))}
-                  <div
-                    className={`${styles.breakdownRow} ${styles.breakdownRowTotal}`}
+                  </div>
+                  <span
+                    className={
+                      previewHasUnsavedChanges
+                        ? styles.previewDraftBadge
+                        : styles.previewLiveBadge
+                    }
                   >
-                    <span>지급 예정 금액</span>
-                    <span>{fmtWon(previewBreakdown.payoutAmount)}</span>
+                    {previewHasUnsavedChanges ? "미저장 초안" : "적용 중"}
+                  </span>
+                </div>
+                <div className={styles.policySentenceList}>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>1</span>
+                    <div>
+                      <strong>정산 대상 · 주기</strong>
+                      <p>
+                        {previewPolicy.targetBasis} 건을 정산 대상으로 집계하며, {previewPolicy.cycle} 주기로 마감({closeText})합니다. 정산 대금은 {payText}에 등록된 {previewPolicy.payMethod} 계좌로 지급 실행됩니다.
+                      </p>
+                    </div>
+                    <span className={styles.previewRowTag}>주기</span>
+                  </div>
+
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>2</span>
+                    <div>
+                      <strong>정산 기준일 · 집계 시점</strong>
+                      <p>
+                        거래 집계 기준일은 ‘{previewPolicy.dateBasis}’이며, 정산서는 ‘{previewPolicy.creationTiming}’되어 검토 상태로 전환됩니다.
+                      </p>
+                    </div>
+                    <span className={styles.previewRowTag}>기준일</span>
+                  </div>
+
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>3</span>
+                    <div>
+                      <strong>정산 금액 · 세무 기준</strong>
+                      <p>
+                        정산 대상 금액은 ‘{previewPolicy.amountBasis}’ 기준으로 산출하며, {previewPolicy.deductFee ? "플랫폼 수수료를 공제" : "수수료 공제 없이"} 정산합니다. {previewPolicy.includeShippingFee ? "배송비는 정산금에 포함" : "배송비 제외"}됩니다.
+                      </p>
+                    </div>
+                    <span className={styles.previewRowTag}>금액기준</span>
+                  </div>
+
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>4</span>
+                    <div>
+                      <strong>취소 · 환불 처리 기준</strong>
+                      <p>
+                        마감 전 취소 주문은 ‘{previewPolicy.preCloseCancelPolicy}’하고, 확정 후 발생한 환불은 ‘{previewPolicy.postConfirmRefundPolicy}’ 방식으로 처리됩니다.
+                      </p>
+                    </div>
+                    <span className={styles.previewRowTag}>취소·환불</span>
+                  </div>
+
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>5</span>
+                    <div>
+                      <strong>확정 방식 · 필수 검증</strong>
+                      <p>
+                        ‘{previewPolicy.confirmMode}’ 방식으로 운영되며, 확정 전 필수 검증 항목으로 {[previewPolicy.requireNoUnsettledTx && "미확정 거래 없음", previewPolicy.requireNoUnprocessedRefund && "미처리 환불 없음", previewPolicy.requireNoUnapprovedAdjustment && "미승인 조정 없음", previewPolicy.requirePayoutInfo && "지급정보 존재"].filter(Boolean).join(", ") || "별도 추가 검증 없음"}을(를) 요구합니다.
+                      </p>
+                    </div>
+                    <span className={styles.previewRowTag}>확정</span>
+                  </div>
+
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>6</span>
+                    <div>
+                      <strong>최소 지급 · 마이너스 정산</strong>
+                      <p>
+                        최소 지급금액({fmtWon(previewPolicy.minPayoutAmount)}) 미달 시 ‘{previewPolicy.shortfallPolicy}’ 처리하며, 환불 초과로 정산금이 음수인 경우 ‘{previewPolicy.negativeSettlementPolicy}’합니다.
+                      </p>
+                    </div>
+                    <span
+                      className={
+                        previewPolicy.negativeSettlementPolicy.includes("이월")
+                          ? styles.previewRowTag
+                          : styles.previewRowTagWarn
+                      }
+                    >
+                      {previewPolicy.negativeSettlementPolicy.includes("이월")
+                        ? "이월"
+                        : "보류"}
+                    </span>
+                  </div>
+
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>7</span>
+                    <div>
+                      <strong>지급 실패 · 휴일 처리</strong>
+                      <p>
+                        지급 실패 시 재시도는 {previewPolicy.failureRetryEnabled ? "허용" : "불가"}하며, {previewPolicy.autoRetryEnabled ? `최대 ${previewPolicy.maxRetryCount}회 자동 재시도` : "자동 재시도는 미사용"}합니다. 지급 예정일이 공휴일인 경우 {previewPolicy.holidayPolicy}에 지급을 처리합니다.
+                      </p>
+                    </div>
+                    <span className={styles.previewRowTag}>지급</span>
                   </div>
                 </div>
-                {previewBreakdown.carryOverToNext !== 0 && (
-                  <div className={styles.noteList}>
-                    <div>
-                      ⚠ {signed(previewBreakdown.carryOverToNext)}이(가) 다음
-                      정산으로 이월됩니다.
+              </section>
+
+              {/* 카드 2: 정산 시나리오 판정 */}
+              <section className={styles.previewDecisionCard}>
+                <div className={styles.previewDecisionHead}>
+                  <div>
+                    <div className={styles.previewDocumentTitle}>정산 시나리오 판정</div>
+                    <div className={styles.previewDocumentDesc}>
+                      테스트 대상을 선택해 실제 정책에 따른 정산금 분해 및 지급 판정 결과를 확인합니다.
                     </div>
                   </div>
-                )}
-                <div className={styles.resultRow}>
-                  <span>지급 예정일</span>
-                  <strong>
-                    {previewBreakdown.payDate}
-                    {previewBreakdown.payDateShifted ? " (휴일 조정됨)" : ""}
-                  </strong>
                 </div>
-                <div className={styles.resultRow}>
-                  <span>대상 거래</span>
-                  <strong>{previewTarget.txCount}건</strong>
-                </div>
-                {previewTarget.excluded.length > 0 && (
-                  <div className={styles.excludedList}>
-                    <h4>
-                      정산 제외 (
-                      {previewTarget.excluded.reduce((s, e) => s + e.count, 0)}
-                      건)
-                    </h4>
-                    {previewTarget.excluded.map((e) => (
-                      <div key={e.label} className={styles.excludedRow}>
-                        <span>{e.label}</span>
-                        <span>{e.count}건</span>
-                      </div>
+
+                <div className={styles.previewScenarioControls}>
+                  <div className={styles.previewControlLabel}>테스트 대상 선택</div>
+                  <div className={styles.orderPick}>
+                    {TEST_TARGETS.map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        className={`${styles.orderOption} ${previewTargetId === t.id ? styles.orderOptionActive : ""}`}
+                        onClick={() => setPreviewTargetId(t.id)}
+                      >
+                        <strong>{t.name}</strong>
+                        <span>{t.period} · {t.txCount}건</span>
+                      </button>
                     ))}
                   </div>
-                )}
-              </div>
+                </div>
+
+                <div className={styles.previewResultBody}>
+                  <div className={heroClass}>
+                    <span>
+                      {previewTarget.id} · {previewTarget.name} · {previewTarget.period}
+                    </span>
+                    <strong>{previewBreakdown.status}</strong>
+                  </div>
+
+                  <div className={styles.settlementPreviewResultGrid}>
+                    <div className={styles.breakdownTable}>
+                      {previewBreakdown.items.map((item, i) => (
+                        <div key={i} className={styles.breakdownRow}>
+                          <span>{item.label}</span>
+                          <span
+                            className={
+                              item.amount < 0
+                                ? styles.breakdownNeg
+                                : styles.breakdownPos
+                            }
+                          >
+                            {signed(item.amount)}
+                          </span>
+                        </div>
+                      ))}
+                      <div
+                        className={`${styles.breakdownRow} ${styles.breakdownRowTotal}`}
+                      >
+                        <span>지급 예정 금액</span>
+                        <span>{fmtWon(previewBreakdown.payoutAmount)}</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.previewResultSummary}>
+                      <div className={styles.resultRow}>
+                        <span>지급 예정일</span>
+                        <strong>
+                          {previewBreakdown.payDate}
+                          {previewBreakdown.payDateShifted ? " (휴일 조정됨)" : ""}
+                        </strong>
+                      </div>
+                      <div className={styles.resultRow}>
+                        <span>대상 거래</span>
+                        <strong>{previewTarget.txCount}건</strong>
+                      </div>
+                      <div className={styles.resultRow}>
+                        <span>확정 방식</span>
+                        <strong>{previewPolicy.confirmMode}</strong>
+                      </div>
+                      {previewTarget.excluded.length > 0 && (
+                        <div className={styles.resultRow}>
+                          <span>정산 제외 건수</span>
+                          <strong>
+                            {previewTarget.excluded.reduce((s, e) => s + e.count, 0)}건
+                          </strong>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {previewBreakdown.carryOverToNext !== 0 && (
+                    <div className={styles.noteList}>
+                      <div>
+                        ⚠ {signed(previewBreakdown.carryOverToNext)}이(가) 다음 정산으로 이월됩니다.
+                      </div>
+                    </div>
+                  )}
+
+                  {previewTarget.excluded.length > 0 && (
+                    <div className={styles.excludedList}>
+                      <h4>
+                        정산 제외 상세 ({previewTarget.excluded.reduce((s, e) => s + e.count, 0)}건)
+                      </h4>
+                      {previewTarget.excluded.map((e) => (
+                        <div key={e.label} className={styles.excludedRow}>
+                          <span>{e.label}</span>
+                          <span>{e.count}건</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </section>
             </div>
+
+            {/* 우측 사이드바: 2개 카드 */}
+            <aside className={styles.policyPreviewSide}>
+              {/* 카드 3: 판매자 안내 문구 */}
+              <div className={styles.sideCard}>
+                <div className={styles.sideHead}>
+                  <div className={styles.sideTitle}>판매자 안내 문구</div>
+                  <div className={styles.sideSubtitle}>
+                    설정에 따라 판매자 파트너 포털에 자동 표시되는 안내입니다
+                  </div>
+                </div>
+                <div className={styles.customerMessageList}>
+                  <div>
+                    <span>정산 주기 · 지급일</span>
+                    <p>
+                      매 {previewPolicy.cycle} 정산되며, {payText}에 등록된 {previewPolicy.payMethod} 계좌로 입금됩니다.
+                    </p>
+                  </div>
+                  <div>
+                    <span>마감 후 취소 · 환불</span>
+                    <p>
+                      정산 확정 후 발생한 취소 및 환불은 ‘{previewPolicy.postConfirmRefundPolicy}’ 방식으로 차기 정산에 반영됩니다.
+                    </p>
+                  </div>
+                  <div>
+                    <span>공휴일 지급 안내</span>
+                    <p>
+                      지급 예정일이 토·일요일 또는 법정 공휴일인 경우 {previewPolicy.holidayPolicy}에 처리가 진행됩니다.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className={
+                    previewHasUnsavedChanges || warnings.length > 0
+                      ? styles.previewDeployPending
+                      : styles.previewDeployReady
+                  }
+                >
+                  <span>배포 가능 여부</span>
+                  <strong>
+                    {previewHasUnsavedChanges
+                      ? "저장 필요"
+                      : warnings.length > 0
+                        ? "설정 확인"
+                        : "배포 가능"}
+                  </strong>
+                </div>
+              </div>
+
+              {/* 카드 4: 전체 설정 요약 */}
+              <div className={styles.sideCard}>
+                <div className={styles.sideHead}>
+                  <div className={styles.sideTitle}>전체 설정 요약</div>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>정산 대상</span>
+                  <strong>{previewPolicy.targetBasis}</strong>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>정산 주기</span>
+                  <strong>
+                    {previewPolicy.cycle} ({closeText})
+                  </strong>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>지급 예정일</span>
+                  <strong>{payText}</strong>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>집계 기준일</span>
+                  <strong>{previewPolicy.dateBasis}</strong>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>정산서 생성</span>
+                  <strong>{previewPolicy.creationTiming}</strong>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>금액 기준</span>
+                  <strong>{previewPolicy.amountBasis}</strong>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>배송비 포함</span>
+                  <strong>{previewPolicy.includeShippingFee ? "포함" : "제외"}</strong>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>확정 방식</span>
+                  <strong>{previewPolicy.confirmMode}</strong>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>마이너스 정산</span>
+                  <strong>{previewPolicy.negativeSettlementPolicy}</strong>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>최소 지급금액</span>
+                  <strong>
+                    {previewPolicy.minPayoutAmount > 0
+                      ? `${fmtWon(previewPolicy.minPayoutAmount)} · ${previewPolicy.shortfallPolicy}`
+                      : "제한 없음"}
+                  </strong>
+                </div>
+                <div className={styles.digestRow}>
+                  <span>공휴일 처리</span>
+                  <strong>{previewPolicy.holidayPolicy}</strong>
+                </div>
+                <div className={styles.sideFootNote}>
+                  저장 시 이 문서가 변경 이력에 스냅샷으로 함께 기록됩니다.
+                </div>
+              </div>
+            </aside>
           </div>
-        )}
+        );
+        })()}
 
       </div>
 
-      {showHistory && (
+            {showHistory && (
         <aside ref={historyRef} className={timeline.aside} aria-label="정산 정책 변경 이력">
           <div className={timeline.head}>
             <div className={timeline.headRow}>

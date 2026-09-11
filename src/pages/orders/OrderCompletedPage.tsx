@@ -108,7 +108,7 @@ export function OrderCompletedPage() {
         <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
-              <div className={styles.title}>주문 완료</div>
+              <div className={styles.title}>완료</div>
               <div className={styles.subtitle}>완료된 주문과 최종 처리 결과를 조회합니다.</div>
             </div>
           </div>

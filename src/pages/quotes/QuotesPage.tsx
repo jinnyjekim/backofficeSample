@@ -151,7 +151,7 @@ export function QuotesPage() {
         <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
-              <div className={styles.title}>견적서 관리</div>
+              <div className={styles.title}>견적서</div>
               <div className={styles.subtitle}>작성된 견적서의 가격, 조건, 발송 및 확정 상태를 관리합니다.</div>
             </div>
             <button type="button" className={styles.registerBtn} onClick={() => { setShowRegister(true); setSelectedId(null); }}>

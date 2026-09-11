@@ -325,7 +325,7 @@ export function CouponIssuesPage() {
       <header className={shared.header}>
         <div className={shared.headerTop}>
           <div>
-            <div className={shared.title}>쿠폰 발급 관리</div>
+            <div className={shared.title}>쿠폰 발급</div>
             <div className={shared.subtitle}>
               회원에게 발급된 쿠폰의 보유 및 사용 가능 상태를 관리합니다.
             </div>

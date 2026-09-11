@@ -115,7 +115,7 @@ export function TaxInvoicesPage() {
       <header className={styles.header}>
         <div className={styles.headerTop}>
           <div>
-            <div className={styles.title}>세금 계산 / 세금계산서</div>
+            <div className={styles.title}>세금계산서</div>
             <div className={styles.subtitle}>거래별 공급가액과 세액을 계산하고 증빙 발행 대상을 관리합니다.</div>
           </div>
           <button type="button" className={styles.primaryBtn}>+ 세금 계산 등록</button>

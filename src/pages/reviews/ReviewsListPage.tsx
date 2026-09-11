@@ -322,7 +322,7 @@ export function ReviewsListPage() {
       <header className={styles.header}>
         <div className={styles.headerTop}>
           <div>
-            <div className={styles.title}>리뷰 목록</div>
+            <div className={styles.title}>리뷰 운영</div>
             <div className={styles.subtitle}>
               상품 리뷰 등록 및 노출 상태를 관리합니다.
             </div>

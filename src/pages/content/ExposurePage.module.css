@@ -37,6 +37,11 @@
   color: #52525b;
   margin-bottom: 8px;
 }
+.areaSearchField {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+}
 .areaSearch {
   width: 100%;
   box-sizing: border-box;

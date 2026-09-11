@@ -125,7 +125,7 @@ export function PurchaseOrdersPage() {
         <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
-              <div className={styles.title}>발주 관리</div>
+              <div className={styles.title}>발주</div>
               <div className={styles.subtitle}>거래처의 발주 내역을 접수하고 주문 확정 상태를 관리합니다.</div>
             </div>
             <button type="button" className={styles.registerBtn} onClick={() => setShowRegister(true)}>＋ 발주 등록</button>

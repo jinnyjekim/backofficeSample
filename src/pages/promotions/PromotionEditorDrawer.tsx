@@ -10,6 +10,7 @@ import {
   type DiscountMethod,
   type Promotion,
   type StackOption,
+  type TargetMemberTier,
   type TargetType,
 } from './promotionsData';
 
@@ -21,6 +22,7 @@ export interface PromotionFormData {
   maxDiscountAmount: number;
   minPurchaseAmount: number;
   targetType: TargetType;
+  targetMemberTier: TargetMemberTier;
   targetProductCodes: string[];
   targetCategories: string[];
   excludeProductCodes: string[];
@@ -53,6 +55,7 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
   const [minPurchaseAmount, setMinPurchaseAmount] = useState(String(p?.minPurchaseAmount ?? 0));
 
   const [targetType, setTargetType] = useState<TargetType>(p?.targetType ?? '전체');
+  const [targetMemberTier, setTargetMemberTier] = useState<TargetMemberTier>(p?.targetMemberTier ?? '전체');
   const [targetProductCodes, setTargetProductCodes] = useState<string[]>(p?.targetProductCodes ?? []);
   const [targetCategories, setTargetCategories] = useState<string[]>(p?.targetCategories ?? []);
   const [excludeProductCodes, setExcludeProductCodes] = useState<string[]>(p?.excludeProductCodes ?? []);
@@ -60,8 +63,8 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
   const [pickExclude, setPickExclude] = useState('');
 
   const [startDate, setStartDate] = useState(p?.startDate ?? '2026-08-26');
-  const [endMode, setEndMode] = useState<'없음' | '지정'>(p?.endDate ? '지정' : '없음');
-  const [endDate, setEndDate] = useState(p?.endDate ?? p?.startDate ?? '2026-08-26');
+  const [endMode, setEndMode] = useState<'없음' | '지정'>(p?.endDate ? '지정' : '지정');
+  const [endDate, setEndDate] = useState(p?.endDate ?? p?.startDate ?? '2026-09-30');
 
   const [stackPromotion, setStackPromotion] = useState<StackOption>(p?.stackPromotion ?? '불가');
   const [stackCoupon, setStackCoupon] = useState<StackOption>(p?.stackCoupon ?? '가능');
@@ -116,6 +119,7 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
       maxDiscountAmount: maxDiscount,
       minPurchaseAmount: minPurchase,
       targetType,
+      targetMemberTier,
       targetProductCodes: targetType === '특정 상품' ? targetProductCodes : [],
       targetCategories: targetType === '특정 카테고리' ? targetCategories : [],
       excludeProductCodes,
@@ -163,20 +167,20 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
           </label>
         </div>
 
-        <div className={styles.sectionTitleLoose}>할인 조건</div>
+        <div className={styles.sectionTitleLoose}>할인 조건 (할인 유형 및 방식)</div>
         <div className={styles.formRow} style={{ marginBottom: 10 }}>
           <div style={{ flex: 1 }}>
-            <label className={styles.formLabel}>적용 단위 *</label>
+            <label className={styles.formLabel}>할인 유형 *</label>
             <select className={styles.formSelect} value={applyUnit} onChange={(e) => setApplyUnit(e.target.value as ApplyUnit)}>
-              <option value="상품">상품 할인</option>
-              <option value="주문">주문 할인</option>
+              <option value="상품">상품 할인 (개별 상품 기준)</option>
+              <option value="주문">장바구니 할인 (주문 금액 기준)</option>
             </select>
           </div>
           <div style={{ flex: 1 }}>
             <label className={styles.formLabel}>할인 방식 *</label>
             <select className={styles.formSelect} value={discountMethod} onChange={(e) => setDiscountMethod(e.target.value as DiscountMethod)}>
-              <option value="정률">정률 할인</option>
-              <option value="정액">정액 할인</option>
+              <option value="정률">정률 할인 (%)</option>
+              <option value="정액">정액 할인 (원)</option>
             </select>
           </div>
         </div>
@@ -199,7 +203,7 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
           <input className={styles.formInput} type="number" min={0} value={minPurchaseAmount} onChange={(e) => setMinPurchaseAmount(e.target.value)} placeholder="0 = 제한 없음" />
         </div>
 
-        <div className={styles.sectionTitleLoose}>적용 대상</div>
+        <div className={styles.sectionTitleLoose}>적용 대상 (상품 / 카테고리)</div>
         <div className={styles.radioRow}>
           {(['전체', '특정 상품', '특정 카테고리'] as TargetType[]).map((t) => (
             <label key={t} className={styles.radioOption}><input type="radio" checked={targetType === t} onChange={() => setTargetType(t)} />{t}</label>
@@ -241,6 +245,21 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
             </div>
           </>
         )}
+
+        <div className={styles.sectionTitleLoose}>대상 회원</div>
+        <div className={styles.radioRow} style={{ flexWrap: 'wrap', gap: 12 }}>
+          {(['전체', '일반', 'VIP', 'VVIP', '신규회원'] as TargetMemberTier[]).map((tier) => (
+            <label key={tier} className={styles.radioOption}>
+              <input
+                type="radio"
+                name="targetMemberTier"
+                checked={targetMemberTier === tier}
+                onChange={() => setTargetMemberTier(tier)}
+              />
+              {tier === '전체' ? '전체 회원' : `${tier} 등급`}
+            </label>
+          ))}
+        </div>
 
         <div className={styles.sectionTitleLoose}>제외 대상</div>
         <div className={styles.formRow} style={{ marginBottom: 8 }}>

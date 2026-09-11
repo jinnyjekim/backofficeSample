@@ -613,7 +613,7 @@ export function CustomerPurchaseAnalysisPage({
         <div className={shared.headRow}>
           <div>
             <h1 className={shared.title}>
-              {mode === "b2b" ? "거래처 구매 분석" : "고객 구매 분석"}
+              {defaultMode === "c2c" ? "구매자 활동" : mode === "b2b" ? "거래처 구매 분석" : "고객 구매 분석"}
             </h1>
             <p className={shared.subtitle}>
               어떤 고객이 얼마나 자주, 얼마나 많이 구매하고 다시 구매하는지

@@ -201,7 +201,7 @@ export function ContactsPage() {
       <div className={styles.main}>
         <div className={styles.head}>
           <div>
-            <div className={styles.title}>담당자 관리</div>
+            <div className={styles.title}>담당자</div>
             <div className={styles.subtitle}>
               거래처 소속 담당자와 연락처 및 담당 역할을 관리합니다.
             </div>

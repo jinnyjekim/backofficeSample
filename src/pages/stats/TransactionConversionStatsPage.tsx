@@ -549,7 +549,7 @@ export function TransactionConversionStatsPage({
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>거래 전환 분석</h1>
+            <h1 className={shared.title}>{defaultMode === "c2c" ? "거래 성사율" : "거래 전환 분석"}</h1>
             <p className={shared.subtitle}>
               거래가 시작된 뒤 실제 성사까지 얼마나 이어지고, 어느 단계에서 가장
               많이 이탈하는지 분석합니다.

@@ -144,7 +144,7 @@ export function MinOrderQtyPage() {
       <div className={styles.top}>
         <div className={styles.titleRow}>
           <div>
-            <div className={styles.title}>최소수량 관리</div>
+            <div className={styles.title}>최소 주문수량</div>
             <div className={styles.subtitle}>상품 및 거래처별 최소 주문수량과 주문 단위를 관리합니다.</div>
           </div>
           <div className={styles.headerActions}>

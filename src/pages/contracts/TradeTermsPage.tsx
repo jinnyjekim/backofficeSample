@@ -66,7 +66,7 @@ export function TradeTermsPage() {
     <div className={styles.page}>
       <div className={styles.headerRow}>
         <div>
-          <div className={styles.title}>계약 거래 조건 관리</div>
+          <div className={styles.title}>거래 조건</div>
           <div className={styles.subtitle}>계약별 결제, 주문, 납품 및 기타 거래 조건을 관리합니다.</div>
         </div>
         <button type="button" className={styles.registerBtn}>+ 거래 조건 등록</button>

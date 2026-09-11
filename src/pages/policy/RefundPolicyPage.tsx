@@ -1,8 +1,9 @@
 import { useMemo, useRef, useState } from 'react';
-import { CommonButton, CommonSwitch, showToast } from '../../components/common';
+import { CommonBadge, CommonButton, CommonSwitch, showToast } from '../../components/common';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './RefundPolicyPage.module.css';
+import { RefundReasonEditDialog } from './RefundReasonEditDialog';
 import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
   INITIAL_HISTORY,
@@ -40,7 +41,7 @@ const TABS: [Tab, string][] = [
   ['basic', '기본 정책'],
   ['amount', '환불 금액'],
   ['methods', '결제수단'],
-  ['reasons', '환불 사유'],
+  ['reasons', '사유 관리'],
   ['preview', '정책 Preview'],
 ];
 
@@ -66,6 +67,8 @@ export function RefundPolicyPage() {
   const [showHistory, setShowHistory] = useState(false);
   const [reasonSearch, setReasonSearch] = useState('');
   const [dragReasonId, setDragReasonId] = useState<string | null>(null);
+  const [dragOverReasonId, setDragOverReasonId] = useState<string | null>(null);
+  const [reasonEditId, setReasonEditId] = useState<string | null>(null);
   const [confirmSave, setConfirmSave] = useState<FieldDiff[] | null>(null);
   const [reason, setReason] = useState('');
   const [saveError, setSaveError] = useState('');
@@ -162,31 +165,42 @@ export function RefundPolicyPage() {
     }
   };
 
-  const setReason2 = <K extends keyof RefundReason>(id: string, key: K, value: RefundReason[K]) => {
+  const saveReason = (updated: RefundReason) => {
     const currentReasons = editing ? draftReasons : reasons;
-    const updated = currentReasons.map((r) => (r.id === id ? { ...r, [key]: value } : r));
+    const nextReasons = currentReasons.find((r) => r.id === updated.id)
+      ? currentReasons.map((r) => (r.id === updated.id ? updated : r))
+      : [...currentReasons, updated];
     if (!editing) {
       setDraftPolicy(policy);
       setDraftMethodRules(methodRules);
-      setDraftReasons(updated);
+      setDraftReasons(nextReasons);
       setEditing(true);
+      toastBriefly('환불 사유가 임시 저장되었습니다. 상단의 [변경 사항 저장]을 클릭하세요.');
     } else {
-      setDraftReasons(updated);
+      setDraftReasons(nextReasons);
     }
+    setReasonEditId(null);
   };
   const addReason = () => {
     const currentReasons = editing ? draftReasons : reasons;
     const nextOrder = Math.max(0, ...currentReasons.map((r) => r.order)) + 1;
-    const draft: RefundReason = { id: `NEW-${Date.now()}`, label: '', type: '부분 환불', active: true, order: nextOrder, requiresDetail: false };
+    const draft: RefundReason = {
+      id: `NEW-${Date.now()}`,
+      label: '',
+      type: '부분 환불',
+      active: true,
+      order: nextOrder,
+      requiresDetail: false,
+    };
     if (!editing) {
       setDraftPolicy(policy);
       setDraftMethodRules(methodRules);
       setDraftReasons([...currentReasons, draft]);
       setEditing(true);
-      toastBriefly('환불 사유가 추가되었습니다. 상단의 [변경 사항 저장]을 클릭하세요.');
     } else {
       setDraftReasons((current) => [...current, draft]);
     }
+    setReasonEditId(draft.id);
   };
   const removeReason = (id: string) => {
     const currentReasons = editing ? draftReasons : reasons;
@@ -227,9 +241,23 @@ export function RefundPolicyPage() {
   const activeReasons = (editing ? draftReasons : reasons).slice().sort((a, b) => a.order - b.order);
   const visibleReasons = activeReasons.filter((r) => r.label.toLowerCase().includes(reasonSearch.trim().toLowerCase()));
   const exposedReasonCount = activeReasons.filter((r) => r.active).length;
+  const editingReasonDraft = reasonEditId
+    ? (editing ? draftReasons : reasons).find((r) => r.id === reasonEditId)
+    : null;
 
+  const previewPolicy = editing ? draftPolicy : policy;
+  const previewMethodRules = editing ? draftMethodRules : methodRules;
+  const previewHasUnsavedChanges = editing && (
+    describePolicyChanges(policy, draftPolicy).length > 0 ||
+    describeMethodChanges(methodRules, draftMethodRules).length > 0 ||
+    describeReasonChanges(reasons, draftReasons).length > 0
+  );
   const previewOrder = TEST_ORDERS.find((o) => o.id === previewOrderId)!;
-  const previewBreakdown = computeRefundBreakdown(previewOrder, previewScope, policy, methodRules);
+  const previewBreakdown = computeRefundBreakdown(previewOrder, previewScope, previewPolicy, previewMethodRules);
+  const previewPeriod = previewPolicy.refundPeriodBasis === '제한 없음'
+    ? '제한 없이'
+    : `${previewPolicy.refundPeriodBasis} ${previewPolicy.refundPeriodDays}일 이내`;
+  const previewEnabledMethodCount = previewMethodRules.filter((method) => method.active).length;
 
   return (
     <div className={shared.page}>
@@ -292,7 +320,7 @@ export function RefundPolicyPage() {
       </header>
 
       <div className={styles.body}>
-        {warnings.length > 0 && (
+        {tab !== 'preview' && warnings.length > 0 && (
           <div className={styles.warningBanner}>
             <span className={styles.warningIcon}>!</span>
             <div className={styles.warningBody}>
@@ -601,102 +629,292 @@ export function RefundPolicyPage() {
 
         {tab === 'reasons' && (
           <>
+            <div className={styles.infoNote}>
+              환불 유형을 지정하고, 고객·운영 화면 노출 여부를 관리합니다. '기타'처럼 자유 서술이 필요한 사유는 상세 입력을 필수로 두세요. 항목을 마우스로 드래그하여 노출 순서를 자유롭게 변경할 수 있습니다.
+            </div>
+
             <div className={styles.card}>
               <div className={styles.cardHead}>
-                <div className={styles.cardHeadRow}>
-                  <div>
-                    <div className={styles.cardTitle}>환불 사유 {activeReasons.length}개 · 노출 {exposedReasonCount}개</div>
-                    <div className={styles.cardDesc}>유형을 지정하고, 고객·운영 화면 노출 여부를 관리합니다. '기타'처럼 자유 서술이 필요한 사유는 상세 입력을 필수로 두세요.</div>
-                  </div>
-                  <div className={styles.cardHeadActions}>
-                    <input className={`${styles.textField} ${styles.searchInput}`} placeholder="사유명 검색" value={reasonSearch} onChange={(e) => setReasonSearch(e.target.value)} />
-                    <button type="button" className={styles.darkBtn} onClick={addReason}>+ 사유 추가</button>
-                  </div>
-                </div>
+                <div className={styles.cardTitle}>환불 사유</div>
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.reasonList}>
-                  <div className={`${styles.reasonRow} ${styles.reasonHead}`}><span /><span>사유명</span><span>환불 유형</span><span>상세 입력</span><span>노출</span><span /></div>
-                  {visibleReasons.map((r) => (
-                    <div
-                      key={r.id}
-                      className={`${styles.reasonRow} ${!r.active ? styles.reasonRowInactive : ''}`}
-                      draggable
-                      onDragStart={() => setDragReasonId(r.id)}
-                      onDragOver={(e) => e.preventDefault()}
-                      onDrop={() => { if (dragReasonId) reorderReason(dragReasonId, r.id); setDragReasonId(null); }}
-                    >
-                      <span className={styles.dragHandle}>☰</span>
-                      <input className={styles.reasonLabelInput} value={r.label} placeholder="사유명 입력" onChange={(e) => setReason2(r.id, 'label', e.target.value)} />
-                      <select className={styles.typeSelect} value={r.type} onChange={(e) => setReason2(r.id, 'type', e.target.value as RefundType)}>
-                        {REFUND_TYPES.map((t) => <option key={t}>{t}</option>)}
-                      </select>
-                      <button type="button" className={`${styles.detailPill} ${r.requiresDetail ? styles.detailPillOn : ''}`} onClick={() => setReason2(r.id, 'requiresDetail', !r.requiresDetail)}>{r.requiresDetail ? '필수' : '선택'}</button>
-                      <CommonSwitch checked={r.active} onChange={(checked) => setReason2(r.id, 'active', checked)} aria-label={`${r.label} 노출`} />
-                      <button type="button" className={styles.removeBtn} onClick={() => removeReason(r.id)}>×</button>
-                    </div>
-                  ))}
+                  <div className={`${styles.reasonRow} ${styles.reasonHead}`}>
+                    <span />
+                    <span>사유명</span>
+                    <span className={styles.reasonStatusCol}>노출</span>
+                    <span />
+                  </div>
+                  {visibleReasons.map((r) => {
+                    const isDragging = dragReasonId === r.id;
+                    const isDragOver =
+                      dragOverReasonId === r.id && dragReasonId !== r.id;
+                    return (
+                      <div
+                        key={r.id}
+                        className={`${styles.reasonRow} ${styles.reasonRowDraggable} ${
+                          isDragging ? styles.reasonRowDragging : ''
+                        } ${isDragOver ? styles.reasonRowDragOver : ''}`}
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', r.id);
+                          e.dataTransfer.effectAllowed = 'move';
+                          setDragReasonId(r.id);
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.dataTransfer.dropEffect = 'move';
+                          if (dragOverReasonId !== r.id) {
+                            setDragOverReasonId(r.id);
+                          }
+                        }}
+                        onDragLeave={() => {
+                          if (dragOverReasonId === r.id) {
+                            setDragOverReasonId(null);
+                          }
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const sourceId =
+                            dragReasonId || e.dataTransfer.getData('text/plain');
+                          if (sourceId) {
+                            reorderReason(sourceId, r.id);
+                          }
+                          setDragReasonId(null);
+                          setDragOverReasonId(null);
+                        }}
+                        onDragEnd={() => {
+                          setDragReasonId(null);
+                          setDragOverReasonId(null);
+                        }}
+                      >
+                        <span
+                          className={styles.dragHandle}
+                          title="드래그하여 순서 변경"
+                        >
+                          ☰
+                        </span>
+                        <span>
+                          {r.label}
+                          <span className={styles.typeTag}>{r.type}</span>
+                          {r.requiresDetail && (
+                            <span className={styles.detailTag}>상세필수</span>
+                          )}
+                        </span>
+                        <span className={styles.reasonStatusCol}>
+                          <CommonBadge
+                            type={r.active ? 'success-light' : 'secondary'}
+                            size="sm"
+                          >
+                            {r.active ? '노출' : '비노출'}
+                          </CommonBadge>
+                        </span>
+                        <span
+                          style={{
+                            display: 'flex',
+                            gap: 4,
+                            justifyContent: 'flex-end',
+                          }}
+                        >
+                          <button
+                            type="button"
+                            className={styles.smallBtn}
+                            onClick={() => {
+                              if (!editing) {
+                                setDraftPolicy(policy);
+                                setDraftMethodRules(methodRules);
+                                setDraftReasons(reasons);
+                              }
+                              setReasonEditId(r.id);
+                            }}
+                          >
+                            상세/수정
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.smallBtn}
+                            onClick={() => removeReason(r.id)}
+                          >
+                            삭제
+                          </button>
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
+                <button
+                  type="button"
+                  className={styles.addReasonBtn}
+                  onClick={addReason}
+                >
+                  + 사유 추가
+                </button>
               </div>
             </div>
 
             {editing && (
               <div className={styles.footerBar}>
-                <span className={styles.footerNote}>순서는 드래그로 바꿀 수 있고, 저장 시 고객 화면 선택지 순서에 그대로 반영됩니다.</span>
-                <button type="button" className={styles.outlineBtn} onClick={cancelEdit}>취소</button>
-                <button type="button" className={styles.darkBtn} onClick={requestSave}>저장</button>
+                <span className={styles.footerNote}>
+                  순서는 드래그로 바꿀 수 있고, 저장 시 고객 화면 선택지 순서에 그대로 반영됩니다.
+                </span>
+                <button
+                  type="button"
+                  className={styles.outlineBtn}
+                  onClick={cancelEdit}
+                >
+                  취소
+                </button>
+                <button
+                  type="button"
+                  className={styles.darkBtn}
+                  onClick={requestSave}
+                >
+                  저장
+                </button>
               </div>
             )}
           </>
         )}
 
         {tab === 'preview' && (
-          <div className={styles.previewGrid}>
-            <div className={styles.previewCard}>
-              <h3>테스트 주문 선택</h3>
-              <div className={styles.orderPick}>
-                {TEST_ORDERS.map((o) => (
-                  <button key={o.id} type="button" className={`${styles.orderOption} ${previewOrderId === o.id ? styles.orderOptionActive : ''}`} onClick={() => setPreviewOrderId(o.id)}>
-                    <span><strong>{o.id}</strong> · {o.target}</span>
-                    <span>{o.method}</span>
-                  </button>
-                ))}
-              </div>
-              <h3>환불 범위</h3>
-              <div className={styles.actorToggle}>
-                <button type="button" className={`${styles.actorBtn} ${previewScope === 'full' ? styles.actorBtnActive : ''}`} onClick={() => setPreviewScope('full')}>전체 환불</button>
-                <button type="button" className={`${styles.actorBtn} ${previewScope === 'partial' ? styles.actorBtnActive : ''}`} onClick={() => setPreviewScope('partial')}>부분 환불</button>
-              </div>
-              <div className={styles.infoNote}>현재 저장된(적용중인) 정책 기준으로 계산합니다.</div>
-            </div>
-            <div className={styles.previewCard}>
-              <h3>환불금액 계산 결과</h3>
-              <div className={`${styles.resultHero} ${previewBreakdown.capped ? styles.resultHeroCapped : ''}`}>
-                <span>{previewOrder.id} · {previewScope === 'full' ? '전체 환불' : '부분 환불'} · {previewOrder.method}</span>
-                <strong>{fmtWon(previewBreakdown.total)}</strong>
-              </div>
-              <div className={styles.breakdownTable}>
-                {previewBreakdown.items.map((item, i) => (
-                  <div key={i} className={styles.breakdownRow}>
-                    <span>{item.label}</span>
-                    <span className={item.amount < 0 ? styles.breakdownNeg : styles.breakdownPos}>{signed(item.amount)}</span>
+          <div className={styles.policyPreviewLayout}>
+            <div className={styles.policyPreviewMain}>
+              <section className={styles.previewDocumentCard}>
+                <div className={styles.previewDocumentHead}>
+                  <div>
+                    <div className={styles.previewDocumentTitle}>적용될 정책 전문</div>
+                    <div className={styles.previewDocumentDesc}>현재 설정이 실제 환불 처리에 어떻게 적용되는지 문장으로 확인합니다. 이 탭은 읽기 전용입니다.</div>
                   </div>
-                ))}
-                <div className={`${styles.breakdownRow} ${styles.breakdownRowTotal}`}>
-                  <span>최종 환불금액</span>
-                  <span>{fmtWon(previewBreakdown.total)}</span>
+                  <span className={previewHasUnsavedChanges ? styles.previewDraftBadge : styles.previewLiveBadge}>
+                    {previewHasUnsavedChanges ? '미저장 초안' : `적용 중 · ${lastModified.at}`}
+                  </span>
+                </div>
+                <div className={styles.policySentenceList}>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>1</span>
+                    <div><strong>환불 범위</strong><p>전체 환불은 {previewPolicy.fullRefundEnabled ? '허용' : '허용하지 않으며'}, 부분 환불은 {previewPolicy.partialRefundEnabled ? '허용합니다.' : '허용하지 않습니다.'}</p></div>
+                    <span className={styles.previewRowTag}>{previewPolicy.fullRefundEnabled || previewPolicy.partialRefundEnabled ? '사용' : '중지'}</span>
+                  </div>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>2</span>
+                    <div><strong>환불 가능기간 · 완료</strong><p>환불 요청은 {previewPeriod} 접수하며, 승인 후 {previewPolicy.refundProcessingDays}영업일 이내 처리합니다. 완료 기준은 ‘{previewPolicy.refundCompletionBasis}’입니다.</p></div>
+                    <span className={styles.previewRowTag}>기간</span>
+                  </div>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>3</span>
+                    <div><strong>환불금액 계산 · 지급</strong><p>환불금액은 {previewPolicy.refundCalcMode} 방식으로 산정하고, 지급은 ‘{previewPolicy.refundMethodBasis}’ 원칙을 따릅니다.</p></div>
+                    <span className={styles.previewRowTag}>금액</span>
+                  </div>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>4</span>
+                    <div><strong>배송비 · 할인 재계산</strong><p>전체 환불 배송비는 ‘{previewPolicy.shippingFullPolicy}’, 부분 환불은 ‘{previewPolicy.shippingPartialPolicy}’으로 처리하며 할인은 ‘{previewPolicy.discountRecalcPolicy}’ 기준으로 다시 계산합니다.</p></div>
+                    <span className={styles.previewRowTag}>재계산</span>
+                  </div>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>5</span>
+                    <div><strong>승인 정책</strong><p>환불 승인은 ‘{previewPolicy.approvalRequired}’이며{previewPolicy.approvalRequired === '조건부' ? `, ${fmtWon(previewPolicy.approvalThresholdAmount)} 이상이면 승인이 필요합니다.` : '.'} 승인 후 자동 실행은 {previewPolicy.autoExecuteAfterApproval ? '사용합니다.' : '사용하지 않습니다.'}</p></div>
+                    <span className={previewPolicy.approvalRequired === '조건부' ? styles.previewRowTagWarn : styles.previewRowTag}>{previewPolicy.approvalRequired}</span>
+                  </div>
+                  <div className={styles.policySentenceRow}>
+                    <span className={styles.policySentenceNum}>6</span>
+                    <div><strong>실패 재시도 · 알림</strong><p>환불 실패 재시도는 {previewPolicy.failureRetryEnabled ? '허용' : '허용하지 않으며'}, 자동 재시도는 {previewPolicy.autoRetryEnabled ? `최대 ${previewPolicy.maxRetryCount}회 수행합니다.` : '사용하지 않습니다.'} 환불 이벤트 알림은 {previewPolicy.notifyOnRefundEvents ? '발송합니다.' : '발송하지 않습니다.'}</p></div>
+                    <span className={styles.previewRowTag}>운영</span>
+                  </div>
+                </div>
+              </section>
+
+              <section className={styles.previewDecisionCard}>
+                <div className={styles.previewDecisionHead}>
+                  <div>
+                    <div className={styles.previewDocumentTitle}>환불 시나리오 판정</div>
+                    <div className={styles.previewDocumentDesc}>테스트 주문과 환불 범위를 선택해 최종 금액과 적용 경로를 확인합니다.</div>
+                  </div>
+                </div>
+                <div className={styles.previewScenarioControls}>
+                  <div>
+                    <div className={styles.previewControlLabel}>테스트 주문</div>
+                    <div className={styles.orderPick}>
+                      {TEST_ORDERS.map((o) => (
+                        <button key={o.id} type="button" className={`${styles.orderOption} ${previewOrderId === o.id ? styles.orderOptionActive : ''}`} onClick={() => setPreviewOrderId(o.id)}>
+                          <span><strong>{o.id}</strong> · {o.target}</span>
+                          <span>{o.method}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <div className={styles.previewControlLabel}>환불 범위</div>
+                    <div className={styles.actorToggle}>
+                      <button type="button" className={`${styles.actorBtn} ${previewScope === 'full' ? styles.actorBtnActive : ''}`} onClick={() => setPreviewScope('full')}>전체 환불</button>
+                      <button type="button" className={`${styles.actorBtn} ${previewScope === 'partial' ? styles.actorBtnActive : ''}`} onClick={() => setPreviewScope('partial')}>부분 환불</button>
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.previewResultBody}>
+                  <div className={`${styles.resultHero} ${previewBreakdown.capped ? styles.resultHeroCapped : ''}`}>
+                    <span>{previewOrder.id} · {previewScope === 'full' ? '전체 환불' : '부분 환불'} · {previewOrder.method}</span>
+                    <strong>{fmtWon(previewBreakdown.total)}</strong>
+                  </div>
+                  <div className={styles.refundPreviewResultGrid}>
+                    <div className={styles.breakdownTable}>
+                      {previewBreakdown.items.map((item, index) => (
+                        <div key={`${item.label}-${index}`} className={styles.breakdownRow}>
+                          <span>{item.label}</span>
+                          <span className={item.amount < 0 ? styles.breakdownNeg : styles.breakdownPos}>{signed(item.amount)}</span>
+                        </div>
+                      ))}
+                      <div className={`${styles.breakdownRow} ${styles.breakdownRowTotal}`}>
+                        <span>최종 환불금액</span>
+                        <span>{fmtWon(previewBreakdown.total)}</span>
+                      </div>
+                    </div>
+                    <div className={styles.previewResultSummary}>
+                      <div className={styles.resultRow}><span>환불 방식</span><strong>{previewBreakdown.methodAction}</strong></div>
+                      <div className={styles.resultRow}><span>연동 PG</span><strong>{previewBreakdown.methodPg ?? '없음'}</strong></div>
+                      <div className={styles.resultRow}><span>승인 필요</span><strong>{previewBreakdown.approvalNeeded ? '필요' : '불필요'}</strong></div>
+                      <div className={styles.resultRow}><span>환불 가능금액</span><strong>{fmtWon(previewBreakdown.availableMax)}</strong></div>
+                    </div>
+                  </div>
+                  {previewBreakdown.capped && (
+                    <div className={styles.noteList}>
+                      <div>⚠ 계산 금액이 환불 가능금액({fmtWon(previewBreakdown.availableMax)})을 초과하여 자동 조정되었습니다.</div>
+                    </div>
+                  )}
+                </div>
+              </section>
+            </div>
+
+            <aside className={styles.policyPreviewSide}>
+              <div className={styles.sideCard}>
+                <div className={styles.sideHead}>
+                  <div className={styles.sideTitle}>고객 안내 문구</div>
+                  <div className={styles.sideSubtitle}>설정에 따라 자동 생성되는 안내입니다</div>
+                </div>
+                <div className={styles.customerMessageList}>
+                  <div><span>환불 신청 화면</span><p>환불은 {previewPeriod} 신청할 수 있습니다.</p></div>
+                  <div><span>환불 접수 완료</span><p>접수된 환불은 승인 후 {previewPolicy.refundProcessingDays}영업일 이내 처리됩니다.</p></div>
+                  <div><span>환불 완료 안내</span><p>{previewPolicy.refundCompletionBasis} 환불 완료로 안내됩니다.</p></div>
+                </div>
+                <div className={previewHasUnsavedChanges || warnings.length > 0 ? styles.previewDeployPending : styles.previewDeployReady}>
+                  <span>배포 가능 여부</span>
+                  <strong>{previewHasUnsavedChanges ? '저장 필요' : warnings.length > 0 ? '설정 확인' : '배포 가능'}</strong>
                 </div>
               </div>
-              {previewBreakdown.capped && (
-                <div className={styles.noteList}>
-                  <div>⚠ 계산 금액이 환불 가능금액({fmtWon(previewBreakdown.availableMax)})을 초과하여 자동 조정되었습니다.</div>
-                </div>
-              )}
-              <div className={styles.resultRow}><span>환불 방식</span><strong>{previewBreakdown.methodAction}</strong></div>
-              <div className={styles.resultRow}><span>연동 PG</span><strong>{previewBreakdown.methodPg ?? '없음'}</strong></div>
-              <div className={styles.resultRow}><span>승인 필요</span><strong>{previewBreakdown.approvalNeeded ? '필요' : '불필요'}</strong></div>
-              <div className={styles.resultRow}><span>환불 가능금액</span><strong>{fmtWon(previewBreakdown.availableMax)}</strong></div>
-            </div>
+
+              <div className={styles.sideCard}>
+                <div className={styles.sideHead}><div className={styles.sideTitle}>전체 설정 요약</div></div>
+                <div className={styles.digestRow}><span>환불 범위</span><strong>전체 {previewPolicy.fullRefundEnabled ? '허용' : '불가'} · 부분 {previewPolicy.partialRefundEnabled ? '허용' : '불가'}</strong></div>
+                <div className={styles.digestRow}><span>환불 가능기간</span><strong>{previewPeriod}</strong></div>
+                <div className={styles.digestRow}><span>처리 기한</span><strong>승인 후 {previewPolicy.refundProcessingDays}영업일</strong></div>
+                <div className={styles.digestRow}><span>계산 방식</span><strong>{previewPolicy.refundCalcMode}</strong></div>
+                <div className={styles.digestRow}><span>지급 원칙</span><strong>{previewPolicy.refundMethodBasis}</strong></div>
+                <div className={styles.digestRow}><span>승인 기준</span><strong>{previewPolicy.approvalRequired === '조건부' ? `${fmtWon(previewPolicy.approvalThresholdAmount)} 이상` : previewPolicy.approvalRequired}</strong></div>
+                <div className={styles.digestRow}><span>결제수단</span><strong>{previewEnabledMethodCount}개 사용</strong></div>
+                <div className={styles.digestRow}><span>노출 환불 사유</span><strong>{exposedReasonCount}개</strong></div>
+                <div className={styles.digestRow}><span>실패 재시도</span><strong>{previewPolicy.failureRetryEnabled ? `허용 · 최대 ${previewPolicy.maxRetryCount}회` : '불가'}</strong></div>
+                <div className={styles.sideFootNote}>저장 시 이 문서가 변경 이력에 스냅샷으로 함께 기록됩니다.</div>
+              </div>
+            </aside>
           </div>
         )}
 
@@ -758,6 +976,22 @@ export function RefundPolicyPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {editingReasonDraft && (
+        <RefundReasonEditDialog
+          initial={editingReasonDraft}
+          onClose={() => {
+            if (
+              editingReasonDraft.id.startsWith('NEW') &&
+              !editingReasonDraft.label
+            ) {
+              removeReason(editingReasonDraft.id);
+            }
+            setReasonEditId(null);
+          }}
+          onSave={saveReason}
+        />
       )}
 
     </div>

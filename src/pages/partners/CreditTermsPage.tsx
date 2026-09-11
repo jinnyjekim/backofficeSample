@@ -188,7 +188,7 @@ export function CreditTermsPage() {
       <div className={styles.main}>
         <div className={styles.head}>
           <div>
-            <div className={styles.title}>신용 / 거래 조건</div>
+            <div className={styles.title}>신용/거래 조건</div>
             <div className={styles.subtitle}>
               거래처별 신용 한도와 결제·거래 조건을 관리합니다.
             </div>

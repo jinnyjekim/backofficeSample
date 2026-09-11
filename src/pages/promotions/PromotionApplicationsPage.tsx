@@ -205,6 +205,21 @@ export function PromotionApplicationsPage() {
     return { id: a.id, cells, onClick: () => setDrawerId(a.id) };
   });
 
+  const metrics = useMemo(() => {
+    const totalCount = applications.length;
+    const totalDiscount = applications.reduce((sum, a) => sum + Math.max(0, a.currentDiscountAmount), 0);
+    const totalBase = applications.reduce((sum, a) => sum + a.baseAmount, 0);
+    const avgRate = totalBase > 0 ? ((totalDiscount / totalBase) * 100).toFixed(1) : '0';
+    const canceledCount = applications.filter((a) => a.status === '취소' || a.status === '환원').length;
+
+    return {
+      totalCount,
+      totalDiscount,
+      avgRate,
+      canceledCount,
+    };
+  }, [applications]);
+
   return (
     <div className={styles.page}>
       <div className={styles.headTop}>
@@ -213,6 +228,34 @@ export function PromotionApplicationsPage() {
             <div className={styles.title}>프로모션 적용 이력</div>
             <div className={styles.subtitle}>
               실제 주문 및 거래에 적용된 프로모션과 할인 결과를 조회합니다.
+            </div>
+          </div>
+        </div>
+
+        {/* 상단 성과 요약 메트릭 카드 */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', margin: '16px 0 20px' }}>
+          <div style={{ background: '#fff', border: '1px solid #e4e4e7', borderRadius: '10px', padding: '14px 18px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+            <div style={{ fontSize: '11.5px', color: '#71717a', fontWeight: 500, marginBottom: '4px' }}>총 할인 지원 금액</div>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#dc2626' }}>
+              -{metrics.totalDiscount.toLocaleString('ko-KR')}원
+            </div>
+          </div>
+          <div style={{ background: '#fff', border: '1px solid #e4e4e7', borderRadius: '10px', padding: '14px 18px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+            <div style={{ fontSize: '11.5px', color: '#71717a', fontWeight: 500, marginBottom: '4px' }}>총 프로모션 적용 건수</div>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#18181b' }}>
+              {metrics.totalCount.toLocaleString('ko-KR')}건
+            </div>
+          </div>
+          <div style={{ background: '#fff', border: '1px solid #e4e4e7', borderRadius: '10px', padding: '14px 18px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+            <div style={{ fontSize: '11.5px', color: '#71717a', fontWeight: 500, marginBottom: '4px' }}>주문당 평균 할인율</div>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#2563eb' }}>
+              {metrics.avgRate}%
+            </div>
+          </div>
+          <div style={{ background: '#fff', border: '1px solid #e4e4e7', borderRadius: '10px', padding: '14px 18px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+            <div style={{ fontSize: '11.5px', color: '#71717a', fontWeight: 500, marginBottom: '4px' }}>취소 / 환원 건수</div>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: '#71717a' }}>
+              {metrics.canceledCount}건
             </div>
           </div>
         </div>
