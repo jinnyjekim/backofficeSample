@@ -252,7 +252,7 @@
   padding: 0;
   border: 0;
 }
-.filterBox[data-filter-expanded="true"] .searchRow { margin-bottom: 12px; }
+/* 행 간격은 전역 필터 표준(index.css)이 관리합니다 */
 
 .smallSelect {
   height: 32px;
@@ -278,15 +278,8 @@
   color: #52525b;
 }
 .clearBtn {
-  height: 32px !important;
-  padding: 0 10px !important;
-  border: 0 !important;
-  background: transparent !important;
-  color: #a1a1aa !important;
-  font-size: 12px !important;
   white-space: nowrap;
 }
-.clearBtn:hover { color: #52525b !important; }
 
 @media (max-width: 1100px) {
   .searchRow { flex-wrap: wrap; }

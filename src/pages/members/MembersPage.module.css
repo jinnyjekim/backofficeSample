@@ -258,16 +258,8 @@
   min-width: 0;
 }
 
-.searchInput {
-  flex: 0 1 300px;
-  min-width: 200px;
-  max-width: 320px;
-  width: 100%;
-  height: auto;
-  border: 0;
-  padding: 0;
-}
 
+/* 검색 버튼 — 전역 필터 표준이 돋보기 아이콘으로 치환합니다(회사 페이지와 동일) */
 .searchBtn {
   height: 34px;
   padding: 0 16px;
@@ -279,10 +271,11 @@
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color 0.15s;
 }
-.searchBtn:hover {
-  background: #3f3f46;
+.searchInput {
+  flex: 0 1 300px;
+  min-width: 200px;
+  max-width: 320px;
 }
 
 .quickFilters {
@@ -343,7 +336,6 @@
   padding: 0;
   border: 0;
 }
-.filterBox[data-filter-expanded="true"] .searchRow { margin-bottom: 12px; }
 
 .smallSelect {
   height: 32px;
@@ -356,28 +348,17 @@
   cursor: pointer;
 }
 
-.resetBtn {
-  height: 34px;
-  padding: 0 10px;
-  border: 0;
-  background: transparent;
-  color: #a1a1aa;
-  font-size: 12px;
-  cursor: pointer;
-}
-.resetBtn:hover {
-  color: #52525b;
-}
 .clearBtn {
-  height: 32px !important;
-  padding: 0 10px !important;
-  border: 0 !important;
-  background: transparent !important;
-  color: #a1a1aa !important;
-  font-size: 12px !important;
   white-space: nowrap;
 }
-.clearBtn:hover { color: #52525b !important; }
+
+/* 조건 칩 묶음 — 상세 필터 접힘 시 행과 함께 감춰지도록 div 로 감쌉니다 */
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
 
 @media (max-width: 1100px) {
   .searchRow { flex-wrap: wrap; }

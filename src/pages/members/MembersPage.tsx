@@ -369,7 +369,7 @@ export function MembersPage() {
           <div className={styles.filterZone}>
             <div className={styles.filterBox} data-filter-expanded={detailOpen}>
               <div className={styles.searchRow}>
-                <CommonInput.Search
+                <CommonInput
                   ref={searchRef}
                   className={styles.searchInput}
                   value={q}
@@ -414,224 +414,226 @@ export function MembersPage() {
                   상세 필터
                 </CommonButton>
 
-                <CommonButton type="button" variant="ghost" size="md" className={styles.clearBtn} onClick={clearAll}>
+                <CommonButton type="button" variant="secondary" size="md" className={styles.clearBtn} onClick={clearAll}>
                   초기화
                 </CommonButton>
               </div>
 
-              {detailOpen && (
-                <div className={styles.filterRow}>
-                  {mode === 'B2C' && (
-                    <>
-                      <label className="globalFilterField">
-                        <span>등급</span>
-                        <select
-                          aria-label="회원 등급"
-                          className={styles.smallSelect}
-                          value={chips.find((c) => c.hint === '등급')?.value || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (!val) setChips((prev) => prev.filter((c) => c.hint !== '등급'));
-                            else addChip({ hint: '등급', value: val, test: (r) => r.grade === val });
-                          }}
-                        >
-                          <option value="">등급 전체</option>
-                          <option value="VIP">VIP</option>
-                          <option value="Gold">Gold</option>
-                          <option value="Normal">Normal</option>
-                        </select>
-                      </label>
-                      <label className="globalFilterField">
-                        <span>상태</span>
-                        <select
-                          aria-label="회원 상태"
-                          className={styles.smallSelect}
-                          value={chips.find((c) => c.hint === '상태')?.value || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (!val) setChips((prev) => prev.filter((c) => c.hint !== '상태'));
-                            else addChip({ hint: '상태', value: val, test: (r) => r.status === val });
-                          }}
-                        >
-                          <option value="">상태 전체</option>
-                          <option value="정상">정상</option>
-                          <option value="휴면">휴면</option>
-                          <option value="정지">정지</option>
-                        </select>
-                      </label>
-                      <label className="globalFilterField">
-                        <span>가입 경로</span>
-                        <select
-                          aria-label="가입 경로"
-                          className={styles.smallSelect}
-                          value={chips.find((c) => c.hint === '가입 경로')?.value || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (!val) setChips((prev) => prev.filter((c) => c.hint !== '가입 경로'));
-                            else addChip({ hint: '가입 경로', value: val, test: (r) => r.provider === val });
-                          }}
-                        >
-                          <option value="">가입 경로 전체</option>
-                          <option value="Google">Google</option>
-                          <option value="Kakao">Kakao</option>
-                          <option value="자체">자체</option>
-                        </select>
-                      </label>
-                      <label className="globalFilterField">
-                        <span>마케팅</span>
-                        <select
-                          aria-label="마케팅 수신 동의"
-                          className={styles.smallSelect}
-                          value={chips.find((c) => c.hint === '마케팅')?.value || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (!val) setChips((prev) => prev.filter((c) => c.hint !== '마케팅'));
-                            else addChip({ hint: '마케팅', value: val, test: (r) => (val === '동의' ? r.marketing : !r.marketing) });
-                          }}
-                        >
-                          <option value="">마케팅 전체</option>
-                          <option value="동의">동의</option>
-                          <option value="미동의">미동의</option>
-                        </select>
-                      </label>
-                    </>
+              <div className={styles.filterRow}>
+                {mode === 'B2C' && (
+                  <>
+                    <label className="globalFilterField">
+                      <span>등급</span>
+                      <select
+                        aria-label="회원 등급"
+                        className={styles.smallSelect}
+                        value={chips.find((c) => c.hint === '등급')?.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) setChips((prev) => prev.filter((c) => c.hint !== '등급'));
+                          else addChip({ hint: '등급', value: val, test: (r) => r.grade === val });
+                        }}
+                      >
+                        <option value="">등급 전체</option>
+                        <option value="VIP">VIP</option>
+                        <option value="Gold">Gold</option>
+                        <option value="Normal">Normal</option>
+                      </select>
+                    </label>
+                    <label className="globalFilterField">
+                      <span>상태</span>
+                      <select
+                        aria-label="회원 상태"
+                        className={styles.smallSelect}
+                        value={chips.find((c) => c.hint === '상태')?.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) setChips((prev) => prev.filter((c) => c.hint !== '상태'));
+                          else addChip({ hint: '상태', value: val, test: (r) => r.status === val });
+                        }}
+                      >
+                        <option value="">상태 전체</option>
+                        <option value="정상">정상</option>
+                        <option value="휴면">휴면</option>
+                        <option value="정지">정지</option>
+                      </select>
+                    </label>
+                    <label className="globalFilterField">
+                      <span>가입 경로</span>
+                      <select
+                        aria-label="가입 경로"
+                        className={styles.smallSelect}
+                        value={chips.find((c) => c.hint === '가입 경로')?.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) setChips((prev) => prev.filter((c) => c.hint !== '가입 경로'));
+                          else addChip({ hint: '가입 경로', value: val, test: (r) => r.provider === val });
+                        }}
+                      >
+                        <option value="">가입 경로 전체</option>
+                        <option value="Google">Google</option>
+                        <option value="Kakao">Kakao</option>
+                        <option value="자체">자체</option>
+                      </select>
+                    </label>
+                    <label className="globalFilterField">
+                      <span>마케팅</span>
+                      <select
+                        aria-label="마케팅 수신 동의"
+                        className={styles.smallSelect}
+                        value={chips.find((c) => c.hint === '마케팅')?.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) setChips((prev) => prev.filter((c) => c.hint !== '마케팅'));
+                          else addChip({ hint: '마케팅', value: val, test: (r) => (val === '동의' ? r.marketing : !r.marketing) });
+                        }}
+                      >
+                        <option value="">마케팅 전체</option>
+                        <option value="동의">동의</option>
+                        <option value="미동의">미동의</option>
+                      </select>
+                    </label>
+                  </>
+                )}
+
+                {mode === 'C2C' && (
+                  <>
+                    <label className="globalFilterField">
+                      <span>역할</span>
+                      <select
+                        aria-label="C2C 이용 역할"
+                        className={styles.smallSelect}
+                        value={chips.find((c) => c.hint === '역할')?.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) setChips((prev) => prev.filter((c) => c.hint !== '역할'));
+                          else
+                            addChip({
+                              hint: '역할',
+                              value: val,
+                              test: (r) => (val === '구매만' ? r.buyer && !r.seller : val === '판매만' ? !r.buyer && r.seller : r.buyer && r.seller),
+                            });
+                        }}
+                      >
+                        <option value="">역할 전체</option>
+                        <option value="구매만">구매만</option>
+                        <option value="판매만">판매만</option>
+                        <option value="구매+판매">구매+판매</option>
+                      </select>
+                    </label>
+                    <label className="globalFilterField">
+                      <span>판매자 승인</span>
+                      <select
+                        aria-label="판매자 승인 상태"
+                        className={styles.smallSelect}
+                        value={chips.find((c) => c.hint === '판매자')?.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) setChips((prev) => prev.filter((c) => c.hint !== '판매자'));
+                          else addChip({ hint: '판매자', value: val, test: (r) => r.sellerStatus === val });
+                        }}
+                      >
+                        <option value="">판매자 상태 전체</option>
+                        <option value="승인">승인</option>
+                        <option value="승인대기">승인대기</option>
+                        <option value="정지">정지</option>
+                      </select>
+                    </label>
+                  </>
+                )}
+
+                {mode === 'B2B' && (
+                  <>
+                    <label className="globalFilterField">
+                      <span>계정 상태</span>
+                      <select
+                        aria-label="계정 상태"
+                        className={styles.smallSelect}
+                        value={chips.find((c) => c.hint === '계정')?.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) setChips((prev) => prev.filter((c) => c.hint !== '계정'));
+                          else addChip({ hint: '계정', value: val, test: (r) => r.account === val });
+                        }}
+                      >
+                        <option value="">계정 전체</option>
+                        <option value="정상">정상</option>
+                        <option value="승인대기">승인대기</option>
+                        <option value="사용중지">사용중지</option>
+                      </select>
+                    </label>
+                    <label className="globalFilterField">
+                      <span>역할</span>
+                      <select
+                        aria-label="권한 역할"
+                        className={styles.smallSelect}
+                        value={chips.find((c) => c.hint === '역할')?.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) setChips((prev) => prev.filter((c) => c.hint !== '역할'));
+                          else addChip({ hint: '역할', value: val, test: (r) => r.role === val });
+                        }}
+                      >
+                        <option value="">역할 전체</option>
+                        <option value="관리자">관리자</option>
+                        <option value="승인 담당자">승인 담당자</option>
+                        <option value="구매 담당자">구매 담당자</option>
+                      </select>
+                    </label>
+                    <label className="globalFilterField">
+                      <span>회사 거래</span>
+                      <select
+                        aria-label="거래 상태"
+                        className={styles.smallSelect}
+                        value={chips.find((c) => c.hint === '회사 거래')?.value || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) setChips((prev) => prev.filter((c) => c.hint !== '회사 거래'));
+                          else addChip({ hint: '회사 거래', value: val, test: (r) => r.companyTrade === val });
+                        }}
+                      >
+                        <option value="">거래상태 전체</option>
+                        <option value="거래중">거래중</option>
+                        <option value="거래대기">거래대기</option>
+                        <option value="거래중지">거래중지</option>
+                      </select>
+                    </label>
+                  </>
+                )}
+
+                <div className={styles.addWrap}>
+                  <button type="button" className={styles.addBtn} onClick={() => setAddOpen((v) => !v)}>
+                    ＋ 조건 추가
+                  </button>
+                  {addOpen && (
+                    <div className={styles.addMenu}>
+                      {cfg.groups.map((g) => (
+                        <div key={g.label} className={styles.addGroup}>
+                          <div className={styles.addGroupLabel}>{g.label}</div>
+                          {g.items.map((it) => (
+                            <button key={it.hint + it.value} type="button" className={styles.addItem} onClick={() => addChip(it)}>
+                              {it.hint} = {it.value}
+                              <span className={styles.addItemHint}>{it.hint}</span>
+                            </button>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
                   )}
-
-                  {mode === 'C2C' && (
-                    <>
-                      <label className="globalFilterField">
-                        <span>역할</span>
-                        <select
-                          aria-label="C2C 이용 역할"
-                          className={styles.smallSelect}
-                          value={chips.find((c) => c.hint === '역할')?.value || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (!val) setChips((prev) => prev.filter((c) => c.hint !== '역할'));
-                            else
-                              addChip({
-                                hint: '역할',
-                                value: val,
-                                test: (r) => (val === '구매만' ? r.buyer && !r.seller : val === '판매만' ? !r.buyer && r.seller : r.buyer && r.seller),
-                              });
-                          }}
-                        >
-                          <option value="">역할 전체</option>
-                          <option value="구매만">구매만</option>
-                          <option value="판매만">판매만</option>
-                          <option value="구매+판매">구매+판매</option>
-                        </select>
-                      </label>
-                      <label className="globalFilterField">
-                        <span>판매자 승인</span>
-                        <select
-                          aria-label="판매자 승인 상태"
-                          className={styles.smallSelect}
-                          value={chips.find((c) => c.hint === '판매자')?.value || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (!val) setChips((prev) => prev.filter((c) => c.hint !== '판매자'));
-                            else addChip({ hint: '판매자', value: val, test: (r) => r.sellerStatus === val });
-                          }}
-                        >
-                          <option value="">판매자 상태 전체</option>
-                          <option value="승인">승인</option>
-                          <option value="승인대기">승인대기</option>
-                          <option value="정지">정지</option>
-                        </select>
-                      </label>
-                    </>
-                  )}
-
-                  {mode === 'B2B' && (
-                    <>
-                      <label className="globalFilterField">
-                        <span>계정 상태</span>
-                        <select
-                          aria-label="계정 상태"
-                          className={styles.smallSelect}
-                          value={chips.find((c) => c.hint === '계정')?.value || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (!val) setChips((prev) => prev.filter((c) => c.hint !== '계정'));
-                            else addChip({ hint: '계정', value: val, test: (r) => r.account === val });
-                          }}
-                        >
-                          <option value="">계정 전체</option>
-                          <option value="정상">정상</option>
-                          <option value="승인대기">승인대기</option>
-                          <option value="사용중지">사용중지</option>
-                        </select>
-                      </label>
-                      <label className="globalFilterField">
-                        <span>역할</span>
-                        <select
-                          aria-label="권한 역할"
-                          className={styles.smallSelect}
-                          value={chips.find((c) => c.hint === '역할')?.value || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (!val) setChips((prev) => prev.filter((c) => c.hint !== '역할'));
-                            else addChip({ hint: '역할', value: val, test: (r) => r.role === val });
-                          }}
-                        >
-                          <option value="">역할 전체</option>
-                          <option value="관리자">관리자</option>
-                          <option value="승인 담당자">승인 담당자</option>
-                          <option value="구매 담당자">구매 담당자</option>
-                        </select>
-                      </label>
-                      <label className="globalFilterField">
-                        <span>회사 거래</span>
-                        <select
-                          aria-label="거래 상태"
-                          className={styles.smallSelect}
-                          value={chips.find((c) => c.hint === '회사 거래')?.value || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (!val) setChips((prev) => prev.filter((c) => c.hint !== '회사 거래'));
-                            else addChip({ hint: '회사 거래', value: val, test: (r) => r.companyTrade === val });
-                          }}
-                        >
-                          <option value="">거래상태 전체</option>
-                          <option value="거래중">거래중</option>
-                          <option value="거래대기">거래대기</option>
-                          <option value="거래중지">거래중지</option>
-                        </select>
-                      </label>
-                    </>
-                  )}
-
-                  <div className={styles.addWrap}>
-                    <button type="button" className={styles.addBtn} onClick={() => setAddOpen((v) => !v)}>
-                      ＋ 조건 추가
-                    </button>
-                    {addOpen && (
-                      <div className={styles.addMenu}>
-                        {cfg.groups.map((g) => (
-                          <div key={g.label} className={styles.addGroup}>
-                            <div className={styles.addGroupLabel}>{g.label}</div>
-                            {g.items.map((it) => (
-                              <button key={it.hint + it.value} type="button" className={styles.addItem} onClick={() => addChip(it)}>
-                                {it.hint} = {it.value}
-                                <span className={styles.addItemHint}>{it.hint}</span>
-                              </button>
-                            ))}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {chips.map((c, i) => (
-                    <button key={i} type="button" className={styles.chip} onClick={() => removeChip(i)}>
-                      <span className={styles.chipKey}>{c.hint}</span>
-                      <span className={styles.chipValue}>{c.value}</span>
-                      <span className={styles.chipX}>×</span>
-                    </button>
-                  ))}
                 </div>
-              )}
+
+                {chips.length > 0 && (
+                  <div className={styles.chipRow}>
+                    {chips.map((c, i) => (
+                      <button key={i} type="button" className={styles.chip} onClick={() => removeChip(i)}>
+                        <span className={styles.chipKey}>{c.hint}</span>
+                        <span className={styles.chipValue}>{c.value}</span>
+                        <span className={styles.chipX}>×</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className={`${styles.stepLabel} ${styles.step2}`}>
