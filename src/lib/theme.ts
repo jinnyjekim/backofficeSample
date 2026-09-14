@@ -166,6 +166,9 @@ export function applyDisplaySettings(settings: DisplaySettings) {
 
   const root = document.documentElement;
 
+  // 브라우저 바깥 영역은 고정하고 각 페이지의 내부 컨테이너에서만 스크롤합니다.
+  root.style.overflow = 'hidden';
+
   // 1. 글자 크기 (기본 rem 단위 스케일링)
   root.style.fontSize = `${settings.fontSize}px`;
 

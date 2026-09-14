@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { Chart as M2MChart, type ChartSeries } from 'm2m-uiux-react/Chart';
 import styles from './StatisticsChart.module.css';
 
 export interface StatisticsChartDatum {
@@ -40,38 +41,26 @@ export function StatisticsBarChart({
   formatValue = (value) => value.toLocaleString('ko-KR'),
   className,
 }: StatisticsBarChartProps) {
-  const max = Math.max(...data.map((item) => Math.abs(item.value)), 1);
-  const labelStep = Math.max(1, Math.ceil(data.length / maxLabelCount));
   const sizeStyle: CSSProperties = { width, ...(aspectRatio ? { aspectRatio } : { height }) };
 
   if (!data.length || data.every((item) => item.value === 0)) {
     return <div className={styles.empty} style={sizeStyle}>{emptyText}</div>;
   }
 
+  const hasNegative = data.some((item) => item.value < 0);
+  const chartData = data.map((item) => ({
+    label: item.label,
+    value: item.value >= 0 ? item.value : 0,
+    negative: item.value < 0 ? item.value : 0,
+  }));
+  const series: ChartSeries[] = [
+    { key: 'value', label: metricLabel, color },
+    ...(hasNegative ? [{ key: 'negative', label: `${metricLabel} 감소`, color: negativeColor }] : []),
+  ];
+
   return (
-    <div className={`${styles.root} ${className ?? ''}`} style={sizeStyle}>
-      <div className={styles.barPlot}>
-        {data.map((item, index) => (
-          <div
-            key={`${item.label}-${index}`}
-            className={styles.barSlot}
-            title={`${item.label} · ${metricLabel} ${formatValue(item.value)}`}
-          >
-            <span
-              className={styles.bar}
-              style={{
-                height: `${Math.max(minBarPercent, (Math.abs(item.value) / max) * 100)}%`,
-                background: item.value < 0 ? negativeColor : color,
-              }}
-            />
-          </div>
-        ))}
-      </div>
-      <div className={styles.labels}>
-        {data.map((item, index) => (
-          <span key={`${item.label}-${index}`}>{index % labelStep === 0 || index === data.length - 1 ? item.label : ''}</span>
-        ))}
-      </div>
+    <div className={`${styles.root} ${styles.chartAdapter} ${className ?? ''}`} style={sizeStyle} data-min-bar-percent={minBarPercent} data-max-label-count={maxLabelCount}>
+      <M2MChart type="bar" data={chartData} xKey="label" series={series} height={typeof height === 'number' ? height : 220} showLegend={hasNegative} valueFormatter={formatValue} />
     </div>
   );
 }
@@ -99,24 +88,20 @@ export function StatisticsHorizontalBarChart({
   ariaLabel = '가로 막대 통계 차트',
   className,
 }: StatisticsHorizontalBarChartProps) {
-  const max = Math.max(...data.map((item) => Math.abs(item.value)), 1);
   const sizeStyle: CSSProperties = { width, ...(aspectRatio ? { aspectRatio } : { height }) };
 
   return (
-    <div className={`${styles.horizontalChart} ${className ?? ''}`} style={{ ...sizeStyle, gap: rowGap }} role="img" aria-label={ariaLabel}>
-      {data.map((item, index) => {
-        const percent = Math.max(0, Math.min(100, item.percent ?? (Math.abs(item.value) / max) * 100));
-        return (
-          <div className={styles.horizontalRow} key={`${item.label}-${index}`}>
-            <span className={styles.horizontalLabel}>{item.label}</span>
-            <div className={styles.horizontalTrack} style={{ background: trackColor }}>
-              <i style={{ width: `${percent}%`, background: color }} />
-            </div>
-            <strong>{formatValue(item.value)}</strong>
-            {showPercentage && <em>{Math.round(percent)}%</em>}
-          </div>
-        );
-      })}
+    <div className={`${styles.horizontalChart} ${styles.chartAdapter} ${className ?? ''}`} style={{ ...sizeStyle, gap: rowGap, background: trackColor }} role="img" aria-label={ariaLabel}>
+      <M2MChart
+        type="bar"
+        layout="vertical"
+        data={data.map((item) => ({ label: item.label, value: item.percent ?? item.value }))}
+        xKey="label"
+        series={[{ key: 'value', label: '구성비', color }]}
+        height={typeof height === 'number' ? height : Math.max(150, data.length * 34)}
+        showLegend={false}
+        valueFormatter={(value) => showPercentage ? `${Math.round(value)}%` : formatValue(value)}
+      />
     </div>
   );
 }
@@ -148,40 +133,16 @@ export function StatisticsLineChart({
   maxLabelCount = 7,
   className,
 }: StatisticsLineChartProps) {
-  const viewWidth = 860;
-  const viewHeight = 220;
-  const paddingX = 38;
-  const paddingY = 18;
-  const allValues = [...values, ...(comparisonValues ?? [])];
-  const max = Math.max(...allValues, 1);
-  const min = Math.min(...allValues, 0);
-  const range = Math.max(max - min, 1);
-  const coordinates = (series: number[]) => series.map((value, index) => ({
-    x: series.length <= 1 ? viewWidth / 2 : paddingX + (index / (series.length - 1)) * (viewWidth - paddingX * 2),
-    y: viewHeight - paddingY - ((value - min) / range) * (viewHeight - paddingY * 2),
-  }));
-  const points = (series: number[]) => coordinates(series).map((point) => `${point.x},${point.y}`).join(' ');
-  const currentPoints = coordinates(values);
-  const areaPoints = `${paddingX},${viewHeight - paddingY} ${points(values)} ${viewWidth - paddingX},${viewHeight - paddingY}`;
-  const labelStep = Math.max(1, Math.ceil(labels.length / maxLabelCount));
   const sizeStyle: CSSProperties = { width, ...(aspectRatio ? { aspectRatio } : { height }) };
+  const chartData = labels.map((label, index) => ({ label, current: values[index] ?? 0, comparison: comparisonValues?.[index] ?? 0 }));
+  const series: ChartSeries[] = [
+    { key: 'current', label: '현재 기간', color },
+    ...(comparisonValues ? [{ key: 'comparison', label: '이전 기간', color: comparisonColor, dashed: true }] : []),
+  ];
 
   return (
-    <div className={`${styles.root} ${className ?? ''}`} style={sizeStyle}>
-      <div className={styles.linePlot}>
-        <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} preserveAspectRatio="none" role="img" aria-label={ariaLabel}>
-          {[0.25, 0.5, 0.75, 1].map((ratio) => (
-            <line key={ratio} x1={paddingX} x2={viewWidth - paddingX} y1={viewHeight - paddingY - ratio * (viewHeight - paddingY * 2)} y2={viewHeight - paddingY - ratio * (viewHeight - paddingY * 2)} className={styles.gridLine} />
-          ))}
-          {fill && values.length > 0 && <polygon points={areaPoints} fill={color} className={styles.area} />}
-          {comparisonValues && <polyline points={points(comparisonValues)} fill="none" stroke={comparisonColor} className={styles.comparisonLine} />}
-          <polyline points={points(values)} fill="none" stroke={color} className={styles.line} />
-          {showPoints && currentPoints.map((point, index) => <circle key={index} cx={point.x} cy={point.y} r="3.5" fill={color} className={styles.point} />)}
-        </svg>
-      </div>
-      <div className={styles.labels}>
-        {labels.map((label, index) => <span key={`${label}-${index}`}>{index % labelStep === 0 || index === labels.length - 1 ? label : ''}</span>)}
-      </div>
+    <div className={`${styles.root} ${styles.chartAdapter} ${className ?? ''}`} style={sizeStyle} role="img" aria-label={ariaLabel} data-show-points={showPoints} data-max-label-count={maxLabelCount}>
+      <M2MChart type={fill ? 'area' : 'line'} data={chartData} xKey="label" series={series} height={typeof height === 'number' ? height : 240} showLegend={Boolean(comparisonValues)} />
     </div>
   );
 }
@@ -242,15 +203,6 @@ export function StatisticsDonutChart({
   const restValue = sorted.slice(maxLegendItems).reduce((sum, item) => sum + Math.max(0, item.value), 0);
   const slices = restValue > 0 ? [...head, { label: '기타', value: restValue }] : head;
 
-  // conic-gradient 는 누적 각도로 그리므로 구간 경계를 직접 계산합니다.
-  let cursor = 0;
-  const stops = slices.map((item, index) => {
-    const start = cursor;
-    cursor += (Math.max(0, item.value) / total) * 100;
-    const end = index === slices.length - 1 ? 100 : cursor;
-    return `${colors[index % colors.length]} ${start}% ${end}%`;
-  });
-
   return (
     <div
       className={`${styles.donutWrap} ${direction === 'column' ? styles.donutWrapColumn : ''} ${className ?? ''}`}
@@ -258,17 +210,10 @@ export function StatisticsDonutChart({
       role="img"
       aria-label={ariaLabel}
     >
-      <div
-        className={styles.donutRing}
-        style={{
-          width: size,
-          height: size,
-          background: `conic-gradient(${stops.join(',')})`,
-          ['--donut-thickness' as string]: `${thickness}px`,
-        }}
-      >
+      <div className={styles.donutCanvas} style={{ width: size, height: size }}>
+        <M2MChart type="donut" data={slices.map((item) => ({ label: item.label, value: item.value }))} xKey="label" series={[{ key: 'value', label: ariaLabel }]} colors={colors} height={size} showAxis={false} showGrid={false} showLegend={false} valueFormatter={(value) => formatValue(value, value / total * 100)} />
         {(centerValue !== undefined || centerLabel !== undefined) && (
-          <div className={styles.donutCenter}>
+          <div className={styles.donutCenter} style={{ width: size - thickness * 2, height: size - thickness * 2 }}>
             {centerValue !== undefined && <strong>{centerValue}</strong>}
             {centerLabel !== undefined && <span>{centerLabel}</span>}
           </div>

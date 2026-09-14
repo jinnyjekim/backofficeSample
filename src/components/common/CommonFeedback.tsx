@@ -1,8 +1,10 @@
 /* oxlint-disable react/only-export-components -- showToast is the guide-defined public API */
-import { useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { CheckCircle2, CircleAlert, Info, X, XCircle } from 'lucide-react';
 import { Loading as M2MLoading } from 'm2m-uiux-react/Loading';
 import { ProgressBar as M2MProgressBar } from 'm2m-uiux-react/ProgressBar';
+import { Steps as M2MSteps } from 'm2m-uiux-react/Steps';
+import { ToastProvider as M2MToastProvider, showToast as showM2MToast } from 'm2m-uiux-react/Toast';
 import { CommonButton, type CommonClassNames, type CommonSize } from './CommonControls';
 import styles from './common.module.css';
 
@@ -15,11 +17,18 @@ export interface CommonToastAction { label: ReactNode; onClick: () => void; }
 export interface CommonToastData { id: string; message: ReactNode; description?: ReactNode; type?: CommonToastType; duration?: number; position?: CommonToastPosition; dismissible?: boolean; variant?: 'filled' | 'light'; action?: ReactNode | CommonToastAction; }
 export interface CommonToastProps extends Omit<CommonToastData, 'id'> { onClose?: () => void; className?: string; classNames?: CommonClassNames; }
 
-const toastEvent = 'common-toast';
 export function showToast(toast: Omit<CommonToastData, 'id'>) {
-  const detail: CommonToastData = { ...toast, id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}` };
-  window.dispatchEvent(new CustomEvent<CommonToastData>(toastEvent, { detail }));
-  return detail.id;
+  return showM2MToast({
+    message: toast.description ? <span>{toast.message}<small className={styles.toastLibraryDescription}>{toast.description}</small></span> : toast.message,
+    type: toast.type,
+    duration: toast.duration,
+    position: toast.position,
+    dismissible: toast.dismissible,
+    variant: toast.variant,
+    action: toast.action && typeof toast.action === 'object' && 'label' in toast.action && 'onClick' in toast.action
+      ? { label: String(toast.action.label), onClick: toast.action.onClick }
+      : undefined,
+  });
 }
 
 export function CommonToast({ message, description, type = 'info', action, dismissible = true, variant = 'light', onClose, className, classNames }: CommonToastProps) {
@@ -30,33 +39,12 @@ export function CommonToast({ message, description, type = 'info', action, dismi
 
 export interface CommonToastContainerProps { position?: CommonToastPosition; limit?: number; className?: string; }
 export function CommonToastContainer({ position = 'top-right', limit = 4, className }: CommonToastContainerProps) {
-  const [toasts, setToasts] = useState<CommonToastData[]>([]);
-  useEffect(() => {
-    const receive = (event: Event) => {
-      const toast = (event as CustomEvent<CommonToastData>).detail;
-      setToasts((current) => [...current, toast].slice(-limit));
-      if (toast.duration !== 0 && toast.duration !== Infinity) window.setTimeout(() => setToasts((current) => current.filter((item) => item.id !== toast.id)), toast.duration ?? 3000);
-    };
-    window.addEventListener(toastEvent, receive);
-    return () => window.removeEventListener(toastEvent, receive);
-  }, [limit]);
-  return <div className={cx(styles.toastContainer, styles[`toastPosition_${position}`], className)}>{toasts.map((toast) => <CommonToast key={toast.id} {...toast} onClose={() => setToasts((current) => current.filter((item) => item.id !== toast.id))} />)}</div>;
+  return <div className={className} data-toast-container-adapter data-position={position} data-limit={limit} />;
 }
 
 export interface ToastProviderProps { children: ReactNode; position?: CommonToastPosition; maxCount?: number; }
 export function ToastProvider({ children, position = 'top-right', maxCount = 5 }: ToastProviderProps) {
-  const [toasts, setToasts] = useState<CommonToastData[]>([]);
-  useEffect(() => {
-    const receive = (event: Event) => {
-      const toast = (event as CustomEvent<CommonToastData>).detail;
-      setToasts((current) => [...current, toast].slice(-maxCount));
-      if (toast.duration !== 0 && toast.duration !== Infinity) window.setTimeout(() => setToasts((current) => current.filter((item) => item.id !== toast.id)), toast.duration ?? 3000);
-    };
-    window.addEventListener(toastEvent, receive);
-    return () => window.removeEventListener(toastEvent, receive);
-  }, [maxCount]);
-  const positions: CommonToastPosition[] = ['top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'];
-  return <>{children}{positions.map((currentPosition) => { const current = toasts.filter((toast) => (toast.position ?? position) === currentPosition); return current.length ? <div key={currentPosition} className={cx(styles.toastContainer, styles[`toastPosition_${currentPosition}`])}>{current.map((toast) => <CommonToast key={toast.id} {...toast} onClose={() => setToasts((items) => items.filter((item) => item.id !== toast.id))} />)}</div> : null; })}</>;
+  return <M2MToastProvider position={position} maxCount={maxCount}>{children}</M2MToastProvider>;
 }
 
 export interface CommonLoadingProps { type?: 'spinner' | 'dots' | 'skeleton'; size?: CommonSize; color?: string; text?: ReactNode; overlay?: boolean; rows?: number; className?: string; classNames?: CommonClassNames; }
@@ -79,7 +67,18 @@ export function CommonProgressBar({ value, max = 100, showValue = false, color =
 export interface CommonStep { key?: string; title: ReactNode; description?: ReactNode; icon?: ReactNode; disabled?: boolean; }
 export interface CommonStepsProps { steps: CommonStep[]; current: number; direction?: 'horizontal' | 'vertical'; status?: 'process' | 'finish' | 'error' | 'wait'; onChange?: (index: number) => void; className?: string; classNames?: CommonClassNames; }
 export function CommonSteps({ steps, current, direction = 'horizontal', status = 'process', onChange, className, classNames }: CommonStepsProps) {
-  return <ol className={cx(styles.steps, styles[`steps_${direction}`], rootClass(classNames), className)}>{steps.map((step, index) => { const state = index < current ? 'finish' : index > current ? 'wait' : status; return <li key={step.key ?? index} className={styles[`step_${state}`]}><button type="button" disabled={step.disabled || !onChange} onClick={() => onChange?.(index)}><span className={styles.stepIcon}>{step.icon ?? (state === 'finish' ? '✓' : index + 1)}</span><span className={styles.stepBody}><strong>{step.title}</strong>{step.description && <small>{step.description}</small>}</span></button></li>; })}</ol>;
+  const handleClick = (event: import('react').MouseEvent<HTMLDivElement>) => {
+    if (!onChange) return;
+    const item = (event.target as HTMLElement).closest('.bsStepsStep');
+    if (!item || !event.currentTarget.contains(item)) return;
+    const index = Array.from(event.currentTarget.querySelectorAll('.bsStepsStep')).indexOf(item);
+    if (index >= 0 && !steps[index]?.disabled) onChange(index);
+  };
+  return (
+    <div className={cx(styles.stepsAdapter, onChange && styles.stepsInteractive, rootClass(classNames), className)} onClick={handleClick}>
+      <M2MSteps steps={steps.map(({ title, description }) => ({ title, description }))} current={current} direction={direction} status={status} />
+    </div>
+  );
 }
 
 export interface CommonConfirmActionProps { title: ReactNode; description?: ReactNode; confirmLabel?: string; cancelLabel?: string; destructive?: boolean; onConfirm?: () => void; onCancel?: () => void; }
