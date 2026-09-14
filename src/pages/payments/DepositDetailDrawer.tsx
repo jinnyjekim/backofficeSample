@@ -120,7 +120,7 @@ export function DepositDetailDrawer({ detail: d, onTabChange }: Props) {
                   <button type="button" className={styles.cardTitleLink}>{ic.no}</button>
                   <div className={styles.cardSub}>미수 {ic.remaining} · 지급예정 {ic.due}</div>
                 </div>
-                <span style={{ fontSize: 11.5, fontWeight: 600, color: ic.fg }}>{ic.matchLabel}</span>
+                <span style={{ fontSize: '0.71875rem', fontWeight: 600, color: ic.fg }}>{ic.matchLabel}</span>
               </div>
             ))}
           </div>

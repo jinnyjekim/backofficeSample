@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import {
   ArrowRight,
   Download,
@@ -17,6 +18,7 @@ import type {
   GridRow,
 } from "../../components/DataGrid/types";
 import { CommonSelect } from "../../components/common";
+import { StatisticsLineChart } from "../../components/charts";
 import { downloadStatisticsReport } from "../../lib/statisticsReport";
 import { useOutsideClose } from "../../lib/useOutsideClose";
 import shared from "../ops/opsShared.module.css";
@@ -73,6 +75,8 @@ function TrendChart({
   primary: number[];
   labels: string[];
 }) {
+  return <StatisticsLineChart values={primary} labels={labels} height={240} ariaLabel="판매자 활동 추이 차트" />;
+  /* legacy renderer retained temporarily for visual parity reference */
   const max = Math.max(...primary, 1);
   const width = 860;
   const height = 220;
@@ -966,7 +970,7 @@ export function SellerActivityStatsPage({
             </div>
             <p
               style={{
-                fontSize: "12.5px",
+                fontSize: "0.78125rem",
                 color: "#71717a",
                 margin: "10px 0 14px",
               }}
@@ -1035,10 +1039,10 @@ export function SellerActivityStatsPage({
                 data-grid-download
                 onClick={() => setDownloadOpen(true)}
               />
-              <select className={layout.pageSizeSelect} defaultValue="20개씩 보기">
+              <PageSizeSelect className={layout.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
           <DataGrid

@@ -236,7 +236,7 @@ export function CompanyDetailDrawer({ company, onClose, onStatusChange, onAddMem
                   <span className={styles.linkCell}>{c.no}</span>
                   <span className={styles.tableCellMain}>{c.name}</span>
                   <span className={styles.tableCellSub}>{c.period}</span>
-                  <span style={{ fontSize: '11.5px', fontWeight: 600, color: c.statusFg }}>{c.status}</span>
+                  <span style={{ fontSize: '0.71875rem', fontWeight: 600, color: c.statusFg }}>{c.status}</span>
                 </div>
               ))}
               {company.contracts.length === 0 && <div className={styles.emptyRow}>등록된 계약이 없습니다</div>}
@@ -271,7 +271,7 @@ export function CompanyDetailDrawer({ company, onClose, onStatusChange, onAddMem
                   <span className={styles.linkCell}>{o.no}</span>
                   <span className={styles.tableCellSub}>{o.date}</span>
                   <span className={styles.tableCellMain} style={{ textAlign: 'right' }}>{fmtWon(o.amount)}</span>
-                  <span style={{ fontSize: '11.5px', fontWeight: 600, color: o.statusFg, textAlign: 'right' }}>{o.status}</span>
+                  <span style={{ fontSize: '0.71875rem', fontWeight: 600, color: o.statusFg, textAlign: 'right' }}>{o.status}</span>
                 </div>
               ))}
               {company.orders.length === 0 && <div className={styles.emptyRow}>거래 내역이 없습니다</div>}
@@ -302,7 +302,7 @@ export function CompanyDetailDrawer({ company, onClose, onStatusChange, onAddMem
                 <div className={styles.collectionRow} key={i}>
                   <span className={styles.tableCellSub}>{c.date}</span>
                   <span className={styles.tableCellMain} style={{ textAlign: 'right' }}>{fmtWon(c.amount)}</span>
-                  <span style={{ fontSize: '11.5px', fontWeight: 600, color: c.statusFg, textAlign: 'right' }}>{c.status}</span>
+                  <span style={{ fontSize: '0.71875rem', fontWeight: 600, color: c.statusFg, textAlign: 'right' }}>{c.status}</span>
                 </div>
               ))}
               {company.collectionRows.length === 0 && <div className={styles.emptyRow}>수금 예정 내역이 없습니다</div>}
@@ -323,7 +323,7 @@ export function CompanyDetailDrawer({ company, onClose, onStatusChange, onAddMem
                   <span className={styles.linkCell}>{s.no}</span>
                   <span className={styles.tableCellSub}>{s.period}</span>
                   <span className={styles.tableCellMain} style={{ textAlign: 'right' }}>{fmtWon(s.amount)}</span>
-                  <span style={{ fontSize: '11.5px', fontWeight: 600, color: s.statusFg, textAlign: 'right' }}>{s.status}</span>
+                  <span style={{ fontSize: '0.71875rem', fontWeight: 600, color: s.statusFg, textAlign: 'right' }}>{s.status}</span>
                 </div>
               ))}
               {company.settlements.length === 0 && <div className={styles.emptyRow}>정산 내역이 없습니다</div>}

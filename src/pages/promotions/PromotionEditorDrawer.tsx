@@ -151,7 +151,7 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
         {isOngoing && (
           <div className={styles.editPanel} style={{ background: '#fffbeb', borderColor: '#fde68a', marginTop: 0, marginBottom: 16 }}>
             <div className={styles.editTitle} style={{ color: '#b45309' }}>⚠ 현재 진행중인 프로모션입니다</div>
-            <div style={{ fontSize: 12, color: '#92400e' }}>할인 조건을 변경하면 변경 이후 주문부터 새 조건이 적용됩니다. 기존 주문의 할인내역은 변경되지 않습니다.</div>
+            <div style={{ fontSize: '0.75rem', color: '#92400e' }}>할인 조건을 변경하면 변경 이후 주문부터 새 조건이 적용됩니다. 기존 주문의 할인내역은 변경되지 않습니다.</div>
           </div>
         )}
 
@@ -333,7 +333,7 @@ export function PromotionEditorDrawer({ promotion: p, onCancel, onSubmit }: Prop
           <input className={styles.formInput} value={adminMemo} onChange={(e) => setAdminMemo(e.target.value)} placeholder="참고사항을 남겨보세요" />
         </div>
 
-        {error && <div style={{ fontSize: 12, color: '#dc2626', marginTop: 8 }}>{error}</div>}
+        {error && <div style={{ fontSize: '0.75rem', color: '#dc2626', marginTop: 8 }}>{error}</div>}
       </div>
 
       <div className={styles.footer}>

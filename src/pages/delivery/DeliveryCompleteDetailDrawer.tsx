@@ -125,7 +125,7 @@ export function DeliveryCompleteDetailDrawer({ shipment: sh, activeTab, onTabCha
                   <span className={styles.gridCellStrong}>{it.name}</span>
                   <span className={styles.gridCellNormal}>{it.out}</span>
                   <span className={styles.gridCellStrong}>{it.delivered}</span>
-                  <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#059669' }}>완료</span>
+                  <span style={{ fontSize: '0.71875rem', fontWeight: 600, color: '#059669' }}>완료</span>
                 </div>
               ))}
             </div>

@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import { useMemo, useRef, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -578,10 +579,10 @@ export function JejuRemotePolicyPage() {
         
           <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={shared.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div></div>
         <DataGrid
           columns={[
@@ -658,7 +659,7 @@ export function JejuRemotePolicyPage() {
           <div className={drawerShared.scroll}>
             <div className={styles.previewCard} style={{ marginBottom: 16 }}>
               <h3
-                style={{ margin: "0 0 10px", fontSize: 12.5, fontWeight: 700 }}
+                style={{ margin: "0 0 10px", fontSize: '0.78125rem', fontWeight: 700 }}
               >
                 테스트 배송지 선택
               </h3>

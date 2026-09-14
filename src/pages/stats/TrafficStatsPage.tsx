@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CommonButton, CommonSelect } from '../../components/common';
+import { StatisticsBarChart } from '../../components/charts';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import styles from './TransactionStatsPage.module.css';
@@ -68,22 +69,7 @@ function StatCard({ label, value, def, deltaValue, deltaIsPoint, hasPrevious, su
 }
 
 function BarChart({ buckets, metricLabel, isPct = false }: { buckets: { label: string; value: number }[]; metricLabel: string; isPct?: boolean }) {
-  const max = Math.max(...buckets.map((b) => b.value), 1);
-  if (buckets.every((b) => b.value === 0)) return <div className={styles.emptyNote}>선택한 기간에 유입 데이터가 없습니다.</div>;
-  return (
-    <>
-      <div className={styles.chartArea}>
-        {buckets.map((b) => (
-          <div key={b.label} className={styles.chartBarWrap} title={`${b.label} · ${metricLabel} ${isPct ? b.value.toFixed(2) + '%' : b.value.toLocaleString('ko-KR')}`}>
-            <div className={styles.chartBar} style={{ height: `${Math.max(2, (b.value / max) * 100)}%` }} />
-          </div>
-        ))}
-      </div>
-      <div className={styles.chartAxis}>
-        {buckets.map((b, i) => (i % Math.ceil(buckets.length / 12 || 1) === 0 ? <span key={b.label} className={styles.chartAxisLabel}>{b.label}</span> : <span key={b.label} className={styles.chartAxisLabel} />))}
-      </div>
-    </>
-  );
+  return <StatisticsBarChart data={buckets} metricLabel={metricLabel} height={220} formatValue={(value) => isPct ? `${value.toFixed(2)}%` : value.toLocaleString('ko-KR')} emptyText="선택한 기간에 유입 데이터가 없습니다." />;
 }
 
 export function TrafficStatsPage() {
@@ -271,7 +257,7 @@ export function TrafficStatsPage() {
                 {channels.map((c) => (
                   <div key={c.name} className={styles.tableRow} style={{ gridTemplateColumns: '1fr 1.3fr 90px 90px 90px' }}>
                     <span>{c.name}</span>
-                    <span style={{ color: '#a1a1aa', fontSize: 11 }}>{c.source} / {c.medium}</span>
+                    <span style={{ color: '#a1a1aa', fontSize: '0.6875rem' }}>{c.source} / {c.medium}</span>
                     <span>{fmtUsers(c.visitors)}</span>
                     <span>{fmtSessions(c.sessions)}</span>
                     <span>{fmtPct(c.share, 1)}</span>

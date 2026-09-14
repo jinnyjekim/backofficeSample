@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { PageSizeSelect, SearchFilter } from "../../components/common";
 import styles from "../delivery/deliveryShared.module.css";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridColumn, GridRow } from "../../components/DataGrid/types";
@@ -109,15 +110,13 @@ export function CancelRejectedPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <input
-              className={styles.searchInput}
+            <SearchFilter
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onValueChange={setKeyword}
+              onSearch={(v) => setKeyword(v)}
               placeholder="취소번호 / 주문번호 / 고객명 / 상품명 / 반려사유"
+              aria-label="취소 반려 검색"
             />
-            <button type="button" className={styles.searchBtn}>
-              검색
-            </button>
           </div>
           <div className={styles.filterRow2}>
             <label className={styles.dateFilterField}>
@@ -148,13 +147,7 @@ export function CancelRejectedPage() {
           >{`총 ${filtered.length}건`}</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select
-              className={styles.pageSizeSelect}
-              defaultValue="20개씩 보기"
-            >
-              <option>20개씩 보기</option>
-              <option>50개씩 보기</option>
-            </select>
+            <PageSizeSelect defaultValue="20개씩 보기" />
           </div>
         </div>
       </header>
@@ -200,7 +193,7 @@ export function CancelRejectedPage() {
           <div className={drawer.sectionTitleLoose}>반려 사유 상세 안내</div>
           <div
             style={{
-              fontSize: "13px",
+              fontSize: "0.8125rem",
               lineHeight: 1.6,
               color: "#b91c1c",
               background: "#fef2f2",
@@ -216,7 +209,7 @@ export function CancelRejectedPage() {
           <div className={drawer.sectionTitleLoose}>운영 메모</div>
           <div
             style={{
-              fontSize: "12.5px",
+              fontSize: "0.78125rem",
               color: "#3f3f46",
               background: "#f8fafc",
               padding: "10px 12px",

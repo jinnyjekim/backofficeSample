@@ -1537,8 +1537,8 @@ export function FeePolicyPage() {
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 11, color: '#8b8b93' }}>실효 수수료율</div>
-                    <strong style={{ fontSize: 18, color: '#18181b' }}>{previewBreakdown.appliedRate.toFixed(1)}%</strong>
+                    <div style={{ fontSize: '0.6875rem', color: '#8b8b93' }}>실효 수수료율</div>
+                    <strong style={{ fontSize: '1.125rem', color: '#18181b' }}>{previewBreakdown.appliedRate.toFixed(1)}%</strong>
                   </div>
                 </div>
 
@@ -1703,13 +1703,13 @@ export function FeePolicyPage() {
                   <span className={timeline.time}>{entry.at}</span>
                 </div>
                 <div className={timeline.by}>작업자: {entry.by}</div>
-                <div style={{ fontSize: 11.5, color: '#52525b', marginTop: 4 }}>
+                <div style={{ fontSize: '0.71875rem', color: '#52525b', marginTop: 4 }}>
                   <span style={{ color: '#a1a1aa', textDecoration: 'line-through' }}>
                     {entry.before}
                   </span>{' '}
                   → <strong style={{ color: '#18181b' }}>{entry.after}</strong>
                 </div>
-                <div style={{ fontSize: 11.5, color: '#71717a', marginTop: 4, background: '#f4f4f5', padding: '4px 8px', borderRadius: 6 }}>
+                <div style={{ fontSize: '0.71875rem', color: '#71717a', marginTop: 4, background: '#f4f4f5', padding: '4px 8px', borderRadius: 6 }}>
                   사유: {entry.reason}
                 </div>
               </div>
@@ -1722,8 +1722,8 @@ export function FeePolicyPage() {
       {confirmSave && (
         <div className="dialogBackdrop" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999 }}>
           <div className={`dialogContent ${styles.saveDialog}`} style={{ background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
-            <h3 style={{ margin: '0 0 8px', fontSize: 16, fontWeight: 700 }}>수수료 정책 변경 사항 확인</h3>
-            <p style={{ margin: '0 0 14px', fontSize: 12.5, color: '#71717a' }}>
+            <h3 style={{ margin: '0 0 8px', fontSize: '1rem', fontWeight: 700 }}>수수료 정책 변경 사항 확인</h3>
+            <p style={{ margin: '0 0 14px', fontSize: '0.78125rem', color: '#71717a' }}>
               다음 {confirmSave.length}개 항목이 변경되었습니다. 변경 사유를 입력하고 확정하세요.
             </p>
 
@@ -1738,7 +1738,7 @@ export function FeePolicyPage() {
             </div>
 
             <div style={{ marginTop: 14 }}>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#52525b', marginBottom: 6 }}>
+              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#52525b', marginBottom: 6 }}>
                 변경 사유 (필수)
               </label>
               <CommonInput

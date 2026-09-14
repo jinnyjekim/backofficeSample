@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useRef, useState } from 'react';
 import styles from './MinOrderQtyPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -249,11 +250,11 @@ export function MinOrderQtyPage() {
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
               <option>100개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </div>
@@ -345,7 +346,7 @@ export function MinOrderQtyPage() {
             <div className={styles.formSectionTitle}>적용 기간 *</div>
             <div className={styles.formRow} style={{ alignItems: 'center', marginBottom: 14 }}>
               <input className={styles.formInput} style={{ marginTop: 0, flex: 1 }} placeholder="2026.08.15" />
-              <span style={{ color: '#a1a1aa', fontSize: '12px' }}>~</span>
+              <span style={{ color: '#a1a1aa', fontSize: '0.75rem' }}>~</span>
               <input className={styles.formInput} style={{ marginTop: 0, flex: 1 }} placeholder="종료일" />
               <label className={styles.radioLabel} style={{ whiteSpace: 'nowrap' }}>
                 <input type="checkbox" defaultChecked />없음
@@ -392,8 +393,8 @@ export function MinOrderQtyPage() {
               </div>
               {BULK_PRODUCTS.map((b) => (
                 <div className={styles.bulkMoqRow} key={b.name}>
-                  <span style={{ fontSize: '12.5px', color: '#18181b' }}>{b.name}</span>
-                  <span style={{ fontSize: '12px', color: '#71717a', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{b.base}</span>
+                  <span style={{ fontSize: '0.78125rem', color: '#18181b' }}>{b.name}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#71717a', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{b.base}</span>
                   <input className={styles.bulkPriceInput} placeholder="MOQ" />
                   <input className={styles.bulkPriceInput} placeholder="단위" />
                 </div>

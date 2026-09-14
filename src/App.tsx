@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { applyDisplaySettings, loadDisplaySettings } from './lib/theme';
 import { Shell } from './components/shell/Shell';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { ComponentsPage } from './pages/components/ComponentsPage';
@@ -80,6 +82,7 @@ import { ModulePlaceholderPage } from './pages/common/ModulePlaceholderPage';
 import { BusinessModulePage } from './pages/common/BusinessModulePage';
 import { NotificationDispatchPage } from './pages/notifications/NotificationDispatchPage';
 import { NotificationTemplatesPage } from './pages/notifications/NotificationTemplatesPage';
+import { DisplaySettingsPage } from './pages/system/DisplaySettingsPage';
 import { ServiceSettingsPage } from './pages/system/ServiceSettingsPage';
 import { CommonCodesPage } from './pages/system/CommonCodesPage';
 import { IntegrationManagementPage } from './pages/system/IntegrationManagementPage';
@@ -158,6 +161,10 @@ import { VerificationHistoryPage, VerificationPolicyPage, VerificationReviewPage
 import { DetectionHistoryPage, DetectionRulePage, ProductPolicyPage } from './pages/c2c/productPolicy/ProductPolicyManagementPages';
 
 export default function App() {
+  useEffect(() => {
+    applyDisplaySettings(loadDisplaySettings());
+  }, []);
+
   return (
     <Routes>
       <Route element={<Shell />}>
@@ -537,6 +544,9 @@ export default function App() {
         <Route path="admin/roles" element={<AdminRolesPage />} />
         <Route path="admin/history" element={<AdminHistoryPage />} />
 
+        <Route path="system/display" element={<DisplaySettingsPage />} />
+        <Route path="settings" element={<Navigate to="/system/display" replace />} />
+        <Route path="settings/display" element={<Navigate to="/system/display" replace />} />
         <Route path="system/service" element={<ServiceSettingsPage />} />
         <Route path="system/codes" element={<CommonCodesPage />} />
         <Route path="system/integration" element={<IntegrationManagementPage />} />

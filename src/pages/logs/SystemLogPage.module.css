@@ -12,7 +12,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #52525b;
   cursor: pointer;
@@ -58,7 +58,7 @@
   align-items: center;
   justify-content: center;
   color: var(--common-text-muted, #8b8b93);
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1;
 }
 
@@ -89,7 +89,7 @@
   flex-direction: column;
   gap: 6px;
   color: var(--common-text-muted, #71717a);
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   font-weight: 600;
   line-height: 1.2;
 }

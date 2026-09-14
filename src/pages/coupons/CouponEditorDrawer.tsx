@@ -177,7 +177,7 @@ export function CouponEditorDrawer({ coupon: c, onCancel, onSubmit }: Props) {
         {isIssuing && (
           <div className={styles.editPanel} style={{ background: '#fffbeb', borderColor: '#fde68a', marginTop: 0, marginBottom: 16 }}>
             <div className={styles.editTitle} style={{ color: '#b45309' }}>⚠ 현재 발급중인 쿠폰입니다</div>
-            <div style={{ fontSize: 12, color: '#92400e' }}>핵심 혜택을 변경하면 변경 이후 발급되는 쿠폰부터 새 조건이 적용됩니다. 이미 발급된 쿠폰의 혜택은 변경되지 않습니다.</div>
+            <div style={{ fontSize: '0.75rem', color: '#92400e' }}>핵심 혜택을 변경하면 변경 이후 발급되는 쿠폰부터 새 조건이 적용됩니다. 이미 발급된 쿠폰의 혜택은 변경되지 않습니다.</div>
           </div>
         )}
 
@@ -383,7 +383,7 @@ export function CouponEditorDrawer({ coupon: c, onCancel, onSubmit }: Props) {
           <input className={styles.formInput} value={adminMemo} onChange={(e) => setAdminMemo(e.target.value)} placeholder="참고사항을 남겨보세요" />
         </div>
 
-        {error && <div style={{ fontSize: 12, color: '#dc2626', marginTop: 8 }}>{error}</div>}
+        {error && <div style={{ fontSize: '0.75rem', color: '#dc2626', marginTop: 8 }}>{error}</div>}
       </div>
 
       <div className={styles.footer}>

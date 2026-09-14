@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import {
   Download,
   Info,
@@ -16,6 +17,7 @@ import type {
   GridRow,
 } from "../../components/DataGrid/types";
 import { CommonSelect } from "../../components/common";
+import { StatisticsLineChart } from "../../components/charts";
 import { downloadStatisticsReport } from "../../lib/statisticsReport";
 import { useOutsideClose } from "../../lib/useOutsideClose";
 import shared from "../ops/opsShared.module.css";
@@ -61,52 +63,7 @@ function TrendChart({
   primary: number[];
   labels: string[];
 }) {
-  const max = Math.max(...primary, 1);
-  const width = 860;
-  const height = 220;
-  const px = 38;
-  const py = 18;
-  const points = (values: number[]) =>
-    values
-      .map((value, index) => {
-        const x =
-          values.length <= 1
-            ? width / 2
-            : px + (index / (values.length - 1)) * (width - px * 2);
-        const y = height - py - (value / max) * (height - py * 2);
-        return `${x},${y}`;
-      })
-      .join(" ");
-  const step = Math.max(1, Math.ceil(labels.length / 7));
-  return (
-    <div className={layout.trendChart}>
-      <svg
-        viewBox={`0 0 ${width} ${height}`}
-        preserveAspectRatio="none"
-        role="img"
-        aria-label="거래 취소 추이 차트"
-      >
-        {[0.25, 0.5, 0.75, 1].map((ratio) => (
-          <line
-            key={ratio}
-            x1={px}
-            x2={width - px}
-            y1={height - py - ratio * (height - py * 2)}
-            y2={height - py - ratio * (height - py * 2)}
-            className={layout.gridLine}
-          />
-        ))}
-        <polyline points={points(primary)} className={layout.currentLine} />
-      </svg>
-      <div className={layout.chartLabels}>
-        {labels.map((label, index) => (
-          <span key={`${label}-${index}`}>
-            {index % step === 0 || index === labels.length - 1 ? label : ""}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
+  return <StatisticsLineChart values={primary} labels={labels} height={240} ariaLabel="거래 취소 추이 차트" />;
 }
 
 export function CancelRateStatsPage() {
@@ -510,7 +467,7 @@ export function CancelRateStatsPage() {
                 <strong>{item.value}</strong>
                 {item.noChange ? (
                   <div>
-                    <span style={{ color: "#8b8b93", fontSize: "11.5px" }}>
+                    <span style={{ color: "#8b8b93", fontSize: "0.71875rem" }}>
                       {item.sub}
                     </span>
                   </div>
@@ -667,10 +624,10 @@ export function CancelRateStatsPage() {
                 data-grid-download
                 onClick={() => setDownloadOpen(true)}
               />
-              <select className={layout.pageSizeSelect} defaultValue="20개씩 보기">
+              <PageSizeSelect className={layout.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
           <DataGrid

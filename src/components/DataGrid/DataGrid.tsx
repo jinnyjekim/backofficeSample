@@ -192,7 +192,7 @@ function CellView({ cell }: { cell: Cell }) {
         <span
           title={cell.tip}
           className={styles.textCell}
-          style={{ fontSize: cell.size ?? '12px', color: cell.color, fontWeight: cell.weight, fontVariantNumeric: cell.numeric ? 'tabular-nums' : undefined }}
+          style={{ fontSize: cell.size ?? '0.75rem', color: cell.color, fontWeight: cell.weight, fontVariantNumeric: cell.numeric ? 'tabular-nums' : undefined }}
         >
           {cell.text}
         </span>
@@ -202,7 +202,7 @@ function CellView({ cell }: { cell: Cell }) {
         <div style={{ minWidth: 0 }}>
           <span
             className={styles.pillTextValue}
-            style={{ background: cell.bg, color: cell.fg, padding: '2px 8px', fontSize: cell.size ?? '11px', fontWeight: cell.weight ?? 600 }}
+            style={{ background: cell.bg, color: cell.fg, padding: '2px 8px', fontSize: cell.size ?? '0.6875rem', fontWeight: cell.weight ?? 600 }}
           >
             {cell.text}
           </span>

@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './deliveryShared.module.css';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
@@ -208,10 +209,10 @@ export function DeliveryFailedPage() {
           <span className={styles.resultLabel}>{`총 ${filtered.length}건`}</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
@@ -274,7 +275,7 @@ export function DeliveryFailedPage() {
           <div className={drawer.sectionTitleLoose}>배송 추적 타임라인</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
             {selected.tracking.map((t, idx) => (
-              <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px' }}>
+              <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.75rem' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: t.dot }} />
                 <strong style={{ minWidth: '130px' }}>{t.title}</strong>
                 <span style={{ color: '#71717a' }}>{t.when}</span>
@@ -284,7 +285,7 @@ export function DeliveryFailedPage() {
           </div>
 
           <div className={drawer.sectionTitleLoose}>운영 메모</div>
-          <div style={{ fontSize: '12.5px', color: '#3f3f46', background: '#f8fafc', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+          <div style={{ fontSize: '0.78125rem', color: '#3f3f46', background: '#f8fafc', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
             {selected.memos.length ? selected.memos.map((m, idx) => <p key={idx} style={{ margin: 0 }}>[{m.when} / {m.by}] {m.text}</p>) : '등록된 운영 메모가 없습니다.'}
           </div>
         </DetailDrawer>

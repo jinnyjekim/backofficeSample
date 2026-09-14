@@ -126,7 +126,7 @@ export function NoticeEditorDrawer({ notice, todayIso, onCancel, onSubmit }: Pro
               <button type="button" className={`${styles.previewToggleBtn} ${previewMode === 'Mobile' ? styles.previewActive : ''}`} onClick={() => setPreviewMode('Mobile')}>Mobile</button>
             </div>
             <div className={previewMode === 'Mobile' ? styles.previewMobileFrame : undefined}>
-              {important && <span style={{ color: '#dc2626', fontSize: 12, fontWeight: 700 }}>[중요] </span>}
+              {important && <span style={{ color: '#dc2626', fontSize: '0.75rem', fontWeight: 700 }}>[중요] </span>}
               <span className={styles.previewTitle}>{title || '(제목 없음)'}</span>
               <div className={styles.previewMeta}>{category} · {publishMode === '비공개' ? '비공개' : publishMode === '예약' ? `${toDot(startDate)} 공개 예정` : '즉시 공개'}</div>
               <div className={styles.previewBody}>{body || '(본문 없음)'}</div>
@@ -161,7 +161,7 @@ export function NoticeEditorDrawer({ notice, todayIso, onCancel, onSubmit }: Pro
           {pinEnabled && (
             <div className={styles.dateTimeRow} style={{ marginTop: 8 }}>
               <input type="date" className={styles.dateInput} value={pinStart} onChange={(e) => setPinStart(e.target.value)} />
-              <span style={{ alignSelf: 'center', color: '#a1a1aa', fontSize: 12 }}>~</span>
+              <span style={{ alignSelf: 'center', color: '#a1a1aa', fontSize: '0.75rem' }}>~</span>
               <input type="date" className={styles.dateInput} value={pinEnd} onChange={(e) => setPinEnd(e.target.value)} />
             </div>
           )}

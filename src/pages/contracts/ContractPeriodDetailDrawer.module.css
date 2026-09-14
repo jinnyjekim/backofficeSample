@@ -34,29 +34,29 @@
   flex-wrap: wrap;
 }
 .no {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 .badge {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 999px;
 }
 .contractStatusText {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #71717a;
 }
 .name {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #3f3f46;
   margin-top: 6px;
 }
 .subLine {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #71717a;
   margin-top: 3px;
   font-variant-numeric: tabular-nums;
@@ -65,7 +65,7 @@
   border: 0;
   background: transparent;
   color: #a1a1aa;
-  font-size: 17px;
+  font-size: 1.0625rem;
   cursor: pointer;
   line-height: 1;
   flex: none;
@@ -83,7 +83,7 @@
 .timelineLabelsRow {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #71717a;
   margin-bottom: 6px;
   font-variant-numeric: tabular-nums;
@@ -109,7 +109,7 @@
 .timelineStatsRow {
   display: flex;
   justify-content: space-between;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #52525b;
   margin-top: 8px;
   font-variant-numeric: tabular-nums;
@@ -121,7 +121,7 @@
   border: 1px solid #fde68a;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #92400e;
 }
 
@@ -134,7 +134,7 @@
 }
 .linkAction {
   align-self: center;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .actionsSpacer {
   flex: 1;
@@ -145,7 +145,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   background: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -159,7 +159,7 @@
   background: var(--accent);
   color: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -186,12 +186,12 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   box-sizing: border-box;
 }
 .panelTilde {
   color: #a1a1aa;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .panelSelect {
   width: 100%;
@@ -200,7 +200,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   margin-bottom: 8px;
   background: #fff;
 }
@@ -210,7 +210,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 7px;
   padding: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   box-sizing: border-box;
   resize: vertical;
   margin-bottom: 9px;
@@ -227,7 +227,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   cursor: pointer;
 }
 .panelConfirmBtn {
@@ -237,7 +237,7 @@
   background: var(--accent);
   color: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -256,7 +256,7 @@
   border: 0;
   background: transparent;
   padding: 0 0 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   cursor: pointer;
   white-space: nowrap;
   flex: none;
@@ -273,7 +273,7 @@
 }
 
 .sectionLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   font-weight: 600;
   margin-bottom: 8px;
@@ -296,17 +296,17 @@
   border-bottom: none;
 }
 .fieldLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
   flex: none;
 }
 .fieldValue {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 .linkedValue {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
 }
 
@@ -321,11 +321,11 @@
   border-radius: 10px;
 }
 .successorLabel {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #71717a;
 }
 .successorLink {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
 }
 .gapWarning {
@@ -334,7 +334,7 @@
   border: 1px solid #fecaca;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #b91c1c;
 }
 
@@ -361,18 +361,18 @@
   gap: 10px;
 }
 .timelineAction {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #18181b;
 }
 .timelineWhen {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
   font-variant-numeric: tabular-nums;
   flex: none;
 }
 .timelineBy {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #71717a;
   margin-top: 3px;
 }

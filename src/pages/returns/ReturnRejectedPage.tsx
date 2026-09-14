@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import styles from "../delivery/deliveryShared.module.css";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -144,13 +145,13 @@ export function ReturnRejectedPage() {
           >{`총 ${filtered.length}건`}</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select
+            <PageSizeSelect
               className={styles.pageSizeSelect}
               defaultValue="20개씩 보기"
             >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
@@ -197,7 +198,7 @@ export function ReturnRejectedPage() {
           <div className={drawer.sectionTitleLoose}>반려 사유 상세 내용</div>
           <div
             style={{
-              fontSize: "13px",
+              fontSize: "0.8125rem",
               lineHeight: 1.6,
               color: "#b91c1c",
               background: "#fef2f2",
@@ -213,7 +214,7 @@ export function ReturnRejectedPage() {
           <div className={drawer.sectionTitleLoose}>운영 메모</div>
           <div
             style={{
-              fontSize: "12.5px",
+              fontSize: "0.78125rem",
               color: "#3f3f46",
               background: "#f8fafc",
               padding: "10px 12px",

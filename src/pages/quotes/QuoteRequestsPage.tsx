@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useRef, useState } from 'react';
 import styles from './quoteShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -207,11 +208,11 @@ export function QuoteRequestsPage() {
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
               <ExcelDownloadButton type="button" data-grid-download />
-              <select className={styles.pageSizeSelect}>
+              <PageSizeSelect className={styles.pageSizeSelect}>
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>
                 <option>100개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
         </div>
@@ -256,13 +257,13 @@ export function QuoteRequestsPage() {
 
               <div className={styles.formSectionLabel}>요청 항목</div>
               <div className={styles.fieldsBox} style={{ marginBottom: 8 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 70px 70px', gap: 8, padding: '8px 11px', background: '#fbfbfc', borderBottom: '1px solid rgba(0,0,0,.07)', fontSize: 11, color: '#71717a', fontWeight: 600 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 70px 70px', gap: 8, padding: '8px 11px', background: '#fbfbfc', borderBottom: '1px solid rgba(0,0,0,.07)', fontSize: '0.6875rem', color: '#71717a', fontWeight: 600 }}>
                   <span>상품</span><span>수량</span><span>단위</span>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 70px 70px', gap: 8, alignItems: 'center', padding: '9px 11px' }}>
-                  <input placeholder="상품 검색" style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 8px', fontSize: 12, boxSizing: 'border-box' }} />
-                  <input placeholder="100" style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 8px', fontSize: 12, boxSizing: 'border-box' }} />
-                  <select style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 6px', fontSize: 12 }}>
+                  <input placeholder="상품 검색" style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 8px', fontSize: '0.75rem', boxSizing: 'border-box' }} />
+                  <input placeholder="100" style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 8px', fontSize: '0.75rem', boxSizing: 'border-box' }} />
+                  <select style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 6px', fontSize: '0.75rem' }}>
                     <option>EA</option>
                     <option>BOX</option>
                     <option>SET</option>

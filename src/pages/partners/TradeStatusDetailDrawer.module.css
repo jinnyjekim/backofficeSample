@@ -26,7 +26,7 @@
   min-width: 0;
 }
 .eyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   margin-bottom: 4px;
 }
@@ -37,18 +37,18 @@
   flex-wrap: wrap;
 }
 .title {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 .badge {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 999px;
 }
 .sub {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
   margin-top: 4px;
 }
@@ -56,7 +56,7 @@
   border: 0;
   background: transparent;
   color: #a1a1aa;
-  font-size: 17px;
+  font-size: 1.0625rem;
   cursor: pointer;
   line-height: 1;
   flex: none;
@@ -71,7 +71,7 @@
   border: 1px solid #fde68a;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #92400e;
 }
 
@@ -84,7 +84,7 @@
   background: #eef2ff;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #4338ca;
 }
 .pendingCancelBtn {
@@ -94,7 +94,7 @@
   border: 1px solid rgba(67, 56, 202, 0.3);
   background: #fff;
   border-radius: 7px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #4338ca;
   cursor: pointer;
 }
@@ -111,7 +111,7 @@
   padding: 0 12px;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   display: flex;
   align-items: center;
@@ -129,7 +129,7 @@
   background: var(--accent);
   color: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -137,7 +137,7 @@
   background: var(--accent-hover);
 }
 .endedNote {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #a1a1aa;
 }
 
@@ -149,7 +149,7 @@
   padding: 14px;
 }
 .changeTitle {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 700;
   margin-bottom: 10px;
 }
@@ -157,7 +157,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   margin-bottom: 12px;
 }
@@ -165,7 +165,7 @@
   color: #a1a1aa;
 }
 .changeLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #52525b;
   margin-bottom: 5px;
 }
@@ -176,7 +176,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   margin-bottom: 12px;
 }
 .changeSelect {
@@ -192,7 +192,7 @@
   display: flex;
   gap: 14px;
   margin-bottom: 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
 }
 .radioOption {
@@ -206,7 +206,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   margin-bottom: 12px;
 }
 
@@ -218,7 +218,7 @@
   margin-bottom: 12px;
 }
 .impactTitle {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #71717a;
   font-weight: 600;
   margin-bottom: 8px;
@@ -234,11 +234,11 @@
   padding: 8px 9px;
 }
 .impactLabel {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   color: #a1a1aa;
 }
 .impactValue {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #18181b;
   margin-top: 3px;
@@ -249,7 +249,7 @@
   display: flex;
   align-items: flex-start;
   gap: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #92400e;
   background: #fffbeb;
   border-radius: 8px;
@@ -271,7 +271,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 .changeConfirm {
@@ -281,7 +281,7 @@
   background: #18181b;
   color: #fff;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -301,7 +301,7 @@
   border: 0;
   background: transparent;
   padding: 0 0 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 500;
   color: #8b8b93;
   cursor: pointer;
@@ -324,19 +324,19 @@
 }
 
 .sectionTitle {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   font-weight: 600;
   margin-bottom: 8px;
 }
 .sectionTitleLoose {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   font-weight: 600;
   margin: 18px 0 8px;
 }
 .emptyInline {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #a1a1aa;
 }
 
@@ -358,12 +358,12 @@
   border-bottom: 0;
 }
 .fieldLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
   flex: none;
 }
 .fieldValue {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #18181b;
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -381,11 +381,11 @@
   padding: 11px 12px;
 }
 .statLabel {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #71717a;
 }
 .statValue {
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   margin-top: 4px;
@@ -396,7 +396,7 @@
   margin-top: 10px;
 }
 .linksRow a {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--accent);
   text-decoration: none;
 }
@@ -415,7 +415,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .memoSubmit {
   height: 32px;
@@ -424,19 +424,19 @@
   background: #18181b;
   color: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 .memoItem {
   padding-bottom: 12px;
 }
 .memoWhen {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   font-variant-numeric: tabular-nums;
 }
 .memoText {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   margin-top: 3px;
 }
@@ -464,33 +464,33 @@
   gap: 10px;
 }
 .timelineTitle {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #18181b;
 }
 .timelineWhen {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
   font-variant-numeric: tabular-nums;
   flex: none;
 }
 .timelineChange {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   margin-top: 3px;
 }
 .timelineDetail {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #71717a;
   margin-top: 2px;
 }
 .timelineAdmin {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #71717a;
   margin-top: 3px;
 }
 .timelineSnapshot {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   margin-top: 4px;
 }

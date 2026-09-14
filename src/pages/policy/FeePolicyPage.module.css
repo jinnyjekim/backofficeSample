@@ -1,8 +1,8 @@
 /* ── 거래 정책 표준 - 수수료 정책 스타일 ── */
 
-.eyebrow { font-size: 11px; color: #a1a1aa; font-weight: 600; margin-bottom: 6px; }
+.eyebrow { font-size: 0.6875rem; color: #a1a1aa; font-weight: 600; margin-bottom: 6px; }
 .headMeta { display: flex; align-items: center; gap: 8px; padding-top: 20px; }
-.headMetaText { font-size: 11.5px; color: #a1a1aa; white-space: nowrap; }
+.headMetaText { font-size: 0.71875rem; color: #a1a1aa; white-space: nowrap; }
 
 .pageRoot { overflow-x: clip; }
 .body { padding: 0 24px 28px; }
@@ -16,7 +16,7 @@
   padding: 10px 16px;
   border-radius: 10px;
   margin-bottom: 16px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
 }
 .modeBannerRead {
   background: #f8fafc;
@@ -36,7 +36,7 @@
 .modeTag {
   padding: 3px 8px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
 }
 .modeTagRead {
@@ -51,7 +51,7 @@
   height: 28px;
   padding: 0 12px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   border: 0;
@@ -83,14 +83,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   margin-top: 1px;
 }
 .warningBody { flex: 1; min-width: 0; }
-.warningTitle { font-size: 12.5px; font-weight: 700; color: #8a5a12; margin-bottom: 6px; }
+.warningTitle { font-size: 0.78125rem; font-weight: 700; color: #8a5a12; margin-bottom: 6px; }
 .warningList { display: flex; flex-direction: column; gap: 4px; }
-.warningItem { font-size: 12px; color: #9a6a22; line-height: 1.5; }
+.warningItem { font-size: 0.75rem; color: #9a6a22; line-height: 1.5; }
 .warningActionBtn {
   flex: none;
   align-self: flex-start;
@@ -99,7 +99,7 @@
   border: 1px solid #e6c98d;
   background: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8a5a12;
   font-weight: 600;
   cursor: pointer;
@@ -156,12 +156,12 @@
   border-radius: 5px;
   background: #18181b;
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
 }
 .sectionHeadTitle {
   color: #18181b;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -169,7 +169,7 @@
   max-width: 210px;
   margin: 7px 0 0;
   color: #a1a1aa;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   line-height: 1.55;
 }
 .sectionNote {
@@ -178,7 +178,7 @@
   border-radius: 8px;
   background: #f8fafc;
   color: #64748b;
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 1.55;
 }
 
@@ -215,12 +215,12 @@
   gap: 6px;
   margin-bottom: 7px;
   color: #71717a;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 .fieldHint {
   color: #a1a1aa;
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 1.45;
   margin-top: 4px;
 }
@@ -268,7 +268,7 @@
   min-height: 42px;
   padding: 0 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.055);
-  font-size: 12.5px;
+  font-size: 0.78125rem;
 }
 .tableRow:last-child {
   border-bottom: 0;
@@ -277,7 +277,7 @@
   min-height: 36px;
   background: #fafafa;
   color: #8b8b93;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
 }
 .tableName {
@@ -302,13 +302,13 @@
   min-height: 40px;
   padding: 0 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .costRow:last-child {
   border-bottom: 0;
 }
 .costRow strong {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #18181b;
 }
@@ -319,7 +319,7 @@
   min-height: 36px;
   background: #fafafa;
   color: #8b8b93;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
 }
 
@@ -343,14 +343,14 @@
 }
 .sideTitle {
   color: #18181b;
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 .sideSubtitle {
   margin-top: 3px;
   color: #a1a1aa;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 
 .previewInputs {
@@ -369,7 +369,7 @@
 .previewInputRow > span {
   flex: none;
   color: #71717a;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -385,11 +385,11 @@
   justify-content: space-between;
   gap: 12px;
   color: #8b8b93;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .calcRows strong {
   color: #52525b;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
@@ -402,11 +402,11 @@
   padding: 14px 17px;
   border-top: 1px solid;
   border-bottom: 1px solid;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 700;
 }
 .resultBand strong {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-variant-numeric: tabular-nums;
 }
 .resultBandOk {
@@ -435,14 +435,14 @@
   flex: 1;
   min-width: 0;
   color: #a1a1aa;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 .digestRow strong {
   flex: none;
   max-width: 66%;
   color: #3f3f46;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   text-align: right;
 }
@@ -452,7 +452,7 @@
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   background: #fafafa;
   color: #8b8b93;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   line-height: 1.6;
 }
 
@@ -485,20 +485,20 @@
 }
 .previewDocumentTitle {
   color: #18181b;
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 .previewDocumentDesc {
   margin-top: 3px;
   color: #a1a1aa;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 .previewDraftBadge, .previewLiveBadge {
   flex: none;
   padding: 3px 9px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
 }
 .previewDraftBadge {
@@ -536,20 +536,20 @@
   border-radius: 5px;
   background: #f4f4f5;
   color: #a1a1aa;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   font-weight: 700;
 }
 .policySentenceRow strong {
   display: block;
   margin-bottom: 3px;
   color: #3f3f46;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 .policySentenceRow p {
   margin: 0;
   color: #71717a;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   line-height: 1.5;
 }
 .previewRowTag, .previewRowTagWarn {
@@ -557,7 +557,7 @@
   border-radius: 999px;
   background: #f4f4f5;
   color: #71717a;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -575,12 +575,12 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 .previewDecisionHeroTitle {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #18181b;
 }
 .previewDecisionHeroSub {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #64748b;
   margin-top: 2px;
 }
@@ -599,21 +599,21 @@
   padding: 0 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.055);
   color: #71717a;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 .previewDecisionRow:last-child {
   border-bottom: 0;
 }
 .previewDecisionRow strong {
   color: #3f3f46;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 .previewDecisionTableHead {
   min-height: 34px;
   background: #fafafa;
   color: #8b8b93;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
 }
 
@@ -637,13 +637,13 @@
 }
 .customerMessageList span {
   color: #a1a1aa;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
 }
 .customerMessageList p {
   margin: 5px 0 0;
   color: #52525b;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.5;
 }
 .previewDeployPending, .previewDeployReady {
@@ -653,7 +653,7 @@
   gap: 10px;
   padding: 14px 17px;
   border-top: 1px solid;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 700;
 }
 .previewDeployPending {
@@ -667,7 +667,7 @@
   color: #166534;
 }
 .previewDeployPending strong, .previewDeployReady strong {
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 /* ── 저장 확인 다이얼로그 (Diff) ── */
@@ -686,7 +686,7 @@
   gap: 8px;
   padding: 9px 12px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .diffRow:first-child {
   border-top: 0;
@@ -709,7 +709,7 @@
   border-radius: 8px;
   background: #fef2f2;
   color: #dc2626;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 
 /* ── 규칙 관리 DataGrid 패널 ── */

@@ -80,7 +80,7 @@ export function CouponIssueFormDrawer({ existingHolders, onCancel, onSubmit }: P
           <div className={styles.editPanel} style={{ background: '#fef2f2', borderColor: '#fecaca' }}>
             <div className={styles.editTitle} style={{ color: '#b91c1c' }}>발급할 수 없습니다</div>
             {validation.reasons.map((r) => (
-              <div key={r} style={{ fontSize: 12, color: '#b91c1c', marginBottom: 4 }}>⚠ {r}</div>
+              <div key={r} style={{ fontSize: '0.75rem', color: '#b91c1c', marginBottom: 4 }}>⚠ {r}</div>
             ))}
           </div>
         )}
@@ -119,7 +119,7 @@ export function CouponIssueFormDrawer({ existingHolders, onCancel, onSubmit }: P
           </>
         )}
 
-        {error && <div style={{ fontSize: 12, color: '#dc2626', marginTop: 12 }}>{error}</div>}
+        {error && <div style={{ fontSize: '0.75rem', color: '#dc2626', marginTop: 12 }}>{error}</div>}
       </div>
 
       <div className={styles.footer}>

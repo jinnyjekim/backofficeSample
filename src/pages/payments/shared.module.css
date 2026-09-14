@@ -19,12 +19,12 @@
   gap: 12px;
 }
 .title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 .subtitle {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #8b8b93;
   margin-top: 4px;
 }
@@ -35,7 +35,7 @@
   background: var(--common-text, #18181b);
   color: #fff;
   border-radius: 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   cursor: pointer;
   flex: none;
@@ -47,28 +47,36 @@
 .kpiGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  background: #fff;
-  margin-bottom: 16px;
+  gap: 14px;
+  margin-bottom: 20px;
 }
 .kpiCard {
   min-width: 0;
-  padding: 14px 16px;
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+  border: 1px solid #e4e4e7;
+  border-radius: 10px;
+  padding: 14px 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all .15s ease;
 }
-.kpiCard:last-child {
-  border-right: 0;
+.kpiCard:hover {
+  border-color: #d4d4d8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 .kpiLabel {
-  font-size: 11.5px;
-  color: #8b8b93;
+  font-size: 0.71875rem;
+  color: #71717a;
+  font-weight: 500;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .kpiValue {
-  font-size: 19px;
-  font-weight: 700;
-  margin-top: 5px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
   font-variant-numeric: tabular-nums;
 }
 
@@ -113,7 +121,7 @@
   background: #eef2ff;
 }
 .quickFilterLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #52525b;
 }
@@ -121,7 +129,7 @@
   color: #4338ca;
 }
 .quickFilterCount {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #18181b;
   opacity: 0.8;
@@ -151,7 +159,7 @@
   padding: 0 13px;
   border: 0;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   background: transparent;
@@ -194,7 +202,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   background: #fff;
 }
@@ -203,7 +211,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #52525b;
   background: #fff;
 }
@@ -214,7 +222,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 11px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   outline: 0;
 }
 .searchInput:focus {
@@ -227,7 +235,7 @@
   border-radius: 8px;
   background: #18181b;
   color: #fff;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -240,7 +248,7 @@
   border: 1px dashed rgba(0, 0, 0, 0.18);
   background: transparent;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #52525b;
   cursor: pointer;
 }
@@ -257,7 +265,7 @@
   border: 0;
   background: transparent;
   color: #a1a1aa;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 .clearBtn:hover,
@@ -274,7 +282,7 @@
   gap: 8px;
 }
 .resultLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -289,7 +297,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -301,3 +309,17 @@
   margin: 0 24px 20px;
   flex: none;
 }
+
+@media (max-width: 960px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 540px) {
+  .kpiGrid {
+    grid-template-columns: 1fr;
+  }
+}
+

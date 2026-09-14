@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './deliveryShared.module.css';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
@@ -182,10 +183,10 @@ export function DeliveryHoldPage() {
           <span className={styles.resultLabel}>{`총 ${filtered.length}건`}</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
@@ -235,12 +236,12 @@ export function DeliveryHoldPage() {
           ]}
         >
           <div className={drawer.sectionTitleLoose}>보류 상세 내역</div>
-          <div style={{ fontSize: '13px', lineHeight: 1.6, color: '#3f3f46', background: '#fffbeb', padding: '12px 14px', borderRadius: '8px', border: '1px solid #fef3c7', marginBottom: '16px' }}>
+          <div style={{ fontSize: '0.8125rem', lineHeight: 1.6, color: '#3f3f46', background: '#fffbeb', padding: '12px 14px', borderRadius: '8px', border: '1px solid #fef3c7', marginBottom: '16px' }}>
             {selected.details}
           </div>
 
           <div className={drawer.sectionTitleLoose}>운영 메모</div>
-          <div style={{ fontSize: '12.5px', color: '#3f3f46', background: '#f8fafc', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+          <div style={{ fontSize: '0.78125rem', color: '#3f3f46', background: '#f8fafc', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
             {selected.memos.length ? selected.memos.map((m, idx) => <p key={idx} style={{ margin: 0 }}>[{m.when} / {m.by}] {m.text}</p>) : '등록된 운영 메모가 없습니다.'}
           </div>
         </DetailDrawer>

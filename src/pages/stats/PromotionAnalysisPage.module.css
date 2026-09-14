@@ -5,7 +5,7 @@
   border-radius: 9px;
   background: #f8fafc;
   color: #64748b;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   line-height: 1.5;
 }
 
@@ -23,7 +23,7 @@
 .typeBadge {
   padding: 3px 9px;
   border-radius: 999px;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   font-weight: 700;
   width: fit-content;
 }
@@ -43,7 +43,7 @@
 .typeValue {
   min-width: 84px;
   color: #18181b;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   text-align: right;
@@ -51,7 +51,7 @@
 .typeValue span {
   display: block;
   color: #a1a1aa;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   font-weight: 500;
 }
 
@@ -65,7 +65,7 @@
   justify-content: space-between;
   padding: 11px 0;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 12.5px;
+  font-size: 0.78125rem;
 }
 .summaryList > div:first-child {
   border-top: 0;

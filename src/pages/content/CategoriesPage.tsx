@@ -796,7 +796,7 @@ export function CategoriesPage() {
                         style={{ flex: 1 }}
                       />
                       {!isNew && cur?.locked && (
-                        <span style={{ fontSize: 12, color: "#a1a1aa" }}>
+                        <span style={{ fontSize: '0.75rem', color: "#a1a1aa" }}>
                           🔒
                         </span>
                       )}

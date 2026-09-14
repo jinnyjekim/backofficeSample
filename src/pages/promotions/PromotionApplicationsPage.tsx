@@ -1,3 +1,4 @@
+import { CommonStatCard, CommonStatGrid, PageSizeSelect } from '../../components/common';
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "../ops/opsShared.module.css";
@@ -210,7 +211,7 @@ export function PromotionApplicationsPage() {
     const totalDiscount = applications.reduce((sum, a) => sum + Math.max(0, a.currentDiscountAmount), 0);
     const totalBase = applications.reduce((sum, a) => sum + a.baseAmount, 0);
     const avgRate = totalBase > 0 ? ((totalDiscount / totalBase) * 100).toFixed(1) : '0';
-    const canceledCount = applications.filter((a) => a.status === '취소' || a.status === '환원').length;
+    const canceledCount = applications.filter((a) => a.status === '적용 취소' || a.status === '부분 취소' || a.status.includes('환불')).length;
 
     return {
       totalCount,
@@ -233,32 +234,28 @@ export function PromotionApplicationsPage() {
         </div>
 
         {/* 상단 성과 요약 메트릭 카드 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', margin: '16px 0 20px' }}>
-          <div style={{ background: '#fff', border: '1px solid #e4e4e7', borderRadius: '10px', padding: '14px 18px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
-            <div style={{ fontSize: '11.5px', color: '#71717a', fontWeight: 500, marginBottom: '4px' }}>총 할인 지원 금액</div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#dc2626' }}>
-              -{metrics.totalDiscount.toLocaleString('ko-KR')}원
-            </div>
-          </div>
-          <div style={{ background: '#fff', border: '1px solid #e4e4e7', borderRadius: '10px', padding: '14px 18px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
-            <div style={{ fontSize: '11.5px', color: '#71717a', fontWeight: 500, marginBottom: '4px' }}>총 프로모션 적용 건수</div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#18181b' }}>
-              {metrics.totalCount.toLocaleString('ko-KR')}건
-            </div>
-          </div>
-          <div style={{ background: '#fff', border: '1px solid #e4e4e7', borderRadius: '10px', padding: '14px 18px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
-            <div style={{ fontSize: '11.5px', color: '#71717a', fontWeight: 500, marginBottom: '4px' }}>주문당 평균 할인율</div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#2563eb' }}>
-              {metrics.avgRate}%
-            </div>
-          </div>
-          <div style={{ background: '#fff', border: '1px solid #e4e4e7', borderRadius: '10px', padding: '14px 18px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
-            <div style={{ fontSize: '11.5px', color: '#71717a', fontWeight: 500, marginBottom: '4px' }}>취소 / 환원 건수</div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#71717a' }}>
-              {metrics.canceledCount}건
-            </div>
-          </div>
-        </div>
+        <CommonStatGrid style={{ margin: '16px 0 20px' }}>
+          <CommonStatCard
+            label="총 할인 지원 금액"
+            value={`-${metrics.totalDiscount.toLocaleString('ko-KR')}원`}
+            valueColor="#dc2626"
+          />
+          <CommonStatCard
+            label="총 프로모션 적용 건수"
+            value={`${metrics.totalCount.toLocaleString('ko-KR')}건`}
+            valueColor="#18181b"
+          />
+          <CommonStatCard
+            label="주문당 평균 할인율"
+            value={`${metrics.avgRate}%`}
+            valueColor="#2563eb"
+          />
+          <CommonStatCard
+            label="취소 / 환원 건수"
+            value={`${metrics.canceledCount}건`}
+            valueColor="#71717a"
+          />
+        </CommonStatGrid>
 
         <div className={styles.filterBox}>
           <form
@@ -366,10 +363,10 @@ export function PromotionApplicationsPage() {
               data-grid-download
               onClick={() => toastBriefly("데이터 다운로드를 준비했습니다.")}
             />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </div>
@@ -418,7 +415,7 @@ export function PromotionApplicationsPage() {
             color: "#fff",
             padding: "10px 18px",
             borderRadius: 9,
-            fontSize: 12.5,
+            fontSize: '0.78125rem',
             zIndex: 40,
           }}
         >

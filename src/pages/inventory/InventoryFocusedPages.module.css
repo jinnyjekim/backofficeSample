@@ -5,7 +5,7 @@
   border-radius: 8px;
   background: #eff6ff;
   color: #1e40af;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 
 .quickActive {
@@ -17,7 +17,7 @@
 .issueText {
   overflow: hidden;
   color: #dc2626;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;

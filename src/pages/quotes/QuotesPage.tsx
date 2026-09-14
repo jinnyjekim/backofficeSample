@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useRef, useState } from 'react';
 import styles from './quoteShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -217,11 +218,11 @@ export function QuotesPage() {
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
               <ExcelDownloadButton type="button" data-grid-download />
-              <select className={styles.pageSizeSelect}>
+              <PageSizeSelect className={styles.pageSizeSelect}>
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>
                 <option>100개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
         </div>
@@ -284,24 +285,24 @@ export function QuotesPage() {
 
               <div className={styles.formSectionLabel}>2. 견적 항목</div>
               <div className={styles.fieldsBox} style={{ marginBottom: 8 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 90px 90px', gap: 8, padding: '8px 11px', background: '#fbfbfc', borderBottom: '1px solid rgba(0,0,0,.07)', fontSize: 11, color: '#71717a', fontWeight: 600 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 90px 90px', gap: 8, padding: '8px 11px', background: '#fbfbfc', borderBottom: '1px solid rgba(0,0,0,.07)', fontSize: '0.6875rem', color: '#71717a', fontWeight: 600 }}>
                   <span>상품</span><span>수량</span><span style={{ textAlign: 'right' }}>단가</span><span style={{ textAlign: 'right' }}>금액</span>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 90px 90px', gap: 8, alignItems: 'center', padding: '9px 11px' }}>
-                  <input placeholder="상품 검색" style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 8px', fontSize: 12, boxSizing: 'border-box' }} />
-                  <input placeholder="100" style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 8px', fontSize: 12, boxSizing: 'border-box' }} />
-                  <input placeholder="29,000" style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 8px', fontSize: 12, textAlign: 'right', boxSizing: 'border-box' }} />
-                  <span style={{ fontSize: 12, color: '#71717a', textAlign: 'right' }}>2,900,000</span>
+                  <input placeholder="상품 검색" style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 8px', fontSize: '0.75rem', boxSizing: 'border-box' }} />
+                  <input placeholder="100" style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 8px', fontSize: '0.75rem', boxSizing: 'border-box' }} />
+                  <input placeholder="29,000" style={{ height: 30, border: '1px solid rgba(0,0,0,.1)', borderRadius: 7, padding: '0 8px', fontSize: '0.75rem', textAlign: 'right', boxSizing: 'border-box' }} />
+                  <span style={{ fontSize: '0.75rem', color: '#71717a', textAlign: 'right' }}>2,900,000</span>
                 </div>
               </div>
               <button type="button" className={styles.formOutlineBtn} style={{ marginBottom: 20 }}>＋ 항목 추가</button>
 
               <div className={styles.formSectionLabel}>3. 금액</div>
-              <div style={{ background: '#fafafa', borderRadius: 10, padding: 12, fontSize: 12.5, color: '#3f3f46', marginBottom: 20 }}>
+              <div style={{ background: '#fafafa', borderRadius: 10, padding: 12, fontSize: '0.78125rem', color: '#3f3f46', marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>공급가액<span>2,900,000원</span></div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>할인<span>-50,000원</span></div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>세금<span>285,000원</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0 0', borderTop: '1px solid rgba(0,0,0,.08)', marginTop: 6, fontWeight: 700, fontSize: 13.5 }}>최종 견적금액<span>3,135,000원</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0 0', borderTop: '1px solid rgba(0,0,0,.08)', marginTop: 6, fontWeight: 700, fontSize: '0.84375rem' }}>최종 견적금액<span>3,135,000원</span></div>
               </div>
 
               <div className={styles.formSectionLabel}>4. 거래 조건</div>

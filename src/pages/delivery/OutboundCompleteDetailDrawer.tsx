@@ -164,7 +164,7 @@ export function OutboundCompleteDetailDrawer({
                     <span className={styles.gridCellNormal}>{it.ready}</span>
                     <span className={styles.gridCellStrong}>{it.actual}</span>
                     <span className={styles.gridCellNormal} style={{ color: remain > 0 ? '#d97706' : '#3f3f46' }}>{remain}</span>
-                    <span style={{ fontSize: '11.5px', fontWeight: 600, color: fg }}>{status}</span>
+                    <span style={{ fontSize: '0.71875rem', fontWeight: 600, color: fg }}>{status}</span>
                   </div>
                 );
               })}

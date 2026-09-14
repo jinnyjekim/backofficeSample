@@ -202,7 +202,7 @@ export function EventEditorPage({ event, onCancel, onSubmit }: Props) {
                 <span className={styles.label}>대표 이미지</span>
                 <div className={styles.imageDrop}>
                   {form.hasHeroImage && <div className={styles.imagePreview} style={{ '--event-tone': form.imageTone } as CSSProperties} />}
-                  <div><div style={{ fontSize: 12, marginBottom: 7 }}>{form.hasHeroImage ? '대표 이미지가 등록되었습니다.' : '이벤트 대표 이미지를 등록해 주세요.'}</div><button type="button" className={styles.smallAction} onClick={() => setField('hasHeroImage', !form.hasHeroImage)}>{form.hasHeroImage ? '이미지 제거' : '이미지 업로드'}</button></div>
+                  <div><div style={{ fontSize: '0.75rem', marginBottom: 7 }}>{form.hasHeroImage ? '대표 이미지가 등록되었습니다.' : '이벤트 대표 이미지를 등록해 주세요.'}</div><button type="button" className={styles.smallAction} onClick={() => setField('hasHeroImage', !form.hasHeroImage)}>{form.hasHeroImage ? '이미지 제거' : '이미지 업로드'}</button></div>
                 </div>
               </div>
               <label className={`${styles.field} ${styles.span2}`}><span className={styles.label}>이벤트 설명</span><textarea className={styles.textarea} value={form.content} onChange={(e) => setField('content', e.target.value)} placeholder="이벤트 상세 내용을 입력하세요" /></label>

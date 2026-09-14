@@ -35,12 +35,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
 .brand {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: -0.01em;
@@ -76,6 +76,69 @@
   outline-offset: 2px;
 }
 
+/* 비즈니스 타입별 메뉴 숨기기/보이기 필터 바 */
+.typeFilterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 4px;
+}
+
+.typeFilterTitle {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.02em;
+}
+
+.typeFilterChips {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.typeChip {
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.15s ease;
+}
+
+.typeChipActiveB2B {
+  background: rgba(194, 65, 12, 0.25);
+  color: #fb923c;
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+.typeChipActiveB2C {
+  background: rgba(37, 99, 235, 0.25);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.typeChipActiveC2C {
+  background: rgba(124, 58, 237, 0.25);
+  color: #c084fc;
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.typeChipDisabled {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.08);
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
 .navScroll {
   flex: 1;
   min-height: 0;
@@ -90,11 +153,11 @@
 }
 
 .groupLabel {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.28);
   letter-spacing: 0.06em;
-  padding: 12px 8px 6px;
+  padding: 0.75rem 0.5rem 0.375rem;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -135,12 +198,12 @@
 }
 
 .itemMain {
-  height: 34px;
-  font-size: 12.5px;
+  height: 2.125rem;
+  font-size: 0.78125rem;
 }
 .itemSub {
-  height: 30px;
-  font-size: 12px;
+  height: 1.875rem;
+  font-size: 0.75rem;
   margin-bottom: 2px;
 }
 
@@ -161,55 +224,54 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: currentColor;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .text {
   flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.badge {
-  font-size: 10.5px;
-  color: rgba(255, 255, 255, 0.32);
-  font-variant-numeric: tabular-nums;
-}
-
 .businessTag {
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
   flex: none;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: 5px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  line-height: 1;
-  font-weight: 800;
-  letter-spacing: -0.02em;
 }
 .businessB {
+  background: rgba(37, 99, 235, 0.22);
   color: #93c5fd;
-  background: rgba(59, 130, 246, 0.18);
+  border: 1px solid rgba(59, 130, 246, 0.35);
 }
 .businessC {
+  background: rgba(124, 58, 237, 0.22);
   color: #c4b5fd;
-  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.35);
 }
 .businessBC {
-  color: #a7f3d0;
-  background: rgba(16, 185, 129, 0.18);
+  background: rgba(14, 165, 233, 0.18);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.3);
 }
 .businessB2B {
-  color: #fde68a;
-  background: rgba(245, 158, 11, 0.2);
+  background: rgba(194, 65, 12, 0.25);
+  color: #fdba74;
+  border: 1px solid rgba(249, 115, 22, 0.35);
+}
+
+.badge {
+  font-size: 0.65625rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+  flex: none;
 }
 
 .chevron {
-  flex: none;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.35);
   transition: transform 0.15s ease;
 }
@@ -218,42 +280,49 @@
 }
 
 .footer {
-  flex: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 10px 12px;
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
+  height: 54px;
+  padding: 0 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex: none;
 }
 
 .avatar {
-  width: 26px;
-  height: 26px;
-  flex: none;
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
+  flex: none;
 }
 
 .who {
-  min-width: 0;
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
+
 .whoName {
-  font-size: 12px;
-  color: #fff;
+  font-size: 0.75rem;
   font-weight: 600;
+  color: #fff;
+  line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .whoRole {
-  font-size: 10.5px;
-  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.65625rem;
+  color: rgba(255, 255, 255, 0.45);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

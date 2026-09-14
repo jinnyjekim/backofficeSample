@@ -141,10 +141,10 @@ export function ProductDetailDrawer({ detail: d, tab, onTabChange, onClose, show
               </div>
               {d.options.map((o) => (
                 <div className={styles.miniRow} style={{ gridTemplateColumns: '1fr 90px 100px 66px' }} key={o.code}>
-                  <span style={{ fontSize: '12.5px', color: '#18181b' }}>{o.name}</span>
-                  <span style={{ fontSize: '11.5px', color: '#71717a', fontVariantNumeric: 'tabular-nums' }}>{o.code}</span>
-                  <span style={{ fontSize: '12px', color: '#3f3f46', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{o.extra}</span>
-                  <span style={{ fontSize: '11.5px', fontWeight: 600, textAlign: 'right', color: o.statusFg }}>{o.status}</span>
+                  <span style={{ fontSize: '0.78125rem', color: '#18181b' }}>{o.name}</span>
+                  <span style={{ fontSize: '0.71875rem', color: '#71717a', fontVariantNumeric: 'tabular-nums' }}>{o.code}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#3f3f46', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{o.extra}</span>
+                  <span style={{ fontSize: '0.71875rem', fontWeight: 600, textAlign: 'right', color: o.statusFg }}>{o.status}</span>
                 </div>
               ))}
             </div>
@@ -191,11 +191,11 @@ export function ProductDetailDrawer({ detail: d, tab, onTabChange, onClose, show
               </div>
               {d.partnerRows.map((p) => (
                 <div className={styles.miniRow} style={{ gridTemplateColumns: '1fr 66px 90px 56px 60px' }} key={p.name}>
-                  <span style={{ fontSize: '12.5px', color: '#18181b' }}>{p.name}</span>
-                  <span style={{ fontSize: '11.5px', fontWeight: 600, color: p.allowFg }}>{p.allow}</span>
-                  <span style={{ fontSize: '12px', color: '#3f3f46', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{p.price}</span>
-                  <span style={{ fontSize: '12px', color: '#3f3f46', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{p.moq}</span>
-                  <span style={{ fontSize: '11.5px', fontWeight: 600, textAlign: 'right', color: p.statusFg }}>{p.status}</span>
+                  <span style={{ fontSize: '0.78125rem', color: '#18181b' }}>{p.name}</span>
+                  <span style={{ fontSize: '0.71875rem', fontWeight: 600, color: p.allowFg }}>{p.allow}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#3f3f46', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{p.price}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#3f3f46', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{p.moq}</span>
+                  <span style={{ fontSize: '0.71875rem', fontWeight: 600, textAlign: 'right', color: p.statusFg }}>{p.status}</span>
                 </div>
               ))}
             </div>
@@ -238,11 +238,11 @@ export function ProductDetailDrawer({ detail: d, tab, onTabChange, onClose, show
               </div>
               {d.deals.map((deal) => (
                 <div className={styles.miniRow} style={{ gridTemplateColumns: '90px 1fr 64px 1fr 66px' }} key={deal.no}>
-                  <span style={{ fontSize: '12px', color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>{deal.no}</span>
-                  <span style={{ fontSize: '12.5px', color: '#18181b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{deal.partner}</span>
-                  <span style={{ fontSize: '12px', color: '#3f3f46', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{deal.qty}</span>
-                  <span style={{ fontSize: '12px', color: '#3f3f46', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{deal.amount}</span>
-                  <span style={{ fontSize: '11.5px', color: '#8b8b93', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{deal.date}</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>{deal.no}</span>
+                  <span style={{ fontSize: '0.78125rem', color: '#18181b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{deal.partner}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#3f3f46', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{deal.qty}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#3f3f46', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{deal.amount}</span>
+                  <span style={{ fontSize: '0.71875rem', color: '#8b8b93', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{deal.date}</span>
                 </div>
               ))}
             </div>

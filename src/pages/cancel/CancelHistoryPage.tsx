@@ -5,7 +5,7 @@ import type { GridColumn, GridRow } from "../../components/DataGrid/types";
 import { DetailDrawer } from "../c2c/sales/SalesActivityShared";
 import drawer from "../ops/opsDrawerShared.module.css";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
-import { CommonButton } from "../../components/common";
+import { CommonButton, PageSizeSelect, SearchFilter } from "../../components/common";
 import { DatePicker } from "../../components/forms/DatePicker";
 import {
   CANCEL_STAGE_META,
@@ -118,15 +118,13 @@ export function CancelHistoryPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <input
-              className={styles.searchInput}
+            <SearchFilter
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onValueChange={setKeyword}
+              onSearch={(v) => setKeyword(v)}
               placeholder="취소번호 / 주문번호 / 고객명 / 상품명 / 담당자"
+              aria-label="취소 이력 검색"
             />
-            <button type="button" className={styles.searchBtn}>
-              검색
-            </button>
             <div className={styles.quickFilters}>
               {QUICK_FILTERS.map((k) => {
                 const active = filter === k;
@@ -248,7 +246,7 @@ export function CancelHistoryPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: "10px",
-                  fontSize: "12px",
+                  fontSize: "0.75rem",
                 }}
               >
                 <span

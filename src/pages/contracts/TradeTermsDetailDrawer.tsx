@@ -103,7 +103,7 @@ export function TradeTermsDetailDrawer({
                 <div className={styles.compareRow} key={r.label}>
                   <span className={styles.compareLabel}>{r.label}</span>
                   <span className={styles.compareBase}>{r.base}</span>
-                  <span style={{ fontSize: '12.5px', fontWeight: r.weight, color: r.fg }}>{r.override}</span>
+                  <span style={{ fontSize: '0.78125rem', fontWeight: r.weight, color: r.fg }}>{r.override}</span>
                 </div>
               ))}
             </div>

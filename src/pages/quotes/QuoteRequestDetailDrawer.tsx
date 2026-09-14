@@ -84,7 +84,7 @@ export function QuoteRequestDetailDrawer({ detail: d, onTabChange }: Props) {
 
         {d.showDraftPanel && (
           <div className={styles.panelBlue}>
-            <div style={{ fontSize: 12, color: '#1e40af', lineHeight: 1.6, marginBottom: 9 }}>
+            <div style={{ fontSize: '0.75rem', color: '#1e40af', lineHeight: 1.6, marginBottom: 9 }}>
               견적서를 작성하시겠습니까?<br />요청번호 {d.no} · 거래처 {d.partner} · 요청 항목 {d.itemCount}건
             </div>
             <div className={styles.panelActions}>
@@ -170,7 +170,7 @@ export function QuoteRequestDetailDrawer({ detail: d, onTabChange }: Props) {
               ))}
             </div>
             <div className={styles.sectionLabel} style={{ marginBottom: 6 }}>기타 요청사항</div>
-            <div style={{ fontSize: 12.5, color: '#3f3f46', lineHeight: 1.6, background: '#fafafa', borderRadius: 8, padding: '11px 12px' }}>{d.remark}</div>
+            <div style={{ fontSize: '0.78125rem', color: '#3f3f46', lineHeight: 1.6, background: '#fafafa', borderRadius: 8, padding: '11px 12px' }}>{d.remark}</div>
           </div>
         )}
 

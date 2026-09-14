@@ -11,7 +11,7 @@ interface Props {
 
 function JsonBlock({ value }: { value: Record<string, unknown> | null }) {
   if (!value) return <div className={styles.emptyInline}>본문 없음</div>;
-  return <pre className={styles.bodyText} style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: 11.5, overflowX: 'auto' }}>{JSON.stringify(value, null, 2)}</pre>;
+  return <pre className={styles.bodyText} style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '0.71875rem', overflowX: 'auto' }}>{JSON.stringify(value, null, 2)}</pre>;
 }
 
 export function ApiLogDetailDrawer({ entry: e, onClose }: Props) {

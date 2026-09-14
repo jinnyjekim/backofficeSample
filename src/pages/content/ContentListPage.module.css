@@ -7,14 +7,14 @@
 
 .stepTitle {
   color: #18181b;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 
 .stepHint {
   color: #8b8b93;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 
 .appliedCount {
@@ -23,7 +23,7 @@
   border-radius: 999px;
   background: #eef2ff;
   color: #4338ca;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -57,7 +57,7 @@
   background-size: 4px 4px, 4px 4px;
   color: #3f3f46;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   appearance: none;
   cursor: pointer;
 }
@@ -101,7 +101,7 @@
   background: #fff;
   color: #52525b;
   font: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -128,7 +128,7 @@
   border-radius: 999px;
   background: #4f46e5;
   color: #fff;
-  font-size: 10px;
+  font-size: 0.625rem;
   line-height: 1;
 }
 
@@ -145,6 +145,9 @@
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   background: #fbfbfc;
 }
+.filterPanel[data-detail-open="false"] .primaryFilters {
+  display: none;
+}
 
 .filterControl {
   display: flex;
@@ -155,7 +158,7 @@
 
 .filterControl > span {
   color: #71717a;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
 }
 
@@ -179,12 +182,12 @@
 
 .advancedHead strong {
   color: #3f3f46;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 
 .advancedHead span {
   color: #a1a1aa;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 .advancedGrid {
@@ -205,7 +208,7 @@
 
 .dateRange > span {
   color: #a1a1aa;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 .appliedFilters {
@@ -220,7 +223,7 @@
 
 .appliedLabel {
   color: #71717a;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
 }
 
@@ -243,7 +246,7 @@
   background: #eef2ff;
   color: #4338ca;
   font: inherit;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   cursor: pointer;
 }
 
@@ -253,7 +256,7 @@
 
 .filterChip span {
   color: #818cf8;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .clearAllButton {
@@ -262,7 +265,7 @@
   background: transparent;
   color: #71717a;
   font: inherit;
-  font-size: 11px;
+  font-size: 0.6875rem;
   cursor: pointer;
 }
 
@@ -370,14 +373,14 @@
 }
 .previewHeadTitle {
   flex: 1;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 .previewClose {
   border: 0;
   background: transparent;
   color: #a1a1aa;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
   line-height: 1;
 }
@@ -401,21 +404,21 @@
 }
 .previewThumbLabel {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   color: #8b8b93;
   background: #fff;
   border-radius: 6px;
   padding: 3px 7px;
 }
 .previewTitle {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-top: 14px;
   word-break: keep-all;
 }
 .previewId {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
   margin-top: 3px;
   font-variant-numeric: tabular-nums;
@@ -438,19 +441,19 @@
   border-bottom: 0;
 }
 .previewFieldLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
   flex: none;
 }
 .previewFieldValue {
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 .previewDesc {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   line-height: 1.65;
   margin-top: 14px;
@@ -472,19 +475,19 @@
   background: #f7f8ff;
 }
 .editContext span {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #4338ca;
   font-weight: 700;
 }
 .editContext strong {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #52525b;
   font-variant-numeric: tabular-nums;
 }
 .editContext small {
   grid-column: 1 / -1;
   color: #71717a;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   line-height: 1.5;
 }
 .editField {
@@ -495,7 +498,7 @@
 }
 .editField > span,
 .requestField > span {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #52525b;
   font-weight: 600;
 }
@@ -509,7 +512,7 @@
   background: #fff;
   color: #18181b;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   outline: none;
 }
 .editField input,
@@ -551,7 +554,7 @@
   border-radius: 8px;
   background: #fff;
   color: #4338ca;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -570,11 +573,11 @@
 .requestSummary span,
 .requestSummary small {
   color: #71717a;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 .requestSummary strong {
   color: #18181b;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
 }
 .requestField {
   display: flex;
@@ -596,7 +599,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   background: #fff;
   border-radius: 8px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #3f3f46;
   cursor: pointer;
@@ -611,7 +614,7 @@
   border-radius: 8px;
   background: var(--accent);
   color: #fff;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -634,6 +637,6 @@
   background: #18181b;
   color: #fff;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
