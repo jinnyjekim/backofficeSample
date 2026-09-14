@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import shared from "./shared.module.css";
@@ -314,10 +315,10 @@ export function CouponUsagePage() {
               data-grid-download
               onClick={() => toastBriefly("데이터 다운로드를 준비했습니다.")}
             />
-            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={shared.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>

@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { DatePicker } from "../../components/forms/DatePicker";
 import { SearchField } from "../../components/SearchField";
 import {
@@ -621,7 +622,7 @@ export function TagsPage() {
                         justifyContent: "space-between",
                         padding: "8px 11px",
                         borderBottom: "1px solid rgba(0,0,0,.05)",
-                        fontSize: 12.5,
+                        fontSize: '0.78125rem',
                         color: "#3f3f46",
                       }}
                     >
@@ -650,12 +651,12 @@ export function TagsPage() {
                 borderRadius: 9,
               }}
             >
-              <span style={{ fontSize: 12, color: "#71717a" }}>
+              <span style={{ fontSize: '0.75rem', color: "#71717a" }}>
                 병합 후 총 연결 콘텐츠
               </span>
               <span
                 style={{
-                  fontSize: 14,
+                  fontSize: '0.875rem',
                   fontWeight: 700,
                   fontVariantNumeric: "tabular-nums",
                 }}
@@ -761,7 +762,7 @@ export function TagsPage() {
                     placeholder="TAG_001"
                   />
                   {modal.mode === "edit" && modalCur && modalCur.count > 0 && (
-                    <span style={{ fontSize: 12, color: "#a1a1aa" }}>🔒</span>
+                    <span style={{ fontSize: '0.75rem', color: "#a1a1aa" }}>🔒</span>
                   )}
                 </div>
               </div>
@@ -922,7 +923,7 @@ export function TagsPage() {
             )}
           </div>
 
-          <div className={filterStyles.filterPanel}>
+          <div className={filterStyles.filterPanel} data-detail-open={adv}>
             <div className={filterStyles.searchLine}>
               <SearchField
                 ref={searchInputRef}
@@ -1132,14 +1133,14 @@ export function TagsPage() {
                 >{`총 ${list.length.toLocaleString("ko-KR")}개`}</span>
                 <div className={sh.rowSpacer} />
                 <ExcelDownloadButton data-grid-download />
-                <select
+                <PageSizeSelect
                   className={sh.pageSizeSelect}
                   defaultValue="20개씩 보기"
                 >
                   <option>20개씩 보기</option>
                   <option>50개씩 보기</option>
                   <option>100개씩 보기</option>
-                </select>
+                </PageSizeSelect>
               </div>
             )}
           </div>

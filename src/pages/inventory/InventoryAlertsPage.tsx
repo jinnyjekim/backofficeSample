@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridColumn, GridRow } from "../../components/DataGrid/types";
@@ -411,13 +412,13 @@ export function InventoryAlertsPage({
           </span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton data-grid-download />
-            <select
+            <PageSizeSelect
               aria-label="페이지당 표시 개수"
               className={shared.pageSizeSelect}
             >
               <option>20개씩</option>
               <option>50개씩</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
         <DataGrid

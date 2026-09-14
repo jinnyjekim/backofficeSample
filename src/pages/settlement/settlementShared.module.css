@@ -12,12 +12,12 @@
   flex: none;
 }
 .title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 .subtitle {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #8b8b93;
   margin-top: 4px;
   margin-bottom: 16px;
@@ -65,7 +65,7 @@
   background: #eef2ff;
 }
 .qfLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #52525b;
 }
@@ -73,7 +73,7 @@
   color: #4338ca;
 }
 .qfCount {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #18181b;
   opacity: 0.8;
@@ -111,7 +111,7 @@
   gap: 5px;
 }
 .filterFieldLabel {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   color: #8b8b93;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -121,7 +121,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   background: #fff;
 }
@@ -131,7 +131,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   background: #fff;
 }
@@ -146,7 +146,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 11px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   outline: 0;
   box-sizing: border-box;
 }
@@ -160,7 +160,7 @@
   border-radius: 8px;
   background: #18181b;
   color: #fff;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -176,7 +176,7 @@
   border: 0;
   background: transparent;
   color: #a1a1aa;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 .resetBtn:hover {
@@ -190,7 +190,7 @@
   margin-bottom: 9px;
 }
 .resultLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -205,7 +205,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -217,7 +217,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #52525b;
   background: #fff;
 }
@@ -256,30 +256,30 @@
   flex-wrap: wrap;
 }
 .reportNo {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 .reportTarget {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #71717a;
   margin-top: 3px;
 }
 .reportAmount {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   color: #18181b;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
 .reportDue {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #a1a1aa;
   margin-top: 3px;
   text-align: right;
 }
 .reportIssue {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #d97706;
   margin-bottom: 10px;
 }
@@ -294,11 +294,11 @@
   min-width: 0;
 }
 .reportFieldLabel {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   color: #a1a1aa;
 }
 .reportFieldValue {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #3f3f46;
   margin-top: 2px;

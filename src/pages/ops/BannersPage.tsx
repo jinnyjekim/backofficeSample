@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './opsShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -400,10 +401,10 @@ export function BannersPage() {
             <button type="button" className={styles.bulkBtn} onClick={() => setConfirm({ kind: 'positionInfo' })}>노출 위치 정보</button>
             <button type="button" className={styles.bulkBtn} onClick={openOrderManage}>순서 관리</button>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
@@ -552,8 +553,8 @@ export function BannersPage() {
             <div className={styles.dialogSummary}>
               {BANNER_POSITIONS.map((p) => (
                 <div key={p.code} style={{ padding: '8px 0', borderBottom: '1px solid rgba(0,0,0,.06)' }}>
-                  <div style={{ fontWeight: 700, fontSize: 12.5, marginBottom: 4 }}>{p.label}</div>
-                  <div style={{ fontSize: 11.5, color: '#71717a' }}>PC {p.pcSpec} · Mobile {p.mobileSpec} · 최대 {p.maxCount}개 · {p.mode}</div>
+                  <div style={{ fontWeight: 700, fontSize: '0.78125rem', marginBottom: 4 }}>{p.label}</div>
+                  <div style={{ fontSize: '0.71875rem', color: '#71717a' }}>PC {p.pcSpec} · Mobile {p.mobileSpec} · 최대 {p.maxCount}개 · {p.mode}</div>
                 </div>
               ))}
             </div>

@@ -25,7 +25,7 @@ export function DashboardPage() {
       <header className={styles.pageHeader}>
         <div className={styles.headingBlock}>
           <div className={styles.eyebrow}>2026.08.31 월요일</div>
-          <h1 className={styles.title}>운영 대시보드</h1>
+          <h1 className={styles.title}>대시보드</h1>
           <p className={styles.subtitle}>{current.overview}</p>
         </div>
         <div className={styles.headerTools}>

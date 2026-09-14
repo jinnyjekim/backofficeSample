@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -260,7 +261,7 @@ export function RegionalShippingFeePage() {
       <header className={shared.header}>
         <div className={shared.headerTop}>
           <div>
-            <div className={shared.title}>지역별 배송 정책</div>
+            <div className={shared.title}>지역별 추가 배송비</div>
             <div className={shared.subtitle}>
               행정구역·우편번호별 추가 배송비와 배송 가능 여부를 한 곳에서 관리합니다.
             </div>
@@ -423,10 +424,10 @@ export function RegionalShippingFeePage() {
           
           <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={shared.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div></div>
           <DataGrid
             columns={COLUMNS}

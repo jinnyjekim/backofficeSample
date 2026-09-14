@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import {
   Download,
   Info,
@@ -16,6 +17,7 @@ import type {
   GridRow,
 } from "../../components/DataGrid/types";
 import { CommonSelect } from "../../components/common";
+import { StatisticsLineChart } from "../../components/charts";
 import { downloadStatisticsReport } from "../../lib/statisticsReport";
 import { useOutsideClose } from "../../lib/useOutsideClose";
 import {
@@ -439,6 +441,8 @@ function InventoryTrendChart({
   secondary?: number[];
   labels: string[];
 }) {
+  return <StatisticsLineChart values={primary} comparisonValues={secondary} labels={labels} height={240} ariaLabel="재고 추이 차트" />;
+  /* legacy renderer retained temporarily for visual parity reference */
   const max = Math.max(...primary, ...(secondary ?? []), 1);
   const width = 860;
   const height = 220;
@@ -1149,7 +1153,7 @@ export function InventoryAnalysisPage() {
                 <span>{mode === "b2b" ? "수요 분석 기간" : "판매속도 기준"}</span>
                 <CommonSelect
                   className={layout.analysisSelect}
-                  size="sm"
+                  size="md"
                   value={period}
                   options={Object.keys(ANALYSIS_DAYS).map((value) => ({ label: value, value }))}
                   onChange={(value) => setPeriod(String(value))}
@@ -1157,23 +1161,23 @@ export function InventoryAnalysisPage() {
               </label>
               <label className={layout.filterField}>
                 <span>카테고리</span>
-                <CommonSelect className={layout.analysisSelect} size="sm" value={category} options={categories.map((value) => ({ label: value, value }))} onChange={(value) => setCategory(String(value))} />
+                <CommonSelect className={layout.analysisSelect} size="md" value={category} options={categories.map((value) => ({ label: value, value }))} onChange={(value) => setCategory(String(value))} />
               </label>
               <label className={layout.filterField}>
                 <span>창고</span>
-                <CommonSelect className={layout.analysisSelect} size="sm" value={warehouse} options={["전체 창고", "수도권 센터", "부산 센터"].map((value) => ({ label: value, value }))} onChange={(value) => setWarehouse(String(value))} />
+                <CommonSelect className={layout.analysisSelect} size="md" value={warehouse} options={["전체 창고", "수도권 센터", "부산 센터"].map((value) => ({ label: value, value }))} onChange={(value) => setWarehouse(String(value))} />
               </label>
               <label className={layout.filterField}>
                 <span>재고 위험</span>
-                <CommonSelect className={layout.analysisSelect} size="sm" value={risk} options={["전체 상태", ...Object.keys(RISK_META)].map((value) => ({ label: value, value }))} onChange={(value) => setRisk(String(value))} />
+                <CommonSelect className={layout.analysisSelect} size="md" value={risk} options={["전체 상태", ...Object.keys(RISK_META)].map((value) => ({ label: value, value }))} onChange={(value) => setRisk(String(value))} />
               </label>
               <label className={layout.filterField}>
                 <span>재고 평가 기준</span>
-                <CommonSelect className={layout.analysisSelect} size="sm" value={valuation} options={["평균 원가", "최근 매입가", "표준 원가"].map((value) => ({ label: value, value }))} onChange={(value) => setValuation(String(value))} />
+                <CommonSelect className={layout.analysisSelect} size="md" value={valuation} options={["평균 원가", "최근 매입가", "표준 원가"].map((value) => ({ label: value, value }))} onChange={(value) => setValuation(String(value))} />
               </label>
               <label className={layout.filterField}>
                 <span>입고 예정 반영</span>
-                <CommonSelect className={layout.analysisSelect} size="sm" value={includeInbound} options={["미반영", "7일 내 입고만", "전체 입고 예정"].map((value) => ({ label: value, value }))} onChange={(value) => setIncludeInbound(String(value))} />
+                <CommonSelect className={layout.analysisSelect} size="md" value={includeInbound} options={["미반영", "7일 내 입고만", "전체 입고 예정"].map((value) => ({ label: value, value }))} onChange={(value) => setIncludeInbound(String(value))} />
               </label>
             </>
           }
@@ -1479,10 +1483,10 @@ export function InventoryAnalysisPage() {
                 data-grid-download
                 onClick={() => setDownloadOpen(true)}
               />
-              <select className={layout.pageSizeSelect} defaultValue="20개씩 보기">
+              <PageSizeSelect className={layout.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
           <DataGrid

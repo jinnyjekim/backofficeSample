@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -18,7 +19,7 @@ import {
   type SaleStatus,
   type StockMovement,
 } from "./inventoryData";
-import { CommonButton, CommonInput, ExcelDownloadButton } from "../../components/common";
+import { CommonButton, CommonInput, CommonNotice, ExcelDownloadButton } from "../../components/common";
 
 type QuickFilter =
   | "전체"
@@ -568,10 +569,10 @@ export function InventoryStatusPage() {
             </button>
           </div>
         </div>
-        <div className={styles.definitionStrip}>
+        <CommonNotice>
           판매 가능 재고 = 현재고 − 예약재고 − 기타 잠금 · 예약재고는 결제
           완료된 주문 기준 · 음수재고 허용 안 함
-        </div>
+        </CommonNotice>
 
         <div className={styles.viewToggleRow}>
           <div className={styles.viewToggle}>
@@ -827,10 +828,10 @@ export function InventoryStatusPage() {
               data-grid-download
               onClick={() => download(filtered)}
             />
-            <select className={shared.pageSizeSelect}>
+            <PageSizeSelect className={shared.pageSizeSelect}>
               <option>20개씩</option>
               <option>50개씩</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
         <DataGrid

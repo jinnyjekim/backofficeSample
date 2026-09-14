@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './shared.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -178,7 +179,7 @@ export function PaymentsPage() {
       <header className={styles.header}>
         <div className={styles.headerTop}>
           <div>
-            <div className={styles.title}>결제 관리</div>
+            <div className={styles.title}>결제</div>
             <div className={styles.subtitle}>거래처의 결제 및 입금 내역을 조회하고 주문·청구 건과 연결합니다.</div>
           </div>
           <button type="button" className={styles.primaryBtn} onClick={() => { setSelectedId(null); setShowRegister(true); }}>+ 결제 등록</button>
@@ -242,10 +243,10 @@ export function PaymentsPage() {
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={styles.selectXs}>
+            <PageSizeSelect className={styles.selectXs}>
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>

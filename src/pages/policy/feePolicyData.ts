@@ -301,3 +301,388 @@ export function computeFeePreview(policy: FeePolicy, baseAmount: number): FeePre
   const taxAmount = policy.taxTreatment === '별도' ? applyRounding(roundedFee * 0.1, policy.roundingRule, policy.roundingUnit) : 0;
   return { baseAmount, rawFee, clampedFee, roundedFee, taxAmount, totalFee: roundedFee + taxAmount };
 }
+
+// ─── 전역 수수료 정책 (Global Fee Policy) ───
+
+export interface GlobalFeePolicy {
+  defaultFeeRate: number;
+  calcMethod: CalcMethod;
+  fixedFeeAmount: number;
+  calcBasis: CalcBasis;
+  calcUnit: CalcUnit;
+  taxTreatment: TaxTreatment;
+  includeShippingInFee: boolean;
+  minFeeAmount: number;
+  maxFeeAmount: number | null;
+  roundingRule: RoundingRule;
+  roundingUnit: number;
+
+  categoryFeeEnabled: boolean;
+  tierDiscountEnabled: boolean;
+  newSellerPromoEnabled: boolean;
+  newSellerPromoRate: number;
+  newSellerPromoDays: number;
+  smallBusinessDiscountEnabled: boolean;
+  smallBusinessDiscountRate: number;
+
+  cancelFeePolicy: CancelFeePolicy;
+  refundFeePolicy: RefundFeePolicy;
+  chargeFailedPayoutFee: boolean;
+  requireApprovalForManualDiscount: boolean;
+}
+
+export interface CategoryFeeItem {
+  id: string;
+  category: string;
+  rate: number;
+  active: boolean;
+}
+
+export interface TierFeeItem {
+  tier: string;
+  name: string;
+  rate: number;
+  discount: number;
+  active: boolean;
+}
+
+export interface FieldDiff {
+  field: string;
+  before: string;
+  after: string;
+}
+
+export interface LastModified {
+  at: string;
+  by: string;
+}
+
+export interface GlobalFeeHistoryEntry {
+  id: string;
+  at: string;
+  by: string;
+  field: string;
+  before: string;
+  after: string;
+  reason: string;
+}
+
+export interface FeeScenarioTransaction {
+  id: string;
+  title: string;
+  seller: string;
+  sellerTier: string;
+  category: string;
+  isNewSeller: boolean;
+  orderAmount: number;
+  shippingFee: number;
+  discountAmount: number;
+  status: string;
+}
+
+export const INITIAL_LAST_MODIFIED: LastModified = {
+  at: '2026-08-25',
+  by: '운영 관리자',
+};
+
+export const INITIAL_GLOBAL_FEE_POLICY: GlobalFeePolicy = {
+  defaultFeeRate: 5.0,
+  calcMethod: '정률',
+  fixedFeeAmount: 0,
+  calcBasis: '상품 판매금액',
+  calcUnit: '거래 1건당',
+  taxTreatment: '별도',
+  includeShippingInFee: true,
+  minFeeAmount: 0,
+  maxFeeAmount: 1000000,
+  roundingRule: '반올림',
+  roundingUnit: 1,
+
+  categoryFeeEnabled: true,
+  tierDiscountEnabled: true,
+  newSellerPromoEnabled: true,
+  newSellerPromoRate: 2.0,
+  newSellerPromoDays: 90,
+  smallBusinessDiscountEnabled: true,
+  smallBusinessDiscountRate: 1.5,
+
+  cancelFeePolicy: '취소 정책 참조',
+  refundFeePolicy: '환불 비율만큼 감소',
+  chargeFailedPayoutFee: false,
+  requireApprovalForManualDiscount: true,
+};
+
+export const INITIAL_CATEGORY_FEES: CategoryFeeItem[] = [
+  { id: 'CAT-01', category: '패션 · 의류', rate: 5.5, active: true },
+  { id: 'CAT-02', category: '가전 · 디지털', rate: 3.5, active: true },
+  { id: 'CAT-03', category: '식품 · 농수산', rate: 4.0, active: true },
+  { id: 'CAT-04', category: '생활 · 가구', rate: 5.0, active: true },
+  { id: 'CAT-05', category: '도서 · 티켓', rate: 2.5, active: true },
+  { id: 'CAT-06', category: '뷰티 · 잡화', rate: 6.0, active: true },
+];
+
+export const INITIAL_TIER_FEES: TierFeeItem[] = [
+  { tier: 'VIP', name: 'VIP 파트너', rate: 3.5, discount: 1.5, active: true },
+  { tier: 'BEST', name: '우수 판매자', rate: 4.2, discount: 0.8, active: true },
+  { tier: 'NORMAL', name: '일반 판매자', rate: 5.0, discount: 0.0, active: true },
+  { tier: 'NEW', name: '신규 입점 (90일)', rate: 2.0, discount: 3.0, active: true },
+];
+
+export const INITIAL_GLOBAL_HISTORY: GlobalFeeHistoryEntry[] = [
+  {
+    id: 'GFH-01',
+    at: '2026-08-25 14:00',
+    by: '운영 관리자',
+    field: '기본 수수료율',
+    before: '5.5%',
+    after: '5.0%',
+    reason: '판매자 상생 협력 및 거래 활성화를 위한 기본 수수료 인하',
+  },
+  {
+    id: 'GFH-02',
+    at: '2026-07-15 11:30',
+    by: 'admin02',
+    field: '신규 입점 우대 수수료율',
+    before: '3.0%',
+    after: '2.0%',
+    reason: '신규 파트너사 유치 프로모션 요율 확대',
+  },
+  {
+    id: 'GFH-03',
+    at: '2026-06-01 09:00',
+    by: 'admin01',
+    field: '최대 수수료 상한',
+    before: '제한 없음',
+    after: '1,000,000원',
+    reason: '고액 거래 파트너 부담 완화 및 안전장치 도입',
+  },
+];
+
+export const TEST_TRANSACTIONS: FeeScenarioTransaction[] = [
+  {
+    id: 'TX-202609-001',
+    title: '트렌치 코트 (패션·의류)',
+    seller: '주식회사 어패럴랩',
+    sellerTier: '일반 판매자',
+    category: '패션 · 의류',
+    isNewSeller: false,
+    orderAmount: 89000,
+    shippingFee: 3000,
+    discountAmount: 5000,
+    status: '정상 승인',
+  },
+  {
+    id: 'TX-202609-002',
+    title: '4K 스마트 TV (가전·디지털)',
+    seller: '글로벌 테크',
+    sellerTier: 'VIP 파트너',
+    category: '가전 · 디지털',
+    isNewSeller: false,
+    orderAmount: 1850000,
+    shippingFee: 0,
+    discountAmount: 100000,
+    status: '정상 승인',
+  },
+  {
+    id: 'TX-202609-003',
+    title: '유기농 사과 세트 (신규 입점)',
+    seller: '청송 자연농원',
+    sellerTier: '신규 입점 (90일)',
+    category: '식품 · 농수산',
+    isNewSeller: true,
+    orderAmount: 45000,
+    shippingFee: 3500,
+    discountAmount: 0,
+    status: '정상 승인',
+  },
+];
+
+export function fmtWon(val: number): string {
+  return `${val.toLocaleString()}원`;
+}
+
+export function describeGlobalFeeChanges(
+  prev: GlobalFeePolicy,
+  next: GlobalFeePolicy,
+): FieldDiff[] {
+  const diffs: FieldDiff[] = [];
+  if (prev.defaultFeeRate !== next.defaultFeeRate) {
+    diffs.push({
+      field: '기본 수수료율',
+      before: `${prev.defaultFeeRate}%`,
+      after: `${next.defaultFeeRate}%`,
+    });
+  }
+  if (prev.calcMethod !== next.calcMethod) {
+    diffs.push({
+      field: '계산 방식',
+      before: prev.calcMethod,
+      after: next.calcMethod,
+    });
+  }
+  if (prev.fixedFeeAmount !== next.fixedFeeAmount) {
+    diffs.push({
+      field: '기본 정액 수수료',
+      before: fmtWon(prev.fixedFeeAmount),
+      after: fmtWon(next.fixedFeeAmount),
+    });
+  }
+  if (prev.calcBasis !== next.calcBasis) {
+    diffs.push({
+      field: '계산 기준금액',
+      before: prev.calcBasis,
+      after: next.calcBasis,
+    });
+  }
+  if (prev.taxTreatment !== next.taxTreatment) {
+    diffs.push({
+      field: '부가세 처리',
+      before: prev.taxTreatment,
+      after: next.taxTreatment,
+    });
+  }
+  if (prev.includeShippingInFee !== next.includeShippingInFee) {
+    diffs.push({
+      field: '배송비 수수료 포함',
+      before: prev.includeShippingInFee ? '포함' : '미포함',
+      after: next.includeShippingInFee ? '포함' : '미포함',
+    });
+  }
+  if (prev.maxFeeAmount !== next.maxFeeAmount) {
+    diffs.push({
+      field: '최대 수수료 상한',
+      before: prev.maxFeeAmount ? fmtWon(prev.maxFeeAmount) : '제한 없음',
+      after: next.maxFeeAmount ? fmtWon(next.maxFeeAmount) : '제한 없음',
+    });
+  }
+  if (prev.categoryFeeEnabled !== next.categoryFeeEnabled) {
+    diffs.push({
+      field: '카테고리 차등 수수료',
+      before: prev.categoryFeeEnabled ? '적용' : '미적용',
+      after: next.categoryFeeEnabled ? '적용' : '미적용',
+    });
+  }
+  if (prev.tierDiscountEnabled !== next.tierDiscountEnabled) {
+    diffs.push({
+      field: '판매자 등급 우대',
+      before: prev.tierDiscountEnabled ? '적용' : '미적용',
+      after: next.tierDiscountEnabled ? '적용' : '미적용',
+    });
+  }
+  if (prev.newSellerPromoEnabled !== next.newSellerPromoEnabled) {
+    diffs.push({
+      field: '신규 입점 감면',
+      before: prev.newSellerPromoEnabled ? '적용' : '미적용',
+      after: next.newSellerPromoEnabled ? '적용' : '미적용',
+    });
+  }
+  if (prev.cancelFeePolicy !== next.cancelFeePolicy) {
+    diffs.push({
+      field: '주문 취소 시 수수료',
+      before: prev.cancelFeePolicy,
+      after: next.cancelFeePolicy,
+    });
+  }
+  if (prev.refundFeePolicy !== next.refundFeePolicy) {
+    diffs.push({
+      field: '환불 시 수수료',
+      before: prev.refundFeePolicy,
+      after: next.refundFeePolicy,
+    });
+  }
+  return diffs;
+}
+
+export function computeGlobalFeeWarnings(policy: GlobalFeePolicy): string[] {
+  const warnings: string[] = [];
+  if (policy.defaultFeeRate <= 0 && policy.calcMethod === '정률') {
+    warnings.push('기본 수수료율이 0% 이하입니다. 플랫폼 수익 정책을 확인하세요.');
+  }
+  if (policy.maxFeeAmount !== null && policy.maxFeeAmount <= policy.minFeeAmount) {
+    warnings.push('최대 수수료 상한이 최소 수수료보다 낮거나 같습니다.');
+  }
+  if (policy.newSellerPromoEnabled && policy.newSellerPromoRate >= policy.defaultFeeRate) {
+    warnings.push('신규 입점 우대 수수료율이 기본 수수료율보다 높거나 같습니다.');
+  }
+  return warnings;
+}
+
+export interface ScenarioBreakdown {
+  baseAmount: number;
+  appliedRate: number;
+  rateType: string;
+  tierDiscount: number;
+  calculatedFee: number;
+  clampedFee: number;
+  taxAmount: number;
+  totalFee: number;
+  sellerReceives: number;
+  capped: boolean;
+}
+
+export function computeScenarioFeeBreakdown(
+  policy: GlobalFeePolicy,
+  tx: FeeScenarioTransaction,
+  categories: CategoryFeeItem[] = INITIAL_CATEGORY_FEES,
+  tiers: TierFeeItem[] = INITIAL_TIER_FEES,
+): ScenarioBreakdown {
+  let base = tx.orderAmount;
+  if (policy.includeShippingInFee) {
+    base += tx.shippingFee;
+  }
+
+  let rate = policy.defaultFeeRate;
+  let rateType = '기본 수수료율';
+
+  if (policy.categoryFeeEnabled) {
+    const cat = categories.find((c) => c.category === tx.category && c.active);
+    if (cat) {
+      rate = cat.rate;
+      rateType = `카테고리 요율 (${cat.category})`;
+    }
+  }
+
+  let tierDiscount = 0;
+  if (policy.newSellerPromoEnabled && tx.isNewSeller) {
+    rate = policy.newSellerPromoRate;
+    rateType = '신규 입점 프로모션 우대 요율';
+  } else if (policy.tierDiscountEnabled) {
+    const t = tiers.find((item) => item.name === tx.sellerTier && item.active);
+    if (t && t.discount > 0) {
+      tierDiscount = t.discount;
+      rate = Math.max(0, rate - tierDiscount);
+      rateType = `${t.name} 우대 할인 (-${t.discount}%p)`;
+    }
+  }
+
+  let calculatedFee = 0;
+  if (policy.calcMethod === '정률') {
+    calculatedFee = Math.round(base * (rate / 100));
+  } else {
+    calculatedFee = policy.fixedFeeAmount;
+  }
+
+  let clampedFee = Math.max(calculatedFee, policy.minFeeAmount);
+  let capped = false;
+  if (policy.maxFeeAmount !== null && clampedFee > policy.maxFeeAmount) {
+    clampedFee = policy.maxFeeAmount;
+    capped = true;
+  }
+
+  const taxAmount = policy.taxTreatment === '별도' ? Math.round(clampedFee * 0.1) : 0;
+  const totalFee = clampedFee + taxAmount;
+  const sellerReceives = tx.orderAmount + tx.shippingFee - totalFee;
+
+  return {
+    baseAmount: base,
+    appliedRate: rate,
+    rateType,
+    tierDiscount,
+    calculatedFee,
+    clampedFee,
+    taxAmount,
+    totalFee,
+    sellerReceives,
+    capped,
+  };
+}

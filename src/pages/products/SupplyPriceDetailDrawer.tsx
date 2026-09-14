@@ -172,8 +172,8 @@ export function SupplyPriceDetailDrawer({
                   </div>
                   {d.tiers.map((tr) => (
                     <div className={styles.miniRow} style={{ gridTemplateColumns: '1fr 1fr' }} key={tr.range}>
-                      <span style={{ fontSize: '12.5px', color: '#3f3f46' }}>{tr.range}</span>
-                      <span style={{ fontSize: '12.5px', color: '#18181b', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{tr.price}</span>
+                      <span style={{ fontSize: '0.78125rem', color: '#3f3f46' }}>{tr.range}</span>
+                      <span style={{ fontSize: '0.78125rem', color: '#18181b', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{tr.price}</span>
                     </div>
                   ))}
                 </div>

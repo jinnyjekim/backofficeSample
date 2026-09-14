@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { DatePicker } from "../../components/forms/DatePicker";
 import { SearchField } from "../../components/SearchField";
@@ -383,7 +384,7 @@ export function ReviewPage() {
               <>
                 <div
                   style={{
-                    fontSize: 12.5,
+                    fontSize: '0.78125rem',
                     color: "#52525b",
                     lineHeight: 1.6,
                     marginTop: 9,
@@ -475,7 +476,7 @@ export function ReviewPage() {
                       display: "flex",
                       alignItems: "center",
                       gap: 7,
-                      fontSize: 12,
+                      fontSize: '0.75rem',
                       color: "#52525b",
                       cursor: "pointer",
                     }}
@@ -591,7 +592,7 @@ export function ReviewPage() {
             )}
           </div>
 
-          <div className={filterStyles.filterPanel}>
+          <div className={filterStyles.filterPanel} data-detail-open={adv}>
             <div className={filterStyles.searchLine}>
               <SearchField
                 ref={searchInputRef}
@@ -828,13 +829,13 @@ export function ReviewPage() {
                 >{`총 ${list.length.toLocaleString("ko-KR")}건`}</span>
                 <div className={sh.rowSpacer} />
                 <ExcelDownloadButton type="button" data-grid-download />
-                <select
+                <PageSizeSelect
                   className={sh.pageSizeSelect}
                   defaultValue="20개씩 보기"
                 >
                   <option>20개씩 보기</option>
                   <option>50개씩 보기</option>
-                </select>
+                </PageSizeSelect>
               </div>
             )}
           </div>

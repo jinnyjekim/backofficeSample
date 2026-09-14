@@ -72,7 +72,7 @@ export function CouponDetailDrawer({ coupon: c, issues, onClose, onEdit, onDupli
           <div className={styles.editPanel} style={{ marginTop: 12, background: '#fffbeb', borderColor: '#fde68a' }}>
             <div className={styles.editTitle} style={{ color: '#b45309' }}>검토가 필요합니다</div>
             {issues.map((issue) => (
-              <div key={issue} style={{ fontSize: 12, color: '#92400e', marginBottom: 4 }}>⚠ {issue}</div>
+              <div key={issue} style={{ fontSize: '0.75rem', color: '#92400e', marginBottom: 4 }}>⚠ {issue}</div>
             ))}
           </div>
         )}
@@ -246,9 +246,9 @@ export function CouponDetailDrawer({ coupon: c, issues, onClose, onEdit, onDupli
                     </div>
                   ) : (
                     <div>
-                      <div style={{ fontSize: 12.5, fontWeight: 700, color: '#dc2626', marginBottom: 6 }}>쿠폰을 사용할 수 없습니다.</div>
+                      <div style={{ fontSize: '0.78125rem', fontWeight: 700, color: '#dc2626', marginBottom: 6 }}>쿠폰을 사용할 수 없습니다.</div>
                       {result.reasons.map((r) => (
-                        <div key={r} style={{ fontSize: 12, color: '#71717a', marginBottom: 3 }}>• {r}</div>
+                        <div key={r} style={{ fontSize: '0.75rem', color: '#71717a', marginBottom: 3 }}>• {r}</div>
                       ))}
                     </div>
                   )}

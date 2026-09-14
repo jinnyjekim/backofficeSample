@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../../components/common';
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../../components/DataGrid";
 import type { GridRow } from "../../../components/DataGrid/types";
@@ -17,6 +18,7 @@ import {
   formatWon,
 } from "./salesActivityData";
 import { downloadCsv, pages } from "./salesActivityUtils";
+import { StatisticsDonutChart } from "../../../components/charts";
 
 const MONTHLY = [
   { month: "3월", amount: 61, count: 218 },
@@ -96,7 +98,6 @@ export function SalesPerformancePage() {
       ).reduce((sum, p) => sum + p.price, 0),
     }))
     .sort((a, b) => b.value - a.value);
-  const categorySum = categoryTotals.reduce((sum, item) => sum + item.value, 0);
   const downloadPerformance = () =>
     downloadCsv(
       `C2C-판매실적-${range.replaceAll(" ", "")}.csv`,
@@ -189,30 +190,14 @@ export function SalesPerformancePage() {
               <p>등록 상품가 기준 구성비</p>
             </div>
           </div>
-          <div className={styles.donutWrap}>
-            <div className={styles.donut}>
-              <div className={styles.donutCenter}>
-                <strong>{SALE_PRODUCTS.length}</strong>
-                <span>상품</span>
-              </div>
-            </div>
-            <div className={styles.donutLegend}>
-              {categoryTotals.slice(0, 4).map((item, index) => (
-                <div key={item.category}>
-                  <i
-                    style={{
-                      background: ["#4f7bd9", "#8b5cf6", "#f59e0b", "#ef4444"][
-                        index
-                      ],
-                    }}
-                  />
-                  <span>{item.category}</span>
-                  <strong>
-                    {((item.value / categorySum) * 100).toFixed(1)}%
-                  </strong>
-                </div>
-              ))}
-            </div>
+          <div className={styles.donutArea}>
+            <StatisticsDonutChart
+              data={categoryTotals.map((item) => ({ label: item.category, value: item.value }))}
+              centerValue={SALE_PRODUCTS.length}
+              centerLabel="상품"
+              maxLegendItems={4}
+              ariaLabel="카테고리 거래 구성"
+            />
           </div>
         </div>
       </div>
@@ -245,7 +230,7 @@ export function SalesPerformancePage() {
             data-grid-download
             onClick={downloadPerformance}
           />
-          <select
+          <PageSizeSelect
             aria-label="페이지당 표시 개수"
             className={shared.pageSizeSelect}
             value={pageSize}
@@ -253,7 +238,7 @@ export function SalesPerformancePage() {
           >
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>
-          </select>
+          </PageSizeSelect>
         </ResultBar>
         <DataGrid
           columns={[

@@ -16,6 +16,8 @@ import { Check, ChevronDown } from 'lucide-react';
 import { Badge as M2MBadge } from 'm2m-uiux-react/Badge';
 import { Button as M2MButton } from 'm2m-uiux-react/Button';
 import { ButtonGroup as M2MButtonGroup } from 'm2m-uiux-react/ButtonGroup';
+import { Segmented as M2MSegmented } from 'm2m-uiux-react/Segmented';
+import type { SegmentedOption as M2MSegmentedOption } from 'm2m-uiux-react/Segmented';
 import { Checkbox as M2MCheckbox } from 'm2m-uiux-react/Checkbox';
 import { CheckboxGroup as M2MCheckboxGroup } from 'm2m-uiux-react/CheckboxGroup';
 import { Divider as M2MDivider } from 'm2m-uiux-react/Divider';
@@ -100,6 +102,48 @@ export interface CommonButtonGroupProps {
 
 export function CommonButtonGroup({ children, direction = 'row', attached = false, size, disabled, className, classNames }: CommonButtonGroupProps) {
   return <M2MButtonGroup direction={direction} attached={attached} size={size} disabled={disabled} classNames={cx(styles.buttonGroup, styles[`direction_${direction}`], attached && styles.attached, classNameOf(classNames), className)}>{children}</M2MButtonGroup>;
+}
+
+export type CommonSegmentedOption = M2MSegmentedOption | string;
+
+export interface CommonSegmentedProps {
+  options: CommonSegmentedOption[];
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string, option: M2MSegmentedOption) => void;
+  name?: string;
+  size?: CommonSize;
+  disabled?: boolean;
+  block?: boolean;
+  className?: string;
+  classNames?: CommonClassNames;
+}
+
+export function CommonSegmented({
+  options,
+  value,
+  defaultValue,
+  onChange,
+  name,
+  size = 'md',
+  disabled,
+  block,
+  className,
+  classNames,
+}: CommonSegmentedProps) {
+  return (
+    <M2MSegmented
+      options={options}
+      value={value}
+      defaultValue={defaultValue}
+      onChange={onChange}
+      name={name}
+      size={size}
+      disabled={disabled}
+      block={block}
+      classNames={cx(styles.segmentedAdapter, styles[`segmented_${size}`], classNameOf(classNames), className)}
+    />
+  );
 }
 
 export interface CommonInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'onToggle' | 'prefix'> {
@@ -293,3 +337,15 @@ export interface CommonFormFieldProps { name?: string; label?: ReactNode; requir
 export function CommonFormField({ name, label, required, error, helper, children, className, classNames }: CommonFormFieldProps) {
   return <M2MFormField name={name} htmlFor={name} label={label} required={required} error={typeof error === 'string' ? error : undefined} help={error && typeof error !== 'string' ? error : helper} classNames={cx(styles.formField, styles.formFieldAdapter, classNameOf(classNames), classNameOf(classNames, 'label'), classNameOf(classNames, 'error'), className)}>{children}</M2MFormField>;
 }
+
+export { PageSizeSelect, type PageSizeSelectProps } from './PageSizeSelect';
+export {
+  SearchField,
+  CommonSearchField,
+  SearchFilter,
+  CommonSearchFilter,
+  type SearchFieldProps,
+  type CommonSearchFieldProps,
+  type SearchFilterProps,
+  type CommonSearchFilterProps,
+} from '../SearchField';

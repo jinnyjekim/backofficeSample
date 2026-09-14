@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "./ProductsListPage.module.css";
@@ -207,7 +208,7 @@ export function ProductsListPage() {
       <div className={styles.top}>
         <div className={styles.titleRow}>
           <div>
-            <div className={styles.title}>상품 관리</div>
+            <div className={styles.title}>상품 목록</div>
             <div className={styles.subtitle}>
               거래에 사용되는 상품과 판매 조건을 관리합니다.
             </div>
@@ -351,14 +352,14 @@ export function ProductsListPage() {
           <span className={styles.resultLabel}>총 {filtered.length}개</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select
+            <PageSizeSelect
               className={styles.pageSizeSelect}
               defaultValue="20개씩 보기"
             >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
               <option>100개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </div>

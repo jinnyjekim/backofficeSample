@@ -131,7 +131,7 @@ export function FaqEditorDrawer({ faq, allFaqs, categories, todayIso, onCancel, 
             {relatedLinks.length > 0 && (
               <div style={{ marginTop: 10 }}>
                 {relatedLinks.map((l, i) => (
-                  <div key={i} style={{ fontSize: 12, color: 'var(--accent)' }}>{l.label}</div>
+                  <div key={i} style={{ fontSize: '0.75rem', color: 'var(--accent)' }}>{l.label}</div>
                 ))}
               </div>
             )}

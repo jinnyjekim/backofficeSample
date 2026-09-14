@@ -24,7 +24,7 @@
   --common-shadow-popover: 0 10px 30px rgba(0, 0, 0, 0.14);
   --common-font-family:
     Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --common-input-font-size: 12.5px;
+  --common-input-font-size: 0.78125rem;
   --common-input-line-height: 1.45;
 
   /* m2m-uiux-react: keep the public token names and inherit this app's palette. */
@@ -87,6 +87,52 @@
   --m2m-pg-skeleton-shine: #e4e4e7;
 }
 
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-theme='dark'] {
+  --common-bg: #18191c;
+  --common-bg-subtle: #202227;
+  --common-bg-disabled: #2b2d33;
+  --common-border: #32353d;
+  --common-border-strong: #40444f;
+  --common-text: #f3f4f6;
+  --common-text-sub: #d1d5db;
+  --common-text-muted: #9ca3af;
+  --common-text-disabled: #6b7280;
+
+  --m2m-pg-bg-page: #101114;
+  --m2m-pg-bg-card: #18191c;
+  --m2m-pg-bg-subtle: #202227;
+  --m2m-pg-bg-header: #18191c;
+  --m2m-pg-bg-code: #202227;
+  --m2m-pg-border: #32353d;
+  --m2m-pg-border-sub: #40444f;
+  --m2m-pg-text-primary: #f3f4f6;
+  --m2m-pg-text-sub: #d1d5db;
+  --m2m-pg-text-muted: #9ca3af;
+  --m2m-pg-text-placeholder: #6b7280;
+  --m2m-pg-sidebar-shadow: 2px 0 12px rgba(0, 0, 0, 0.4);
+
+  --m2m-pg-comp-bg: #1e2025;
+  --m2m-pg-comp-bg-subtle: #24272e;
+  --m2m-pg-comp-bg-hover: #2b2f38;
+  --m2m-pg-comp-bg-disabled: #23252a;
+  --m2m-pg-comp-border: #363942;
+  --m2m-pg-comp-border-sub: #444853;
+  --m2m-pg-comp-text: #f3f4f6;
+  --m2m-pg-comp-text-sub: #d1d5db;
+  --m2m-pg-comp-text-muted: #9ca3af;
+  --m2m-pg-comp-text-disabled: #6b7280;
+
+  --m2m-pg-secondary-bg: #f3f4f6;
+  --m2m-pg-secondary-text: #18191c;
+  --m2m-pg-skeleton-base: #24272e;
+  --m2m-pg-skeleton-shine: #32353d;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -99,7 +145,7 @@
   flex-direction: column;
   gap: 6px;
   color: var(--common-text-muted);
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   font-weight: 600;
   line-height: 1.2;
 }
@@ -228,8 +274,56 @@
     border-radius: 8px !important;
     background: var(--common-bg, #ffffff) !important;
     color: var(--common-text, #18181b) !important;
-    font-size: 12.5px !important;
+    font-size: 0.78125rem !important;
     box-sizing: border-box !important;
+  }
+
+  /*
+   * 검색 입력에 공통 컴포넌트(CommonInput)를 쓰면 searchInput 클래스가
+   * <input> 이 아니라 패키지 래퍼(.bsInput)에 붙습니다. 위 규칙이 래퍼에
+   * 테두리·배경·패딩을 그리므로, 안쪽 .bsInputField 가 테두리를 한 번 더
+   * 그려 이중 테두리로 보입니다. 래퍼를 유일한 시각 경계로 삼습니다.
+   */
+  :where(
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"],
+      [class*="filterContainer"],
+      [class*="searchRow"],
+      [class*="filterRow1"],
+      [class*="filterHeadRow"],
+      [class*="filterBar"]
+    )
+    :is([class*="searchInput"], [class*="SearchInput"]).bsInput
+    > .bsInputField {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  :where(
+      [class*="filterBox"],
+      [class*="filterCard"],
+      [class*="FilterBox"],
+      [class*="filterContainer"],
+      [class*="searchRow"],
+      [class*="filterRow1"],
+      [class*="filterHeadRow"],
+      [class*="filterBar"]
+    )
+    :is([class*="searchInput"], [class*="SearchInput"]).bsInput
+    input.bsInput {
+    height: 100% !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    font-size: 0.78125rem !important;
+    box-shadow: none !important;
   }
 
   /* 검색 필터 영역 내 SearchField 컴포넌트 공통 최소·최대 너비 제어 */
@@ -400,7 +494,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px !important;
-    font-size: 12.5px !important;
+    font-size: 0.78125rem !important;
     font-weight: 600 !important;
     cursor: pointer;
     white-space: nowrap;
@@ -487,7 +581,7 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
-    font-size: 12.5px !important;
+    font-size: 0.78125rem !important;
     font-weight: 600 !important;
     line-height: 1 !important;
     opacity: 1 !important;
@@ -644,7 +738,7 @@
     top: 0;
     left: 1px;
     color: var(--common-text-muted);
-    font-size: 10.5px;
+    font-size: 0.65625rem;
     font-weight: 600;
     line-height: 1.2;
   }
@@ -767,7 +861,7 @@
     height: 34px;
     align-items: center;
     color: var(--common-text-muted);
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1;
   }
 }
@@ -814,7 +908,7 @@
     top: 0;
     left: 1px;
     color: var(--common-text-muted);
-    font-size: 10.5px;
+    font-size: 0.65625rem;
     font-weight: 600;
     line-height: 1.2;
   }
@@ -830,7 +924,7 @@
     height: 34px;
     align-items: center;
     color: var(--common-text-muted);
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1;
   }
 }
@@ -1380,7 +1474,7 @@ button {
     background: #ffffff !important;
     color: var(--common-text-sub) !important;
     gap: 4px;
-    font-size: 12.5px !important;
+    font-size: 0.78125rem !important;
     font-weight: 600 !important;
     line-height: 1 !important;
   }
@@ -1448,7 +1542,7 @@ button {
   min-height: 30px !important;
   max-height: 30px !important;
   box-sizing: border-box !important;
-  font-size: 12px !important;
+  font-size: 0.75rem !important;
   border-radius: 7px !important;
   vertical-align: middle !important;
 }

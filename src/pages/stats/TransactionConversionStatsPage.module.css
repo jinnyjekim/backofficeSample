@@ -19,18 +19,18 @@
   background: #f5f6ff;
 }
 .funnelStepLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   font-weight: 600;
 }
 .funnelStepCount {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 700;
   color: #18181b;
   font-variant-numeric: tabular-nums;
 }
 .funnelStepPct {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   font-variant-numeric: tabular-nums;
 }
@@ -43,13 +43,13 @@
   justify-content: center;
   gap: 2px;
   color: #a1a1aa;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 .funnelArrow svg {
   color: #cbd0df;
 }
 .funnelArrowRate {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 700;
   color: #3f3f46;
 }
@@ -81,13 +81,13 @@
 }
 .reasonLabel {
   color: #3f3f46;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
 }
 .reasonValue {
   min-width: 50px;
   color: #18181b;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   text-align: right;
@@ -103,7 +103,7 @@
   justify-content: space-between;
   padding: 11px 0;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 12.5px;
+  font-size: 0.78125rem;
 }
 .stageRateList > div:first-child {
   border-top: 0;

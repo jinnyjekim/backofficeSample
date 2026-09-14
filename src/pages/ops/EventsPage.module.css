@@ -16,7 +16,7 @@
   border-radius: 7px;
   background: #fff;
   color: #3f3f46;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .issueSummary {
@@ -29,7 +29,7 @@
   border-radius: 8px;
   background: #fffbeb;
   color: #b45309;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
@@ -47,7 +47,7 @@
 }
 
 .issueIcon {
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1;
 }
 
@@ -62,7 +62,7 @@
   border-radius: 8px;
   background: #fffbeb;
   color: #92400e;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   line-height: 1.55;
 }
 
@@ -98,7 +98,7 @@
 }
 
 .previewHeadTitle {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
 }
 
@@ -121,7 +121,7 @@
   border-radius: 6px;
   background: transparent;
   color: #71717a;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   cursor: pointer;
 }
 
@@ -138,7 +138,7 @@
   border: 0;
   background: transparent;
   color: #71717a;
-  font-size: 20px;
+  font-size: 1.25rem;
   cursor: pointer;
 }
 
@@ -173,7 +173,7 @@
 }
 
 .previewEyebrow {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   opacity: 0.78;
@@ -181,7 +181,7 @@
 
 .previewEventTitle {
   margin-top: 8px;
-  font-size: 25px;
+  font-size: 1.5625rem;
   line-height: 1.28;
   font-weight: 800;
   letter-spacing: -0.03em;
@@ -189,7 +189,7 @@
 
 .previewEventPeriod {
   margin-top: 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   opacity: 0.86;
 }
 
@@ -198,7 +198,7 @@
 }
 
 .previewSummary {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #27272a;
   line-height: 1.65;
@@ -207,13 +207,13 @@
 .previewSectionTitle {
   margin-top: 24px;
   margin-bottom: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 
 .previewText {
   color: #52525b;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   line-height: 1.75;
   white-space: pre-wrap;
 }
@@ -226,7 +226,7 @@
   border-radius: 10px;
   background: #18181b;
   color: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 
@@ -270,13 +270,13 @@
 }
 
 .editorEyebrow {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   color: #a1a1aa;
 }
 
 .editorTitle {
   margin-top: 2px;
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
 }
 
@@ -291,7 +291,7 @@
   height: 34px;
   padding: 0 13px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -340,14 +340,14 @@
 }
 
 .sectionTitle {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
 .sectionDesc {
   margin-top: 3px;
   color: #a1a1aa;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 
 .formGrid {
@@ -368,7 +368,7 @@
   display: block;
   margin-bottom: 6px;
   color: #52525b;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 600;
 }
 
@@ -386,7 +386,7 @@
   background: #fff;
   color: #27272a;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   outline: 0;
 }
 
@@ -413,7 +413,7 @@
 .help {
   margin-top: 5px;
   color: #a1a1aa;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   line-height: 1.45;
 }
 
@@ -443,7 +443,7 @@
   border-radius: 7px;
   background: #fff;
   color: #52525b;
-  font-size: 11px;
+  font-size: 0.6875rem;
   cursor: pointer;
 }
 
@@ -462,7 +462,7 @@
   border: 1px solid rgba(0, 0, 0, 0.09);
   border-radius: 9px;
   color: #3f3f46;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 
@@ -477,7 +477,7 @@
 .choiceSub {
   margin-top: 2px;
   color: #a1a1aa;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 
 .checkGrid {
@@ -491,7 +491,7 @@
   align-items: center;
   gap: 6px;
   color: #52525b;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 
 .warning {
@@ -500,7 +500,7 @@
   border-radius: 8px;
   background: #fffbeb;
   color: #92400e;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   line-height: 1.5;
 }
 
@@ -510,7 +510,7 @@
   border-radius: 8px;
   background: #fef2f2;
   color: #b91c1c;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   line-height: 1.5;
 }
 
@@ -523,7 +523,7 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 9px;
   color: #71717a;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 
 .sideColumn {
@@ -536,7 +536,7 @@
 
 .sideTitle {
   margin-bottom: 11px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 700;
 }
 
@@ -546,7 +546,7 @@
   gap: 12px;
   padding: 7px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 
 .summaryRow:last-child {
@@ -565,7 +565,7 @@
 
 .sideHint {
   color: #71717a;
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 1.6;
 }
 
@@ -582,14 +582,14 @@
 }
 
 .detailHeroTitle {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 
 .detailHeroSub {
   margin-top: 5px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   opacity: 0.84;
 }
 
@@ -605,7 +605,7 @@
   border-radius: 8px;
   background: #fffbeb;
   color: #92400e;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 
 .metricGrid {
@@ -623,13 +623,13 @@
 
 .metricLabel {
   color: #71717a;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 
 .metricValue {
   margin-top: 4px;
   color: #18181b;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -646,7 +646,7 @@
   justify-content: space-between;
   margin-bottom: 8px;
   color: #52525b;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 
 .progressTrack {
@@ -669,7 +669,7 @@
 .contentTitle {
   margin-bottom: 7px;
   color: #71717a;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 700;
 }
 
@@ -678,7 +678,7 @@
   border-radius: 9px;
   background: #fafafa;
   color: #3f3f46;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   line-height: 1.7;
   white-space: pre-wrap;
 }
@@ -686,7 +686,7 @@
 .linkGroupTitle {
   margin: 15px 0 7px;
   color: #71717a;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 700;
 }
 
@@ -702,7 +702,7 @@
 
 .linkId {
   color: var(--accent);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
 }
 
@@ -711,14 +711,14 @@
   flex: 1;
   overflow: hidden;
   color: #3f3f46;
-  font-size: 12px;
+  font-size: 0.75rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .linkStatus {
   color: #71717a;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 
 @media (max-width: 980px) {

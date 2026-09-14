@@ -15,7 +15,7 @@
   border-radius: 9px;
   background: #fff7ed;
   color: #9a3412;
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 1.55;
 }
 
@@ -33,7 +33,7 @@
   border: 1px solid rgba(0, 0, 0, 0.07);
   border-radius: 8px;
   background: #fafafa;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 
 .historyItem span,
@@ -43,7 +43,7 @@
 
 .carrierNote {
   color: #71717a;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   line-height: 1.55;
 }
 
@@ -56,6 +56,6 @@
   border-radius: 9px;
   background: #18181b;
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
 }

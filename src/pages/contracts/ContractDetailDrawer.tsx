@@ -165,7 +165,7 @@ export function ContractDetailDrawer({
                 <div className={styles.termsRow} key={tr.label}>
                   <span className={styles.termsLabel}>{tr.label}</span>
                   <span className={styles.termsBase}>{tr.base}</span>
-                  <span style={{ fontSize: '12.5px', fontWeight: tr.weight, color: tr.fg }}>{tr.override}</span>
+                  <span style={{ fontSize: '0.78125rem', fontWeight: tr.weight, color: tr.fg }}>{tr.override}</span>
                 </div>
               ))}
             </div>

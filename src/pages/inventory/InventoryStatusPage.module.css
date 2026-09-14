@@ -9,7 +9,7 @@
   border-radius: 9px;
   background: #fff;
   color: #3f3f46;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -20,7 +20,7 @@
   border-radius: 8px;
   background: #eff6ff;
   color: #1e40af;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 .quickActive {
   border-color: rgba(79, 70, 229, 0.25) !important;
@@ -40,7 +40,7 @@
   align-items: center;
   gap: 6px;
   color: #71717a;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 .advancedFilters input,
 .advancedFilters select {
@@ -50,7 +50,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   background: #fff;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 .viewToggleRow {
   display: flex;
@@ -70,7 +70,7 @@
   padding: 0 13px;
   border: 0;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   background: transparent;
@@ -95,7 +95,7 @@
 .viewBar > span {
   margin-right: 4px;
   color: #71717a;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
 }
 .viewBar button {
@@ -104,7 +104,7 @@
   border: 1px solid rgba(0, 0, 0, 0.09);
   background: #fff;
   color: #71717a;
-  font-size: 11px;
+  font-size: 0.6875rem;
   cursor: pointer;
 }
 .viewBar button:first-of-type {
@@ -123,13 +123,13 @@
 .viewBar em {
   margin-left: 7px;
   color: #a1a1aa;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-style: normal;
 }
 .bulkGuard {
   margin-left: auto;
   color: #a16207;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 .detailDrawer {
   width: min(800px, 96%) !important;
@@ -141,7 +141,7 @@
   height: 42px;
   border-radius: 10px;
   color: #52525b;
-  font-size: 8px;
+  font-size: 0.5rem;
   font-weight: 800;
   flex: none;
 }
@@ -150,7 +150,7 @@
   border-radius: 999px;
   background: #fef2f2;
   color: #dc2626;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
 }
 .stockSummary {
@@ -167,13 +167,13 @@
 .stockSummary span {
   display: block;
   color: #8b8b93;
-  font-size: 9.5px;
+  font-size: 0.59375rem;
 }
 .stockSummary strong {
   display: block;
   margin-top: 3px;
   color: #3f3f46;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
 }
 .stockSummary .availableStat {
@@ -198,11 +198,11 @@
   border-radius: 8px;
   background: #fef2f2;
   color: #b91c1c;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 .issueBanner strong {
   margin-bottom: 2px;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 .unmanagedPanel {
   padding: 22px;
@@ -212,12 +212,12 @@
   text-align: center;
 }
 .unmanagedPanel strong {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .unmanagedPanel p {
   margin: 6px 0 0;
   color: #71717a;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 .calculation {
   overflow: hidden;
@@ -235,10 +235,10 @@
 }
 .calculation span {
   color: #71717a;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 .calculation strong {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-variant-numeric: tabular-nums;
 }
 .calculation .minus {
@@ -251,7 +251,7 @@
 .calcTotal span,
 .calcTotal strong {
   color: #3730a3;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 .definitionNote,
@@ -261,7 +261,7 @@
   border-radius: 8px;
   background: #f8fafc;
   color: #64748b;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   line-height: 1.55;
 }
 .miniTable {
@@ -281,23 +281,23 @@
 .warehouseHead {
   background: #fafafa;
   color: #8b8b93;
-  font-size: 9.5px;
+  font-size: 0.59375rem;
 }
 .miniRow {
   border-top: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 .miniRow > span:first-child strong,
 .miniRow > span:first-child em {
   display: block;
 }
 .miniRow > span:first-child strong {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 .miniRow > span:first-child em {
   margin-top: 2px;
   color: #8b8b93;
-  font-size: 9.5px;
+  font-size: 0.59375rem;
   font-style: normal;
 }
 .miniRow > span:not(:first-child),
@@ -307,7 +307,7 @@
   font-variant-numeric: tabular-nums;
 }
 .miniRow > i {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-style: normal;
   font-weight: 600;
 }
@@ -321,7 +321,7 @@
 }
 .warehouseRow {
   border-top: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 .warehouseRow > span,
 .warehouseRow > b {
@@ -333,7 +333,7 @@
   border: 1px dashed rgba(0, 0, 0, 0.12);
   border-radius: 9px;
   color: #8b8b93;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   text-align: center;
 }
 .reservationRow {
@@ -349,15 +349,15 @@
   display: block;
 }
 .reservationRow strong {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 .reservationRow > div span {
   margin-top: 2px;
   color: #8b8b93;
-  font-size: 9.5px;
+  font-size: 0.59375rem;
 }
 .reservationRow > b {
-  font-size: 11px;
+  font-size: 0.6875rem;
   text-align: right;
 }
 .reservationRow > em {
@@ -365,13 +365,13 @@
   border-radius: 999px;
   background: #f4f4f5;
   color: #52525b;
-  font-size: 9.5px;
+  font-size: 0.59375rem;
   font-style: normal;
   text-align: center;
 }
 .reservationRow > span {
   color: #8b8b93;
-  font-size: 10px;
+  font-size: 0.625rem;
 }
 .reservationRow button,
 .scheduleGrid button,
@@ -379,7 +379,7 @@
   border: 0;
   background: transparent;
   color: var(--accent);
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   cursor: pointer;
 }
 .scheduleGrid {
@@ -395,17 +395,17 @@
 .scheduleGrid span {
   display: block;
   color: #8b8b93;
-  font-size: 10px;
+  font-size: 0.625rem;
 }
 .scheduleGrid strong {
   display: block;
   margin-top: 3px;
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 .scheduleGrid p {
   margin: 5px 0 8px;
   color: #71717a;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 .movementIcon {
   display: grid;
@@ -414,7 +414,7 @@
   height: 22px;
   margin-top: 0;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 800;
   flex: none;
 }
@@ -441,7 +441,7 @@
   border-radius: 7px;
   background: var(--accent);
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -452,7 +452,7 @@
   display: block;
   margin-bottom: 11px;
   color: #52525b;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 .dialogField input,
 .dialogField select,
@@ -464,7 +464,7 @@
   border-radius: 7px;
   background: #fff;
   font: inherit;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
 }
 .dialogField input,
 .dialogField select {
@@ -487,7 +487,7 @@
   align-items: center;
   gap: 5px;
   color: #3f3f46;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 .adjustPreview {
   display: flex;
@@ -500,15 +500,15 @@
 }
 .adjustPreview span {
   color: #6366f1;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
 }
 .adjustPreview strong {
   color: #3730a3;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .adjustPreview em {
   color: #6366f1;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-style: normal;
 }
 .toast {
@@ -520,7 +520,7 @@
   border-radius: 9px;
   background: #18181b;
   color: #fff;
-  font-size: 12px;
+  font-size: 0.75rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
 }
 @media (max-width: 900px) {

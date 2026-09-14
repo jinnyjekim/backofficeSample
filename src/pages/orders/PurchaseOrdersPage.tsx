@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useRef, useState } from 'react';
 import styles from './ordersShared.module.css';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
@@ -125,7 +126,7 @@ export function PurchaseOrdersPage() {
         <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
-              <div className={styles.title}>발주 관리</div>
+              <div className={styles.title}>발주</div>
               <div className={styles.subtitle}>거래처의 발주 내역을 접수하고 주문 확정 상태를 관리합니다.</div>
             </div>
             <button type="button" className={styles.registerBtn} onClick={() => setShowRegister(true)}>＋ 발주 등록</button>
@@ -181,9 +182,9 @@ export function PurchaseOrdersPage() {
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
               <ExcelDownloadButton type="button" data-grid-download />
-              <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option><option>50개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
         </div>

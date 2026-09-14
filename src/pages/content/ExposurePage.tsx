@@ -8,6 +8,7 @@ import { CONTENT_ITEMS } from '../../data/content';
 import { ACCENT } from '../../lib/theme';
 import { ContentBusinessSwitch } from './ContentBusinessSwitch';
 import { CONTENT_BUSINESS_META, CONTENT_BUSINESS_MODES, type ContentBusinessType } from './contentBusiness';
+import { SearchField } from '../../components/SearchField';
 
 interface RowDraft {
   on: boolean;
@@ -242,15 +243,15 @@ export function ExposurePage() {
                       disabled={already}
                       onChange={() => setAddModal({ ...addModal, checked: addModal.checked.indexOf(c.id) >= 0 ? addModal.checked.filter((x) => x !== c.id) : addModal.checked.concat([c.id]) })}
                     />
-                    <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, color: already ? '#c4c4c8' : '#18181b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.title}</span>
-                    <span style={{ fontSize: 11, color: '#a1a1aa' }}>{c.id}</span>
-                    {already && <span style={{ fontSize: 10.5, fontWeight: 600, color: '#a1a1aa', flex: 'none' }}>추가됨</span>}
+                    <span style={{ flex: 1, minWidth: 0, fontSize: '0.78125rem', color: already ? '#c4c4c8' : '#18181b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.title}</span>
+                    <span style={{ fontSize: '0.6875rem', color: '#a1a1aa' }}>{c.id}</span>
+                    {already && <span style={{ fontSize: '0.65625rem', fontWeight: 600, color: '#a1a1aa', flex: 'none' }}>추가됨</span>}
                   </label>
                 );
               })}
             </div>
             <div className={styles.addModalFooter}>
-              <span style={{ fontSize: 12, color: '#52525b' }}>{addModal.checked.length}개 선택</span>
+              <span style={{ fontSize: '0.75rem', color: '#52525b' }}>{addModal.checked.length}개 선택</span>
               <div className={sh.modalActionsSpacer} />
               <button type="button" className={sh.ghostBtn} onClick={() => setAddModal(null)}>취소</button>
               <button type="button" className={sh.solidBtn} disabled={addModal.checked.length === 0} onClick={confirmAdd}>추가</button>
@@ -264,18 +265,18 @@ export function ExposurePage() {
           <div className={styles.previewModalBox}>
             <div className={styles.previewModalHead}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 700 }}>{`미리보기 · ${cur ? cur.name : ''}`}</div>
-                <div style={{ fontSize: 11, color: '#8b8b93', marginTop: 2 }}>실제 노출 화면에 표시될 순서입니다</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700 }}>{`미리보기 · ${cur ? cur.name : ''}`}</div>
+                <div style={{ fontSize: '0.6875rem', color: '#8b8b93', marginTop: 2 }}>실제 노출 화면에 표시될 순서입니다</div>
               </div>
-              <button type="button" style={{ width: 26, height: 26, border: 0, background: 'transparent', color: '#a1a1aa', fontSize: 15, cursor: 'pointer' }} onClick={() => setPreviewOpen(false)}>×</button>
+              <button type="button" style={{ width: 26, height: 26, border: 0, background: 'transparent', color: '#a1a1aa', fontSize: '0.9375rem', cursor: 'pointer' }} onClick={() => setPreviewOpen(false)}>×</button>
             </div>
             <div className={styles.previewModalList}>
               {previewRows.map((r) => (
                 <div key={r.order} className={styles.previewModalRow}>
-                  <span style={{ fontSize: 11.5, color: '#a1a1aa', width: 16, flex: 'none' }}>{r.order}</span>
+                  <span style={{ fontSize: '0.71875rem', color: '#a1a1aa', width: 16, flex: 'none' }}>{r.order}</span>
                   {r.pinned && <span style={{ flex: 'none' }}>📌</span>}
-                  <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, color: '#18181b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</span>
-                  <span style={{ background: r.bg, color: r.fg, padding: '2px 8px', borderRadius: 999, fontSize: 10.5, fontWeight: 600, flex: 'none' }}>{r.label}</span>
+                  <span style={{ flex: 1, minWidth: 0, fontSize: '0.78125rem', color: '#18181b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</span>
+                  <span style={{ background: r.bg, color: r.fg, padding: '2px 8px', borderRadius: 999, fontSize: '0.65625rem', fontWeight: 600, flex: 'none' }}>{r.label}</span>
                 </div>
               ))}
             </div>
@@ -317,7 +318,14 @@ export function ExposurePage() {
         <div className={styles.areaCol}>
           <div className={styles.areaColHead}>
             <div className={styles.areaColTitle}>{businessMode === 'B2C' ? '쇼핑 노출 영역' : businessMode === 'C2C' ? '탐색 / 커뮤니티 영역' : '거래처 포털 영역'}</div>
-            <input className={styles.areaSearch} value={aq} onChange={(e) => setAq(e.target.value)} placeholder="영역 검색" />
+            <SearchField
+              className={styles.areaSearchField}
+              value={aq}
+              onValueChange={setAq}
+              placeholder="영역 검색"
+              shortcutHint="/"
+              aria-label="노출 영역 검색"
+            />
           </div>
           <div className={styles.areaList}>
             {areaFlat.map(({ a, depth }) => {
@@ -407,15 +415,15 @@ export function ExposurePage() {
 
         <div className={styles.settingsCol}>
           <div className={styles.settingsHead}>
-            <div style={{ fontSize: 13, fontWeight: 700 }}>노출 설정</div>
+            <div style={{ fontSize: '0.8125rem', fontWeight: 700 }}>노출 설정</div>
           </div>
           {selEntry && rowDraft ? (
             <>
               <div className={styles.settingsBody}>
                 <div>
-                  <div style={{ fontSize: 11, color: '#8b8b93', fontWeight: 600 }}>콘텐츠</div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#18181b', marginTop: 4 }}>{findContent(selEntry.ctid)?.title ?? selEntry.ctid}</div>
-                  <button type="button" style={{ border: 0, background: 'transparent', padding: 0, marginTop: 4, fontSize: 11.5, color: ACCENT, cursor: 'pointer' }} onClick={() => goContentDetail(selEntry.ctid)}>콘텐츠 상세 보기 →</button>
+                  <div style={{ fontSize: '0.6875rem', color: '#8b8b93', fontWeight: 600 }}>콘텐츠</div>
+                  <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#18181b', marginTop: 4 }}>{findContent(selEntry.ctid)?.title ?? selEntry.ctid}</div>
+                  <button type="button" style={{ border: 0, background: 'transparent', padding: 0, marginTop: 4, fontSize: '0.71875rem', color: ACCENT, cursor: 'pointer' }} onClick={() => goContentDetail(selEntry.ctid)}>콘텐츠 상세 보기 →</button>
                 </div>
 
                 <div>
@@ -432,7 +440,7 @@ export function ExposurePage() {
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
                     <span className={sh.formFieldLabel}>노출 종료</span>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#71717a', cursor: 'pointer' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.6875rem', color: '#71717a', cursor: 'pointer' }}>
                       <input type="checkbox" checked={rowDraft.noEnd} onChange={() => setRowDraft({ ...rowDraft, noEnd: !rowDraft.noEnd })} />종료일 없음
                     </label>
                   </div>
@@ -441,7 +449,7 @@ export function ExposurePage() {
 
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
                   <input type="checkbox" checked={rowDraft.pinned} onChange={() => setRowDraft({ ...rowDraft, pinned: !rowDraft.pinned })} />
-                  <span style={{ fontSize: 12.5, color: '#3f3f46', fontWeight: 600 }}>상단 고정</span>
+                  <span style={{ fontSize: '0.78125rem', color: '#3f3f46', fontWeight: 600 }}>상단 고정</span>
                 </label>
 
                 <div className={sh.metaRow}>
@@ -454,7 +462,7 @@ export function ExposurePage() {
                     <div className={sh.metaCellValue}>{selEntry.author}</div>
                   </div>
                 </div>
-                <div style={{ fontSize: 11, color: '#a1a1aa' }}>{`최근 수정 ${selEntry.updated}`}</div>
+                <div style={{ fontSize: '0.6875rem', color: '#a1a1aa' }}>{`최근 수정 ${selEntry.updated}`}</div>
               </div>
               <div className={styles.settingsFooter}>
                 <button type="button" className={sh.dangerBtn} onClick={() => removeRow(selEntry.id)}>영역에서 제거</button>

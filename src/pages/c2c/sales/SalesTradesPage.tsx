@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../../components/common';
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../../components/DataGrid";
 import type { GridRow } from "../../../components/DataGrid/types";
@@ -273,10 +274,10 @@ export function SalesTradesPage() {
       </ControlArea>
       <GridArea>
         <ResultBar count={filtered.length} unit="건">
-          <select className={shared.pageSizeSelect}>
+          <PageSizeSelect className={shared.pageSizeSelect}>
             <option>20개씩</option>
             <option>50개씩</option>
-          </select>
+          </PageSizeSelect>
         </ResultBar>
         <DataGrid
           columns={[

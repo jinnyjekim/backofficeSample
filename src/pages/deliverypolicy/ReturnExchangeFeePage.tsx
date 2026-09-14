@@ -104,7 +104,7 @@ export function ReturnExchangeFeePage() {
         <div className={shared.headerTop}>
           <div>
             <div className={styles.eyebrow}>배송 정책</div>
-            <div className={shared.title}>반품·교환 배송비</div>
+            <div className={shared.title}>반품 / 교환 배송비</div>
             <div className={shared.subtitle}>반품 및 교환 시 적용되는 배송비 기준을 관리합니다.</div>
           </div>
           <div className={styles.headMeta}>

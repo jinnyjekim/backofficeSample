@@ -57,7 +57,7 @@ export function ApplicationDetailDrawer({ app: a, onClose, onAddMemo }: Props) {
           <div className={styles.editPanel} style={{ marginTop: 12, background: '#fffbeb', borderColor: '#fde68a' }}>
             <div className={styles.editTitle} style={{ color: '#b45309' }}>확인이 필요합니다</div>
             {issues.map((issue) => (
-              <div key={issue} style={{ fontSize: 12, color: '#92400e', marginBottom: 4 }}>⚠ {issue}</div>
+              <div key={issue} style={{ fontSize: '0.75rem', color: '#92400e', marginBottom: 4 }}>⚠ {issue}</div>
             ))}
           </div>
         )}

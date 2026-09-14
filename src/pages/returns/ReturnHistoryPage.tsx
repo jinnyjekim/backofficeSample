@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import shared from "../coupons/shared.module.css";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -277,10 +278,10 @@ export function ReturnHistoryPage() {
           <span className={shared.resultLabel}>{`총 ${filtered.length}건 `}</span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={shared.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
@@ -326,7 +327,7 @@ export function ReturnHistoryPage() {
           <div className={drawer.sectionTitleLoose}>상세 처리 내용 및 비고</div>
           <div
             style={{
-              fontSize: "13px",
+              fontSize: "0.8125rem",
               lineHeight: 1.6,
               color: "#334155",
               background: "#f8fafc",

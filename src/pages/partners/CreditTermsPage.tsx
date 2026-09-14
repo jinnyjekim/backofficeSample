@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import styles from "./CompaniesPage.module.css";
 import { DataGrid } from "../../components/DataGrid";
@@ -188,7 +189,7 @@ export function CreditTermsPage() {
       <div className={styles.main}>
         <div className={styles.head}>
           <div>
-            <div className={styles.title}>신용 / 거래 조건</div>
+            <div className={styles.title}>신용/거래 조건</div>
             <div className={styles.subtitle}>
               거래처별 신용 한도와 결제·거래 조건을 관리합니다.
             </div>
@@ -306,14 +307,14 @@ export function CreditTermsPage() {
           </span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select
+            <PageSizeSelect
               className={styles.pageSizeSelect}
               defaultValue="20개씩 보기"
             >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
               <option>100개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
 

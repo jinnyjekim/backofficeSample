@@ -20,7 +20,7 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.07);
 }
 .totalLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -35,7 +35,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -61,7 +61,7 @@
   height: 34px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
   background: #fbfbfc;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #52525b;
   font-weight: 600;
   top: 0;
@@ -150,7 +150,7 @@
 }
 .pillTextSub {
   display: block;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8b8b93;
   margin-top: 2px;
   overflow: hidden;
@@ -162,7 +162,7 @@
 .badgeSub {
   display: inline-flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   border-radius: 999px;
   padding: 3px 9px;
@@ -170,7 +170,7 @@
 }
 .badgeSubText {
   display: block;
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #d97706;
   margin-top: 3px;
 }
@@ -178,7 +178,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   border-radius: 6px;
   width: 22px;
@@ -199,13 +199,13 @@
   min-height: 20px;
   padding: 2px 7px;
   border-radius: 999px;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
 }
 .checkChip i {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-style: normal;
   font-weight: 800;
 }
@@ -219,7 +219,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 .dot {
@@ -230,7 +230,7 @@
 
 /* stack */
 .stackTitle {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #18181b;
   overflow: hidden;
@@ -238,7 +238,7 @@
   white-space: nowrap;
 }
 .stackSub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -258,7 +258,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
 }
 .avatarTitleRow {
@@ -268,13 +268,13 @@
   gap: 6px;
 }
 .avatarTitle {
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   white-space: nowrap;
 }
 .avatarSub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8b8b93;
   white-space: nowrap;
   overflow: hidden;
@@ -291,7 +291,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #3f3f46;
   cursor: pointer;
   white-space: nowrap;
@@ -316,7 +316,7 @@
   background: var(--accent);
 }
 .progressLabel {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #71717a;
   font-variant-numeric: tabular-nums;
   flex: none;
@@ -330,14 +330,14 @@
   min-width: 0;
 }
 .titleWarnText {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .warnIcon {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #d97706;
   flex: none;
 }
@@ -348,7 +348,7 @@
   min-width: 0;
 }
 .noWarnText {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #18181b;
   font-variant-numeric: tabular-nums;
@@ -357,7 +357,7 @@
   white-space: nowrap;
 }
 .noTagTag {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 700;
   border-radius: 5px;
   padding: 1px 5px;
@@ -384,7 +384,7 @@
   border: 0;
   background: transparent;
   padding: 0;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   text-align: left;
@@ -398,7 +398,7 @@
 }
 .thumbTitleId {
   display: block;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8b8b93;
   margin-top: 2px;
   font-variant-numeric: tabular-nums;
@@ -418,7 +418,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -432,7 +432,7 @@
   border-radius: 7px;
   background: transparent;
   color: #71717a;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
 }
 .rowMenuToggle:hover {
@@ -462,7 +462,7 @@
   background: transparent;
   padding: 7px 9px;
   border-radius: 7px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   cursor: pointer;
   text-align: left;
 }
@@ -476,12 +476,12 @@
   text-align: center;
 }
 .emptyText {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: #71717a;
   margin-bottom: 6px;
 }
 .emptySubtext {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #a1a1aa;
   margin-bottom: 12px;
 }
@@ -489,7 +489,7 @@
   border: 0;
   background: transparent;
   color: var(--accent);
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   cursor: pointer;
   font-weight: 600;
 }
@@ -510,7 +510,7 @@
   justify-content: center;
 }
 .rangeLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #a1a1aa;
   font-variant-numeric: tabular-nums;
 }
@@ -526,7 +526,7 @@
   border-radius: 7px;
   background: transparent;
   color: #71717a;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
   font-variant-numeric: tabular-nums;

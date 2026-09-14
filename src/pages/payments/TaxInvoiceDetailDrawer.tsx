@@ -107,7 +107,7 @@ export function TaxInvoiceDetailDrawer({ detail: d, onTabChange }: Props) {
               {d.itemsSummary.map((f) => (
                 <div className={styles.infoRow} key={f.label}>
                   <span className={styles.infoLabel}>{f.label}</span>
-                  <span style={{ fontSize: 12.5, fontWeight: f.weight, color: f.color, fontVariantNumeric: 'tabular-nums' }}>{f.value}</span>
+                  <span style={{ fontSize: '0.78125rem', fontWeight: f.weight, color: f.color, fontVariantNumeric: 'tabular-nums' }}>{f.value}</span>
                 </div>
               ))}
             </div>
@@ -159,7 +159,7 @@ export function TaxInvoiceDetailDrawer({ detail: d, onTabChange }: Props) {
             <div className={styles.sectionLabel}>조정 / 수정</div>
             {d.hasAdjustment && (
               <div className={styles.card}>
-                <div style={{ fontSize: 12.5, color: '#3f3f46', lineHeight: 1.7 }}>{d.adjustmentNote}</div>
+                <div style={{ fontSize: '0.78125rem', color: '#3f3f46', lineHeight: 1.7 }}>{d.adjustmentNote}</div>
               </div>
             )}
             {d.noAdjustment && <div className={styles.emptyNote}>조정 또는 수정 내역이 없습니다.</div>}
@@ -170,7 +170,7 @@ export function TaxInvoiceDetailDrawer({ detail: d, onTabChange }: Props) {
                   <div className={styles.cardTitle}>{v.label}</div>
                   <div className={styles.cardSub}>{v.note}</div>
                 </div>
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: '#3f3f46', fontVariantNumeric: 'tabular-nums' }}>{v.total}</span>
+                <span style={{ fontSize: '0.78125rem', fontWeight: 600, color: '#3f3f46', fontVariantNumeric: 'tabular-nums' }}>{v.total}</span>
               </div>
             ))}
           </div>

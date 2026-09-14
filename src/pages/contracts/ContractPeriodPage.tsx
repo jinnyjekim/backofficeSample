@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './ContractPeriodPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -91,7 +92,7 @@ export function ContractPeriodPage() {
     <div className={styles.page}>
       <div className={styles.headerRow}>
         <div>
-          <div className={styles.title}>계약기간 관리</div>
+          <div className={styles.title}>계약 기간</div>
           <div className={styles.subtitle}>계약의 시작, 종료, 만료 및 갱신 일정을 관리합니다.</div>
         </div>
       </div>
@@ -157,10 +158,10 @@ export function ContractPeriodPage() {
         <span className={styles.resultLabel}>총 {filtered.length}건</span>
         <div className={styles.resultActions}>
           <ExcelDownloadButton type="button" data-grid-download />
-          <select className={styles.selectSm}>
+          <PageSizeSelect className={styles.selectSm}>
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>
-          </select>
+          </PageSizeSelect>
         </div>
       </div>
 

@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import styles from "./deliveryShared.module.css";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -203,13 +204,13 @@ export function DeliveryHistoryPage() {
           >{`총 ${filtered.length}건`}</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select
+            <PageSizeSelect
               className={styles.pageSizeSelect}
               defaultValue="20개씩 보기"
             >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
@@ -253,7 +254,7 @@ export function DeliveryHistoryPage() {
           <div className={drawer.sectionTitleLoose}>감사 로그 원칙</div>
           <div
             style={{
-              fontSize: "13px",
+              fontSize: "0.8125rem",
               lineHeight: 1.6,
               color: "#475569",
               background: "#f8fafc",

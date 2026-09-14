@@ -137,7 +137,7 @@ export function InventoryAlertsConfigPage() {
           <div style={{ marginBottom: "28px" }}>
             <h3
               style={{
-                fontSize: "15px",
+                fontSize: "0.9375rem",
                 fontWeight: 700,
                 color: "#18181b",
                 marginBottom: "8px",
@@ -145,7 +145,7 @@ export function InventoryAlertsConfigPage() {
             >
               1. 알림 발생 조건
             </h3>
-            <p style={{ fontSize: "12.5px", color: "#71717a", marginBottom: "14px" }}>
+            <p style={{ fontSize: "0.78125rem", color: "#71717a", marginBottom: "14px" }}>
               어떤 재고 상태 변동 시 알림을 트리거할지 선택합니다.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -154,7 +154,7 @@ export function InventoryAlertsConfigPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  fontSize: "13px",
+                  fontSize: "0.8125rem",
                   color: "#27272a",
                   cursor: "pointer",
                 }}
@@ -171,7 +171,7 @@ export function InventoryAlertsConfigPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  fontSize: "13px",
+                  fontSize: "0.8125rem",
                   color: "#27272a",
                   cursor: "pointer",
                 }}
@@ -188,7 +188,7 @@ export function InventoryAlertsConfigPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  fontSize: "13px",
+                  fontSize: "0.8125rem",
                   color: "#27272a",
                   cursor: "pointer",
                 }}
@@ -206,7 +206,7 @@ export function InventoryAlertsConfigPage() {
           <div style={{ marginBottom: "28px", borderTop: "1px solid #f4f4f5", paddingTop: "20px" }}>
             <h3
               style={{
-                fontSize: "15px",
+                fontSize: "0.9375rem",
                 fontWeight: 700,
                 color: "#18181b",
                 marginBottom: "8px",
@@ -216,14 +216,14 @@ export function InventoryAlertsConfigPage() {
             </h3>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
               <div>
-                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#3f3f46", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.78125rem", fontWeight: 600, color: "#3f3f46", marginBottom: "6px" }}>
                   수신 채널 선택
                 </label>
                 <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginTop: "6px" }}>
                   {["시스템 알림", "이메일", "슬랙", "SMS"].map((ch) => {
                     const checked = alertChannels.includes(ch);
                     return (
-                      <label key={ch} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12.5px", cursor: "pointer" }}>
+                      <label key={ch} style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.78125rem", cursor: "pointer" }}>
                         <input
                           type="checkbox"
                           checked={checked}
@@ -241,7 +241,7 @@ export function InventoryAlertsConfigPage() {
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "12.5px", fontWeight: 600, color: "#3f3f46", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.78125rem", fontWeight: 600, color: "#3f3f46", marginBottom: "6px" }}>
                   미해결 건 재알림 주기
                 </label>
                 <select
@@ -253,7 +253,7 @@ export function InventoryAlertsConfigPage() {
                     padding: "0 10px",
                     border: "1px solid rgba(0, 0, 0, 0.12)",
                     borderRadius: "8px",
-                    fontSize: "13px",
+                    fontSize: "0.8125rem",
                     background: "#fff",
                   }}
                 >
@@ -270,7 +270,7 @@ export function InventoryAlertsConfigPage() {
           <div style={{ marginBottom: "28px", borderTop: "1px solid #f4f4f5", paddingTop: "20px" }}>
             <h3
               style={{
-                fontSize: "15px",
+                fontSize: "0.9375rem",
                 fontWeight: 700,
                 color: "#18181b",
                 marginBottom: "8px",
@@ -280,7 +280,7 @@ export function InventoryAlertsConfigPage() {
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div>
-                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#3f3f46", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#3f3f46", marginBottom: "4px" }}>
                   수신 이메일 (쉼표로 구분)
                 </label>
                 <input
@@ -293,12 +293,12 @@ export function InventoryAlertsConfigPage() {
                     padding: "0 10px",
                     border: "1px solid rgba(0, 0, 0, 0.12)",
                     borderRadius: "8px",
-                    fontSize: "13px",
+                    fontSize: "0.8125rem",
                   }}
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#3f3f46", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#3f3f46", marginBottom: "4px" }}>
                   Slack Webhook URL
                 </label>
                 <input
@@ -311,7 +311,7 @@ export function InventoryAlertsConfigPage() {
                     padding: "0 10px",
                     border: "1px solid rgba(0, 0, 0, 0.12)",
                     borderRadius: "8px",
-                    fontSize: "13px",
+                    fontSize: "0.8125rem",
                   }}
                 />
               </div>
@@ -336,7 +336,7 @@ export function InventoryAlertsConfigPage() {
             color: "#fff",
             padding: "12px 20px",
             borderRadius: "8px",
-            fontSize: "13px",
+            fontSize: "0.8125rem",
             boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
             zIndex: 9999,
           }}

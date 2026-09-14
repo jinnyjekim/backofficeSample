@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridRow } from "../../components/DataGrid/types";
@@ -722,6 +723,7 @@ export function InventoryOptionsPage() {
               </>
             )}
           </div>
+        </div>
       </div>
       {selected.length > 0 && (
         <div className={shared.bulkBar}>
@@ -752,10 +754,10 @@ export function InventoryOptionsPage() {
               data-grid-download
               onClick={() => download(filtered)}
             />
-            <select className={shared.pageSizeSelect} aria-label="페이지 크기">
+            <PageSizeSelect className={shared.pageSizeSelect} aria-label="페이지 크기">
               <option>20개씩</option>
               <option>50개씩</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
         <DataGrid

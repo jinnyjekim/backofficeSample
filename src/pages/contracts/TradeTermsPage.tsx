@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './TradeTermsPage.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -66,7 +67,7 @@ export function TradeTermsPage() {
     <div className={styles.page}>
       <div className={styles.headerRow}>
         <div>
-          <div className={styles.title}>계약 거래 조건 관리</div>
+          <div className={styles.title}>거래 조건</div>
           <div className={styles.subtitle}>계약별 결제, 주문, 납품 및 기타 거래 조건을 관리합니다.</div>
         </div>
         <button type="button" className={styles.registerBtn}>+ 거래 조건 등록</button>
@@ -132,10 +133,10 @@ export function TradeTermsPage() {
         <span className={styles.resultLabel}>총 {filtered.length}건</span>
         <div className={styles.resultActions}>
           <ExcelDownloadButton type="button" data-grid-download />
-          <select className={styles.selectSm}>
+          <PageSizeSelect className={styles.selectSm}>
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>
-          </select>
+          </PageSizeSelect>
         </div>
       </div>
 

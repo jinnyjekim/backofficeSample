@@ -123,7 +123,7 @@ export function JejuRegionDrawer({ region, basePolicy, isNew, startEditing = fal
                 {draft.postalCodes.map((code) => (
                   <span key={code} className={styles.postalTag}>{code}{editing && <button type="button" onClick={() => removePostal(code)}>✕</button>}</span>
                 ))}
-                {draft.postalCodes.length === 0 && <span style={{ color: '#a1a1aa', fontSize: 11.5 }}>등록된 우편번호가 없습니다.</span>}
+                {draft.postalCodes.length === 0 && <span style={{ color: '#a1a1aa', fontSize: '0.71875rem' }}>등록된 우편번호가 없습니다.</span>}
               </div>
               {editing && (
                 <div className={styles.postalAddRow}>

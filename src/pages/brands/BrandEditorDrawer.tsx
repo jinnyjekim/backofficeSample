@@ -89,7 +89,7 @@ export function BrandEditorDrawer({ brand: b, onCancel, onSubmit }: Props) {
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>로고</label>
           <div className={styles.attachAddRow}>
-            <div style={{ width: 40, height: 40, borderRadius: 9, background: hasLogo ? '#18181b' : '#f4f4f5', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 9, background: hasLogo ? '#18181b' : '#f4f4f5', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem', fontWeight: 700 }}>
               {hasLogo ? name.slice(0, 1) || '?' : ''}
             </div>
             <button type="button" className={styles.editConfirm} style={{ height: 32 }} onClick={() => setHasLogo((v) => !v)}>{hasLogo ? '로고 제거' : '로고 업로드'}</button>
@@ -120,7 +120,7 @@ export function BrandEditorDrawer({ brand: b, onCancel, onSubmit }: Props) {
           </select>
         </div>
 
-        {error && <div style={{ fontSize: 12, color: '#dc2626', marginTop: 12 }}>{error}</div>}
+        {error && <div style={{ fontSize: '0.75rem', color: '#dc2626', marginTop: 12 }}>{error}</div>}
       </div>
 
       <div className={styles.footer}>

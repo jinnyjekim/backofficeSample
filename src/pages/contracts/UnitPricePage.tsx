@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './UnitPricePage.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -66,7 +67,7 @@ export function UnitPricePage() {
     <div className={styles.page}>
       <div className={styles.headerRow}>
         <div>
-          <div className={styles.title}>계약 단가 관리</div>
+          <div className={styles.title}>단가</div>
           <div className={styles.subtitle}>계약별 상품 단가와 적용기간을 관리합니다.</div>
         </div>
         <button type="button" className={styles.registerBtn}>+ 계약 단가 등록</button>
@@ -130,10 +131,10 @@ export function UnitPricePage() {
         <span className={styles.resultLabel}>총 {filtered.length}건</span>
         <div className={styles.resultActions}>
           <ExcelDownloadButton type="button" data-grid-download />
-          <select className={styles.selectSm}>
+          <PageSizeSelect className={styles.selectSm}>
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>
-          </select>
+          </PageSizeSelect>
         </div>
       </div>
 

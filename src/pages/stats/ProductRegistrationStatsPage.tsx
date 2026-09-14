@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import {
   Download,
   Info,
@@ -16,6 +17,7 @@ import type {
   GridRow,
 } from "../../components/DataGrid/types";
 import { CommonSelect } from "../../components/common";
+import { StatisticsLineChart } from "../../components/charts";
 import { downloadStatisticsReport } from "../../lib/statisticsReport";
 import { useOutsideClose } from "../../lib/useOutsideClose";
 import shared from "../ops/opsShared.module.css";
@@ -77,6 +79,8 @@ function TrendChart({
   secondary?: number[];
   labels: string[];
 }) {
+  return <StatisticsLineChart values={primary} comparisonValues={secondary} labels={labels} height={240} ariaLabel="상품 등록 추이 차트" />;
+  /* legacy renderer retained temporarily for visual parity reference */
   const max = Math.max(...primary, ...(secondary ?? []), 1);
   const width = 860;
   const height = 220;
@@ -467,7 +471,7 @@ export function ProductRegistrationStatsPage({
       <div className={shared.headTop}>
         <div className={shared.headRow}>
           <div>
-            <h1 className={shared.title}>상품 등록 분석</h1>
+            <h1 className={shared.title}>{defaultMode === "c2c" ? "등록 상품 수" : "상품 등록 분석"}</h1>
             <p className={shared.subtitle}>
               상품이 얼마나 새로 등록되고, 현재 실제 판매 가능한 상품은 얼마나
               되는지 분석합니다.
@@ -575,7 +579,7 @@ export function ProductRegistrationStatsPage({
                 <strong>{item.value}</strong>
                 {item.noChange ? (
                   <div>
-                    <span style={{ color: "#8b8b93", fontSize: "11.5px" }}>
+                    <span style={{ color: "#8b8b93", fontSize: "0.71875rem" }}>
                       {item.sub}
                     </span>
                   </div>
@@ -777,10 +781,10 @@ export function ProductRegistrationStatsPage({
                 data-grid-download
                 onClick={() => setDownloadOpen(true)}
               />
-              <select className={layout.pageSizeSelect} defaultValue="20개씩 보기">
+              <PageSizeSelect className={layout.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
           <DataGrid

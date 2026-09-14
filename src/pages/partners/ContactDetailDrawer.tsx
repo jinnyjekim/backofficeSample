@@ -233,7 +233,7 @@ export function ContactDetailDrawer({
                 <div className={styles.linkedRow} key={i}>
                   <span className={styles.tableCellSub}>{l.type}</span>
                   <span className={styles.linkCell}>{l.no}</span>
-                  <span style={{ fontSize: '11.5px', fontWeight: 600, color: l.statusFg }}>{l.status}</span>
+                  <span style={{ fontSize: '0.71875rem', fontWeight: 600, color: l.statusFg }}>{l.status}</span>
                   <span className={styles.tableCellSub} style={{ textAlign: 'right' }}>{l.when}</span>
                 </div>
               ))}

@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "../ops/opsShared.module.css";
@@ -521,10 +522,10 @@ export function PromotionsListPage() {
               data-grid-download
               onClick={() => toastBriefly("다운로드를 준비했습니다.")}
             />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </div>
@@ -864,7 +865,7 @@ export function PromotionsListPage() {
             color: "#fff",
             padding: "10px 18px",
             borderRadius: 9,
-            fontSize: 12.5,
+            fontSize: '0.78125rem',
             zIndex: 40,
           }}
         >

@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './deliveryShared.module.css';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
@@ -178,10 +179,10 @@ export function DeliveryInvoicesPage() {
           <span className={styles.resultLabel}>{`총 ${filtered.length}건`}</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
@@ -231,7 +232,7 @@ export function DeliveryInvoicesPage() {
           <div className={drawer.sectionTitleLoose}>송장 출력 이력</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
             {selected.history.map((h, idx) => (
-              <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px' }}>
+              <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.75rem' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)' }} />
                 <strong style={{ minWidth: '140px' }}>{h.title}</strong>
                 <span style={{ color: '#71717a' }}>{h.when}</span>

@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "../../components/DataGrid";
@@ -748,10 +749,10 @@ export function NotificationTemplatesPage() {
           <span className={shared.resultLabel}>총 {filtered.length}건</span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" onClick={download} />
-            <select className={shared.pageSizeSelect}>
+            <PageSizeSelect className={shared.pageSizeSelect}>
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>

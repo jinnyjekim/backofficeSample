@@ -755,7 +755,7 @@ export function UserProductHistoryPage() {
   return (
     <div className={shared.page}>
       <PageHeading
-        title="사용자 상품 처리 이력"
+        title="처리 이력"
         subtitle="상품 등록·검수·노출·숨김·삭제·복구 과정의 변경 전후 값과 처리 근거를 조회합니다."
       />
       <ControlArea>

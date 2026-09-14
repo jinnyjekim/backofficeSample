@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { DatePicker } from "../../components/forms/DatePicker";
 import { SearchField } from "../../components/SearchField";
 import {
@@ -1444,7 +1445,7 @@ export function ContentListPage() {
             )}
           </div>
 
-          <div className={styles.filterPanel}>
+          <div className={styles.filterPanel} data-detail-open={adv}>
             <div className={styles.searchLine}>
               <SearchField
                 ref={searchInputRef}
@@ -1756,14 +1757,14 @@ export function ContentListPage() {
                 >
                   Excel 다운로드
                 </button>
-                <select
+                <PageSizeSelect
                   className={sh.pageSizeSelect}
                   defaultValue="20개씩 보기"
                 >
                   <option>20개씩 보기</option>
                   <option>50개씩 보기</option>
                   <option>100개씩 보기</option>
-                </select>
+                </PageSizeSelect>
               </div>
             )}
           </div>

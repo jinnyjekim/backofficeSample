@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CommonButton } from '../../components/common';
+import { StatisticsBarChart } from '../../components/charts';
 import { downloadStatisticsReport } from '../../lib/statisticsReport';
 import shared from '../ops/opsShared.module.css';
 import styles from './TransactionStatsPage.module.css';
@@ -77,22 +78,7 @@ function BreakdownTable({ rows, countLabel = '건수' }: { rows: WeightedRow[]; 
 }
 
 function BarChart({ buckets, metric }: { buckets: { label: string; value: number }[]; metric: string }) {
-  const max = Math.max(...buckets.map((b) => b.value), 1);
-  if (buckets.every((b) => b.value === 0)) return <div className={styles.emptyNote}>선택한 기간에 거래 데이터가 없습니다.</div>;
-  return (
-    <>
-      <div className={styles.chartArea}>
-        {buckets.map((b) => (
-          <div key={b.label} className={styles.chartBarWrap} title={`${b.label} · ${metric} ${fmtWon(b.value)}`}>
-            <div className={styles.chartBar} style={{ height: `${Math.max(2, (b.value / max) * 100)}%` }} />
-          </div>
-        ))}
-      </div>
-      <div className={styles.chartAxis}>
-        {buckets.map((b, i) => (i % Math.ceil(buckets.length / 12 || 1) === 0 ? <span key={b.label} className={styles.chartAxisLabel}>{b.label}</span> : <span key={b.label} className={styles.chartAxisLabel} />))}
-      </div>
-    </>
-  );
+  return <StatisticsBarChart data={buckets} metricLabel={metric} height={220} formatValue={fmtWon} emptyText="선택한 기간에 거래 데이터가 없습니다." />;
 }
 
 export function TransactionStatsPage() {

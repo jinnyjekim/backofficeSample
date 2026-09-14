@@ -7,10 +7,15 @@
   width: fit-content;
 }
 
+.field.fullWidth {
+  max-width: 100%;
+  width: 100%;
+}
+
 .control {
   position: relative;
-  width: auto;
-  min-width: 100%;
+  flex: 1;
+  width: 100%;
   height: 34px;
   min-width: 0;
   border: 1px solid var(--common-border);
@@ -26,18 +31,22 @@
 }
 
 .control > input {
-  width: auto;
-  min-width: 220px;
-  max-width: 360px;
-  field-sizing: content;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
   height: 100%;
-  padding: 0 62px 0 10px;
+  padding: 0 36px 0 12px;
   border: 0;
   outline: 0;
   background: transparent;
   color: inherit;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
+}
+
+.field:has(.shortcut) .control > input {
+  padding-right: 64px;
 }
 
 .control > button:first-child {
@@ -59,7 +68,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 4px;
   color: #a1a1aa;
-  font-size: 10px;
+  font-size: 0.625rem;
   pointer-events: none;
   transform: translateY(-50%);
 }

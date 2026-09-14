@@ -196,21 +196,21 @@ export const CONFIG: Record<
     valueLabel: "설정값",
   },
   codes: {
-    title: "공통 코드 관리",
+    title: "공통 코드",
     subtitle:
       "여러 업무에서 공유하는 코드 그룹과 값, 사용 여부와 영향 범위를 관리합니다.",
     unit: "개 그룹",
     valueLabel: "코드 수",
   },
   integrations: {
-    title: "외부 연동 관리",
+    title: "외부 연동",
     subtitle:
       "외부 API·Webhook·인증 정보의 운영 상태와 장애 지표를 관리합니다.",
     unit: "개 연동",
     valueLabel: "운영 지표",
   },
   jobs: {
-    title: "배치 / 작업 관리",
+    title: "작업 관리",
     subtitle:
       "정기 배치와 스케줄러의 실행 주기, 최근 결과와 재실행 여부를 관리합니다.",
     unit: "개 작업",

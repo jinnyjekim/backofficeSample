@@ -30,12 +30,12 @@
   margin-bottom: 16px;
 }
 .title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 .subtitle {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #8b8b93;
   margin-top: 4px;
 }
@@ -46,7 +46,7 @@
   border-radius: 9px;
   background: var(--common-text, #18181b);
   color: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
   flex: none;
@@ -96,7 +96,7 @@
   background: #eef2ff;
 }
 .qfLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #52525b;
 }
@@ -104,7 +104,7 @@
   color: #4338ca;
 }
 .qfCount {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #18181b;
   opacity: 0.8;
@@ -139,7 +139,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   background: #fff;
 }
@@ -148,7 +148,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #52525b;
   background: #fff;
 }
@@ -159,7 +159,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 11px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   outline: 0;
   box-sizing: border-box;
 }
@@ -173,7 +173,7 @@
   border-radius: 8px;
   background: #18181b;
   color: #fff;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -186,7 +186,7 @@
   border: 1px dashed rgba(0, 0, 0, 0.18);
   background: transparent;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #52525b;
   cursor: pointer;
 }
@@ -202,7 +202,7 @@
   border: 0;
   background: transparent;
   color: #a1a1aa;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 .resetBtn:hover {
@@ -216,7 +216,7 @@
   margin-bottom: 9px;
 }
 .resultLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -231,7 +231,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -243,7 +243,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #52525b;
   background: #fff;
 }
@@ -287,24 +287,24 @@
   flex-wrap: wrap;
 }
 .noText {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 .versionTag {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   font-weight: 600;
 }
 .badgePill {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 999px;
 }
 .urgentPill {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #dc2626;
   background: #fef2f2;
@@ -312,17 +312,17 @@
   padding: 3px 8px;
 }
 .stageText {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #71717a;
 }
 .partnerLine {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #3f3f46;
   margin-top: 6px;
 }
 .metaLine {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #8b8b93;
   margin-top: 3px;
 }
@@ -330,7 +330,7 @@
   border: 0;
   background: transparent;
   color: #a1a1aa;
-  font-size: 17px;
+  font-size: 1.0625rem;
   cursor: pointer;
   line-height: 1;
   flex: none;
@@ -348,7 +348,7 @@
 }
 .linkBtn {
   align-self: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--accent);
   background: none;
   border: 0;
@@ -364,7 +364,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -378,7 +378,7 @@
   background: var(--common-text, #18181b);
   color: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -391,7 +391,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   background: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -404,7 +404,7 @@
   border: 1px solid #fecaca;
   background: #fef2f2;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #dc2626;
   cursor: pointer;
@@ -416,7 +416,7 @@
   background: #059669;
   color: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -429,7 +429,7 @@
   background: #fafafa;
 }
 .summaryLabel {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #71717a;
   font-weight: 600;
   margin-bottom: 8px;
@@ -442,7 +442,7 @@
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
 }
 .summaryRowLabel {
   color: #71717a;
@@ -481,7 +481,7 @@
   padding: 10px 12px;
 }
 .panelTitle {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   margin-bottom: 8px;
 }
@@ -492,7 +492,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   margin-bottom: 8px;
 }
 .panelTextarea {
@@ -501,7 +501,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 7px;
   padding: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   box-sizing: border-box;
   resize: vertical;
   margin-bottom: 9px;
@@ -513,7 +513,7 @@
   flex-wrap: wrap;
 }
 .checkboxLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #3f3f46;
   display: flex;
   align-items: center;
@@ -530,7 +530,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   cursor: pointer;
 }
 .panelConfirmDark {
@@ -540,7 +540,7 @@
   background: #18181b;
   color: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -551,7 +551,7 @@
   background: #dc2626;
   color: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -562,7 +562,7 @@
   background: var(--accent);
   color: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -578,7 +578,7 @@
   border: 0;
   background: transparent;
   padding: 0 0 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 500;
   color: #8b8b93;
   cursor: pointer;
@@ -601,7 +601,7 @@
 }
 
 .sectionLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   font-weight: 600;
   margin-bottom: 8px;
@@ -624,11 +624,11 @@
   border-bottom: none;
 }
 .fieldLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
 }
 .fieldValue {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #18181b;
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -647,11 +647,11 @@
   margin-bottom: 8px;
 }
 .itemName {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 .itemCode {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   color: #a1a1aa;
   font-variant-numeric: tabular-nums;
 }
@@ -659,12 +659,12 @@
   text-align: right;
 }
 .itemQty {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 .itemSub {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   color: #a1a1aa;
 }
 .itemGrid {
@@ -676,16 +676,16 @@
   padding: 9px 10px;
 }
 .itemGridCellLabel {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   color: #a1a1aa;
 }
 .itemGridCellValue {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   margin-top: 2px;
 }
 .itemGridCellValueBold {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   font-weight: 600;
   margin-top: 2px;
@@ -714,23 +714,23 @@
   gap: 10px;
 }
 .historyAction {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #18181b;
 }
 .historyWhen {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
   font-variant-numeric: tabular-nums;
   flex: none;
 }
 .historyBy {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #71717a;
   margin-top: 3px;
 }
 .historyNote {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   margin-top: 3px;
 }
@@ -746,7 +746,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .memoSubmitBtn {
   height: 32px;
@@ -755,19 +755,19 @@
   background: #18181b;
   color: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 .memoItem {
   padding-bottom: 12px;
 }
 .memoWhen {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   font-variant-numeric: tabular-nums;
 }
 .memoText {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   margin-top: 3px;
 }
@@ -782,11 +782,11 @@
   margin-bottom: 6px;
 }
 .fileName {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
 }
 .fileMeta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   font-variant-numeric: tabular-nums;
 }
@@ -801,12 +801,12 @@
   margin-bottom: 8px;
 }
 .linkedNo {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #18181b;
 }
 .linkedSub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   margin-top: 2px;
 }
@@ -821,11 +821,11 @@
   margin-bottom: 6px;
 }
 .checkLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
 }
 .checkValue {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -835,7 +835,7 @@
   padding: 8px 12px;
   background: #fbfbfc;
   border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #71717a;
   font-weight: 600;
 }
@@ -853,16 +853,16 @@
   margin-bottom: 16px;
 }
 .compareCellLabel {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #71717a;
 }
 .compareCellValue {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
 }
 
 .emptyNote {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #71717a;
 }
 
@@ -876,17 +876,17 @@
   margin-bottom: 8px;
 }
 .miniCardTitle {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #18181b;
 }
 .miniCardSub {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   margin-top: 2px;
 }
 .miniCardValue {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -914,7 +914,7 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.07);
 }
 .registerTitle {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
 }
 .registerBody {
@@ -932,13 +932,13 @@
   border-top: 1px solid rgba(0, 0, 0, 0.07);
 }
 .formLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #52525b;
   display: block;
   margin-bottom: 14px;
 }
 .formSectionLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   font-weight: 600;
   margin-bottom: 10px;
@@ -951,7 +951,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 10px;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .formSelect {
   width: 100%;
@@ -961,7 +961,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 9px;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .formTextarea {
   width: 100%;
@@ -969,7 +969,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 10px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   box-sizing: border-box;
   resize: vertical;
   margin-bottom: 14px;
@@ -989,7 +989,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 8px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   cursor: pointer;
 }
 .formPrimaryBtn {
@@ -999,7 +999,7 @@
   background: var(--accent);
   color: #fff;
   border-radius: 8px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -1018,32 +1018,32 @@
   margin-bottom: 6px;
 }
 .versionLabel {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 .versionTagSmall {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   margin-left: 6px;
 }
 .versionAmount {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 .versionMeta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   font-variant-numeric: tabular-nums;
   margin-bottom: 6px;
 }
 .versionChanges {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   line-height: 1.7;
 }
 .versionStatus {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   margin-top: 2px;
 }
@@ -1065,11 +1065,11 @@
   text-align: right;
 }
 .marginCompareLabel {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #71717a;
 }
 .marginCompareValue {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   margin-top: 3px;
 }
@@ -1082,7 +1082,7 @@
   margin-bottom: 12px;
 }
 .compareSelectLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   font-weight: 600;
 }
@@ -1091,11 +1091,11 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 0 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   background: #fff;
 }
 .compareArrow {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #a1a1aa;
 }
 
@@ -1104,7 +1104,7 @@
   margin-bottom: 16px;
 }
 .approvalGroupTitle {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 700;
   color: #18181b;
   margin-bottom: 8px;
@@ -1117,30 +1117,30 @@
   padding-bottom: 12px;
 }
 .historyActionSm {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #18181b;
 }
 .historyWhenSm {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #8b8b93;
   font-variant-numeric: tabular-nums;
   flex: none;
 }
 .historyBySm {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   margin-top: 2px;
 }
 .historyNoteSm {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #3f3f46;
   margin-top: 2px;
 }
 
 /* ---- reasons panel list ---- */
 .reasonLine {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #78350f;
   line-height: 1.7;
 }

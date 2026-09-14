@@ -20,7 +20,7 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
             <div className={styles.titleLine}>
               <span className={styles.noText}>{d.no}</span>
               <span className={styles.badgePill} style={{ background: d.statusBg, color: d.statusFg }}>{d.statusLabel}</span>
-              <span style={{ fontSize: 11, color: '#71717a' }}>{d.stageLabel}</span>
+              <span style={{ fontSize: '0.6875rem', color: '#71717a' }}>{d.stageLabel}</span>
             </div>
             <div className={styles.partnerLine}>{d.partner} · 견적금액 {d.amount}</div>
           </div>
@@ -28,10 +28,10 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
         </div>
 
         <div style={{ marginTop: 12, border: '1px solid rgba(0,0,0,.08)', borderRadius: 10, padding: 12, background: '#fafafa' }}>
-          <div style={{ fontSize: 11, color: '#71717a', fontWeight: 600, marginBottom: 8 }}>승인 검토 요약</div>
+          <div style={{ fontSize: '0.6875rem', color: '#71717a', fontWeight: 600, marginBottom: 8 }}>승인 검토 요약</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 16px' }}>
             {d.summary.map((sm) => (
-              <div key={sm.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12.5 }}>
+              <div key={sm.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78125rem' }}>
                 <span style={{ color: '#71717a' }}>{sm.label}</span>
                 <span style={{ fontWeight: 600, color: sm.color }}>{sm.value}</span>
               </div>
@@ -41,9 +41,9 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
 
         {d.hasReasons && (
           <div style={{ marginTop: 10, background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 10, padding: '10px 12px' }}>
-            <div style={{ fontSize: 11.5, color: '#92400e', fontWeight: 600, marginBottom: 4 }}>승인 필요 사유</div>
+            <div style={{ fontSize: '0.71875rem', color: '#92400e', fontWeight: 600, marginBottom: 4 }}>승인 필요 사유</div>
             {d.reasons.map((rs) => (
-              <div key={rs} style={{ fontSize: 12, color: '#78350f', lineHeight: 1.7 }}>• {rs}</div>
+              <div key={rs} style={{ fontSize: '0.75rem', color: '#78350f', lineHeight: 1.7 }}>• {rs}</div>
             ))}
           </div>
         )}
@@ -122,8 +122,8 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
             {d.items.map((it) => (
               <div className={styles.itemCard} key={it.name}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600 }}>{it.name}</span>
-                  <span style={{ fontSize: 13, fontWeight: 600 }}>{it.amount}</span>
+                  <span style={{ fontSize: '0.8125rem', fontWeight: 600 }}>{it.name}</span>
+                  <span style={{ fontSize: '0.8125rem', fontWeight: 600 }}>{it.amount}</span>
                 </div>
                 <div className={styles.itemGrid}>
                   <div>
@@ -158,19 +158,19 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
             <div className={styles.sectionLabel}>마진 기준</div>
             <div style={{ border: '1px solid rgba(0,0,0,.08)', borderRadius: 10, padding: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
               <div>
-                <div style={{ fontSize: 11, color: '#71717a' }}>최소 마진 기준</div>
-                <div style={{ fontSize: 14, fontWeight: 700, marginTop: 3 }}>{d.minMargin}</div>
+                <div style={{ fontSize: '0.6875rem', color: '#71717a' }}>최소 마진 기준</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700, marginTop: 3 }}>{d.minMargin}</div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: 11, color: '#71717a' }}>현재 마진</div>
-                <div style={{ fontSize: 14, fontWeight: 700, marginTop: 3, color: d.marginFg }}>{d.marginLabel}</div>
+                <div style={{ fontSize: '0.6875rem', color: '#71717a' }}>현재 마진</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700, marginTop: 3, color: d.marginFg }}>{d.marginLabel}</div>
               </div>
             </div>
             <div className={styles.sectionLabel}>최소수량 검토</div>
             {d.moqChecks.map((mc) => (
               <div key={mc.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 11px', background: '#fafafa', borderRadius: 8, marginBottom: 6 }}>
-                <span style={{ fontSize: 12.5, color: '#3f3f46' }}>{mc.name} · 견적 {mc.qty} / MOQ {mc.moq}</span>
-                <span style={{ fontSize: 12, fontWeight: 600, color: mc.fg }}>{mc.label}</span>
+                <span style={{ fontSize: '0.78125rem', color: '#3f3f46' }}>{mc.name} · 견적 {mc.qty} / MOQ {mc.moq}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: mc.fg }}>{mc.label}</span>
               </div>
             ))}
           </div>
@@ -180,14 +180,14 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
           <div>
             <div className={styles.sectionLabel}>거래 조건 비교</div>
             <div style={{ border: '1px solid rgba(0,0,0,.08)', borderRadius: 10, overflow: 'hidden', marginBottom: 16 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, padding: '8px 12px', background: '#fbfbfc', borderBottom: '1px solid rgba(0,0,0,.07)', fontSize: 11, color: '#71717a', fontWeight: 600 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, padding: '8px 12px', background: '#fbfbfc', borderBottom: '1px solid rgba(0,0,0,.07)', fontSize: '0.6875rem', color: '#71717a', fontWeight: 600 }}>
                 <span>항목</span><span>거래처 기본</span><span>이번 견적</span>
               </div>
               {d.condCompare.map((cc) => (
                 <div key={cc.label} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, alignItems: 'center', padding: '9px 12px', borderBottom: '1px solid rgba(0,0,0,.05)' }}>
-                  <span style={{ fontSize: 12, color: '#71717a' }}>{cc.label}</span>
-                  <span style={{ fontSize: 12.5, color: '#3f3f46' }}>{cc.base}</span>
-                  <span style={{ fontSize: 12.5, fontWeight: cc.weight, color: cc.fg }}>{cc.value}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#71717a' }}>{cc.label}</span>
+                  <span style={{ fontSize: '0.78125rem', color: '#3f3f46' }}>{cc.base}</span>
+                  <span style={{ fontSize: '0.78125rem', fontWeight: cc.weight, color: cc.fg }}>{cc.value}</span>
                 </div>
               ))}
             </div>
@@ -209,8 +209,8 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
             {d.chain.map((c, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 12px', border: '1px solid rgba(0,0,0,.08)', borderRadius: 10, marginBottom: 8 }}>
                 <div>
-                  <div style={{ fontSize: 12.5, fontWeight: 600, color: '#18181b' }}>{c.stage} · {c.admin}</div>
-                  <div style={{ fontSize: 11, color: '#a1a1aa', marginTop: 2 }}>{c.when}</div>
+                  <div style={{ fontSize: '0.78125rem', fontWeight: 600, color: '#18181b' }}>{c.stage} · {c.admin}</div>
+                  <div style={{ fontSize: '0.6875rem', color: '#a1a1aa', marginTop: 2 }}>{c.when}</div>
                 </div>
                 <span className={styles.badgePill} style={{ background: c.bg, color: c.fg }}>{c.status}</span>
               </div>
@@ -222,8 +222,8 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
           <div>
             <div className={styles.sectionLabel}>승인 요청 의견</div>
             <div style={{ border: '1px solid rgba(0,0,0,.08)', borderRadius: 10, padding: 12 }}>
-              <div style={{ fontSize: 12.5, color: '#3f3f46', lineHeight: 1.6, marginBottom: 8 }}>{d.opinion}</div>
-              <div style={{ fontSize: 11.5, color: '#a1a1aa' }}>{d.requester} · {d.requestedAt}</div>
+              <div style={{ fontSize: '0.78125rem', color: '#3f3f46', lineHeight: 1.6, marginBottom: 8 }}>{d.opinion}</div>
+              <div style={{ fontSize: '0.71875rem', color: '#a1a1aa' }}>{d.requester} · {d.requestedAt}</div>
             </div>
           </div>
         )}
@@ -240,7 +240,7 @@ export function QuoteApprovalDetailDrawer({ detail: d, onTabChange }: Props) {
                     <span className={styles.historyWhen}>{h.when}</span>
                   </div>
                   <div className={styles.historyBy}>{h.by}</div>
-                  {h.note && <div style={{ fontSize: 12, color: '#3f3f46', marginTop: 3 }}>"{h.note}"</div>}
+                  {h.note && <div style={{ fontSize: '0.75rem', color: '#3f3f46', marginTop: 3 }}>"{h.note}"</div>}
                 </div>
               </div>
             ))}

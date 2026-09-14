@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import shared from "../coupons/shared.module.css";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -654,10 +655,10 @@ export function DeliveryListPage() {
           <span className={shared.resultLabel}>{`총 ${filtered.length}건 `}</span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={shared.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
@@ -760,14 +761,14 @@ export function DeliveryListPage() {
         >
           {/* 보류 알림 */}
           {selected.isHold && selected.holdReason && (
-            <div style={{ padding: "10px 12px", background: "#fff1f2", border: "1px solid #ffe4e6", borderRadius: "6px", color: "#9f1239", fontSize: "12.5px", marginBottom: "14px" }}>
+            <div style={{ padding: "10px 12px", background: "#fff1f2", border: "1px solid #ffe4e6", borderRadius: "6px", color: "#9f1239", fontSize: "0.78125rem", marginBottom: "14px" }}>
               <strong>⚠️ 보류 사유:</strong> {selected.holdReason}
             </div>
           )}
 
           {/* 실패 사유 알림 */}
           {selected.stage === "배송 실패" && selected.failReason && (
-            <div style={{ padding: "10px 12px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "6px", color: "#dc2626", fontSize: "12.5px", marginBottom: "14px" }}>
+            <div style={{ padding: "10px 12px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "6px", color: "#dc2626", fontSize: "0.78125rem", marginBottom: "14px" }}>
               <strong>배송 실패 사유:</strong> {selected.failReason}
             </div>
           )}
@@ -775,13 +776,13 @@ export function DeliveryListPage() {
           {/* 보류 지정 입력 양식 */}
           {isHolding && (
             <div style={{ padding: "12px", background: "#fffbeb", border: "1px solid #fef3c7", borderRadius: "6px", marginBottom: "14px" }}>
-              <div style={{ fontSize: "12px", fontWeight: 600, color: "#92400e", marginBottom: "6px" }}>배송 보류 사유 작성</div>
+              <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "#92400e", marginBottom: "6px" }}>배송 보류 사유 작성</div>
               <textarea
                 rows={2}
                 value={holdReasonInput}
                 onChange={(e) => setHoldReasonInput(e.target.value)}
                 placeholder="고객 요청, 기상 악화, 재고 검수 등 보류 사유를 입력하세요."
-                style={{ width: "100%", padding: "6px 8px", fontSize: "12px", borderRadius: "4px", border: "1px solid #fcd34d" }}
+                style={{ width: "100%", padding: "6px 8px", fontSize: "0.75rem", borderRadius: "4px", border: "1px solid #fcd34d" }}
               />
               <div style={{ display: "flex", gap: "6px", justifyContent: "flex-end", marginTop: "6px" }}>
                 <CommonButton size="sm" variant="secondary" onClick={() => setIsHolding(false)}>
@@ -805,7 +806,7 @@ export function DeliveryListPage() {
                   border: "1px solid #d4d4d8",
                   borderRadius: "5px",
                   padding: "5px 10px",
-                  fontSize: "12px",
+                  fontSize: "0.75rem",
                   color: selected.isHold ? "#0284c7" : "#dc2626",
                   cursor: "pointer",
                 }}
@@ -831,11 +832,11 @@ export function DeliveryListPage() {
                     background: tr.dot || "#0284c7",
                   }}
                 />
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11.5px", color: "#71717a" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.71875rem", color: "#71717a" }}>
                   <span style={{ fontWeight: 600, color: "#18181b" }}>{tr.title}</span>
                   <span>{tr.when}</span>
                 </div>
-                <div style={{ fontSize: "11px", color: "#71717a", marginTop: "1px" }}>
+                <div style={{ fontSize: "0.6875rem", color: "#71717a", marginTop: "1px" }}>
                   출처: {tr.source} {tr.loc ? `(${tr.loc})` : ""}
                 </div>
               </div>
@@ -850,7 +851,7 @@ export function DeliveryListPage() {
               value={memoInput}
               onChange={(e) => setMemoInput(e.target.value)}
               placeholder="특이사항 및 배송 메모를 입력하세요."
-              style={{ flex: 1, padding: "6px 8px", fontSize: "12px", borderRadius: "4px", border: "1px solid #d4d4d8" }}
+              style={{ flex: 1, padding: "6px 8px", fontSize: "0.75rem", borderRadius: "4px", border: "1px solid #d4d4d8" }}
               onKeyDown={(e) => e.key === "Enter" && handleAddMemo(selected.id)}
             />
             <CommonButton size="sm" variant="secondary" onClick={() => handleAddMemo(selected.id)}>
@@ -859,11 +860,11 @@ export function DeliveryListPage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "16px" }}>
             {selected.memos.length === 0 ? (
-              <div style={{ fontSize: "12px", color: "#a1a1aa" }}>등록된 메모가 없습니다.</div>
+              <div style={{ fontSize: "0.75rem", color: "#a1a1aa" }}>등록된 메모가 없습니다.</div>
             ) : (
               selected.memos.map((m, idx) => (
-                <div key={idx} style={{ padding: "6px 8px", background: "#f4f4f5", borderRadius: "4px", fontSize: "12px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", color: "#71717a", fontSize: "11px", marginBottom: "2px" }}>
+                <div key={idx} style={{ padding: "6px 8px", background: "#f4f4f5", borderRadius: "4px", fontSize: "0.75rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", color: "#71717a", fontSize: "0.6875rem", marginBottom: "2px" }}>
                     <span>{m.by}</span>
                     <span>{m.when}</span>
                   </div>
@@ -889,14 +890,14 @@ export function DeliveryListPage() {
                     background: "#0284c7",
                   }}
                 />
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11.5px", color: "#71717a" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.71875rem", color: "#71717a" }}>
                   <span style={{ fontWeight: 600, color: "#18181b" }}>{log.action}</span>
                   <span>{log.when}</span>
                 </div>
-                <div style={{ fontSize: "12px", color: "#3f3f46", marginTop: "2px" }}>
+                <div style={{ fontSize: "0.75rem", color: "#3f3f46", marginTop: "2px" }}>
                   {log.note}
                 </div>
-                <div style={{ fontSize: "11px", color: "#a1a1aa", marginTop: "1px" }}>
+                <div style={{ fontSize: "0.6875rem", color: "#a1a1aa", marginTop: "1px" }}>
                   작업자: {log.actor} {log.invoiceChange ? `· ${log.invoiceChange}` : ""}
                 </div>
               </div>

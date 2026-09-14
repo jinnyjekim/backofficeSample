@@ -60,7 +60,7 @@ export function BrandDetailDrawer({ brand: b, all, onClose, onEdit, onToggleStat
           <div className={styles.editPanel} style={{ marginTop: 12, background: '#fffbeb', borderColor: '#fde68a' }}>
             <div className={styles.editTitle} style={{ color: '#b45309' }}>검토가 필요합니다</div>
             {issues.map((issue) => (
-              <div key={issue} style={{ fontSize: 12, color: '#92400e', marginBottom: 4 }}>⚠ {issue}</div>
+              <div key={issue} style={{ fontSize: '0.75rem', color: '#92400e', marginBottom: 4 }}>⚠ {issue}</div>
             ))}
           </div>
         )}
@@ -107,7 +107,7 @@ export function BrandDetailDrawer({ brand: b, all, onClose, onEdit, onToggleStat
           <div>
             <div className={styles.sectionTitle}>로고</div>
             {b.hasLogo ? (
-              <div style={{ width: 64, height: 64, borderRadius: 12, background: '#18181b', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 700, marginBottom: 16 }}>
+              <div style={{ width: 64, height: 64, borderRadius: 12, background: '#18181b', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', fontWeight: 700, marginBottom: 16 }}>
                 {b.name.slice(0, 1)}
               </div>
             ) : (

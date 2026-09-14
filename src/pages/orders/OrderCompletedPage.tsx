@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './ordersShared.module.css';
 import { DataGrid } from '../../components/DataGrid/DataGrid';
@@ -108,7 +109,7 @@ export function OrderCompletedPage() {
         <div className={styles.headTop}>
           <div className={styles.headRow}>
             <div>
-              <div className={styles.title}>주문 완료</div>
+              <div className={styles.title}>완료</div>
               <div className={styles.subtitle}>완료된 주문과 최종 처리 결과를 조회합니다.</div>
             </div>
           </div>
@@ -166,9 +167,9 @@ export function OrderCompletedPage() {
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
               <ExcelDownloadButton type="button" data-grid-download />
-              <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option><option>50개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
         </div>

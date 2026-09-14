@@ -54,7 +54,7 @@ export function ErrorGroupDetailDrawer({ group: g, onClose }: Props) {
             <div className={styles.fieldBox}>
               <div className={styles.fieldRow}><span className={styles.fieldLabel}>Exception</span><span className={styles.fieldValue}>{g.exception}</span></div>
             </div>
-            <pre className={styles.bodyText} style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: 11.5, overflowX: 'auto' }}>{g.stackTrace}</pre>
+            <pre className={styles.bodyText} style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '0.71875rem', overflowX: 'auto' }}>{g.stackTrace}</pre>
           </>
         )}
 
@@ -68,8 +68,8 @@ export function ErrorGroupDetailDrawer({ group: g, onClose }: Props) {
                 {o.requestId && <span className={styles.timelineWhen}>{o.requestId}</span>}
               </div>
               <div className={styles.timelineDetail} style={{ display: 'flex', gap: 8 }}>
-                {o.member && <button type="button" className={styles.actionLink} style={{ height: 24, padding: '0 8px', fontSize: 11 }} onClick={() => navigate('/members')}>{o.member} 회원</button>}
-                {o.order && <button type="button" className={styles.actionLink} style={{ height: 24, padding: '0 8px', fontSize: 11 }} onClick={() => navigate('/orders/purchase')}>{o.order} 주문</button>}
+                {o.member && <button type="button" className={styles.actionLink} style={{ height: 24, padding: '0 8px', fontSize: '0.6875rem' }} onClick={() => navigate('/members')}>{o.member} 회원</button>}
+                {o.order && <button type="button" className={styles.actionLink} style={{ height: 24, padding: '0 8px', fontSize: '0.6875rem' }} onClick={() => navigate('/orders/purchase')}>{o.order} 주문</button>}
                 {!o.member && !o.order && '관련 데이터 없음'}
               </div>
             </div>

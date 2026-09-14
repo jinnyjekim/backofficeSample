@@ -54,7 +54,7 @@ export function PaymentDetailDrawer({ detail: d, onTabChange }: Props) {
             <div className={styles.panelTitle}>결제 배분</div>
             {d.allocRows.map((ar) => (
               <div className={styles.panelRow} key={ar.invoice}>
-                <span style={{ flex: 1, fontSize: 12, color: '#3f3f46' }}>{ar.invoice} · 청구 {ar.invoiceAmount}</span>
+                <span style={{ flex: 1, fontSize: '0.75rem', color: '#3f3f46' }}>{ar.invoice} · 청구 {ar.invoiceAmount}</span>
                 <input defaultValue={ar.allocated} className={styles.panelInput} style={{ width: 120, flex: 'none' }} />
               </div>
             ))}
@@ -72,7 +72,7 @@ export function PaymentDetailDrawer({ detail: d, onTabChange }: Props) {
         {d.showCancelPanel && (
           <div className={styles.panelDanger}>
             <div className={styles.panelTitleDanger}>결제 취소</div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#3f3f46', marginBottom: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#3f3f46', marginBottom: 8 }}>
               <span>취소 가능금액</span>
               <span style={{ fontWeight: 600 }}>{d.amount}</span>
             </div>
@@ -127,7 +127,7 @@ export function PaymentDetailDrawer({ detail: d, onTabChange }: Props) {
                   <button type="button" className={styles.cardTitleLink}>{ar.invoice}</button>
                   <div className={styles.cardSub}>청구금액 {ar.invoiceAmount}</div>
                 </div>
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: '#18181b', fontVariantNumeric: 'tabular-nums' }}>{ar.allocated}</span>
+                <span style={{ fontSize: '0.78125rem', fontWeight: 600, color: '#18181b', fontVariantNumeric: 'tabular-nums' }}>{ar.allocated}</span>
               </div>
             ))}
             <div className={styles.rowBetween}>

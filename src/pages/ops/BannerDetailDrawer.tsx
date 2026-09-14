@@ -162,7 +162,7 @@ export function BannerDetailDrawer({
             {banner.linkedContent && (
               <div className={styles.linkedItem}>
                 <span>{banner.linkedContent.type} · {banner.linkedContent.label}</span>
-                <span style={{ color: banner.linkedContent.ended ? '#dc2626' : '#059669', fontSize: 11, fontWeight: 600 }}>
+                <span style={{ color: banner.linkedContent.ended ? '#dc2626' : '#059669', fontSize: '0.6875rem', fontWeight: 600 }}>
                   {banner.linkedContent.ended ? '종료됨' : '진행중'}
                 </span>
               </div>

@@ -217,7 +217,7 @@ export function OrderApprovalDetailDrawer({
                 <div className={styles.compareGridRow} key={cr.label}>
                   <span className={styles.compareCellLabel}>{cr.label}</span>
                   <span className={styles.compareCellValue}>{cr.from}</span>
-                  <span style={{ fontSize: '12.5px', fontWeight: cr.weight, color: cr.fg }}>{cr.to}</span>
+                  <span style={{ fontSize: '0.78125rem', fontWeight: cr.weight, color: cr.fg }}>{cr.to}</span>
                 </div>
               ))}
             </div>
@@ -295,8 +295,8 @@ export function OrderApprovalDetailDrawer({
             })}
             <div className={styles.sectionLabel} style={{ marginTop: 16 }}>승인 요청 의견</div>
             <div className={styles.fieldsBox}>
-              <div style={{ fontSize: '12.5px', color: '#3f3f46', lineHeight: 1.6, marginBottom: 8 }}>{a.opinion}</div>
-              <div style={{ fontSize: '11.5px', color: '#a1a1aa' }}>{a.requester} · {a.requestedAt}</div>
+              <div style={{ fontSize: '0.78125rem', color: '#3f3f46', lineHeight: 1.6, marginBottom: 8 }}>{a.opinion}</div>
+              <div style={{ fontSize: '0.71875rem', color: '#a1a1aa' }}>{a.requester} · {a.requestedAt}</div>
             </div>
           </div>
         )}

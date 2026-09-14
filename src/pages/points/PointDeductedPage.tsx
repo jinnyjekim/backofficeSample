@@ -1,7 +1,7 @@
+import { PageSizeSelect, CommonButton, ExcelDownloadButton, CommonStatCard, CommonStatGrid } from '../../components/common';
 import { useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid';
 import type { Cell, GridColumn, GridRow } from '../../components/DataGrid/types';
-import { CommonButton, ExcelDownloadButton } from '../../components/common';
 import { DatePicker } from '../../components/forms/DatePicker';
 import shared from '../ops/opsShared.module.css';
 import { POINT_LEDGER, fmtPoint } from './pointLedgerData';
@@ -41,7 +41,11 @@ export function PointDeductedPage() {
 
   return <div className={styles.page}>
     <header className={styles.header}><div className={styles.title}>차감 내역</div><div className={styles.subtitle}>관리자 차감 및 적립 취소로 회수된 포인트 내역을 조회합니다.</div></header>
-    <section className={styles.summary}><div className={styles.summaryCard}><span>총 차감 건수</span><strong>{ENTRIES.length}건</strong></div><div className={styles.summaryCard}><span>총 차감 포인트</span><strong>{fmtPoint(ENTRIES.reduce((sum, entry) => sum + Math.abs(entry.delta), 0))}</strong></div><div className={styles.summaryCard}><span>잔액 확인 필요</span><strong>{ENTRIES.filter((entry) => entry.after < 0).length}건</strong></div></section>
+    <CommonStatGrid columns={3} style={{ marginBottom: 14 }}>
+      <CommonStatCard label="총 차감 건수" value={`${ENTRIES.length}건`} />
+      <CommonStatCard label="총 차감 포인트" value={fmtPoint(ENTRIES.reduce((sum, entry) => sum + Math.abs(entry.delta), 0))} tone="down" />
+      <CommonStatCard label="잔액 확인 필요" value={`${ENTRIES.filter((entry) => entry.after < 0).length}건`} tone={ENTRIES.some((entry) => entry.after < 0) ? 'danger' : 'neutral'} />
+    </CommonStatGrid>
     <section className={shared.filterBox}>
       <form className={shared.filterRow1} onSubmit={(event) => { event.preventDefault(); setSearch(keyword.trim()); }}>
         <input aria-label="차감 내역 검색" className={shared.searchInput} value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="차감 번호 / 회원 / 사유" />
@@ -55,7 +59,7 @@ export function PointDeductedPage() {
         <CommonButton type="button" variant="ghost" size="sm" className={shared.resetBtn} onClick={reset}>초기화</CommonButton>
       </div>
     </section>
-    <div className={styles.resultRow}><strong>총 {rows.length}건</strong><div className={styles.resultActions}><ExcelDownloadButton type="button" data-grid-download /><select aria-label="페이지당 표시 개수" className={styles.pageSizeSelect} defaultValue="20개씩 보기"><option>20개씩 보기</option><option>50개씩 보기</option></select></div></div>
+    <div className={styles.resultRow}><strong>총 {rows.length}건</strong><div className={styles.resultActions}><ExcelDownloadButton type="button" data-grid-download /><PageSizeSelect aria-label="페이지당 표시 개수" className={styles.pageSizeSelect} defaultValue="20개씩 보기"><option>20개씩 보기</option><option>50개씩 보기</option></PageSizeSelect></div></div>
     <div className={styles.grid}><DataGrid columns={COLUMNS} rows={rows} gridTemplate="150px 130px 1fr 100px 110px 110px 1.3fr 90px" minWidth="1050px" empty={rows.length === 0} emptyText="검색 조건에 해당하는 차감 내역이 없습니다." /></div>
   </div>;
 }

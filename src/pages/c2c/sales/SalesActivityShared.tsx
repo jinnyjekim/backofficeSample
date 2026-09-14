@@ -1,3 +1,4 @@
+import { CommonStatGrid, type CommonStatCardProps, PageSizeSelect } from '../../../components/common';
 import { useRef, type ReactNode, Children, isValidElement } from 'react';
 import { useOutsideClose } from '../../../lib/useOutsideClose';
 import shared from '../shared.module.css';
@@ -6,7 +7,7 @@ import styles from './SalesActivity.module.css';
 import { SplitPanePanel } from '../../../components/common';
 import { ExcelDownloadButton } from '../../../components/common/ExcelDownloadButton';
 
-export interface Metric { label: string; value: string; note: string; tone?: 'up' | 'down'; dot?: string }
+export type Metric = CommonStatCardProps;
 export interface DrawerField { label: string; value: ReactNode }
 export interface DrawerStat { label: string; value: string }
 
@@ -15,7 +16,7 @@ export function PageHeading({ title, subtitle, action }: { title: string; subtit
 }
 
 export function Metrics({ items }: { items: Metric[] }) {
-  return <div className={styles.summaryGrid}>{items.map((item) => <div key={item.label} className={styles.summaryCard}><div className={styles.summaryHead}><span>{item.label}</span>{item.dot && <i className={styles.summaryDot} style={{ background: item.dot }}/>}</div><strong>{item.value}</strong><em className={item.tone === 'up' ? styles.deltaUp : item.tone === 'down' ? styles.deltaDown : ''}>{item.note}</em></div>)}</div>;
+  return <div style={{ margin: '0 24px 18px' }}><CommonStatGrid items={items} /></div>;
 }
 
 export function FilterBox({ children }: { children?: ReactNode }) { return <div className={shared.filterBox}>{children}</div>; }
@@ -37,10 +38,10 @@ export function ResultBar({ count, unit = '명', children }: { count: number; un
         {!hasDownload && <ExcelDownloadButton type="button" data-grid-download />}
         {children}
         {!hasSelect && (
-          <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+          <PageSizeSelect className={shared.pageSizeSelect} defaultValue="20개씩 보기">
             <option>20개씩 보기</option>
             <option>50개씩 보기</option>
-          </select>
+          </PageSizeSelect>
         )}
       </div>
     </div>

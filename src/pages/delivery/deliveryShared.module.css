@@ -21,12 +21,12 @@
   gap: 16px;
 }
 .title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 .subtitle {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #8b8b93;
   margin-top: 4px;
   margin-bottom: 16px;
@@ -66,11 +66,11 @@
   border-color: rgba(0, 0, 0, 0.22);
 }
 .qfLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
 }
 .qfCount {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   opacity: 0.8;
   font-variant-numeric: tabular-nums;
@@ -121,7 +121,7 @@
   flex-direction: column;
   gap: 6px;
   color: var(--common-text-muted);
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   font-weight: 600;
   line-height: 1.2;
 }
@@ -139,7 +139,7 @@
   justify-content: center;
   height: 34px;
   font-family: var(--common-font-family);
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1;
   color: var(--common-text-muted);
 }
@@ -148,7 +148,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   background: #fff;
 }
@@ -157,7 +157,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #52525b;
   background: #fff;
 }
@@ -168,7 +168,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 11px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   outline: 0;
   box-sizing: border-box;
 }
@@ -182,7 +182,7 @@
   border-radius: 8px;
   background: #18181b;
   color: #fff;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -195,7 +195,7 @@
   border: 1px dashed rgba(0, 0, 0, 0.18);
   background: transparent;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #52525b;
   cursor: pointer;
 }
@@ -211,7 +211,7 @@
   border: 0;
   background: transparent;
   color: #a1a1aa;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 .resetBtn:hover {
@@ -225,7 +225,7 @@
   margin-bottom: 9px;
 }
 .resultLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -240,7 +240,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -252,7 +252,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #52525b;
   background: #fff;
 }
@@ -295,31 +295,31 @@
   flex-wrap: wrap;
 }
 .noText {
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 .badgePill {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 999px;
 }
 .subLine {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #3f3f46;
   margin-top: 6px;
 }
 .amountLine {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #18181b;
   margin-top: 8px;
 }
 .dueLine {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #71717a;
   margin-top: 3px;
 }
@@ -327,7 +327,7 @@
   border: 0;
   background: transparent;
   color: #a1a1aa;
-  font-size: 17px;
+  font-size: 1.0625rem;
   cursor: pointer;
   line-height: 1;
   flex: none;
@@ -342,7 +342,7 @@
   border: 1px solid #fde68a;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #92400e;
 }
 .bannerRed {
@@ -351,7 +351,7 @@
   border: 1px solid #fecaca;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #b91c1c;
 }
 .bannerGreen {
@@ -360,7 +360,7 @@
   border: 1px solid #bbf7d0;
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #166534;
 }
 
@@ -373,7 +373,7 @@
 }
 .linkBtn {
   align-self: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--accent);
   background: none;
   border: 0;
@@ -385,7 +385,7 @@
 }
 .mutedNote {
   align-self: center;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #a1a1aa;
 }
 .secondaryBtn {
@@ -394,7 +394,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   background: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -408,7 +408,7 @@
   background: var(--accent);
   color: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -435,19 +435,19 @@
   padding: 10px 12px;
 }
 .panelTitle {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #18181b;
   margin-bottom: 8px;
 }
 .panelTitleRed {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #b91c1c;
   font-weight: 600;
   margin-bottom: 4px;
 }
 .panelBlockerLine {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #b91c1c;
 }
 .panelSelect {
@@ -457,7 +457,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   margin-bottom: 8px;
 }
 .panelInput {
@@ -467,7 +467,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   margin-bottom: 8px;
 }
 .panelTextarea {
@@ -476,13 +476,13 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   box-sizing: border-box;
   resize: vertical;
   margin-bottom: 9px;
 }
 .panelNote {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #71717a;
   margin-bottom: 9px;
 }
@@ -497,7 +497,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   cursor: pointer;
 }
 .confirmDarkBtn {
@@ -507,7 +507,7 @@
   background: #18181b;
   color: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -518,7 +518,7 @@
   background: #dc2626;
   color: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -534,7 +534,7 @@
   border: 0;
   background: transparent;
   padding: 0 0 9px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   cursor: pointer;
   white-space: nowrap;
 }
@@ -550,7 +550,7 @@
 }
 
 .sectionLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   font-weight: 600;
   margin-bottom: 8px;
@@ -573,11 +573,11 @@
   border-bottom: none;
 }
 .fieldLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
 }
 .fieldValue {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
@@ -594,7 +594,7 @@
   padding: 8px 12px;
   background: #fbfbfc;
   border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #71717a;
   font-weight: 600;
 }
@@ -609,12 +609,12 @@
   border-bottom: none;
 }
 .gridCellStrong {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #18181b;
   font-weight: 600;
 }
 .gridCellNormal {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
 }
 
@@ -630,7 +630,7 @@
   margin-bottom: 8px;
 }
 .itemName {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 .itemGrid4 {
@@ -642,11 +642,11 @@
   padding: 9px 10px;
 }
 .itemGridCellLabel {
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   color: #a1a1aa;
 }
 .itemGridCellValue {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #3f3f46;
   margin-top: 2px;
 }
@@ -657,7 +657,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   background: #fff;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #3f3f46;
   cursor: pointer;
 }
@@ -692,23 +692,23 @@
   gap: 10px;
 }
 .trackingTitle {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #18181b;
 }
 .trackingWhen {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
   font-variant-numeric: tabular-nums;
   flex: none;
 }
 .trackingLoc {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #71717a;
   margin-top: 3px;
 }
 .trackingSource {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   margin-top: 2px;
 }
@@ -723,18 +723,18 @@
   margin-bottom: 6px;
 }
 .siblingLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
 }
 .siblingStatus {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 600;
 }
 .orderProgressNote {
   background: #fafafa;
   border-radius: 8px;
   padding: 11px 12px;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   margin-bottom: 8px;
 }
@@ -749,17 +749,17 @@
   margin-bottom: 8px;
 }
 .aftercareTitle {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 600;
   color: #18181b;
 }
 .aftercareNote {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   margin-top: 2px;
 }
 .aftercareStatus {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   font-weight: 600;
 }
 
@@ -773,11 +773,11 @@
   margin-bottom: 6px;
 }
 .proofLabel {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
 }
 .proofLink {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: var(--accent);
   background: none;
   border: 0;
@@ -795,7 +795,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 0 9px;
-  font-size: 12px;
+  font-size: 0.75rem;
   box-sizing: border-box;
 }
 .inlineDarkBtn {
@@ -805,7 +805,7 @@
   background: #18181b;
   color: #fff;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 
@@ -820,7 +820,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .memoSubmitBtn {
   height: 32px;
@@ -829,25 +829,25 @@
   background: #18181b;
   color: #fff;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 .memoItem {
   padding-bottom: 12px;
 }
 .memoWhen {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   font-variant-numeric: tabular-nums;
 }
 .memoText {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #3f3f46;
   margin-top: 3px;
 }
 
 .historyLabel {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #71717a;
   font-weight: 600;
   margin: 16px 0 14px;
@@ -875,23 +875,23 @@
   gap: 10px;
 }
 .historyTitle {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: #18181b;
 }
 .historyWhen {
-  font-size: 11.5px;
+  font-size: 0.71875rem;
   color: #8b8b93;
   font-variant-numeric: tabular-nums;
   flex: none;
 }
 .historyBy {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: #a1a1aa;
   margin-top: 3px;
 }
 
 .emptyNote {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: #71717a;
 }

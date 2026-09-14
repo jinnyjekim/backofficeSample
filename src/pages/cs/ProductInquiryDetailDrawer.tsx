@@ -84,7 +84,7 @@ export function ProductInquiryDetailDrawer({ inquiry: q, onClose, onChange }: Pr
       </div>
 
       <div className={drawer.scroll}>
-        {issues.length > 0 && <div className={drawer.editPanel} style={{ background: '#fffbeb', borderColor: '#fde68a' }}>{issues.map((issue) => <div key={issue} style={{ fontSize: 11, color: '#92400e' }}>⚠ {issue}</div>)}</div>}
+        {issues.length > 0 && <div className={drawer.editPanel} style={{ background: '#fffbeb', borderColor: '#fde68a' }}>{issues.map((issue) => <div key={issue} style={{ fontSize: '0.6875rem', color: '#92400e' }}>⚠ {issue}</div>)}</div>}
 
         <div className={drawer.sectionTitle}>문의 정보</div>
         <div className={drawer.fieldBox}>

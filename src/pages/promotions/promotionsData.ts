@@ -3,8 +3,46 @@ import { PRODUCTS } from '../products/productsData';
 export type ApplyUnit = '상품' | '주문';
 export type DiscountMethod = '정률' | '정액';
 export type TargetType = '전체' | '특정 상품' | '특정 카테고리';
+export type TargetMemberTier = '전체' | '일반' | 'VIP' | 'VVIP' | '신규회원';
 export type PromotionStatus = '진행 예정' | '진행중' | '종료' | '비활성';
 export type StackOption = '가능' | '불가';
+
+export type StackCombinationMode = 'ALL' | 'MAX_ONE' | 'CONDITIONAL';
+
+export interface StackDiscountStep {
+  id: 'product' | 'member' | 'cart' | 'coupon';
+  name: string;
+  description: string;
+  enabled: boolean;
+  order: number;
+}
+
+export interface StackDiscountPolicy {
+  combinationMode: StackCombinationMode;
+  steps: StackDiscountStep[];
+  maxDiscountRateLimit: number; // % (예: 50)
+  maxDiscountAmountLimit: number; // 원 (예: 100000)
+  allowCouponOverlap: boolean;
+  minFinalPayAmount: number; // 최소 결제금액 하한 (예: 1000원)
+  updatedAt: string;
+  updatedBy: string;
+}
+
+export const DEFAULT_STACK_POLICY: StackDiscountPolicy = {
+  combinationMode: 'CONDITIONAL',
+  steps: [
+    { id: 'product', name: '상품 / 카테고리 할인', description: '개별 상품 및 특정 카테고리 프로모션 할인', enabled: true, order: 1 },
+    { id: 'member', name: '회원 등급 할인', description: '일반/VIP/VVIP 회원 등급 추가 우대 할인', enabled: true, order: 2 },
+    { id: 'cart', name: '장바구니 / 주문 할인', description: '주문 총액 기준 장바구니 프로모션 할인', enabled: true, order: 3 },
+    { id: 'coupon', name: '쿠폰 할인', description: '고객 보유 다운로드 쿠폰 및 자동 할인 쿠폰', enabled: true, order: 4 },
+  ],
+  maxDiscountRateLimit: 50,
+  maxDiscountAmountLimit: 100000,
+  allowCouponOverlap: true,
+  minFinalPayAmount: 1000,
+  updatedAt: '2026-09-07 14:00',
+  updatedBy: 'admin01',
+};
 
 export const TODAY = '2026-08-26';
 
@@ -31,6 +69,7 @@ export interface Promotion {
   minPurchaseAmount: number;
 
   targetType: TargetType;
+  targetMemberTier?: TargetMemberTier;
   targetProductCodes: string[];
   targetCategories: string[];
   excludeProductCodes: string[];
@@ -81,15 +120,21 @@ export function discountSummary(p: Promotion): string {
 }
 
 export function targetSummary(p: Promotion): string {
-  if (p.targetType === '전체') return '전체';
+  let baseTarget = '전체 상품';
   if (p.targetType === '특정 상품') {
-    if (p.targetProductCodes.length === 0) return '상품 미지정';
-    if (p.targetProductCodes.length === 1) return productName(p.targetProductCodes[0]);
-    return `${productName(p.targetProductCodes[0])} 외 ${p.targetProductCodes.length - 1}개`;
+    if (p.targetProductCodes.length === 0) baseTarget = '상품 미지정';
+    else if (p.targetProductCodes.length === 1) baseTarget = productName(p.targetProductCodes[0]);
+    else baseTarget = `${productName(p.targetProductCodes[0])} 외 ${p.targetProductCodes.length - 1}개`;
+  } else if (p.targetType === '특정 카테고리') {
+    if (p.targetCategories.length === 0) baseTarget = '카테고리 미지정';
+    else if (p.targetCategories.length === 1) baseTarget = p.targetCategories[0];
+    else baseTarget = `${p.targetCategories[0]} 외 ${p.targetCategories.length - 1}개`;
   }
-  if (p.targetCategories.length === 0) return '카테고리 미지정';
-  if (p.targetCategories.length === 1) return p.targetCategories[0];
-  return `${p.targetCategories[0]} 외 ${p.targetCategories.length - 1}개`;
+
+  if (p.targetMemberTier && p.targetMemberTier !== '전체') {
+    return `${baseTarget} [${p.targetMemberTier}]`;
+  }
+  return baseTarget;
 }
 
 export function periodSummary(p: Promotion): string {
@@ -177,6 +222,7 @@ export function newPromotion(list: Promotion[]): Promotion {
     maxDiscountAmount: 0,
     minPurchaseAmount: 0,
     targetType: '전체',
+    targetMemberTier: '전체',
     targetProductCodes: [],
     targetCategories: [],
     excludeProductCodes: [],
@@ -203,6 +249,7 @@ export function clonePromotion(source: Promotion, list: Promotion[]): Promotion 
     code: nextCode(list),
     name: `${source.name} - 복사본`,
     active: true,
+    targetMemberTier: source.targetMemberTier ?? '전체',
     startDate: TODAY,
     endDate: null,
     appliedCount: 0,

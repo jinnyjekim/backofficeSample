@@ -139,25 +139,16 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'return_history', sub: true, label: '반품 처리 이력', to: '/returns/history', business: 'B' },
 
       { key: 'exchange_mgmt', icon: Package, label: '교환 관리', to: '/b2c/exchanges/requests', business: 'B' },
-      { key: 'exchange_requests', sub: true, label: '교환 요청', to: '/b2c/exchanges/requests', business: 'B' },
-      { key: 'exchange_approval', sub: true, label: '교환 승인', to: '/b2c/exchanges/approval', business: 'B' },
-      { key: 'exchange_collecting', sub: true, label: '상품 회수', to: '/b2c/exchanges/collecting', business: 'B' },
-      { key: 'exchange_collected', sub: true, label: '회수 완료', to: '/b2c/exchanges/collected', business: 'B' },
-      { key: 'exchange_preparing', sub: true, label: '교환 상품 준비', to: '/b2c/exchanges/preparing', business: 'B' },
-      { key: 'exchange_reship', sub: true, label: '재출고', to: '/b2c/exchanges/reship', business: 'B' },
-      { key: 'exchange_completed', sub: true, label: '교환 완료', to: '/b2c/exchanges/completed', business: 'B' },
-      { key: 'exchange_rejected', sub: true, label: '교환 반려', to: '/b2c/exchanges/rejected', business: 'B' },
-      { key: 'exchange_history', sub: true, label: '교환 이력', to: '/b2c/exchanges/history', business: 'B' },
+      { key: 'exchange_requests', sub: true, label: '교환 요청', to: '/b2c/exchanges/requests', business: 'B', badge: '3' },
+      { key: 'exchange_collection', sub: true, label: '회수·검수', to: '/b2c/exchanges/collection', business: 'B', badge: '4' },
+      { key: 'exchange_reship', sub: true, label: '재출고', to: '/b2c/exchanges/reship', business: 'B', badge: '2' },
+      { key: 'exchange_hold', sub: true, label: '교환 보류', to: '/b2c/exchanges/hold', business: 'B', badge: '3' },
+      { key: 'exchange_history', sub: true, label: '교환 이력', to: '/b2c/exchanges/history' },
 
       { key: 'promotions', icon: Percent, label: '프로모션 관리', to: '/promotions', business: 'B' },
-      { key: 'promotions_list', sub: true, label: '프로모션 목록', to: '/promotions', business: 'B' },
-      { key: 'promotions_period', sub: true, label: '기간 할인', to: '/b2c/promotions/period', business: 'B' },
-      { key: 'promotions_product', sub: true, label: '상품 할인', to: '/b2c/promotions/product', business: 'B' },
-      { key: 'promotions_category', sub: true, label: '카테고리 할인', to: '/b2c/promotions/category', business: 'B' },
-      { key: 'promotions_cart', sub: true, label: '장바구니 할인', to: '/b2c/promotions/cart', business: 'B' },
-      { key: 'promotions_member', sub: true, label: '회원 할인', to: '/b2c/promotions/member', business: 'B' },
-      { key: 'promotions_targets', sub: true, label: '프로모션 대상 관리', to: '/b2c/promotions/targets', business: 'B' },
-      { key: 'promotions_history', sub: true, label: '프로모션 적용 이력', to: '/promotions/history', business: 'B' },
+      { key: 'promotions_list', sub: true, label: '프로모션 목록', to: '/promotions', business: 'B', badge: '8' },
+      { key: 'promotions_stack', sub: true, label: '중복 할인 설정', to: '/promotions/stack', business: 'B' },
+      { key: 'promotions_history', sub: true, label: '프로모션 적용 이력', to: '/promotions/history' },
 
       { key: 'coupons', icon: Ticket, label: '쿠폰 관리', to: '/coupons', business: 'B' },
       { key: 'coupons_list', sub: true, label: '쿠폰 목록', to: '/coupons', business: 'B' },
@@ -253,7 +244,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'notifications_dispatch', sub: true, label: '발송 관리', to: '/notifications/dispatch' },
       { key: 'notifications_templates', sub: true, label: '템플릿 관리', to: '/notifications/templates' },
 
-      { key: 'cs', icon: Headset, label: '고객센터', badge: '28', to: '/cs/inquiries' },
+      { key: 'cs', icon: Headset, label: '고객센터', to: '/cs/inquiries' },
       { key: 'cs_inquiries', sub: true, label: '1:1 문의', to: '/cs/inquiries' },
       { key: 'cs_product_inquiry', sub: true, label: '상품 문의 관리', to: '/cs/product-inquiries', business: 'B' },
       { key: 'cs_inquiry_types', sub: true, label: '문의 유형 관리', to: '/cs/inquiry-types' },
@@ -275,7 +266,6 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'delivery_policy_base', sub: true, label: '기본 배송비', to: '/delivery-policy/base-fee', business: 'B' },
       { key: 'delivery_policy_region', sub: true, label: '지역별 추가 배송비', to: '/delivery-policy/region-fee', business: 'B' },
       { key: 'delivery_policy_product', sub: true, label: '상품별 배송 정책', to: '/delivery-policy/product', business: 'B' },
-      { key: 'delivery_policy_remote', sub: true, label: '제주 / 도서산간 정책', to: '/delivery-policy/remote-area', business: 'B' },
       { key: 'delivery_policy_return', sub: true, label: '반품 / 교환 배송비', to: '/delivery-policy/return-exchange', business: 'B' },
     ],
   },
@@ -303,7 +293,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: 'admin_list', sub: true, label: '관리자 목록', to: '/admin' },
       { key: 'admin_roles', sub: true, label: '역할 및 권한 관리', to: '/admin/roles' },
       { key: 'admin_history', sub: true, label: '관리자 이력', to: '/admin/history' },
-      { key: 'sys', icon: Settings, label: '시스템 관리', to: '/system/service' },
+      { key: 'sys', icon: Settings, label: '시스템 관리', to: '/system/display' },
+      { key: 'sys_display', sub: true, label: '화면 설정', to: '/system/display' },
       { key: 'sys_service', sub: true, label: '서비스 설정', to: '/system/service' },
       { key: 'sys_codes', sub: true, label: '공통 코드', to: '/system/codes' },
       { key: 'sys_integration', sub: true, label: '외부 연동', to: '/system/integration' },
@@ -482,6 +473,7 @@ export const BREADCRUMB: Record<string, [string, string]> = {
   brands: ['서비스 관리', '브랜드 관리'],
   reviews: ['서비스 관리', '리뷰 관리'],
   cart_conversion: ['서비스 관리', '장바구니 / 구매 전환'],
+  sys_display: ['시스템 설정', '화면 설정'],
 };
 
 export function breadcrumbForKey(key: string): [string, string] {
@@ -570,7 +562,7 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/delivery-policy/base-fee')) return 'delivery_policy_base';
   if (pathname.startsWith('/delivery-policy/region-fee')) return 'delivery_policy_region';
   if (pathname.startsWith('/delivery-policy/product')) return 'delivery_policy_product';
-  if (pathname.startsWith('/delivery-policy/remote-area')) return 'delivery_policy_remote';
+  if (pathname.startsWith('/delivery-policy/remote-area')) return 'delivery_policy_region';
   if (pathname.startsWith('/delivery-policy/return-exchange')) return 'delivery_policy_return';
 
   if (pathname.startsWith('/ops/notices')) return 'ops_notices';
@@ -618,8 +610,9 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/returns/history') || pathname.startsWith('/b2c/returns/history')) return 'return_history';
   if (pathname.startsWith('/returns') || pathname.startsWith('/b2c/returns')) return 'return_list';
 
-  if (pathname.startsWith('/promotions/history')) return 'promotions_history';
-  if (pathname.startsWith('/promotions')) return 'promotions_list';
+  if (pathname.startsWith('/promotions/history') || pathname.startsWith('/b2c/promotions/history')) return 'promotions_history';
+  if (pathname.startsWith('/promotions/stack') || pathname.startsWith('/b2c/promotions/stack')) return 'promotions_stack';
+  if (pathname.startsWith('/promotions') || pathname.startsWith('/b2c/promotions')) return 'promotions_list';
 
   if (pathname.startsWith('/coupons/issue') || pathname.startsWith('/b2c/coupons/issue')) return 'coupons_issue';
   if (pathname.startsWith('/coupons/usage') || pathname.startsWith('/b2c/coupons/usage')) return 'coupons_usage';
@@ -642,6 +635,7 @@ export function activeKeyForPath(pathname: string): string {
   if (pathname.startsWith('/admin/history')) return 'admin_history';
   if (pathname.startsWith('/admin')) return 'admin_list';
 
+  if (pathname.startsWith('/system/display') || pathname.startsWith('/settings')) return 'sys_display';
   if (pathname.startsWith('/system/service')) return 'sys_service';
   if (pathname.startsWith('/system/codes')) return 'sys_codes';
   if (pathname.startsWith('/system/integration')) return 'sys_integration';

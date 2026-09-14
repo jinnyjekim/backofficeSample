@@ -209,7 +209,7 @@ export function PointPolicyPage() {
         <div className={styles.eyebrow}>거래 정책</div>
         <div className={styles.headerRow}>
           <div>
-            <h1 className={styles.title}>포인트 정책</h1>
+            <h1 className={styles.title}>적립 정책</h1>
             <p className={styles.subtitle}>포인트 적립, 사용, 소멸 및 거래 취소 시 처리 기준을 설정합니다.</p>
           </div>
           <div className={styles.headerActions}>

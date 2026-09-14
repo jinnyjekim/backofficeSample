@@ -301,10 +301,68 @@ export function CommonTooltip({ content, children, placement = 'top', delay = 0,
   return <M2MTooltip content={content} placement={placement} delay={delay} disabled={disabled} classNames={cx(styles.tooltipAdapter, rootClass(classNames), className)}><span className={styles.tooltipAnchor}>{children}</span></M2MTooltip>;
 }
 
-export interface CommonTabItem { key: string; label: ReactNode; icon?: ReactNode; badge?: ReactNode; disabled?: boolean; content?: ReactNode; }
-export interface CommonTabsProps { items: CommonTabItem[]; value?: string; defaultValue?: string; onChange?: (key: string) => void; type?: 'line' | 'card' | 'pill'; size?: CommonSize; centered?: boolean; fullWidth?: boolean; className?: string; classNames?: CommonClassNames; }
-export function CommonTabs({ items, value, defaultValue, onChange, type = 'line', size = 'md', centered, fullWidth, className, classNames }: CommonTabsProps) {
-  return <M2MTabs items={items.map((item) => ({ ...item, badge: typeof item.badge === 'string' || typeof item.badge === 'number' ? item.badge : undefined }))} activeKey={value} defaultKey={defaultValue} onChange={onChange} type={type} size={size} centered={centered} fullWidth={fullWidth} classNames={cx(styles.tabsRoot, styles.tabsAdapter, styles[`tabs_${type}`], styles[`tabs_${size}`], centered && styles.tabsCentered, fullWidth && styles.tabsFull, rootClass(classNames), className)} />;
+export type CommonTabVariant = 'line' | 'card' | 'pill' | 'filter' | 'segmented';
+export interface CommonTabsProps {
+  items: CommonTabItem[];
+  value?: string;
+  defaultValue?: string;
+  onChange?: (key: string) => void;
+  type?: CommonTabVariant;
+  kind?: CommonTabVariant;
+  size?: CommonSize;
+  centered?: boolean;
+  fullWidth?: boolean;
+  className?: string;
+  classNames?: CommonClassNames;
+}
+export function CommonTabs({
+  items,
+  value,
+  defaultValue,
+  onChange,
+  type,
+  kind,
+  size = 'md',
+  centered,
+  fullWidth,
+  className,
+  classNames,
+}: CommonTabsProps) {
+  const resolvedVariant: CommonTabVariant = kind ?? type ?? 'line';
+  const m2mType: 'line' | 'card' | 'pill' =
+    resolvedVariant === 'filter' || resolvedVariant === 'pill'
+      ? 'pill'
+      : resolvedVariant === 'segmented' || resolvedVariant === 'card'
+      ? 'card'
+      : 'line';
+
+  return (
+    <M2MTabs
+      items={items.map((item) => ({
+        ...item,
+        badge: typeof item.badge === 'string' || typeof item.badge === 'number' ? item.badge : undefined,
+      }))}
+      activeKey={value}
+      defaultKey={defaultValue}
+      onChange={onChange}
+      type={m2mType}
+      size={size}
+      centered={centered}
+      fullWidth={fullWidth}
+      classNames={cx(
+        styles.tabsRoot,
+        styles.tabsAdapter,
+        styles[`tabs_${resolvedVariant}`],
+        (resolvedVariant === 'filter' || resolvedVariant === 'pill') && styles.tabs_pill,
+        (resolvedVariant === 'segmented' || resolvedVariant === 'card') && styles.tabs_segmented,
+        styles[`tabs_${size}`],
+        centered && styles.tabsCentered,
+        fullWidth && styles.tabsFull,
+        rootClass(classNames),
+        className
+      )}
+    />
+  );
 }
 
 export function CommonTab(props: CommonTabsProps) {

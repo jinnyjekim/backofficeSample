@@ -1,3 +1,4 @@
+import { PageSizeSelect, CommonButton, showToast, SearchField } from '../../components/common';
 import { useMemo, useState } from "react";
 import styles from "../delivery/deliveryShared.module.css";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -5,7 +6,6 @@ import type { GridColumn, GridRow } from "../../components/DataGrid/types";
 import { DetailDrawer } from "../c2c/sales/SalesActivityShared";
 import drawer from "../ops/opsDrawerShared.module.css";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
-import { CommonButton, showToast } from "../../components/common";
 import { DatePicker } from "../../components/forms/DatePicker";
 import {
   CANCEL_REASON_META,
@@ -196,15 +196,13 @@ export function CancelRequestsPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <input
-              className={styles.searchInput}
+            <SearchField
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onValueChange={setKeyword}
+              onSearch={(v) => setKeyword(v)}
               placeholder="취소번호 / 주문번호 / 고객명 / 상품명 / 취소사유"
+              aria-label="취소 요청 검색"
             />
-            <button type="button" className={styles.searchBtn}>
-              검색
-            </button>
             <div className={styles.quickFilters}>
               {QUICK_FILTERS.map((k) => {
                 const active = filter === k;
@@ -272,13 +270,13 @@ export function CancelRequestsPage() {
           >{`총 ${filtered.length}건 `}</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select
+            <PageSizeSelect
               className={styles.pageSizeSelect}
               defaultValue="20개씩 보기"
             >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
@@ -351,7 +349,7 @@ export function CancelRequestsPage() {
           <div className={drawer.sectionTitleLoose}>취소 신청 사유</div>
           <div
             style={{
-              fontSize: "13px",
+              fontSize: "0.8125rem",
               lineHeight: 1.6,
               color: "#334155",
               background: "#f8fafc",

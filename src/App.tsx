@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { applyDisplaySettings, loadDisplaySettings } from './lib/theme';
 import { Shell } from './components/shell/Shell';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { ComponentsPage } from './pages/components/ComponentsPage';
@@ -80,6 +82,7 @@ import { ModulePlaceholderPage } from './pages/common/ModulePlaceholderPage';
 import { BusinessModulePage } from './pages/common/BusinessModulePage';
 import { NotificationDispatchPage } from './pages/notifications/NotificationDispatchPage';
 import { NotificationTemplatesPage } from './pages/notifications/NotificationTemplatesPage';
+import { DisplaySettingsPage } from './pages/system/DisplaySettingsPage';
 import { ServiceSettingsPage } from './pages/system/ServiceSettingsPage';
 import { CommonCodesPage } from './pages/system/CommonCodesPage';
 import { IntegrationManagementPage } from './pages/system/IntegrationManagementPage';
@@ -90,6 +93,7 @@ import { InventoryAdjustmentPage } from './pages/inventory/InventoryAdjustmentPa
 import { StockMovementHistoryPage } from './pages/inventory/StockMovementHistoryPage';
 import { InventoryAlertsConfigPage } from './pages/inventory/InventoryAlertsConfigPage';
 import { PromotionsListPage } from './pages/promotions/PromotionsListPage';
+import { PromotionStackSettingPage } from './pages/promotions/PromotionStackSettingPage';
 import { PromotionApplicationsPage } from './pages/promotions/PromotionApplicationsPage';
 import { PeriodPromotionsPage } from './pages/promotions/PeriodPromotionsPage';
 import { ProductPromotionsPage } from './pages/promotions/ProductPromotionsPage';
@@ -124,13 +128,9 @@ import { DeliveryInvoicesPage } from './pages/delivery/DeliveryInvoicesPage';
 import { DeliveryCarriersPage } from './pages/delivery/DeliveryCarriersPage';
 import { DeliveryHistoryPage } from './pages/delivery/DeliveryHistoryPage';
 import { ExchangeRequestsPage } from './pages/exchanges/ExchangeRequestsPage';
-import { ExchangeApprovalPage } from './pages/exchanges/ExchangeApprovalPage';
-import { ExchangeCollectingPage } from './pages/exchanges/ExchangeCollectingPage';
-import { ExchangeCollectedPage } from './pages/exchanges/ExchangeCollectedPage';
-import { ExchangePreparingPage } from './pages/exchanges/ExchangePreparingPage';
+import { ExchangeCollectionPage } from './pages/exchanges/ExchangeCollectionPage';
 import { ExchangeReshipPage } from './pages/exchanges/ExchangeReshipPage';
-import { ExchangeCompletedPage } from './pages/exchanges/ExchangeCompletedPage';
-import { ExchangeRejectedPage } from './pages/exchanges/ExchangeRejectedPage';
+import { ExchangeHoldPage } from './pages/exchanges/ExchangeHoldPage';
 import { ExchangeHistoryPage } from './pages/exchanges/ExchangeHistoryPage';
 import { CancelRequestsPage } from './pages/cancel/CancelRequestsPage';
 import { CancelApprovalPage } from './pages/cancel/CancelApprovalPage';
@@ -161,6 +161,10 @@ import { VerificationHistoryPage, VerificationPolicyPage, VerificationReviewPage
 import { DetectionHistoryPage, DetectionRulePage, ProductPolicyPage } from './pages/c2c/productPolicy/ProductPolicyManagementPages';
 
 export default function App() {
+  useEffect(() => {
+    applyDisplaySettings(loadDisplaySettings());
+  }, []);
+
   return (
     <Routes>
       <Route element={<Shell />}>
@@ -248,25 +252,31 @@ export default function App() {
         <Route path="b2c/returns/completed" element={<ReturnListPage />} />
         <Route path="b2c/returns/rejected" element={<ReturnListPage />} />
 
-        {/* B2C 교환 관리 */}
+        {/* B2C 교환 관리 (업무 단계 기준 5개 메뉴) */}
         <Route path="b2c/exchanges/requests" element={<ExchangeRequestsPage />} />
-        <Route path="b2c/exchanges/approval" element={<ExchangeApprovalPage />} />
-        <Route path="b2c/exchanges/collecting" element={<ExchangeCollectingPage />} />
-        <Route path="b2c/exchanges/collected" element={<ExchangeCollectedPage />} />
-        <Route path="b2c/exchanges/preparing" element={<ExchangePreparingPage />} />
+        <Route path="b2c/exchanges/collection" element={<ExchangeCollectionPage />} />
         <Route path="b2c/exchanges/reship" element={<ExchangeReshipPage />} />
-        <Route path="b2c/exchanges/completed" element={<ExchangeCompletedPage />} />
-        <Route path="b2c/exchanges/rejected" element={<ExchangeRejectedPage />} />
+        <Route path="b2c/exchanges/hold" element={<ExchangeHoldPage />} />
         <Route path="b2c/exchanges/history" element={<ExchangeHistoryPage />} />
 
-        {/* B2C 프로모션/쿠폰/포인트/브랜드/리뷰/재고 서브메뉴 연결 */}
-        <Route path="b2c/promotions/period" element={<PeriodPromotionsPage />} />
-        <Route path="b2c/promotions/product" element={<ProductPromotionsPage />} />
-        <Route path="b2c/promotions/category" element={<CategoryPromotionsPage />} />
-        <Route path="b2c/promotions/cart" element={<CartPromotionsPage />} />
-        <Route path="b2c/promotions/member" element={<MemberPromotionsPage />} />
-        <Route path="b2c/promotions/targets" element={<PromotionTargetsPage />} />
-        <Route path="b2c/promotions/history" element={<PromotionApplicationsPage />} />
+        {/* B2C 교환 관리 레거시 URL 호환 리다이렉트 */}
+        <Route path="b2c/exchanges/approval" element={<Navigate to="/b2c/exchanges/requests" replace />} />
+        <Route path="b2c/exchanges/collecting" element={<Navigate to="/b2c/exchanges/collection" replace />} />
+        <Route path="b2c/exchanges/collected" element={<Navigate to="/b2c/exchanges/collection" replace />} />
+        <Route path="b2c/exchanges/preparing" element={<Navigate to="/b2c/exchanges/reship" replace />} />
+        <Route path="b2c/exchanges/completed" element={<Navigate to="/b2c/exchanges/history" replace />} />
+        <Route path="b2c/exchanges/rejected" element={<Navigate to="/b2c/exchanges/history" replace />} />
+
+        {/* B2C 프로모션 관리 및 레거시 리다이렉트 */}
+        <Route path="b2c/promotions" element={<Navigate to="/promotions" replace />} />
+        <Route path="b2c/promotions/stack" element={<PromotionStackSettingPage />} />
+        <Route path="b2c/promotions/history" element={<Navigate to="/promotions/history" replace />} />
+        <Route path="b2c/promotions/period" element={<Navigate to="/promotions" replace />} />
+        <Route path="b2c/promotions/product" element={<Navigate to="/promotions" replace />} />
+        <Route path="b2c/promotions/category" element={<Navigate to="/promotions" replace />} />
+        <Route path="b2c/promotions/cart" element={<Navigate to="/promotions" replace />} />
+        <Route path="b2c/promotions/member" element={<Navigate to="/promotions" replace />} />
+        <Route path="b2c/promotions/targets" element={<Navigate to="/promotions" replace />} />
         <Route path="b2c/coupons/automatic" element={<AutomaticCouponsPage />} />
         <Route path="b2c/coupons/expired" element={<ExpiredCouponsPage />} />
         <Route path="b2c/coupons/issue" element={<CouponIssuesPage />} />
@@ -510,6 +520,7 @@ export default function App() {
 
 
         <Route path="promotions" element={<PromotionsListPage />} />
+        <Route path="promotions/stack" element={<PromotionStackSettingPage />} />
         <Route path="promotions/history" element={<PromotionApplicationsPage />} />
 
         <Route path="coupons" element={<CouponsListPage />} />
@@ -533,6 +544,9 @@ export default function App() {
         <Route path="admin/roles" element={<AdminRolesPage />} />
         <Route path="admin/history" element={<AdminHistoryPage />} />
 
+        <Route path="system/display" element={<DisplaySettingsPage />} />
+        <Route path="settings" element={<Navigate to="/system/display" replace />} />
+        <Route path="settings/display" element={<Navigate to="/system/display" replace />} />
         <Route path="system/service" element={<ServiceSettingsPage />} />
         <Route path="system/codes" element={<CommonCodesPage />} />
         <Route path="system/integration" element={<IntegrationManagementPage />} />

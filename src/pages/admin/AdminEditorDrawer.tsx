@@ -91,7 +91,7 @@ export function AdminEditorDrawer({ admin, nextId, lockSuperAdminRole, onClose, 
             ))}
           </div>
           {lockSuperAdminRole && (
-            <div style={{ fontSize: 11, color: '#a1a1aa', marginTop: 6 }}>
+            <div style={{ fontSize: '0.6875rem', color: '#a1a1aa', marginTop: 6 }}>
               마지막 남은 최고 관리자 계정입니다. 이 계정의 최고 관리자 역할은 해제할 수 없습니다.
             </div>
           )}
@@ -116,7 +116,7 @@ export function AdminEditorDrawer({ admin, nextId, lockSuperAdminRole, onClose, 
           </div>
         )}
 
-        {error && <div style={{ fontSize: 12, color: '#dc2626', marginTop: 4 }}>{error}</div>}
+        {error && <div style={{ fontSize: '0.75rem', color: '#dc2626', marginTop: 4 }}>{error}</div>}
       </div>
 
       <div className={styles.footer}>

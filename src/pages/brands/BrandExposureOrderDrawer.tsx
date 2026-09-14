@@ -43,8 +43,8 @@ export function BrandExposureOrderDrawer({ brands, onCancel, onSave }: Props) {
           const brand = brands.find((b) => b.id === id)!;
           return (
             <div key={id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: i < order.length - 1 ? '1px solid rgba(0,0,0,.05)' : 'none' }}>
-              <span style={{ fontSize: 11.5, color: '#a1a1aa', width: 16 }}>{i + 1}</span>
-              <span style={{ fontSize: 12.5, color: '#18181b', flex: 1 }}>{brand.name}{!brand.exposure ? ' (비노출)' : ''}</span>
+              <span style={{ fontSize: '0.71875rem', color: '#a1a1aa', width: 16 }}>{i + 1}</span>
+              <span style={{ fontSize: '0.78125rem', color: '#18181b', flex: 1 }}>{brand.name}{!brand.exposure ? ' (비노출)' : ''}</span>
               <button type="button" disabled={i === 0} onClick={() => move(i, -1)} className={styles.actionLink} style={{ height: 26, padding: '0 8px' }}>↑</button>
               <button type="button" disabled={i === order.length - 1} onClick={() => move(i, 1)} className={styles.actionLink} style={{ height: 26, padding: '0 8px' }}>↓</button>
             </div>

@@ -1,3 +1,4 @@
+import { CommonStatCard, CommonStatGrid, PageSizeSelect } from '../../components/common';
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "../ops/opsShared.module.css";
@@ -205,6 +206,21 @@ export function PromotionApplicationsPage() {
     return { id: a.id, cells, onClick: () => setDrawerId(a.id) };
   });
 
+  const metrics = useMemo(() => {
+    const totalCount = applications.length;
+    const totalDiscount = applications.reduce((sum, a) => sum + Math.max(0, a.currentDiscountAmount), 0);
+    const totalBase = applications.reduce((sum, a) => sum + a.baseAmount, 0);
+    const avgRate = totalBase > 0 ? ((totalDiscount / totalBase) * 100).toFixed(1) : '0';
+    const canceledCount = applications.filter((a) => a.status === '적용 취소' || a.status === '부분 취소' || a.status.includes('환불')).length;
+
+    return {
+      totalCount,
+      totalDiscount,
+      avgRate,
+      canceledCount,
+    };
+  }, [applications]);
+
   return (
     <div className={styles.page}>
       <div className={styles.headTop}>
@@ -216,6 +232,30 @@ export function PromotionApplicationsPage() {
             </div>
           </div>
         </div>
+
+        {/* 상단 성과 요약 메트릭 카드 */}
+        <CommonStatGrid style={{ margin: '16px 0 20px' }}>
+          <CommonStatCard
+            label="총 할인 지원 금액"
+            value={`-${metrics.totalDiscount.toLocaleString('ko-KR')}원`}
+            valueColor="#dc2626"
+          />
+          <CommonStatCard
+            label="총 프로모션 적용 건수"
+            value={`${metrics.totalCount.toLocaleString('ko-KR')}건`}
+            valueColor="#18181b"
+          />
+          <CommonStatCard
+            label="주문당 평균 할인율"
+            value={`${metrics.avgRate}%`}
+            valueColor="#2563eb"
+          />
+          <CommonStatCard
+            label="취소 / 환원 건수"
+            value={`${metrics.canceledCount}건`}
+            valueColor="#71717a"
+          />
+        </CommonStatGrid>
 
         <div className={styles.filterBox}>
           <form
@@ -323,10 +363,10 @@ export function PromotionApplicationsPage() {
               data-grid-download
               onClick={() => toastBriefly("데이터 다운로드를 준비했습니다.")}
             />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </div>
@@ -375,7 +415,7 @@ export function PromotionApplicationsPage() {
             color: "#fff",
             padding: "10px 18px",
             borderRadius: 9,
-            fontSize: 12.5,
+            fontSize: '0.78125rem',
             zIndex: 40,
           }}
         >

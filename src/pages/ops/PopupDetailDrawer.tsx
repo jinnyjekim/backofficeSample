@@ -147,7 +147,7 @@ export function PopupDetailDrawer({
             {popup.linkedContent && (
               <div className={styles.linkedItem}>
                 <span>{popup.linkedContent.type} · {popup.linkedContent.label}</span>
-                <span style={{ color: popup.linkedContent.ended ? '#dc2626' : '#059669', fontSize: 11, fontWeight: 600 }}>
+                <span style={{ color: popup.linkedContent.ended ? '#dc2626' : '#059669', fontSize: '0.6875rem', fontWeight: 600 }}>
                   {popup.linkedContent.ended ? '종료됨' : '진행중'}
                 </span>
               </div>

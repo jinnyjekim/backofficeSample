@@ -130,7 +130,7 @@ export function BannerEditorDrawer({ banner, allBanners, todayIso, onCancel, onS
               <button type="button" className={`${styles.previewToggleBtn} ${previewDevice === 'Mobile' ? styles.previewActive : ''}`} onClick={() => setPreviewDevice('Mobile')}>Mobile</button>
             </div>
             <div className={previewDevice === 'Mobile' ? styles.previewMobileFrame : undefined}>
-              <div style={{ height: 90, borderRadius: 10, background: '#818cf8', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, marginBottom: 10 }}>
+              <div style={{ height: 90, borderRadius: 10, background: '#818cf8', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', marginBottom: 10 }}>
                 {pos.label} · {previewDevice === 'Mobile' ? pos.mobileSpec : pos.pcSpec}
               </div>
               <div className={styles.previewTitle}>{title || name || '(제목 없음)'}</div>
