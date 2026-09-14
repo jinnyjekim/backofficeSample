@@ -168,8 +168,8 @@ export function FeePolicyPage() {
   const activeTiers = editing ? draftTierFees : tierFees;
 
   const warnings = useMemo(
-    () => computeGlobalFeeWarnings(activeGlobal, activeCategories, activeTiers),
-    [activeGlobal, activeCategories, activeTiers],
+    () => computeGlobalFeeWarnings(activeGlobal),
+    [activeGlobal],
   );
 
   const ruleWarnings = useMemo(() => computeWarnings(policies), [policies]);
@@ -200,14 +200,7 @@ export function FeePolicyPage() {
   };
 
   const requestSave = () => {
-    const diffs = describeGlobalFeeChanges(
-      globalPolicy,
-      draftGlobalPolicy,
-      categoryFees,
-      draftCategoryFees,
-      tierFees,
-      draftTierFees,
-    );
+    const diffs = describeGlobalFeeChanges(globalPolicy, draftGlobalPolicy);
     if (diffs.length === 0) {
       setEditing(false);
       toastBriefly('변경된 내용이 없어 수정 모드를 종료합니다.');
@@ -483,9 +476,9 @@ export function FeePolicyPage() {
             <div className={styles.warningBody}>
               <div className={styles.warningTitle}>설정 확인 필요 · {warnings.length}건</div>
               <div className={styles.warningList}>
-                {warnings.map((w) => (
-                  <div key={w.id} className={styles.warningItem}>
-                    {w.message}
+                {warnings.map((warning) => (
+                  <div key={warning} className={styles.warningItem}>
+                    {warning}
                   </div>
                 ))}
               </div>
@@ -493,7 +486,7 @@ export function FeePolicyPage() {
             <button
               type="button"
               className={styles.warningActionBtn}
-              onClick={() => setTab(warnings[0].tab as Tab)}
+              onClick={() => setTab('basic')}
             >
               해당 탭에서 확인
             </button>
@@ -955,7 +948,7 @@ export function FeePolicyPage() {
                           />
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                          <CommonBadge type={c.active ? 'success-light' : 'neutral-light'} size="sm">
+                          <CommonBadge type={c.active ? 'success-light' : 'secondary'} size="sm">
                             {c.active ? '적용' : '미적용'}
                           </CommonBadge>
                         </div>
@@ -1022,7 +1015,7 @@ export function FeePolicyPage() {
                           />
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                          <CommonBadge type={t.active ? 'success-light' : 'neutral-light'} size="sm">
+                          <CommonBadge type={t.active ? 'success-light' : 'secondary'} size="sm">
                             {t.active ? '적용' : '일반'}
                           </CommonBadge>
                         </div>

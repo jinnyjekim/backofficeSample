@@ -118,7 +118,14 @@ export interface RowMenuCell extends BaseCell {
 export interface CustomCell extends BaseCell {
   kind: 'custom';
   content: ReactNode;
-  exportValue?: string;
+  exportValue?: string | number;
+}
+export interface TitleDescCell extends BaseCell {
+  kind: 'titleDesc';
+  title: string;
+  desc: string;
+  issue?: boolean;
+  issueTitle?: string;
 }
 
 export type Cell =
@@ -138,6 +145,7 @@ export type Cell =
   | NoTagCell
   | ThumbTitleCell
   | RowMenuCell
+  | TitleDescCell
   | CustomCell;
 
 export interface GridRow {

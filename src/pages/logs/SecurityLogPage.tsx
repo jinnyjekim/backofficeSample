@@ -39,7 +39,7 @@ const RESULT_META = {
 
 export function SecurityLogPage() {
   const [quick, setQuick] = useState<Quick>("전체");
-  const searchField = "전체";
+  const searchField: string = "전체";
   const [keyword, setKeyword] = useState("");
   const [search, setSearch] = useState("");
   const [start, setStart] = useState("2026-08-23");

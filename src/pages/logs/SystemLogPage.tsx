@@ -444,7 +444,7 @@ export function SystemLogPage() {
                       { value: "실패", label: "실패" },
                     ]}
                     value={resultFilter}
-                    onChange={(val) => setResultFilter(val)}
+                    onChange={(val) => setResultFilter(String(val))}
                   />
                 </label>
                 <label className={pageStyles.filterField}>
@@ -474,7 +474,7 @@ export function SystemLogPage() {
                       { value: "5xx", label: "5xx 서버 오류" },
                     ]}
                     value={statusFilter}
-                    onChange={(val) => setStatusFilter(val)}
+                    onChange={(val) => setStatusFilter(String(val))}
                   />
                 </label>
                 <label className={pageStyles.filterField}>
@@ -490,7 +490,7 @@ export function SystemLogPage() {
                       { value: "normal", label: "정상 (800ms 미만)" },
                     ]}
                     value={durationFilter}
-                    onChange={(val) => setDurationFilter(val)}
+                    onChange={(val) => setDurationFilter(String(val))}
                   />
                 </label>
               </>
@@ -507,7 +507,7 @@ export function SystemLogPage() {
                       ...ERROR_LEVELS.map((l) => ({ value: l, label: l })),
                     ]}
                     value={levelFilter}
-                    onChange={(val) => setLevelFilter(val)}
+                    onChange={(val) => setLevelFilter(String(val))}
                   />
                 </label>
                 <label className={pageStyles.filterField}>
@@ -523,7 +523,7 @@ export function SystemLogPage() {
                       { value: "5", label: "5회 이상" },
                     ]}
                     value={minOccurrencesFilter}
-                    onChange={(val) => setMinOccurrencesFilter(val)}
+                    onChange={(val) => setMinOccurrencesFilter(String(val))}
                   />
                 </label>
               </>

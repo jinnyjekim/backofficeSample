@@ -305,7 +305,7 @@ function TrendChart({
     .map((value, index) => point(value, index, current.length))
     .join(" ");
   const previousPoints = previous
-    ?.map((value, index) => point(value, index, previous.length))
+    ?.map((value, index) => point(value, index, previous?.length ?? 0))
     .join(" ");
   const areaPoints = `${padX},${height - padY} ${currentPoints} ${width - padX},${height - padY}`;
   const labelStep = Math.max(1, Math.ceil(labels.length / 7));

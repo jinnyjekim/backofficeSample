@@ -57,7 +57,7 @@ export function ReviewPage() {
   const [businessMode, setBusinessMode] = useState<ContentBusinessType>("B2C");
   const [tab, setTab] = useState<string>("대기");
   const [q, setQ] = useState("");
-  const field = "전체";
+  const field: string = "전체";
   const [reqTypeF, setReqTypeF] = useState("전체");
   const [catF, setCatF] = useState("전체");
   const [assigneeF, setAssigneeF] = useState("전체");

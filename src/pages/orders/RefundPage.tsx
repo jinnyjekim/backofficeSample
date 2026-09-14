@@ -63,7 +63,7 @@ function history(
 export function RefundPage() {
   const [refunds, setRefunds] = useState(INITIAL_REFUNDS);
   const [quickFilter, setQuickFilter] = useState<QuickFilter>("전체");
-  const searchBy: "전체" | "환불번호" | "주문번호" | "회원" = "전체";
+  const searchBy: string = "전체";
   const [keyword, setKeyword] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<RefundStatus | "">("");

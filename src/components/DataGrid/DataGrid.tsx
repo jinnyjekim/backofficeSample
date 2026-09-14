@@ -81,6 +81,8 @@ function cellExportValue(cell: Cell): string {
       return cell.label;
     case 'titleWarn':
       return cell.title;
+    case 'titleDesc':
+      return [cell.title, cell.desc].filter(Boolean).join(' / ');
     case 'noWarn':
     case 'noTag':
       return cell.no;
@@ -89,7 +91,7 @@ function cellExportValue(cell: Cell): string {
     case 'rowMenu':
       return '';
     case 'custom':
-      return cell.exportValue ?? '';
+      return String(cell.exportValue ?? '');
     default:
       return '';
   }
@@ -289,6 +291,16 @@ function CellView({ cell }: { cell: Cell }) {
               ⚠
             </span>
           )}
+        </div>
+      );
+    case 'titleDesc':
+      return (
+        <div className={styles.titleWarn}>
+          <div style={{ minWidth: 0 }}>
+            <div className={styles.stackTitle}>{cell.title}</div>
+            <div className={styles.stackSub}>{cell.desc}</div>
+          </div>
+          {cell.issue && <span title={cell.issueTitle} className={styles.warnIcon}>⚠</span>}
         </div>
       );
     case 'noWarn':
@@ -563,7 +575,7 @@ export function DataGrid({
                 return;
               }
 
-              row.onClick?.(e);
+              row.onClick?.();
             }}
             data-datagrid-row
             data-selected={selectedOf(row) ? 'true' : 'false'}

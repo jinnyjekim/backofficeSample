@@ -110,7 +110,7 @@ function RateTrendChart({
         ))}
         {secondary && (
           <polyline
-            points={points(secondary)}
+            points={points(secondary ?? [])}
             className={layout.previousLine}
           />
         )}

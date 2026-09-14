@@ -11,16 +11,17 @@ import styles from './common.module.css';
 const cx = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(' ');
 const rootClass = (classNames?: CommonClassNames) => typeof classNames === 'string' ? classNames : classNames?.root;
 
-export type CommonToastType = 'success' | 'error' | 'warning' | 'info';
+export type CommonToastType = 'success' | 'error' | 'warning' | 'info' | 'danger';
 export type CommonToastPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 export interface CommonToastAction { label: ReactNode; onClick: () => void; }
 export interface CommonToastData { id: string; message: ReactNode; description?: ReactNode; type?: CommonToastType; duration?: number; position?: CommonToastPosition; dismissible?: boolean; variant?: 'filled' | 'light'; action?: ReactNode | CommonToastAction; }
 export interface CommonToastProps extends Omit<CommonToastData, 'id'> { onClose?: () => void; className?: string; classNames?: CommonClassNames; }
 
 export function showToast(toast: Omit<CommonToastData, 'id'>) {
+  const type = toast.type === 'danger' ? 'error' : toast.type;
   return showM2MToast({
     message: toast.description ? <span>{toast.message}<small className={styles.toastLibraryDescription}>{toast.description}</small></span> : toast.message,
-    type: toast.type,
+    type,
     duration: toast.duration,
     position: toast.position,
     dismissible: toast.dismissible,

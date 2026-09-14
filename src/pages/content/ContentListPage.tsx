@@ -120,7 +120,7 @@ export function ContentListPage() {
       : "B2C";
   });
   const [data, setData] = useState<ContentItem[]>(CONTENT_ITEMS);
-  const field = "전체";
+  const field: string = "전체";
   const [q, setQ] = useState(searchParams.get("q") ?? "");
   const [status, setStatus] = useState("전체");
   const [reviewFilter, setReviewFilter] = useState("전체");

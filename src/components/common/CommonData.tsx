@@ -302,6 +302,12 @@ export function CommonTooltip({ content, children, placement = 'top', delay = 0,
 }
 
 export type CommonTabVariant = 'line' | 'card' | 'pill' | 'filter' | 'segmented';
+export interface CommonTabItem {
+  key: string;
+  label: ReactNode;
+  disabled?: boolean;
+  badge?: ReactNode;
+}
 export interface CommonTabsProps {
   items: CommonTabItem[];
   value?: string;

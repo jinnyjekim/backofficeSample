@@ -60,7 +60,7 @@ export function EventsPage() {
   const [events, setEvents] = useState<EventEntry[]>(EVENTS);
   const [filter, setFilter] = useState<EventQuickFilter>("전체");
   const [q, setQ] = useState("");
-  const searchField = "전체";
+  const searchField: string = "전체";
   const [typeFilter, setTypeFilter] = useState<"전체" | EventType>("전체");
   const [targetFilter, setTargetFilter] = useState<"전체" | EventTarget>(
     "전체",

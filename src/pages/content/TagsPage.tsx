@@ -64,7 +64,7 @@ export function TagsPage() {
   const [items, setItems] = useState<Tag[]>(TAGS);
   const [scope, setScope] = useState<ContentTaxonomyScope>("공통");
   const [q, setQ] = useState("");
-  const field = "전체";
+  const field: string = "전체";
   const [useF, setUseF] = useState("전체");
   const [linkF, setLinkF] = useState("전체");
   const [from, setFrom] = useState("");

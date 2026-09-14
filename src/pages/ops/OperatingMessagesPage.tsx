@@ -25,7 +25,7 @@ function quickMatch(message: OperatingMessage, quick: Quick) { return quick === 
 export function OperatingMessagesPage() {
   const [messages, setMessages] = useState<OperatingMessage[]>(OPERATING_MESSAGES);
   const [quick, setQuick] = useState<Quick>('전체');
-  const searchField = '전체';
+  const searchField: string = '전체';
   const [keyword, setKeyword] = useState('');
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');

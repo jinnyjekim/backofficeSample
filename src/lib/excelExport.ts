@@ -2,6 +2,7 @@ export type ExcelCellAlign = 'left' | 'center' | 'right';
 
 export interface ExcelCellData {
   value: string | number | null | undefined;
+  formattedValue?: string | number | null;
   align?: ExcelCellAlign;
   bold?: boolean;
   color?: string; // 헥스 코드 (예: #18181B)
@@ -722,7 +723,11 @@ export function downloadExcelFile({
 
   // ZIP 압축 및 Blob 브라우저 다운로드 트리거
   const zipBytes = zipFiles(files);
-  const blob = new Blob([zipBytes], {
+  const zipBuffer = zipBytes.buffer.slice(
+    zipBytes.byteOffset,
+    zipBytes.byteOffset + zipBytes.byteLength,
+  ) as ArrayBuffer;
+  const blob = new Blob([zipBuffer], {
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   });
   const url = URL.createObjectURL(blob);
