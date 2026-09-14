@@ -26,6 +26,8 @@
 .labels { flex: none; display: flex; padding: 7px 6px 0; color: var(--common-text-muted, #8b8b93); font-size: 0.625rem; }
 .labels > span { flex: 1 1 0; min-width: 0; overflow: hidden; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 .empty { display: grid; place-items: center; color: var(--common-text-muted, #8b8b93); font-size: 0.75rem; }
+.chartAdapter { min-width: 0; }
+.chartAdapter > :global(.bsChart) { width: 100%; }
 .horizontalChart { display: flex; min-width: 0; flex-direction: column; }
 .horizontalRow { display: grid; grid-template-columns: minmax(36px, auto) minmax(80px, 1fr) minmax(46px, auto) 40px; align-items: center; gap: 10px; min-width: 0; }
 .horizontalLabel { color: var(--common-text-sub, #52525b); font-size: 0.71875rem; font-weight: 600; white-space: nowrap; }
@@ -37,22 +39,11 @@
 /* 도넛(원형) 구성비 차트 */
 .donutWrap { display: flex; align-items: center; gap: 22px; min-width: 0; }
 .donutWrapColumn { flex-direction: column; align-items: flex-start; gap: 14px; }
-.donutRing {
+.donutCanvas {
   position: relative;
   flex: none;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
 }
-/* 가운데를 뚫어 도넛 모양을 만듭니다. 두께는 --donut-thickness 로 제어합니다. */
-.donutRing::after {
-  content: '';
-  position: absolute;
-  inset: var(--donut-thickness, 26px);
-  border-radius: 50%;
-  background: var(--common-bg, #fff);
-}
-.donutCenter { position: relative; z-index: 1; display: grid; justify-items: center; gap: 2px; }
+.donutCenter { position: absolute; z-index: 1; top: 50%; left: 50%; display: grid; place-content: center; justify-items: center; gap: 2px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--common-bg, #fff); pointer-events: none; }
 .donutCenter strong { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; color: var(--common-text, #18181b); font-variant-numeric: tabular-nums; }
 .donutCenter span { font-size: 0.6875rem; color: var(--common-text-muted, #8b8b93); }
 .donutLegend { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 9px; }

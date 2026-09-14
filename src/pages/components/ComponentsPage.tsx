@@ -16,7 +16,7 @@ import {
   CommonCard, CommonStatCard, CommonStatGrid,
 } from '../../components/common/CommonCard';
 import {
-  showToast, CommonToastContainer, CommonLoading, CommonProgressBar, CommonSteps, CommonConfirmAction,
+  showToast, CommonLoading, CommonProgressBar, CommonSteps, CommonConfirmAction,
   CommonAlert, CommonNotice,
 } from '../../components/common/CommonFeedback';
 import { CommonDatePicker, CommonTimePicker } from '../../components/common/CommonDateTime';
@@ -981,7 +981,6 @@ export function ComponentsPage() {
         </div>
       </div>
 
-      <CommonToastContainer />
     </div>
   );
 }

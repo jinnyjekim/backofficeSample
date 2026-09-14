@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CommonBadge } from '../common/CommonControls';
+import { DATA_GRID_PAGE_SIZE_EVENT } from '../common/PageSizeSelect';
+import { Pagination as M2MPagination } from 'm2m-uiux-react/Pagination';
 import styles from './DataGrid.module.css';
 import type { Cell, DataGridProps } from './types';
 
@@ -358,6 +360,27 @@ export function DataGrid({
   const rootRef = useRef<HTMLDivElement>(null);
   const [autoSelectable, setAutoSelectable] = useState(false);
   const [internalSelected, setInternalSelected] = useState<Set<string | number>>(() => new Set());
+  const [pageSize, setPageSize] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const handlePageSize = (event: Event) => {
+      const size = (event as CustomEvent<{ pageSize?: number }>).detail?.pageSize;
+      if (!size || size < 1) return;
+      setPageSize(size);
+      setCurrentPage(1);
+    };
+    root.addEventListener(DATA_GRID_PAGE_SIZE_EVENT, handlePageSize);
+    return () => root.removeEventListener(DATA_GRID_PAGE_SIZE_EVENT, handlePageSize);
+  }, []);
+
+  const totalPageCount = pageSize ? Math.max(1, Math.ceil(rows.length / pageSize)) : 1;
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPageCount));
+  }, [totalPageCount]);
 
   useLayoutEffect(() => {
     if (selectable !== undefined) return;
@@ -373,14 +396,23 @@ export function DataGrid({
   }, [rows]);
 
   const effectiveSelectable = selectable ?? autoSelectable;
+  const pageStart = pageSize ? (currentPage - 1) * pageSize : 0;
+  const visibleSourceRows = pageSize ? rows.slice(pageStart, pageStart + pageSize) : rows;
   const selectedOf = (row: DataGridProps['rows'][number]) => row.onToggleSelect || row.selected !== undefined ? Boolean(row.selected) : internalSelected.has(row.id);
-  const effectiveAllSelected = allSelected ?? (rows.length > 0 && rows.every(selectedOf));
+  const effectiveAllSelected = allSelected ?? (visibleSourceRows.length > 0 && visibleSourceRows.every(selectedOf));
   const toggleAllRows = () => {
     if (onToggleAll) {
       onToggleAll();
       return;
     }
-    setInternalSelected(effectiveAllSelected ? new Set() : new Set(rows.map((row) => row.id)));
+    setInternalSelected((current) => {
+      const next = new Set(current);
+      visibleSourceRows.forEach((row) => {
+        if (effectiveAllSelected) next.delete(row.id);
+        else next.add(row.id);
+      });
+      return next;
+    });
   };
   const toggleRow = (row: DataGridProps['rows'][number], event: React.MouseEvent) => {
     if (row.onToggleSelect) {
@@ -406,6 +438,7 @@ export function DataGrid({
       return [cleanedManagement.get(cellIndex)?.[rowIndex] ?? { kind: 'text', text: '' } as Cell];
     }),
   }));
+  const pagedDisplayRows = pageSize ? displayRows.slice(pageStart, pageStart + pageSize) : displayRows;
   const temporalColumnIndexes = new Set(displayColumns.flatMap((column, columnIndex) =>
     isTemporalColumnLabel(column.label) ? [columnIndex] : [],
   ));
@@ -423,13 +456,23 @@ export function DataGrid({
   }));
   const displayGridTemplate = withoutGridTracks(gridTemplate, removedManagement, columns.length);
   const template = (effectiveSelectable ? '30px ' : '') + displayGridTemplate;
-  const effectiveRangeLabel = rangeLabel ?? (rows.length > 0 ? `1–${rows.length} / ${rows.length}` : '0–0 / 0');
+  const effectiveRangeLabel = pageSize
+    ? (rows.length > 0 ? `${pageStart + 1}–${Math.min(pageStart + pageSize, rows.length)} / ${rows.length}` : '0–0 / 0')
+    : (rangeLabel ?? (rows.length > 0 ? `1–${rows.length} / ${rows.length}` : '0–0 / 0'));
   const suppliedPages = pages?.length ? pages : [{ label: '1', active: true }];
   const hasPrevious = suppliedPages.some((page) => ['‹', '←', '<'].includes(page.label));
   const hasNext = suppliedPages.some((page) => ['›', '→', '>'].includes(page.label));
   const numberedPages = suppliedPages.filter((page) => !['‹', '←', '<', '›', '→', '>'].includes(page.label));
   const activePageIndex = Math.max(0, numberedPages.findIndex((page) => page.active));
-  const effectivePages = [
+  const firstVisiblePage = Math.max(1, Math.min(currentPage - 2, totalPageCount - 4));
+  const internalPages = Array.from({ length: Math.min(5, totalPageCount) }, (_, index) => firstVisiblePage + index)
+    .filter((page) => page <= totalPageCount)
+    .map((page) => ({ label: String(page), active: page === currentPage, onClick: () => setCurrentPage(page) }));
+  const effectivePages = pageSize ? [
+    { label: '‹', onClick: () => setCurrentPage((page) => Math.max(1, page - 1)) },
+    ...internalPages,
+    { label: '›', onClick: () => setCurrentPage((page) => Math.min(totalPageCount, page + 1)) },
+  ] : [
     ...(hasPrevious ? [] : [{ label: '‹', onClick: numberedPages[Math.max(0, activePageIndex - 1)]?.onClick }]),
     ...suppliedPages,
     ...(hasNext ? [] : [{ label: '›', onClick: numberedPages[Math.min(numberedPages.length - 1, activePageIndex + 1)]?.onClick }]),
@@ -495,7 +538,7 @@ export function DataGrid({
           })}
         </div>
 
-        {displayRows.map((row) => (
+        {pagedDisplayRows.map((row) => (
           <div
             key={row.id}
             className={styles.row}
@@ -596,7 +639,9 @@ export function DataGrid({
       {effectiveShowPagination && (
         <div className={`${styles.pager} ${styles.spaced}`}>
           <span className={styles.rangeLabel}>{effectiveRangeLabel}</span>
-          <div className={styles.pageButtons}>
+          {pageSize ? (
+            <M2MPagination page={currentPage} onChange={setCurrentPage} total={rows.length} pageSize={pageSize} size="sm" />
+          ) : <div className={styles.pageButtons}>
             {effectivePages.map((p, index) => (
               <button
                 key={`${p.label}-${index}`}
@@ -607,7 +652,7 @@ export function DataGrid({
                 {p.label}
               </button>
             ))}
-          </div>
+          </div>}
         </div>
       )}
     </div>
