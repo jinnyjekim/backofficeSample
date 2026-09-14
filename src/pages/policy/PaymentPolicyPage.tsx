@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import shared from '../ops/opsShared.module.css';
 import timeline from '../ops/opsDrawerShared.module.css';
 import styles from './PaymentPolicyPage.module.css';
-import { CommonBadge, CommonButton, CommonDatePicker, CommonInput, CommonSelect, CommonSwitch, showToast } from '../../components/common';
+import { CommonAlert, CommonBadge, CommonButton, CommonDatePicker, CommonInput, CommonSelect, CommonSwitch, showToast } from '../../components/common';
 import { PaymentMethodEditDialog } from './PaymentMethodEditDialog';
 import { useOutsideClose } from '../../lib/useOutsideClose';
 import {
@@ -316,16 +316,17 @@ export function PaymentPolicyPage() {
 
       <div className={styles.body}>
         {tab !== 'basic' && tab !== 'failure' && tab !== 'preview' && warnings.length > 0 && (
-          <div className={styles.warningBanner}>
-            <span className={styles.warningIcon}>!</span>
-            <div className={styles.warningBody}>
-              <div className={styles.warningTitle}>설정 확인 필요 · {warnings.length}건</div>
-              <div className={styles.warningList}>
-                {warnings.map((w) => <div key={w.id} className={styles.warningItem}>{w.message}</div>)}
-              </div>
+          <CommonAlert
+            type="warning"
+            variant="card"
+            title={`설정 확인 필요 · ${warnings.length}건`}
+            actionText="결제수단에서 확인"
+            onAction={() => setTab('methods')}
+          >
+            <div className={styles.warningList}>
+              {warnings.map((w) => <div key={w.id} className={styles.warningItem}>{w.message}</div>)}
             </div>
-            <button type="button" className={styles.warningActionBtn} onClick={() => setTab('methods')}>결제수단에서 확인</button>
-          </div>
+          </CommonAlert>
         )}
 
         {tab === 'basic' && (

@@ -400,13 +400,14 @@ export function AdminRolesPage() {
 
       {toast && <div className={sh.toast}>{toast}</div>}
 
-      <header className={`${sh.header} ${styles.pageHeader}`}>
-        <div>
-          <div className={styles.headerEyebrow}>관리자</div>
-          <div className={sh.headerTitle}>역할 및 권한 관리</div>
-          <div className={sh.headerSub}>관리자 역할을 만들고 메뉴·기능별 접근 권한을 설정합니다. 한 관리자에게는 하나의 역할만 부여됩니다.</div>
+      <div className={tabShared.headTop}>
+        <div className={tabShared.headRow}>
+          <div>
+            <div className={tabShared.title}>역할 및 권한 관리</div>
+            <div className={tabShared.subtitle}>관리자 역할을 만들고 메뉴·기능별 접근 권한을 설정합니다. 한 관리자에게는 하나의 역할만 부여됩니다.</div>
+          </div>
         </div>
-      </header>
+      </div>
 
       <div className={styles.body}>
         <div className={styles.list}>

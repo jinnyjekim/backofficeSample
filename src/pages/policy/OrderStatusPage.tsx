@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -470,10 +471,10 @@ export function OrderStatusPage() {
               </span>
               <div className={shared.resultActions}>
                 <ExcelDownloadButton type="button" data-grid-download />
-                <select className={shared.pageSizeSelect} defaultValue="20개씩 보기">
+                <PageSizeSelect className={shared.pageSizeSelect} defaultValue="20개씩 보기">
                   <option>20개씩 보기</option>
                   <option>50개씩 보기</option>
-                </select>
+                </PageSizeSelect>
                 <button
                   type="button"
                   className={shared.downloadBtn}

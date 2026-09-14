@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { DatePicker } from "../../components/forms/DatePicker";
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -994,10 +995,10 @@ export function NotificationDispatchPage() {
           <span className={shared.resultLabel}>총 {filtered.length}건</span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton onClick={download} />
-            <select className={shared.pageSizeSelect}>
+            <PageSizeSelect className={shared.pageSizeSelect}>
               <option>20개씩</option>
               <option>50개씩</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
         <DataGrid

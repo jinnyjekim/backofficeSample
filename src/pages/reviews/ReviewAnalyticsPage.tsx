@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid";
 import type { GridColumn, GridRow } from "../../components/DataGrid/types";
@@ -5,6 +6,7 @@ import shared from "../ops/opsShared.module.css";
 import styles from "./ReviewAnalyticsPage.module.css";
 import { REVIEWS, pendingReportCount, productName } from "./reviewsData";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
+import { StatisticsHorizontalBarChart } from "../../components/charts";
 
 const COLUMNS: GridColumn[] = [
   { label: "상품" },
@@ -272,18 +274,11 @@ export function ReviewAnalyticsPage() {
               <strong>평점 분포</strong>
               <span>전체 리뷰 기준</span>
             </div>
-            <div className={styles.ratingList}>
-              {ratingDistribution.map((item) => (
-                <div className={styles.ratingRow} key={item.rating}>
-                  <span>{item.rating}점</span>
-                  <div className={styles.track}>
-                    <i style={{ width: `${item.percent}%` }} />
-                  </div>
-                  <strong>{item.count}건</strong>
-                  <em>{item.percent}%</em>
-                </div>
-              ))}
-            </div>
+            <StatisticsHorizontalBarChart
+              data={ratingDistribution.map((item) => ({ label: `${item.rating}점`, value: item.count, percent: item.percent }))}
+              formatValue={(value) => `${value}건`}
+              ariaLabel="리뷰 평점 분포"
+            />
           </section>
           <section className={styles.panel}>
             <div className={styles.panelHead}>
@@ -340,13 +335,13 @@ export function ReviewAnalyticsPage() {
           <span className={shared.resultLabel}>총 {rows.length}개 상품</span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select
+            <PageSizeSelect
               className={shared.pageSizeSelect}
               defaultValue="20개씩 보기"
             >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>

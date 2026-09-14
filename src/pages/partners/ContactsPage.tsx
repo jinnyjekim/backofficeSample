@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useRef, useState } from "react";
 import styles from "./ContactsPage.module.css";
 import { DataGrid } from "../../components/DataGrid";
@@ -314,14 +315,14 @@ export function ContactsPage() {
           <span className={styles.resultLabel}>총 {filtered.length}명</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select
+            <PageSizeSelect
               className={styles.pageSizeSelect}
               defaultValue="20개씩 보기"
             >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
               <option>100개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
 

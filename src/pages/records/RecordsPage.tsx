@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
 import { useMemo, useState } from 'react';
 import styles from './RecordsPage.module.css';
@@ -531,10 +532,10 @@ export function RecordsPage({ kind }: Props) {
             <span className={styles.tableHeadResult}>{rec.resultLabel}</span>
             <div className={styles.resultActions}>
               <ExcelDownloadButton type="button" data-grid-download />
-              <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
 

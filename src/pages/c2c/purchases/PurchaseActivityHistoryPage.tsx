@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../../components/common';
 import { DatePicker } from "../../../components/forms/DatePicker";
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../../components/DataGrid";
@@ -181,10 +182,10 @@ export function PurchaseActivityHistoryPage() {
       </ControlArea>
       <GridArea>
         <ResultBar count={filtered.length} unit="건">
-          <select className={shared.pageSizeSelect}>
+          <PageSizeSelect className={shared.pageSizeSelect}>
             <option>50개씩</option>
             <option>100개씩</option>
-          </select>
+          </PageSizeSelect>
         </ResultBar>
         <DataGrid
           columns={[

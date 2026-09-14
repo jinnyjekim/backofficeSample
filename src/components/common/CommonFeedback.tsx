@@ -86,3 +86,96 @@ export interface CommonConfirmActionProps { title: ReactNode; description?: Reac
 export function CommonConfirmAction({ title, description, confirmLabel = '확인', cancelLabel = '취소', destructive, onConfirm, onCancel }: CommonConfirmActionProps) {
   return <div className={styles.confirmAction}><strong>{title}</strong>{description && <p>{description}</p>}<div><CommonButton variant="secondary" onClick={onCancel}>{cancelLabel}</CommonButton><CommonButton variant={destructive ? 'emphasis' : 'primary'} onClick={onConfirm}>{confirmLabel}</CommonButton></div></div>;
 }
+
+export type CommonAlertType = 'warning' | 'info' | 'error' | 'success' | 'neutral';
+export type CommonAlertVariant = 'card' | 'strip';
+
+export interface CommonAlertProps {
+  type?: CommonAlertType;
+  variant?: CommonAlertVariant;
+  title?: ReactNode;
+  description?: ReactNode;
+  children?: ReactNode;
+  icon?: ReactNode | boolean;
+  action?: ReactNode;
+  actionText?: string;
+  onAction?: () => void;
+  closable?: boolean;
+  onClose?: () => void;
+  className?: string;
+  style?: import('react').CSSProperties;
+}
+
+export function CommonAlert({
+  type = 'warning',
+  variant = 'card',
+  title,
+  description,
+  children,
+  icon = true,
+  action,
+  actionText,
+  onAction,
+  closable = false,
+  onClose,
+  className,
+  style,
+}: CommonAlertProps) {
+  let iconNode: ReactNode = null;
+  if (icon === true) {
+    if (variant === 'card') {
+      const symbol = type === 'warning' ? '!' : type === 'error' ? '✕' : type === 'success' ? '✓' : 'i';
+      iconNode = <span className={styles.alertIconBadge}>{symbol}</span>;
+    } else {
+      const LucideIcon = type === 'success' ? CheckCircle2 : type === 'error' ? XCircle : type === 'warning' ? CircleAlert : Info;
+      iconNode = <LucideIcon size={14} />;
+    }
+  } else if (icon) {
+    iconNode = icon;
+  }
+
+  const renderedAction = action ?? (actionText ? (
+    <button type="button" className={styles.alertActionBtn} onClick={onAction}>
+      {actionText}
+    </button>
+  ) : null);
+
+  return (
+    <div
+      role={type === 'error' ? 'alert' : 'status'}
+      className={cx(
+        styles.alert,
+        styles[`alert_${variant}`],
+        styles[`alert_${type}`],
+        className
+      )}
+      style={style}
+    >
+      {iconNode && <div className={styles.alertIcon}>{iconNode}</div>}
+      <div className={styles.alertBody}>
+        {title && <div className={styles.alertTitle}>{title}</div>}
+        {(description || children) && (
+          <div className={styles.alertDesc}>
+            {description}
+            {children}
+          </div>
+        )}
+      </div>
+      {renderedAction && <div className={styles.alertAction}>{renderedAction}</div>}
+      {closable && (
+        <button
+          type="button"
+          aria-label="안내 닫기"
+          className={styles.alertClose}
+          onClick={onClose}
+        >
+          <X size={15} />
+        </button>
+      )}
+    </div>
+  );
+}
+
+export function CommonNotice(props: CommonAlertProps) {
+  return <CommonAlert variant="strip" type="info" icon={false} {...props} />;
+}

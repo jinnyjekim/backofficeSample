@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { PageSizeSelect, SearchFilter } from "../../components/common";
 import styles from "../delivery/deliveryShared.module.css";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridColumn, GridRow } from "../../components/DataGrid/types";
@@ -118,15 +119,13 @@ export function CancelCompletedPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <input
-              className={styles.searchInput}
+            <SearchFilter
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onValueChange={setKeyword}
+              onSearch={(v) => setKeyword(v)}
               placeholder="취소번호 / 주문번호 / 고객명 / 상품명 / 결제수단"
+              aria-label="취소 완료 검색"
             />
-            <button type="button" className={styles.searchBtn}>
-              검색
-            </button>
           </div>
           <div className={styles.filterRow2}>
             <label className={styles.dateFilterField}>
@@ -138,9 +137,6 @@ export function CancelCompletedPage() {
               </div>
             </label>
             <div className={styles.rowSpacer} />
-            <button type="button" className="detailFilterBtn">
-              상세 필터
-            </button>
             <button
               type="button"
               className={styles.resetBtn}
@@ -157,13 +153,7 @@ export function CancelCompletedPage() {
           >{`총 ${filtered.length}건`}</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select
-              className={styles.pageSizeSelect}
-              defaultValue="20개씩 보기"
-            >
-              <option>20개씩 보기</option>
-              <option>50개씩 보기</option>
-            </select>
+            <PageSizeSelect defaultValue="20개씩 보기" />
           </div>
         </div>
       </header>

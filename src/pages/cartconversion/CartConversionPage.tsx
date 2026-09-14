@@ -8,6 +8,7 @@ import {
   CommonSelect,
 } from '../../components/common';
 import { BusinessScopeSwitch } from '../../components/business/BusinessScopeSwitch';
+import { StatisticsBarChart } from '../../components/charts';
 import shared from '../ops/opsShared.module.css';
 import styles from '../stats/TransactionStatsPage.module.css';
 import extra from './cartConversionExtra.module.css';
@@ -58,22 +59,7 @@ function StatCard({ label, value, def, deltaValue, hasPrevious, sub, positiveIsB
 }
 
 function BarChart({ buckets, metric, fmt }: { buckets: { label: string; value: number }[]; metric: string; fmt: (n: number) => string }) {
-  const max = Math.max(...buckets.map((b) => b.value), 1);
-  if (buckets.every((b) => b.value === 0)) return <div className={styles.emptyNote}>선택한 기간에 데이터가 없습니다.</div>;
-  return (
-    <>
-      <div className={styles.chartArea}>
-        {buckets.map((b) => (
-          <div key={b.label} className={styles.chartBarWrap} title={`${b.label} · ${metric} ${fmt(b.value)}`}>
-            <div className={styles.chartBar} style={{ height: `${Math.max(2, (b.value / max) * 100)}%` }} />
-          </div>
-        ))}
-      </div>
-      <div className={styles.chartAxis}>
-        {buckets.map((b, i) => (i % Math.ceil(buckets.length / 12 || 1) === 0 ? <span key={b.label} className={styles.chartAxisLabel}>{b.label}</span> : <span key={b.label} className={styles.chartAxisLabel} />))}
-      </div>
-    </>
-  );
+  return <StatisticsBarChart data={buckets} metricLabel={metric} height={220} formatValue={fmt} />;
 }
 
 export function CartConversionPage() {

@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { DatePicker } from "../../components/forms/DatePicker";
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid/DataGrid";
@@ -708,10 +709,10 @@ export function AdminMemosPage() {
               data-grid-download
               onClick={() => setModal("download")}
             />
-            <select className={shared.pageSizeSelect}>
+            <PageSizeSelect className={shared.pageSizeSelect}>
               <option>20개씩</option>
               <option>50개씩</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
         <DataGrid

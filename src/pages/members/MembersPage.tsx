@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styles from './MembersPage.module.css';
@@ -751,10 +752,10 @@ export function MembersPage() {
               <span className={styles.tableHeadResult}>총 {formatNumber(rows.length)}{cfg.unitSuffix}</span>
               <div className={styles.resultActions}>
                 <ExcelDownloadButton type="button" data-grid-download onClick={() => setModal({ kind: 'export' })} />
-                <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+                <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
                   <option>20개씩 보기</option>
                   <option>50개씩 보기</option>
-                </select>
+                </PageSizeSelect>
               </div>
             </div>
 

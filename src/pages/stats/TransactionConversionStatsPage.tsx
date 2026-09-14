@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import {
   ArrowRight,
   Download,
@@ -11,6 +12,7 @@ import { Fragment, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "../../components/DataGrid";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
+import { StatisticsLineChart } from "../../components/charts";
 import type {
   Cell,
   GridColumn,
@@ -69,6 +71,8 @@ function RateTrendChart({
   secondary?: number[];
   labels: string[];
 }) {
+  return <StatisticsLineChart values={primary} comparisonValues={secondary} labels={labels} height={240} ariaLabel="거래 전환율 추이 차트" />;
+  /* legacy renderer retained temporarily for visual parity reference */
   const max = Math.max(...primary, ...(secondary ?? []), 10);
   const width = 860;
   const height = 220;
@@ -867,10 +871,10 @@ export function TransactionConversionStatsPage({
                 data-grid-download
                 onClick={() => setDownloadOpen(true)}
               />
-              <select className={layout.pageSizeSelect} defaultValue="20개씩 보기">
+              <PageSizeSelect className={layout.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
           <DataGrid

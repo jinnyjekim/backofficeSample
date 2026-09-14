@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { DatePicker } from "../../components/forms/DatePicker";
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid";
@@ -348,10 +349,10 @@ export function SecurityLogPage() {
           </span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" onClick={download} />
-            <select className={shared.pageSizeSelect}>
+            <PageSizeSelect className={shared.pageSizeSelect}>
               <option>100개씩</option>
               <option>200개씩</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>

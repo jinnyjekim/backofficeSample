@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import { DataGrid } from '../../components/DataGrid';
 import type { GridColumn, GridRow } from '../../components/DataGrid/types';
@@ -319,10 +320,10 @@ export function ExchangeCollectionPage() {
           <span className={styles.resultLabel}>총 {filtered.length}건 목록</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton data-grid-download />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>

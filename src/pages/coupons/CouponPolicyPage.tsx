@@ -389,7 +389,7 @@ export function CouponPolicyPage() {
         items={TABS.map(([key, label]) => ({ key, label }))}
         value={tab}
         onChange={(key) => setTab(key as Tab)}
-        type="line"
+        kind="filter"
         size="md"
       />
 

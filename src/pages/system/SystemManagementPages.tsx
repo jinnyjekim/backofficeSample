@@ -1,3 +1,4 @@
+export { DisplaySettingsPage } from "./DisplaySettingsPage";
 export { ServiceSettingsPage } from "./ServiceSettingsPage";
 export { CommonCodesPage } from "./CommonCodesPage";
 export { IntegrationManagementPage } from "./IntegrationManagementPage";

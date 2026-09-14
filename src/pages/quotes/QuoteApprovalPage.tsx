@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './quoteShared.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -185,10 +186,10 @@ export function QuoteApprovalPage() {
             <span className={styles.resultLabel}>총 {filtered.length}건</span>
             <div className={styles.resultActions}>
               <ExcelDownloadButton type="button" data-grid-download />
-              <select className={styles.pageSizeSelect}>
+              <PageSizeSelect className={styles.pageSizeSelect}>
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
         </div>

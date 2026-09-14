@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from 'react';
 import styles from './shared.module.css';
 import { DataGrid } from '../../components/DataGrid';
@@ -6,7 +7,7 @@ import { FILTER_KEYS, PARTNERS, STATUS_META, computePartner, fmtWon, type Activi
 import { buildReceivableDetail } from './receivableDetail';
 import { ReceivableDetailDrawer } from './ReceivableDetailDrawer';
 import { ExcelDownloadButton } from '../../components/common/ExcelDownloadButton';
-import { CommonButton } from '../../components/common';
+import { CommonButton, CommonStatCard, CommonStatGrid } from '../../components/common';
 
 const GRID_TEMPLATE = 'minmax(150px,1fr) 70px 92px 92px 94px 44px 82px 56px 66px 60px';
 const GRID_MIN_WIDTH = '870px';
@@ -164,14 +165,16 @@ export function ReceivablesPage() {
           <div className={styles.subtitle}>거래처별 미수 잔액과 연체 현황을 관리합니다.</div>
         </div>
 
-        <div className={styles.kpiGrid}>
+        <CommonStatGrid style={{ marginBottom: 20 }}>
           {kpis.map((k) => (
-            <div className={styles.kpiCard} key={k.label}>
-              <div className={styles.kpiLabel}>{k.label}</div>
-              <div className={styles.kpiValue} style={{ color: k.color }}>{k.value}</div>
-            </div>
+            <CommonStatCard
+              key={k.label}
+              label={k.label}
+              value={k.value}
+              valueColor={k.color}
+            />
           ))}
-        </div>
+        </CommonStatGrid>
 
         <div className={styles.viewToggleRow}>
           <div className={styles.viewToggle}>
@@ -243,10 +246,10 @@ export function ReceivablesPage() {
           <span className={styles.resultLabel}>총 {rows.length}건</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton type="button" data-grid-download />
-            <select className={styles.selectXs} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.selectXs} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>

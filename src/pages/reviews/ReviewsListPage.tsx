@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import styles from "../ops/opsShared.module.css";
 import { DataGrid } from "../../components/DataGrid";
@@ -417,10 +418,10 @@ export function ReviewsListPage() {
               data-grid-download
               onClick={() => toastBriefly("데이터 다운로드를 준비했습니다.")}
             />
-            <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+            <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>

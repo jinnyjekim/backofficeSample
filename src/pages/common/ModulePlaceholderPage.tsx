@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import { DataGrid } from "../../components/DataGrid";
 import type { GridRow } from "../../components/DataGrid/types";
@@ -343,10 +344,10 @@ function ManagementPage({
           <span className={styles.resultLabel}>총 {filtered.length}건</span>
           <div className={styles.resultActions}>
             <ExcelDownloadButton data-grid-download onClick={download} />
-            <select className={styles.pageSizeSelect}>
+            <PageSizeSelect className={styles.pageSizeSelect}>
               <option>20개씩</option>
               <option>50개씩</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
@@ -697,10 +698,10 @@ function AnalyticsPage({
             <span className={styles.resultLabel}>총 {rows.length}건</span>
             <div className={styles.resultActions}>
               <ExcelDownloadButton data-grid-download />
-              <select className={styles.pageSizeSelect} defaultValue="20개씩 보기">
+              <PageSizeSelect className={styles.pageSizeSelect} defaultValue="20개씩 보기">
                 <option>20개씩 보기</option>
                 <option>50개씩 보기</option>
-              </select>
+              </PageSizeSelect>
             </div>
           </div>
           <DataGrid

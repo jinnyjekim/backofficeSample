@@ -4,6 +4,7 @@ import { DataGrid } from "../../components/DataGrid/DataGrid";
 import type { GridColumn, GridRow } from "../../components/DataGrid/types";
 import { DetailDrawer } from "../c2c/sales/SalesActivityShared";
 import { ExcelDownloadButton } from "../../components/common/ExcelDownloadButton";
+import { PageSizeSelect, SearchFilter } from "../../components/common";
 import { DatePicker } from "../../components/forms/DatePicker";
 import {
   CANCEL_STAGE_META,
@@ -126,15 +127,13 @@ export function CancelPartialPage() {
 
         <div className={styles.filterCard}>
           <div className={styles.filterRow1}>
-            <input
-              className={styles.searchInput}
+            <SearchFilter
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onValueChange={setKeyword}
+              onSearch={(v) => setKeyword(v)}
               placeholder="취소번호 / 주문번호 / 고객명 / 상품명"
+              aria-label="부분 취소 검색"
             />
-            <button type="button" className={styles.searchBtn}>
-              검색
-            </button>
           </div>
           <div className={styles.filterRow2}>
             <label className={styles.dateFilterField}>

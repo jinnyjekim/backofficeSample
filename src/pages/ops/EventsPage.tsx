@@ -1,3 +1,4 @@
+import { PageSizeSelect } from '../../components/common';
 import { useMemo, useState } from "react";
 import shared from "./opsShared.module.css";
 import styles from "./EventsPage.module.css";
@@ -758,13 +759,13 @@ export function EventsPage() {
           <span className={shared.resultLabel}>총 {filtered.length}건</span>
           <div className={shared.resultActions}>
             <ExcelDownloadButton type="button" onClick={downloadCsv} />
-            <select
+            <PageSizeSelect
               className={shared.pageSizeSelect}
               defaultValue="20개씩 보기"
             >
               <option>20개씩 보기</option>
               <option>50개씩 보기</option>
-            </select>
+            </PageSizeSelect>
           </div>
         </div>
       </header>
